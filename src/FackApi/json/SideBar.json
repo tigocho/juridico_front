@@ -21,54 +21,6 @@
     "icon": "ri-hospital-fill"
   },
   {
-    "title": "Hospital Dashboard 1",
-    "name": "sidebar.dashboard2",
-    "is_heading": false,
-    "is_active": false,
-    "link": {
-      "name": "dashboard.home-1"
-    },
-    "class_name": "",
-    "is_icon_class": true,
-    "icon": "ri-home-8-fill"
-  },
-  {
-    "title": "Hospital Dashboard 2",
-    "name": "sidebar.dashboard3",
-    "is_heading": false,
-    "is_active": false,
-    "link": {
-      "name": "dashboard.home-2"
-    },
-    "class_name": "",
-    "is_icon_class": true,
-    "icon": "ri-briefcase-4-fill"
-  },
-  {
-    "title": "Patient Dashboard",
-    "name": "sidebar.dashboard4",
-    "is_heading": false,
-    "is_active": false,
-    "link": {
-      "name": "dashboard.home-3"
-    },
-    "class_name": "",
-    "is_icon_class": true,
-    "icon": "ri-group-fill"
-  },
-  {
-    "title": "Covid-19 Dashboard",
-    "name": "Covid-19 Dashboard",
-    "is_heading": false,
-    "is_active": false,
-    "link": {
-      "name": "dashboard.home-5"
-    },
-    "class_name": "",
-    "is_icon_class": true,
-    "icon": "lab la-mendeley"
-  },
-  {
     "title": "Apps",
     "name": "sidebar.app",
     "is_heading": true,
@@ -76,40 +28,6 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": ""
-  },
-  {
-    "title": "Email",
-    "name": "sidebar.email",
-    "is_heading": false,
-    "is_active": false,
-    "link": "",
-    "class_name": "",
-    "is_icon_class": true,
-    "icon": "ri-mail-open-line",
-    "children": [
-      {
-        "title": "Inbox",
-        "name": "sidebar.inbox",
-        "is_active": false,
-        "link": {
-          "name" : "app.email"
-        },
-        "class_name": "",
-        "is_icon_class": true,
-        "icon": "ri-mail-open-fill"
-      },
-      {
-        "title": "Email Compose",
-        "name": "sidebar.emailCompose",
-        "is_active": false,
-        "link": {
-          "name" : "app.email.compose"
-        },
-        "class_name": "",
-        "is_icon_class": true,
-        "icon": "ri-edit-line"
-      }
-    ]
   },
   {
     "title": "Doctors",
@@ -142,17 +60,6 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-user-add-fill"
-      },
-      {
-        "title": "Doctor Profile",
-        "name": "sidebar.doctorProfile",
-        "is_active": false,
-        "link": {
-          "name" : "doctor.profile"
-        },
-        "class_name": "",
-        "is_icon_class": true,
-        "icon": "ri-profile-fill"
       },
       {
         "title": "Edit Doctor",
@@ -189,7 +96,7 @@
     },
     "class_name": "",
     "is_icon_class": true,
-    "icon": "ri-message-fill"
+    "icon": "ri-file-list-fill"
   },
 
   {

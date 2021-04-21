@@ -1,64 +1,124 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col sm="12" md="3" v-for="doctor in doctors" :key="doctor.message">
-          <iq-card body-class="text-center">
-            <template v-slot:body>
-              <div class="doc-profile">
-                <img class="rounded-circle img-fluid avatar-80" :src="doctor.image" alt="profile">
-              </div>
-              <div class="iq-doc-info mt-3">
-                <h4> {{doctor.name}}</h4>
-                <p class="mb-0" >{{doctor.specialist}}</p>
-                <a href="javascript:void(0);">{{doctor.website}}</a>
-              </div>
-              <div class="iq-doc-description mt-2">
-                <p class="mb-0">{{doctor.description}}</p>
-              </div>
-              <div class="iq-doc-social-info mt-3 mb-3">
-                <ul class="m-0 p-0 list-inline">
-                  <li><a href="#"><i class="ri-facebook-fill"></i></a></li>
-                  <li><a href="#"><i class="ri-twitter-fill"></i></a> </li>
-                  <li><a href="#"><i class="ri-google-fill"></i></a></li>
-                </ul>
-              </div>
-              <a href="#" class="btn btn-primary">View Profile</a>
-            </template>
-          </iq-card>
+      <b-col md="12">
+        <iq-card>
+          <template v-slot:headerTitle>
+            <h4 class="card-title">Usuarios</h4>
+          </template>
+          <template v-slot:headerAction>
+            <b-button variant="primary" @click="add">Add New</b-button>
+          </template>
+          <template v-slot:body>
+            <b-row>
+              <b-col md="12" class="table-responsive">
+                <b-table bordered hover :items="doctors" :fields="columns" foot-clone>
+                  <template v-slot:cell(usr_username)="data">
+                    <span v-if="!data.item.editable">{{ data.item.usr_username }}</span>
+                    <input type="text" v-model="data.item.usr_username" v-else class="form-control">
+                  </template>
+                  <template v-slot:cell(usr_identification)="data">
+                    <span v-if="!data.item.editable">{{ data.item.usr_identification }}</span>
+                    <input type="text" v-model="data.item.usr_identification" v-else class="form-control">
+                  </template>
+                  <template v-slot:cell(usr_email)="data">
+                    <span v-if="!data.item.editable">{{ data.item.usr_email }}</span>
+                    <input type="text" v-model="data.item.usr_email" v-else class="form-control">
+                  </template>
+                  <template v-slot:cell(age)="data">
+                    <span v-if="!data.item.editable">{{ data.item.age }}</span>
+                    <input type="text" v-model="data.item.age" v-else class="form-control">
+                  </template>
+                  <template v-slot:cell(start_date)="data">
+                    <span v-if="!data.item.editable">{{ data.item.start_date }}</span>
+                    <input type="text" v-model="data.item.start_date" v-else class="form-control">
+                  </template>
+                  <template v-slot:cell(salary)="data">
+                    <span v-if="!data.item.editable">{{ data.item.salary }}</span>
+                    <input type="text" v-model="data.item.salary" v-else class="form-control">
+                  </template>
+                  <template v-slot:cell(action)="data">
+                    <b-button variant=" iq-bg-success mr-1 mb-1" size="sm" @click="edit(data.item)" v-if="!data.item.editable"><i class="ri-ball-pen-fill m-0"></i></b-button>
+                    <b-button variant=" iq-bg-success mr-1 mb-1" size="sm" @click="submit(data.item)" v-else>Ok</b-button>
+                    <b-button variant=" iq-bg-danger" size="sm" @click="remove(data.item)"><i class="ri-delete-bin-line m-0"></i></b-button>
+                  </template>
+                </b-table>
+              </b-col>
+            </b-row>
+          </template>
+        </iq-card>
       </b-col>
     </b-row>
   </b-container>
 </template>
 <script>
 import { xray } from '../../config/pluginInit'
+import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:8000/api'
 
 export default {
   name: 'UserList',
   data () {
     return {
-      doctors: [
-        { name: 'Dr. Anna Mull', specialist: 'Cardiologists', image: require('../../assets/images/user/1.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Bunny Joy', specialist: 'Gynaecology', image: require('../../assets/images/user/01.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Shonda Leer', specialist: 'Orthopedics Special', image: require('../../assets/images/user/02.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Ira Membrit', specialist: 'MD', image: require('../../assets/images/user/03.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Paul Molive', specialist: 'Medicine Specialists', image: require('../../assets/images/user/04.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Dr. Terry Aki', specialist: 'Heart Surgeons', image: require('../../assets/images/user/05.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Poppa Cherry', specialist: 'Family Physicians', image: require('../../assets/images/user/06.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Dr. Saul T. Balls', specialist: 'Gynaecology', image: require('../../assets/images/user/07.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Hal Appeno', specialist: 'MD', image: require('../../assets/images/user/08.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Polly Tech', specialist: 'Eye Special', image: require('../../assets/images/user/09.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Pat Agonia', specialist: 'Therapy Special', image: require('../../assets/images/user/10.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Barry Cade', specialist: 'Heart Surgeons', image: require('../../assets/images/user/12.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr.Jimmy Changa', specialist: 'Cardiologists', image: require('../../assets/images/user/12.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Sue Vaneer', specialist: 'Orthopedics Special', image: require('../../assets/images/user/13.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Monty Carlo', specialist: 'Anesthesiologists', image: require('../../assets/images/user/14.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' },
-        { name: 'Dr. Rick O\'Shea', specialist: 'General', image: require('../../assets/images/user/15.jpg'), website: 'www.demo.com', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor non erat non gravida. In id ipsum consequat' }
-
+      doctors: [],
+      columns: [
+        { label: 'Nombre', key: 'usr_username', class: 'text-left' },
+        { label: 'Identificacióm', key: 'usr_identification', class: 'text-left' },
+        { label: 'Correo electronico', key: 'usr_email', class: 'text-left' }
+      ],
+      rows: [
+        {
+          id: 1,
+          usr_username: 'Tiger Nixon',
+          usr_identification: 'System Architect',
+          usr_email: 'wa@wa.com'
+        },
+        {
+          id: 2,
+          usr_username: 'Garrett Winters',
+          usr_identification: 'Accountant',
+          usr_email: 'wa@wa.com'
+        },
+        {
+          id: 3,
+          usr_username: 'Ashton Cox',
+          usr_identification: 'Junior Technical Author',
+          usr_email: 'wa@wa.com'
+        }
       ]
     }
   },
   mounted () {
     xray.index()
+    axios.get('/users').then(response => (this.doctors = response.data.users))
+  },
+  methods: {
+    add () {
+      let obj = this.default()
+      this.rows.push(obj)
+    },
+    default () {
+      return {
+        id: this.rows.length,
+        name: '',
+        position: '',
+        office: '',
+        age: '',
+        start_date: '2011/04/25',
+        salary: '$0',
+        editable: false
+      }
+    },
+    edit (item) {
+      item.editable = true
+    },
+    submit (item) {
+      item.editable = false
+    },
+    remove (item) {
+      let index = this.rows.indexOf(item)
+      this.rows.splice(index, 1)
+    }
   },
   firestore () {
     return {

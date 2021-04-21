@@ -1,7 +1,7 @@
 {
   "sidebar": {
-    "dashboard": "Dashboard",
-    "dashboard1": "Doctor Dashboard",
+    "dashboard": "Juridico App",
+    "dashboard1": "Panel Administrativo",
     "dashboard2": "Hospital Dashboard 1",
     "dashboard3": "Hospital Dashboard 2",
     "dashboard4": "Patient Dashboard",
@@ -17,12 +17,12 @@
     "email": "Email",
     "inbox": "Inbox",
     "emailCompose": "Email Compose",
-    "calendar": "Calendar",
-    "doctor": "Doctors",
+    "calendar": "Calendario",
+    "doctor": "Usuarios",
     "doctorProfile": "Doctor Profile",
-    "doctorEdit": "Edit Doctor",
-    "doctorAdd": "Add Doctor",
-    "doctorList": "All Doctors",
+    "doctorEdit": "Editar Usuario",
+    "doctorAdd": "Agregar Usuario",
+    "doctorList": "Todos los Usuarios",
     "components": "Components",
     "uiElements": "UI Elements",
     "color": "Color",
@@ -91,7 +91,7 @@
     "datepicker": "Datepicker",
     "select": "Select",
     "draggable": "Draggable",
-    "chat": "Chat"
+    "chat": "Procesos Juridicos"
   },
   "nav": {
     "allNotifications": "All Notifications",

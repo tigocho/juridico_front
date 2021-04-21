@@ -1,11 +1,11 @@
 <template>
   <b-container fluid>
-    <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-      <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+    <b-row>
+      <b-col md="12">
+        <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+        <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
         <b-row>
-          <b-col lg="3">
-          </b-col>
-          <b-col lg="9">
+          <b-col lg="12">
             <iq-card>
               <template v-slot:headerTitle>
                 <h4 class="card-title">Creación de Usuario</h4>
@@ -79,9 +79,12 @@
             </iq-card>
           </b-col>
         </b-row>
-      </form>
-    </ValidationObserver>
+        </form>
+        </ValidationObserver>
+      </b-col>
+    </b-row>
   </b-container>
+
 </template>
 <script>
 import { xray } from '../../config/pluginInit'
