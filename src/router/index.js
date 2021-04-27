@@ -79,6 +79,8 @@ import Profile from '../views/User/Profile'
 import ProfileEdit from '../views/User/ProfileEdit'
 import AddUser from '../views/User/AddUser'
 import UserList from '../views/User/UserList'
+/* Process View */
+import AddProcess from '../views/Process/AddProcess'
 /* Todo */
 import Callback from '../views/AuthPages/Default/Callback'
 /* Plugins Views */
@@ -518,6 +520,15 @@ const userChildRoute = (prop, mode = false) => [
   }
 ]
 
+const processChildRoute = (prop, mode = false) => [
+  {
+    path: 'process-add',
+    name: prop + '.add',
+    meta: { dark: mode, auth: true, name: 'Add Porcess' },
+    component: AddProcess
+  }
+]
+
 const pluginsChildRoute = (prop, mode = false) => [
   {
     path: 'datepicker',
@@ -615,6 +626,13 @@ const routes = [
     component: Layout1,
     meta: { auth: true },
     children: userChildRoute('doctor')
+  },
+  {
+    path: '/process',
+    name: 'process',
+    component: Layout1,
+    meta: { auth: true },
+    children: processChildRoute('process')
   },
   {
     path: '/map',

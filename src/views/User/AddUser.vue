@@ -29,15 +29,28 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
-                    <b-form-group class="col-md-6"
-                                  label="Ciudad:"
-                                  label-for="city"
-                    >
-                      <b-form-input  v-model="user.city" type="text" name="city" id="city" placeholder="Ciudad"></b-form-input>
+                    <b-form-group class="col-md-6" label="Segundo Nombre:" label-for="usr_name_first">
+                      <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                        <b-form-input v-model="user.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                        <div class="invalid-feedback">
+                          <span>{{ errors[0] }}</span>
+                        </div>
+                      </ValidationProvider>
+                    </b-form-group>
+                    <b-form-group class="col-md-6" label="Segundo Apelldio:" label-for="usr_lastname_first">
+                      <ValidationProvider name="Segundo Apelldio" rules="required" v-slot="{ errors }">
+                        <b-form-input v-model="user.usr_lastname_last" type="text" placeholder="Segundo Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                        <div class="invalid-feedback">
+                          <span>{{ errors[0] }}</span>
+                        </div>
+                      </ValidationProvider>
                     </b-form-group>
                   </b-row>
                   <hr>
                   <b-row>
+                  <b-form-group class="col-md-6" label="Fecha de Nacimiento" label-for="usr_birthday">
+                    <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
+                  </b-form-group>
                   <b-form-group class="col-md-6" label="Nombre de Usuario:" label-for="uname">
                     <ValidationProvider name="Nombre de Usuario" rules="required" v-slot="{ errors }">
                       <b-form-input v-model="user.usr_username" type="text" placeholder="Nombre de Usuario" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
@@ -57,7 +70,14 @@
                   <b-form-group class="col-md-6" label="Rol de Usuario:" label-for="selectuserrole">
                     <b-form-select plain v-model="user.usr_role_id" :options="roles" id="selectuserrole">
                       <template v-slot:first>
-                        <b-form-select-option :value="null">Seleccione</b-form-select-option>
+                        <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
+                      </template>
+                    </b-form-select>
+                  </b-form-group>
+                  <b-form-group class="col-md-6" label="Tipo de identificación:" label-for="selectypeid">
+                    <b-form-select plain v-model="user.usr_identification_type" :options="ids" id="selectypeid">
+                      <template v-slot:first>
+                        <b-form-select-option :value="null">Seleccione un tipo de id</b-form-select-option>
                       </template>
                     </b-form-select>
                   </b-form-group>
@@ -70,9 +90,6 @@
                     </ValidationProvider>
                   </b-form-group>
                 </b-row>
-                <div class="checkbox">
-                  <label><input class="mr-2" type="checkbox">Aceptar terms & conditions.</label>
-                </div>
                 <b-button variant="primary" type="submit">Agregar Usuario</b-button>
               </div>
               </template>
@@ -101,8 +118,11 @@ export default {
       user: {
         usr_name_first: '',
         usr_lastname_first: '',
+        usr_name_last: '',
+        usr_lastname_last: '',
         usr_identification_type: 1,
         usr_identification: '',
+        usr_birthday: '',
         usr_username: '',
         usr_password: '123456',
         usr_email: '',
@@ -112,11 +132,13 @@ export default {
         usr_accept_terms: 1
       },
       roles: [
-        { text: 'Web Designer', value: 'Web Designer' },
-        { text: 'Web Developer', value: 'Web Developer' },
-        { text: 'Tester', value: 'Tester' },
-        { text: 'Php Developer', value: 'Php Developer' },
-        { text: 'Ios Developer', value: 'Ios Developer' }
+        { text: 'Administrador', value: 1 },
+        { text: 'Abogado', value: 2 }
+      ],
+      ids: [
+        { text: 'CC.', value: 1 },
+        { text: 'TI.', value: 2 },
+        { text: 'RC.', value: 3 }
       ],
       countries: [
         { value: 'Canada', text: 'Canada' },

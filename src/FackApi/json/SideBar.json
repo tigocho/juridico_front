@@ -75,6 +75,29 @@
     ]
   },
   {
+    "title": "Process",
+    "name": "sidebar.process",
+    "is_heading": false,
+    "is_active": false,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-user-3-fill",
+    "children": [
+      {
+        "title": "Add Proces",
+        "name": "sidebar.processAdd",
+        "is_active": false,
+        "link": {
+          "name" : "process.add"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-user-add-fill"
+      }
+    ]
+  },
+  {
     "title": "Calendar",
     "name": "sidebar.calendar",
     "is_heading": false,
