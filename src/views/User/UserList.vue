@@ -20,7 +20,7 @@
                   foot-clone
                 >
                   <template v-slot:cell(usr_username)="data">
-                    <span v-if="!data.item.editable">{{
+                    <span v-if="data.item.editable==0">{{
                       data.item.usr_username
                     }}</span>
                     <input
@@ -31,7 +31,7 @@
                     />
                   </template>
                   <template v-slot:cell(usr_identification)="data">
-                    <span v-if="!data.item.editable">{{
+                    <span v-if="data.item.editable==0">{{
                       data.item.usr_identification
                     }}</span>
                     <input
@@ -42,7 +42,7 @@
                     />
                   </template>
                   <template v-slot:cell(usr_email)="data">
-                    <span v-if="!data.item.editable">{{
+                    <span v-if="data.item.editable==0">{{
                       data.item.usr_email
                     }}</span>
                     <input
@@ -53,7 +53,7 @@
                     />
                   </template>
                   <template v-slot:cell(age)="data">
-                    <span v-if="!data.item.editable">{{ data.item.age }}</span>
+                    <span v-if="data.item.editable==0">{{ data.item.age }}</span>
                     <input
                       type="text"
                       v-model="data.item.age"
@@ -62,7 +62,7 @@
                     />
                   </template>
                   <template v-slot:cell(start_date)="data">
-                    <span v-if="!data.item.editable">{{
+                    <span v-if="data.item.editable==0">{{
                       data.item.start_date
                     }}</span>
                     <input
@@ -73,7 +73,7 @@
                     />
                   </template>
                   <template v-slot:cell(salary)="data">
-                    <span v-if="!data.item.editable">{{
+                    <span v-if="data.item.editable==0">{{
                       data.item.salary
                     }}</span>
                     <input
@@ -88,7 +88,7 @@
                       variant=" iq-bg-success mr-1 mb-1"
                       size="sm"
                       @click="edit(data.item)"
-                      v-if="!data.item.editable"
+                      v-if="data.item.editable==0"
                       ><i class="ri-ball-pen-fill m-0"></i
                     ></b-button>
                     <b-button
@@ -166,6 +166,7 @@ export default {
   data () {
     return {
       doctors: [],
+      user: {},
       columns: [
         { label: 'Nombre', key: 'usr_username', class: 'text-left' },
         {
@@ -173,7 +174,8 @@ export default {
           key: 'usr_identification',
           class: 'text-left'
         },
-        { label: 'Correo electronico', key: 'usr_email', class: 'text-left' }
+        { label: 'Correo electronico', key: 'usr_email', class: 'text-left' },
+        { label: 'Action', key: 'action', class: 'text-center' }
       ],
       rows: [
         {
@@ -219,10 +221,22 @@ export default {
       }
     },
     edit (item) {
-      item.editable = true
+      item.editable = 1
     },
     submit (item) {
-      item.editable = false
+      item.editable = 0
+      console.log('putooo usr_username: ' + item)
+      console.log('weeeusr_id: ', item.usr_id)
+      this.user.usr_username = item.usr_username
+      this.user.usr_email = item.usr_email
+      axios.put('/users/update/' + item.usr_id, this.user).then(res => {
+        console.log(res.data.credentials)
+        if (res.data.status_code === 200) {
+          this.$router.push({ name: 'doctor.list' })
+        } else {
+          alert('Datos no validos')
+        }
+      })
     },
     remove (item) {
       let index = this.rows.indexOf(item)

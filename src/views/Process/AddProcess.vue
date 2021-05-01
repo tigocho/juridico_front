@@ -1,288 +1,477 @@
 <template>
-  <form-wizard>
-    <tab-content title="PRIMERA PARTE" :selected="true">
-        <b-container fluid>
-            <b-row>
-                <b-col md="12">
-                    <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-                    <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
-                        <b-row>
-                            <b-col lg="12">
-                                <iq-card>
-                                <template v-slot:headerTitle>
-                                    <h4 class="card-title">Agregar Proceso Juridico/Solicitud de Servicio</h4>
-                                </template>
-                                <template v-slot:body>
-                                    <div class="new-user-info">
-                                    <b-row>
-                                        <b-form-group class="col-md-6" label="Fecha de Ingreso" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="Clinica/IPS:" label-for="selectuserrole">
-                                            <b-form-select plain v-model="user.usr_role_id" :options="roles" id="selectuserrole">
-                                                <template v-slot:first>
-                                                <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
-                                                </template>
-                                            </b-form-select>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="Año del Siniestro" label-for="exampleInputNumber1">
-                                            <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="Año de Notificación" label-for="exampleInputNumber1">
-                                            <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA DE NOTIFICACION PREJUDICIAL" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA DE LA AUDIENCIA DE CONCILIACIÓN PREJUDICIAL" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA AVISO DEL  SINIESTRO" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="DESCRIPCIÓN  DEL SINIESTRO" label-for="usr_name_first">
-                                        <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
-                                            <b-form-input v-model="user.usr_name_first" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                            <div class="invalid-feedback">
-                                            <span>{{ errors[0] }}</span>
-                                            </div>
-                                        </ValidationProvider>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA DE RECIBIDO DE NOTIFICACION IPS" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="COLABORADOR DE IPS QUE RECIBE NOTIFICACION:" label-for="usr_lastname_first">
-                                        <ValidationProvider name="Primer Apelldio" rules="required" v-slot="{ errors }">
-                                            <b-form-input v-model="user.usr_lastname_first" type="text" placeholder="Primer Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                            <div class="invalid-feedback">
-                                            <span>{{ errors[0] }}</span>
-                                            </div>
-                                        </ValidationProvider>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="CIUDAD:" label-for="selectuserrole">
-                                            <b-form-select plain v-model="user.usr_role_id" :options="city" id="selectuserrole">
-                                                <template v-slot:first>
-                                                    <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
-                                                </template>
-                                            </b-form-select>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="NOMBRE DEL PACIENTE:" label-for="usr_name_first">
-                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
-                                            <b-form-input v-model="user.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                            <div class="invalid-feedback">
-                                            <span>{{ errors[0] }}</span>
-                                            </div>
-                                        </ValidationProvider>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="GENERO DEL PACIENTE:" label-for="usr_lastname_first">
-                                            <template v-for="(item,index) in state">
-                                            <b-form-radio inline v-model="stateActive[item[Object.keys(item)[0]]]" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled">{{ item.label }}</b-form-radio>
+    <b-container fluid>
+        <form-wizard @onComplete="onSubmit">
+            <tab-content title="Información General" :selected="true">
+                <b-container fluid>
+                    <b-row>
+                        <b-col md="12">
+                            <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                            <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                                <b-row>
+                                    <b-col lg="12">
+                                        <iq-card>
+                                            <template v-slot:body>
+                                                <div class="new-user-info">
+                                                    <b-row>
+                                                        <b-form-group class="col-md-6" label="Fecha de Ingreso" label-for="prore_fec_ingreso">
+                                                            <b-form-input id="exampleInputdate" v-model="proc.prore_fec_ingreso" type="date" value="2019-12-18"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Clinica/IPS:" label-for="selectuserrole">
+                                                            <b-form-select plain v-model="proc.prore_defendaant_clin" :options="roles" id="selectuserrole">
+                                                                <template v-slot:first>
+                                                                <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
+                                                                </template>
+                                                            </b-form-select>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Año del Siniestro" label-for="exampleInputNumber1">
+                                                            <b-form-input id="exampleInputNumber1" v-model="proc.prore_year_sinister" type="number" value="2356"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Fecha del Siniestro" label-for="prore_fec_sinister">
+                                                            <b-form-input id="exampleInputdate" v-model="proc.prore_fec_sinister" type="date" value="2019-12-18"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Año de Notificación" label-for="exampleInputNumber1">
+                                                            <b-form-input id="exampleInputNumber1" v-model="proc.prore_year_notify" type="number" value="2356"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="FECHA DE NOTIFICACION PREJUDICIAL" label-for="prore_fec_noti_preju">
+                                                            <b-form-input id="exampleInputdate" v-model="proc.prore_fec_noti_preju" type="date" value="2019-12-18"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="FECHA DE LA AUDIENCIA DE CONCILIACIÓN PREJUDICIAL" label-for="prore_fec_audi_conci_preju">
+                                                            <b-form-input id="exampleInputdate" v-model="proc.prore_fec_audi_conci_preju" type="date" value="2019-12-18"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="FECHA AVISO DEL  SINIESTRO" label-for="prore_fec_sinies_aviso">
+                                                            <b-form-input id="exampleInputdate" v-model="proc.prore_fec_sinies_aviso" type="date" value="2019-12-18"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="DESCRIPCIÓN  DEL SINIESTRO" label-for="prore_sinies_description">
+                                                        <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.prore_sinies_description" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="FECHA DE RECIBIDO DE NOTIFICACION IPS" label-for="prore_fec_recibo_notify">
+                                                            <b-form-input id="exampleInputdate" v-model="proc.prore_fec_recibo_notify" type="date" value="2019-12-18"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="COLABORADOR DE IPS QUE RECIBE NOTIFICACION:" label-for="prore_fec_recibo_notify">
+                                                        <ValidationProvider name="Primer Apelldio" rules="required" v-slot="{ errors }">
+                                                            <b-form-input type="text" placeholder="Primer Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Fecha de Inggreso a Juridico" label-for="prore_fec_ingreso_jur">
+                                                            <b-form-input id="exampleInputdate" v-model="proc.prore_fec_ingreso_jur" type="date" value="2019-12-18"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Fecha de Ingreso a Clínica" label-for="prore_fec_ingreso_cli">
+                                                            <b-form-input id="exampleInputdate" v-model="proc.prore_fec_ingreso_cli" type="date" value="2019-12-18"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="CIUDAD:" label-for="selectuserrole">
+                                                            <b-form-select plain v-model="proc.prore_pac_city_id" :options="city" id="selectuserrole">
+                                                                <template v-slot:first>
+                                                                    <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
+                                                                </template>
+                                                            </b-form-select>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Primer Nombre Paciente:" label-for="prore_pac_name_first">
+                                                        <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.prore_pac_name_first" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Segundo Nombre Paciente:" label-for="prore_pac_name_secdon">
+                                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.prore_pac_name_second" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Primer Apelldio Paciente:" label-for="prore_pac_lastname_first">
+                                                        <ValidationProvider name="Primer Apelldio" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.prore_pac_lastname_first" type="text" placeholder="Primer Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Segundo Apelldio Paciente:" label-for="prore_pac_lastname_second">
+                                                        <ValidationProvider name="Segundo Apelldio" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.prore_pac_lastname_second" type="text" placeholder="Segundo Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="GENERO DEL PACIENTE:" label-for="usr_lastname_first">
+                                                            <template v-for="(item,index) in state">
+                                                            <b-form-radio inline v-model="stateActive[item[Object.keys(item)[0]]]" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled">{{ item.label }}</b-form-radio>
+                                                            </template>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="EDAD DEL PACIENTE" label-for="exampleInputNumber1">
+                                                            <b-form-input v-model="proc.prore_pac_age" id="exampleInputNumber1" type="number" value="2356"></b-form-input>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Especialidad:" label-for="selectuserrole">
+                                                            <b-form-select plain v-model="proc.prore_prospe_id" :options="roles" id="selectuserrole">
+                                                                <template v-slot:first>
+                                                                <b-form-select-option :value="null">Seleccione una especialidad</b-form-select-option>
+                                                                </template>
+                                                            </b-form-select>
+                                                        </b-form-group>
+                                                    </b-row>
+                                                </div>
                                             </template>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="EDAD DEL PACIENTE" label-for="exampleInputNumber1">
-                                            <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
-                                        </b-form-group>
-                                    </b-row>
-                                </div>
-                                </template>
-                                </iq-card>
-                            </b-col>
-                        </b-row>
-                    </form>
-                    </ValidationObserver>
-                </b-col>
-            </b-row>
-        </b-container>
-    </tab-content>
-    <tab-content title="SEGUNDA PARTE">
-        <b-container fluid>
-            <b-row>
-                <b-col md="12">
-                    <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-                    <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
-                        <b-row>
-                            <b-col lg="12">
-                                <iq-card>
-                                <template v-slot:headerTitle>
-                                    <h4 class="card-title">Agregar Proceso Juridico/Solicitud de Servicio</h4>
-                                </template>
-                                <template v-slot:body>
-                                    <div class="new-user-info">
-                                    <b-row>
-                                        <b-form-group class="col-md-6" label="Fecha de Ingreso" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="Clinica/IPS:" label-for="selectuserrole">
-                                            <b-form-select plain v-model="user.usr_role_id" :options="roles" id="selectuserrole">
-                                                <template v-slot:first>
-                                                <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
-                                                </template>
-                                            </b-form-select>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="Año del Siniestro" label-for="exampleInputNumber1">
-                                            <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="Año de Notificación" label-for="exampleInputNumber1">
-                                            <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA DE NOTIFICACION PREJUDICIAL" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA DE LA AUDIENCIA DE CONCILIACIÓN PREJUDICIAL" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA AVISO DEL  SINIESTRO" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="DESCRIPCIÓN  DEL SINIESTRO" label-for="usr_name_first">
-                                        <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
-                                            <b-form-input v-model="user.usr_name_first" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                            <div class="invalid-feedback">
-                                            <span>{{ errors[0] }}</span>
-                                            </div>
-                                        </ValidationProvider>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA DE RECIBIDO DE NOTIFICACION IPS" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="COLABORADOR DE IPS QUE RECIBE NOTIFICACION:" label-for="usr_lastname_first">
-                                        <ValidationProvider name="Primer Apelldio" rules="required" v-slot="{ errors }">
-                                            <b-form-input v-model="user.usr_lastname_first" type="text" placeholder="Primer Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                            <div class="invalid-feedback">
-                                            <span>{{ errors[0] }}</span>
-                                            </div>
-                                        </ValidationProvider>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="CIUDAD:" label-for="selectuserrole">
-                                            <b-form-select plain v-model="user.usr_role_id" :options="city" id="selectuserrole">
-                                                <template v-slot:first>
-                                                    <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
-                                                </template>
-                                            </b-form-select>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="NOMBRE DEL PACIENTE:" label-for="usr_name_first">
-                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
-                                            <b-form-input v-model="user.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                            <div class="invalid-feedback">
-                                            <span>{{ errors[0] }}</span>
-                                            </div>
-                                        </ValidationProvider>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="GENERO DEL PACIENTE:" label-for="usr_lastname_first">
-                                            <template v-for="(item,index) in state">
-                                            <b-form-radio inline v-model="stateActive[item[Object.keys(item)[0]]]" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled">{{ item.label }}</b-form-radio>
+                                        </iq-card>
+                                    </b-col>
+                                </b-row>
+                            </form>
+                            </ValidationObserver>
+                        </b-col>
+                    </b-row>
+                </b-container>
+            </tab-content>
+            <tab-content title="Partes del Proceso">
+                <b-container fluid>
+                    <b-row>
+                        <b-col md="12">
+                            <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                            <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                                <b-row>
+                                    <b-col lg="12">
+                                        <iq-card>
+                                            <template v-slot:body>
+                                                <h4 class="card-title">Información del Demandante:</h4>
+                                                <div class="new-user-info">
+                                                    <b-row>
+                                                        <b-form-group class="col-md-6" label="Primer Nombre:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_first" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Primer Apelldio:" label-for="usr_lastname_first">
+                                                        <ValidationProvider name="Primer Apelldio" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_lastname_first" type="text" placeholder="Primer Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Segundo Nombre:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Segundo Apelldio:" label-for="usr_lastname_first">
+                                                        <ValidationProvider name="Segundo Apelldio" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_lastname_last" type="text" placeholder="Segundo Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                    </b-row>
+                                                    <hr>
+                                                    <b-row>
+                                                        <b-form-group class="col-md-6" label="Telefono/Celular:" label-for="uname">
+                                                            <ValidationProvider name="Nombre de Usuario" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_username" type="number" placeholder="301545656" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                                <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                            </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Correo Electronico:" label-for="uname">
+                                                            <ValidationProvider name="Correo Electronico" rules="required|email" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_email" type="text" placeholder="Correo Electronico" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                                <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                            </ValidationProvider>
+                                                        </b-form-group>
+                                                    </b-row>
+                                                </div>
+                                                <h4 class="card-title">Información del Demandado:</h4>
+                                                <div class="new-user-info">
+                                                    <b-row>
+                                                        <b-form-group class="col-md-6" label="Primer Nombre:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_first" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Primer Apelldio:" label-for="usr_lastname_first">
+                                                        <ValidationProvider name="Primer Apelldio" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_lastname_first" type="text" placeholder="Primer Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Segundo Nombre:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Segundo Apelldio:" label-for="usr_lastname_first">
+                                                        <ValidationProvider name="Segundo Apelldio" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_lastname_last" type="text" placeholder="Segundo Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                    </b-row>
+                                                    <hr>
+                                                    <b-row>
+                                                        <b-form-group class="col-md-6" label="Telefono/Celular:" label-for="uname">
+                                                            <ValidationProvider name="Nombre de Usuario" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_username" type="number" placeholder="301545656" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                                <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                            </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Correo Electronico:" label-for="uname">
+                                                            <ValidationProvider name="Correo Electronico" rules="required|email" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_email" type="text" placeholder="Correo Electronico" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                                <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                            </ValidationProvider>
+                                                        </b-form-group>
+                                                    </b-row>
+                                                </div>
+                                                <h4 class="card-title">LLamado en Garantía:</h4>
+                                                <div class="new-user-info">
+                                                    <b-row>
+                                                        <b-form-group class="col-md-6" label="Primer Nombre:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_first" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Primer Apelldio:" label-for="usr_lastname_first">
+                                                        <ValidationProvider name="Primer Apelldio" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_lastname_first" type="text" placeholder="Primer Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Segundo Nombre:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Segundo Apelldio:" label-for="usr_lastname_first">
+                                                        <ValidationProvider name="Segundo Apelldio" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_lastname_last" type="text" placeholder="Segundo Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        </b-form-group>
+                                                    </b-row>
+                                                    <hr>
+                                                    <b-row>
+                                                        <b-form-group class="col-md-6" label="Telefono/Celular:" label-for="uname">
+                                                            <ValidationProvider name="Nombre de Usuario" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_username" type="number" placeholder="301545656" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                                <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                            </ValidationProvider>
+                                                        </b-form-group>
+                                                        <b-form-group class="col-md-6" label="Correo Electronico:" label-for="uname">
+                                                            <ValidationProvider name="Correo Electronico" rules="required|email" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_email" type="text" placeholder="Correo Electronico" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                                <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                            </ValidationProvider>
+                                                        </b-form-group>
+                                                    </b-row>
+                                                </div>
                                             </template>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="EDAD DEL PACIENTE" label-for="exampleInputNumber1">
-                                            <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
-                                        </b-form-group>
-                                    </b-row>
-                                </div>
-                                </template>
-                                </iq-card>
-                            </b-col>
-                        </b-row>
-                    </form>
-                    </ValidationObserver>
-                </b-col>
-            </b-row>
-        </b-container>
-    </tab-content>
-    <tab-content title="TERCERA PARTE">
-        <b-container fluid>
-            <b-row>
-                <b-col md="12">
-                    <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-                    <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
-                        <b-row>
-                            <b-col lg="12">
-                                <iq-card>
-                                <template v-slot:headerTitle>
-                                    <h4 class="card-title">Agregar Proceso Juridico/Solicitud de Servicio</h4>
-                                </template>
-                                <template v-slot:body>
-                                    <div class="new-user-info">
-                                    <b-row>
-                                        <b-form-group class="col-md-6" label="Fecha de Ingreso" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="Clinica/IPS:" label-for="selectuserrole">
-                                            <b-form-select plain v-model="user.usr_role_id" :options="roles" id="selectuserrole">
-                                                <template v-slot:first>
-                                                <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
-                                                </template>
-                                            </b-form-select>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="Año del Siniestro" label-for="exampleInputNumber1">
-                                            <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="Año de Notificación" label-for="exampleInputNumber1">
-                                            <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA DE NOTIFICACION PREJUDICIAL" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA DE LA AUDIENCIA DE CONCILIACIÓN PREJUDICIAL" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA AVISO DEL  SINIESTRO" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="DESCRIPCIÓN  DEL SINIESTRO" label-for="usr_name_first">
-                                        <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
-                                            <b-form-input v-model="user.usr_name_first" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                            <div class="invalid-feedback">
-                                            <span>{{ errors[0] }}</span>
+                                        </iq-card>
+                                    </b-col>
+                                </b-row>
+                            </form>
+                            </ValidationObserver>
+                        </b-col>
+                    </b-row>
+                </b-container>
+            </tab-content>
+            <tab-content title="Proceso Judicial">
+                <b-container fluid>
+                    <b-row>
+                        <b-col md="12">
+                            <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                            <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                                <b-row>
+                                    <b-col lg="12">
+                                        <iq-card>
+                                        <template v-slot:body>
+                                            <div class="new-user-info">
+                                                <b-row>
+                                                    <b-form-group class="col-md-6" label="Tipo de Proceso:" label-for="selectuserrole">
+                                                        <b-form-select plain v-model="proc.usr_role_id" :options="roles" id="selectuserrole">
+                                                            <template v-slot:first>
+                                                                <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
+                                                            </template>
+                                                        </b-form-select>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Juzgado:" label-for="usr_name_first">
+                                                    <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                        <b-form-input v-model="proc.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                        <div class="invalid-feedback">
+                                                        <span>{{ errors[0] }}</span>
+                                                        </div>
+                                                    </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Telefono/Celular Juzgado:" label-for="uname">
+                                                        <ValidationProvider name="Nombre de Usuario" rules="required" v-slot="{ errors }">
+                                                        <b-form-input v-model="proc.usr_username" type="number" placeholder="301545656" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                        <div class="invalid-feedback">
+                                                            <span>{{ errors[0] }}</span>
+                                                        </div>
+                                                        </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Correo Electronico Juzgado:" label-for="uname">
+                                                        <ValidationProvider name="Correo Electronico" rules="required|email" v-slot="{ errors }">
+                                                        <b-form-input v-model="proc.usr_email" type="text" placeholder="Correo Electronico" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                            <div class="invalid-feedback">
+                                                                <span>{{ errors[0] }}</span>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Número de Radicado" label-for="exampleInputNumber1">
+                                                        <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Objeto del Litigio:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                                <div class="invalid-feedback">
+                                                                    <span>{{ errors[0] }}</span>
+                                                                </div>
+                                                        </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Proceso Ejecutivo:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                                <div class="invalid-feedback">
+                                                                    <span>{{ errors[0] }}</span>
+                                                                </div>
+                                                        </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Ejecuntante:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                                <div class="invalid-feedback">
+                                                                    <span>{{ errors[0] }}</span>
+                                                                </div>
+                                                        </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Prestaciones/Capital/Interes/Honorarios:" label-for="usr_name_first">
+                                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                            <b-form-input v-model="proc.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                                <div class="invalid-feedback">
+                                                                    <span>{{ errors[0] }}</span>
+                                                                </div>
+                                                        </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Fecha Sentencia Primera Instancia" label-for="usr_birthday">
+                                                        <b-form-input id="exampleInputdate" v-model="proc.usr_birthday" type="date" value="2019-12-18"></b-form-input>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Fecha de Consulta" label-for="usr_birthday">
+                                                        <b-form-input id="exampleInputdate" v-model="proc.usr_birthday" type="date" value="2019-12-18"></b-form-input>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Fecha Sentencia Segunda Instancia" label-for="usr_birthday">
+                                                        <b-form-input id="exampleInputdate" v-model="proc.usr_birthday" type="date" value="2019-12-18"></b-form-input>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Fecha de Casación" label-for="usr_birthday">
+                                                        <b-form-input id="exampleInputdate" v-model="proc.usr_birthday" type="date" value="2019-12-18"></b-form-input>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Año del Siniestro" label-for="exampleInputNumber1">
+                                                        <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="Año de Notificación" label-for="exampleInputNumber1">
+                                                        <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="DESCRIPCIÓN  DEL SINIESTRO" label-for="usr_name_first">
+                                                    <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
+                                                        <b-form-input v-model="proc.usr_name_first" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                        <div class="invalid-feedback">
+                                                        <span>{{ errors[0] }}</span>
+                                                        </div>
+                                                    </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="FECHA DE RECIBIDO DE NOTIFICACION IPS" label-for="usr_birthday">
+                                                        <b-form-input id="exampleInputdate" v-model="proc.usr_birthday" type="date" value="2019-12-18"></b-form-input>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="COLABORADOR DE IPS QUE RECIBE NOTIFICACION:" label-for="usr_lastname_first">
+                                                    <ValidationProvider name="Primer Apelldio" rules="required" v-slot="{ errors }">
+                                                        <b-form-input v-model="proc.usr_lastname_first" type="text" placeholder="Primer Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                        <div class="invalid-feedback">
+                                                        <span>{{ errors[0] }}</span>
+                                                        </div>
+                                                    </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="CIUDAD:" label-for="selectuserrole">
+                                                        <b-form-select plain v-model="proc.usr_role_id" :options="city" id="selectuserrole">
+                                                            <template v-slot:first>
+                                                                <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
+                                                            </template>
+                                                        </b-form-select>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="NOMBRE DEL PACIENTE:" label-for="usr_name_first">
+                                                    <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
+                                                        <b-form-input v-model="proc.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                                        <div class="invalid-feedback">
+                                                        <span>{{ errors[0] }}</span>
+                                                        </div>
+                                                    </ValidationProvider>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="GENERO DEL PACIENTE:" label-for="usr_lastname_first">
+                                                        <template v-for="(item,index) in state">
+                                                        <b-form-radio inline v-model="stateActive[item[Object.keys(item)[0]]]" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled">{{ item.label }}</b-form-radio>
+                                                        </template>
+                                                    </b-form-group>
+                                                    <b-form-group class="col-md-6" label="EDAD DEL PACIENTE" label-for="exampleInputNumber1">
+                                                        <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
+                                                    </b-form-group>
+                                                </b-row>
                                             </div>
-                                        </ValidationProvider>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="FECHA DE RECIBIDO DE NOTIFICACION IPS" label-for="usr_birthday">
-                                            <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" value="2019-12-18"></b-form-input>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="COLABORADOR DE IPS QUE RECIBE NOTIFICACION:" label-for="usr_lastname_first">
-                                        <ValidationProvider name="Primer Apelldio" rules="required" v-slot="{ errors }">
-                                            <b-form-input v-model="user.usr_lastname_first" type="text" placeholder="Primer Apelldio" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                            <div class="invalid-feedback">
-                                            <span>{{ errors[0] }}</span>
-                                            </div>
-                                        </ValidationProvider>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="CIUDAD:" label-for="selectuserrole">
-                                            <b-form-select plain v-model="user.usr_role_id" :options="city" id="selectuserrole">
-                                                <template v-slot:first>
-                                                    <b-form-select-option :value="null">Seleccione un rol</b-form-select-option>
-                                                </template>
-                                            </b-form-select>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="NOMBRE DEL PACIENTE:" label-for="usr_name_first">
-                                        <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
-                                            <b-form-input v-model="user.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                            <div class="invalid-feedback">
-                                            <span>{{ errors[0] }}</span>
-                                            </div>
-                                        </ValidationProvider>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="GENERO DEL PACIENTE:" label-for="usr_lastname_first">
-                                            <template v-for="(item,index) in state">
-                                            <b-form-radio inline v-model="stateActive[item[Object.keys(item)[0]]]" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled">{{ item.label }}</b-form-radio>
-                                            </template>
-                                        </b-form-group>
-                                        <b-form-group class="col-md-6" label="EDAD DEL PACIENTE" label-for="exampleInputNumber1">
-                                            <b-form-input id="exampleInputNumber1" type="number" value="2356"></b-form-input>
-                                        </b-form-group>
-                                    </b-row>
-                                </div>
-                                </template>
-                                </iq-card>
-                            </b-col>
-                        </b-row>
-                    </form>
-                    </ValidationObserver>
-                </b-col>
-            </b-row>
-        </b-container>
-    </tab-content>
-  </form-wizard>
+                                        </template>
+                                        </iq-card>
+                                    </b-col>
+                                </b-row>
+                            </form>
+                            </ValidationObserver>
+                        </b-col>
+                    </b-row>
+                </b-container>
+            </tab-content>
+        </form-wizard>
+    </b-container>
 </template>
 <script>
 import { xray } from '../../config/pluginInit'
@@ -301,22 +490,7 @@ export default {
   },
   data () {
     return {
-      user: {
-        usr_name_first: '',
-        usr_lastname_first: '',
-        usr_name_last: '',
-        usr_lastname_last: '',
-        usr_identification_type: 1,
-        usr_identification: '',
-        usr_birthday: '',
-        usr_username: '',
-        usr_password: '123456',
-        usr_email: '',
-        profile_image: require('../../assets/images/user/11.png'),
-        city: '',
-        usr_role_id: '',
-        usr_accept_terms: 1
-      },
+      proc: {},
       roles: [
         { text: 'Administrador', value: 1 },
         { text: 'Abogado', value: 2 }
@@ -326,7 +500,7 @@ export default {
         { text: 'TI.', value: 2 },
         { text: 'RC.', value: 3 }
       ],
-      countries: [
+      city: [
         { value: 'Canada', text: 'Canada' },
         { value: 'Niada', text: 'Niada' },
         { value: 'USA', text: 'USA' },
@@ -334,21 +508,20 @@ export default {
         { value: 'Africa', text: 'Africa' }
       ],
       stateActive: {
-        Femenio: 'active',
-        disable: 'active',
+        genero: 'active',
         number: 'two',
         colorDisabled: 'five',
         color: 'danger'
       },
       state: [
         {
-          name: 'Masculino',
+          name: 'genero',
           label: 'Masculino',
           value: 'inactive',
           disabled: false
         },
         {
-          name: 'Femenio',
+          name: 'genero',
           label: 'Femenino',
           value: 'active',
           disabled: false
@@ -380,9 +553,9 @@ export default {
       this.addUser()
     },
     addUser () {
-      console.log('weee', this.user.usr_email)
-      axios.post('/register', this.user).then(res => {
-        console.log(res.data.credentials)
+      console.log('weeestupida', this.proc)
+      axios.post('/process/store', this.proc).then(res => {
+        console.log('Duque hptaaaa!! ' + res.data)
         if (res.data.status_code === 200) {
           this.$router.push({ name: 'doctor.list' })
         } else {
