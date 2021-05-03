@@ -81,8 +81,11 @@ export default {
     login () {
       console.log('weee', this.user.usr_email)
       axios.post('/login', this.user).then(res => {
-        console.log(res.data.credentials)
+        console.log(res.data)
         if (res.data.status_code === 200) {
+          const token = res.data.token
+          localStorage.setItem('access_token', token)
+          axios.defaults.headers.common['Authorization'] = token
           this.$router.push({ name: 'dashboard.home-1' })
         } else {
           alert('Credenciales no validas')
