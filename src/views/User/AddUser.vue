@@ -106,6 +106,7 @@
 <script>
 import { xray } from '../../config/pluginInit'
 import axios from 'axios'
+import Vue from 'vue'
 axios.defaults.baseURL = 'http://localhost:8000/api'
 
 export default {
@@ -177,9 +178,10 @@ export default {
       axios.post('/register', this.user).then(res => {
         console.log(res.data.credentials)
         if (res.data.status_code === 200) {
+          Vue.swal('Usuario agregado correctamente')
           this.$router.push({ name: 'doctor.list' })
         } else {
-          alert('Datos no validos')
+          Vue.swal('Datos no validos')
         }
       })
     }
