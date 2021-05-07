@@ -1,10 +1,41 @@
 <template>
    <b-container fluid>
     <div>
+      <b-modal id="modal-lg" size="lg" title="Agendar Audiencia" @ok="handleOk">
+        <form ref="form" @submit.stop.prevent="handleSubmit">
+          <b-form-group
+            label="Name"
+            label-for="name-input"
+            invalid-feedback="Name is required"
+          >
+            <b-form-input
+              id="name-input"
+              v-model="audiencia.agen_name"
+              required
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group label="Asignar Abogada/o:" label-for="agen_pro_identificacion">
+            <b-form-select plain v-model="audiencia.agen_pro_identificacion" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
+              <template v-slot:first>
+                <b-form-select-option :value="null">Seleccione</b-form-select-option>
+              </template>
+            </b-form-select>
+          </b-form-group>
+          <b-form-group label="Fecha de Inicio" label-for="agen_start_date">
+            <b-form-input id="exampleInputdate" v-model="audiencia.agen_start_date" type="date" value="2019-12-18"></b-form-input>
+          </b-form-group>
+          <b-form-group label="Fecha Final" label-for="agen_end_date">
+            <b-form-input id="exampleInputdate" v-model="audiencia.agen_end_date" type="date" value="2019-12-18"></b-form-input>
+          </b-form-group>
+      </form>
+      </b-modal>
+    </div>
+    <div>
       <iq-card>
         <template v-slot:headerTitle>
           <h4 class="card-title">Litigios/Solicitudes</h4>
         </template>
+        {{process}}
         <template v-slot:body>
           <b-row>
             <b-col md="12" class="table-responsive">
@@ -32,8 +63,12 @@
                   />
                 </template>
                 <template #cell(show_details)="row">
-                  <b-button size="sm" @click="row.toggleDetails" class="mr-2">
-                    {{ row.detailsShowing ? 'Ocultar' : 'Ver'}} Detalles
+                  <b-button @click="row.toggleDetails">
+                    {{ row.detailsShowing ? 'Ocultar' : 'Ver más'}}
+                  </b-button>
+                  <br>
+                  <b-button v-b-modal.modal-lg variant="primary">
+                    Audiencia
                   </b-button>
                 </template>
 
@@ -194,7 +229,10 @@
                         />
                     </b-row>
                     <br>
-                    <b-button size="sm" @click="row.toggleDetails">Ocultar Detalles</b-button>
+                    <b-row class="col-md-12">
+                      <b-button size="sm" @click="row.toggleDetails">Ocultar Detalles</b-button>
+                      <b-button variant="primary" size="sm" @click="edit(row.item.prore_id)">Editar Proceso</b-button>
+                    </b-row>
                   </b-card>
                 </template>
               </b-table>
@@ -214,6 +252,8 @@ export default {
   data () {
     return {
       process: [],
+      audiencia: {},
+      abogadoOptions: [],
       fields: [
         { label: 'Fec Ingreso', key: 'prore_fec_ingreso', class: 'text-left' },
         { label: 'Clinica', key: 'cli_name', class: 'text-left' },
@@ -242,6 +282,7 @@ export default {
   mounted () {
     xray.index()
     this.getProcess()
+    this.fetchOptionsAbogados()
   },
   methods: {
     getProcess () {
@@ -249,6 +290,29 @@ export default {
         this.process = response.data.process
         console.log('processshptaaa: ' + this.process)
       })
+    },
+    edit (item) {
+      this.$router.push({ path: `/process/process-edit/${item}` })
+    },
+    handleOk (bvModalEvt) {
+      bvModalEvt.preventDefault()
+      this.handleSubmit()
+    },
+    handleSubmit () {
+      console.log('putooo: ', this.audiencia.agen_name)
+      this.$nextTick(() => {
+        this.$bvModal.hide('modal-prevent-closing')
+      })
+    },
+    agendar () {
+      console.log('putooo: ', this.audiencia)
+    },
+    fetchOptionsAbogados () {
+      axios.get('/professionals/fetch').then(response => {
+        console.log('response.data.professionals: ' + response.data.professionals)
+        this.abogadoOptions = response.data.professionals
+      })
+      console.log('this.abogadoOptions: ' + this.abogadoOptions)
     }
   }
 }

@@ -529,6 +529,12 @@ const processChildRoute = (prop, mode = false) => [
     component: AddProcess
   },
   {
+    path: 'process-edit/:id',
+    name: prop + '.edit',
+    meta: { dark: mode, auth: true, name: 'Edit Porcess' },
+    component: AddProcess
+  },
+  {
     path: 'process-list',
     name: prop + '.list',
     meta: { dark: mode, auth: true, name: 'Porcess List' },
