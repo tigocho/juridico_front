@@ -3,8 +3,9 @@
     <div>
       <b-modal id="modal-lg" size="lg" title="Agendar Audiencia" @ok="handleOk">
         <form ref="form" @submit.stop.prevent="handleSubmit">
+          <input type="hidden" name="hide" v-model="audiencia.agen_prore_id">
           <b-form-group
-            label="Name"
+            label="Nombre"
             label-for="name-input"
             invalid-feedback="Name is required"
           >
@@ -27,6 +28,9 @@
           <b-form-group label="Fecha Final" label-for="agen_end_date">
             <b-form-input id="exampleInputdate" v-model="audiencia.agen_end_date" type="date" value="2019-12-18"></b-form-input>
           </b-form-group>
+          <b-form-group label="Hora de Audiencia" label-for="hora_udiencia">
+            <b-form-input id="hora_udiencia" v-model="audiencia.sch_start_hour" type="time" value="13:45"></b-form-input>
+          </b-form-group>
       </form>
       </b-modal>
     </div>
@@ -35,11 +39,21 @@
         <template v-slot:headerTitle>
           <h4 class="card-title">Litigios/Solicitudes</h4>
         </template>
-        {{process}}
         <template v-slot:body>
           <b-row>
             <b-col md="12" class="table-responsive">
               <b-table bordered hover :items="process" :fields="fields" striped responsive>
+                <template v-slot:cell(prore_num_radicado)="data">
+                  <span v-if="data.item.editable!=0">{{
+                    data.item.prore_num_radicado
+                  }}</span>
+                  <input
+                    type="text"
+                    v-model="data.item.prore_num_radicado"
+                    v-else
+                    class="form-control"
+                  />
+                </template>
                 <template v-slot:cell(cli_name)="data">
                   <span v-if="data.item.editable!=0">{{
                     data.item.cli_name
@@ -67,7 +81,7 @@
                     {{ row.detailsShowing ? 'Ocultar' : 'Ver más'}}
                   </b-button>
                   <br>
-                  <b-button v-b-modal.modal-lg variant="primary">
+                  <b-button v-b-modal.modal-lg variant="primary" @click="sendInfo(row.item.prore_id)">
                     Audiencia
                   </b-button>
                 </template>
@@ -246,6 +260,7 @@
 
 <script>
 import { xray } from '../../config/pluginInit'
+import Vue from 'vue'
 import axios from 'axios'
 axios.defaults.baseURL = 'http://localhost:8000/api'
 export default {
@@ -254,7 +269,9 @@ export default {
       process: [],
       audiencia: {},
       abogadoOptions: [],
+      selectedProce: '',
       fields: [
+        { label: 'Num Radicado', key: 'prore_num_radicado', class: 'text-left' },
         { label: 'Fec Ingreso', key: 'prore_fec_ingreso', class: 'text-left' },
         { label: 'Clinica', key: 'cli_name', class: 'text-left' },
         { label: 'Año Siniestro', key: 'prore_year_sinister', class: 'text-left' },
@@ -299,13 +316,18 @@ export default {
       this.handleSubmit()
     },
     handleSubmit () {
-      console.log('putooo: ', this.audiencia.agen_name)
-      this.$nextTick(() => {
-        this.$bvModal.hide('modal-prevent-closing')
+      console.log('putooo uribismo: ', this.audiencia)
+      const token = localStorage.getItem('access_token')
+      axios.post('/audiencia/store', this.audiencia, { headers: { 'Authorization': token } }).then(res => {
+        console.log('Duque hptaaaa!! ' + res.data)
+        if (res.data.status_code === 200) {
+          Vue.swal('Audiencia agendada al proceso correctamente')
+          this.$bvModal.hide('modal-lg')
+          this.$router.push({ name: 'process.list' })
+        } else {
+          Vue.swal('Datos no validos')
+        }
       })
-    },
-    agendar () {
-      console.log('putooo: ', this.audiencia)
     },
     fetchOptionsAbogados () {
       axios.get('/professionals/fetch').then(response => {
@@ -313,6 +335,10 @@ export default {
         this.abogadoOptions = response.data.professionals
       })
       console.log('this.abogadoOptions: ' + this.abogadoOptions)
+    },
+    sendInfo (item) {
+      console.log('putooo item: ' + item)
+      this.audiencia.agen_prore_id = item
     }
   }
 }
