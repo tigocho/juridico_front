@@ -1,80 +1,89 @@
 <template>
-  <div>
-    <b-table :items="abogados" :fields="columns" striped responsive>
-      <template v-slot:cell(pro_name_first)="data">
-        <span v-if="data.item.editable!=0">{{
-          data.item.pro_name_first
-        }}</span>
-        <input
-          type="text"
-          v-model="data.item.pro_name_first"
-          v-else
-          class="form-control"
-        />
-      </template>
-      <template v-slot:cell(pro_lastname_first)="data">
-        <span v-if="data.item.editable!=0">{{
-          data.item.pro_lastname_first
-        }}</span>
-        <input
-          type="text"
-          v-model="data.item.pro_lastname_first"
-          v-else
-          class="form-control"
-        />
-      </template>
-      <template v-slot:cell(pro_identificacion)="data">
-        <span v-if="data.item.editable!=0">{{
-          data.item.pro_identificacion
-        }}</span>
-        <input
-          type="text"
-          v-model="data.item.pro_identificacion"
-          v-else
-          class="form-control"
-        />
-      </template>
-      <template v-slot:cell(pro_email)="data">
-        <span v-if="data.item.editable!=0">{{
-          data.item.pro_email
-        }}</span>
-        <input
-          type="text"
-          v-model="data.item.pro_email"
-          v-else
-          class="form-control"
-        />
-      </template>
-      <template #cell(show_details)="row">
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2">
-          {{ row.detailsShowing ? 'Ocultar' : 'Ver'}} Procesos Juridicos
-        </b-button>
-      </template>
-
-      <template #row-details="row">
-        <b-card>
-          <br>
-          <br>
-          <b>Procesos Juridicos Asignados:</b>
-          <br>
-          <br>
-          <b-row class="col-md-12">
-            <b-col class="col-md-2"><b>Número de Radicado:</b></b-col>
-              <span v-if="row.item.editable!=0">{{
-                row.item.prore_num_radicado
+  <b-container fluid>
+    <div>
+      <iq-card>
+        <template v-slot:headerTitle>
+          <h4 class="card-title">Usuarios</h4>
+        </template>
+        <template v-slot:body>
+          <b-table :items="abogados" :fields="columns" striped responsive>
+            <template v-slot:cell(pro_name_first)="data">
+              <span v-if="data.item.editable!=0">{{
+                data.item.pro_name_first
               }}</span>
               <input
                 type="text"
-                v-model="row.item.prore_num_radicado"
+                v-model="data.item.pro_name_first"
                 v-else
-                class="form-control col-md-2"
+                class="form-control"
               />
-          </b-row>
-          <b-button size="sm" @click="row.toggleDetails">Ocultar Procesos Juridicos</b-button>
-        </b-card>
-      </template>
-    </b-table>
-  </div>
+            </template>
+            <template v-slot:cell(pro_lastname_first)="data">
+              <span v-if="data.item.editable!=0">{{
+                data.item.pro_lastname_first
+              }}</span>
+              <input
+                type="text"
+                v-model="data.item.pro_lastname_first"
+                v-else
+                class="form-control"
+              />
+            </template>
+            <template v-slot:cell(pro_identificacion)="data">
+              <span v-if="data.item.editable!=0">{{
+                data.item.pro_identificacion
+              }}</span>
+              <input
+                type="text"
+                v-model="data.item.pro_identificacion"
+                v-else
+                class="form-control"
+              />
+            </template>
+            <template v-slot:cell(pro_email)="data">
+              <span v-if="data.item.editable!=0">{{
+                data.item.pro_email
+              }}</span>
+              <input
+                type="text"
+                v-model="data.item.pro_email"
+                v-else
+                class="form-control"
+              />
+            </template>
+            <template #cell(show_details)="row">
+              <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+                {{ row.detailsShowing ? 'Ocultar' : 'Ver'}} Procesos Juridicos
+              </b-button>
+            </template>
+
+            <template #row-details="row">
+              <b-card>
+                <br>
+                <br>
+                <b>Procesos Juridicos Asignados:</b>
+                <br>
+                <br>
+                <b-row class="col-md-12">
+                  <b-col class="col-md-2"><b>Número de Radicado:</b></b-col>
+                    <span v-if="row.item.editable!=0">{{
+                      row.item.prore_num_radicado
+                    }}</span>
+                    <input
+                      type="text"
+                      v-model="row.item.prore_num_radicado"
+                      v-else
+                      class="form-control col-md-2"
+                    />
+                </b-row>
+                <b-button size="sm" @click="row.toggleDetails">Ocultar Procesos Juridicos</b-button>
+              </b-card>
+            </template>
+          </b-table>
+        </template>
+      </iq-card>
+    </div>
+  </b-container>
 </template>
 <script>
 import { xray } from '../../config/pluginInit'

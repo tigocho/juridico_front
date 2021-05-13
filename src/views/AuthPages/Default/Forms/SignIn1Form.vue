@@ -86,7 +86,7 @@ export default {
         if (res.data.status_code === 200) {
           const token = res.data.token
           localStorage.setItem('access_token', token)
-          axios.defaults.headers.common['Authorization'] = token
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
           this.$router.push({ name: 'dashboard.home-1' })
         } else {
           Vue.swal('Credenciales no validas')
