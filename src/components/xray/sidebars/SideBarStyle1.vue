@@ -31,7 +31,6 @@ export default {
   props: {
     homeURL: { type: Object, default: () => ({ name: 'layout1.dashboard' }) },
     items: { type: Array },
-    logo: { type: String, default: require('../../../assets/images/logo-.png') },
     horizontal: { type: Boolean },
     toggleButton: { type: Boolean, default: true }
   },
@@ -45,6 +44,7 @@ export default {
   },
   data () {
     return {
+      logo: require('@/assets/images/logo-nueva.png')
     }
   }
 }
