@@ -3,7 +3,7 @@
     <div class="iq-sidebar-logo d-flex justify-content-between">
       <router-link :to="homeURL">
         <img :src="logo" class="img-fluid" alt="logo">
-        <span>XRay</span>
+        <span>G Ocho</span>
       </router-link>
       <div class="iq-menu-bt-sidebar" v-if="toggleButton">
         <div class="iq-menu-bt align-self-center">
@@ -31,7 +31,7 @@ export default {
   props: {
     homeURL: { type: Object, default: () => ({ name: 'layout1.dashboard' }) },
     items: { type: Array },
-    logo: { type: String, default: require('../../../assets/images/logo.png') },
+    logo: { type: String, default: require('../../../assets/images/logo-.png') },
     horizontal: { type: Boolean },
     toggleButton: { type: Boolean, default: true }
   },

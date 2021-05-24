@@ -82,7 +82,7 @@
                 <a href="#" class="search-toggle iq-waves-effect d-flex align-items-center">
                   <img :src="userProfile" class="img-fluid rounded mr-3" alt="user">
                   <div class="caption">
-                    <h6 class="mb-0 line-height">Nik jone</h6>
+                    <h6 class="mb-0 line-height">Cris!</h6>
                     <span class="font-size-12">{{ $t('nav.user.available') }}</span>
                   </div>
                 </a>

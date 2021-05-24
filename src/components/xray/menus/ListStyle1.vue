@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     activeLink (item) {
+      console.log(item)
       return xray.getActiveLink(item, this.$route.name)
     }
   }
