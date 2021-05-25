@@ -7,7 +7,7 @@
           <b-form-group
             label="Nombre"
             label-for="name-input"
-            invalid-feedback="Name is required"
+            invalid-feedback="El nombre es obligatorio"
           >
             <b-form-input
               id="name-input"

@@ -11,6 +11,12 @@ import './registerServiceWorker'
 import i18n from './i18n'
 import VueSweetalert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
+import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:8000/api'
+var token = localStorage.getItem('token')
+if (token) {
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+}
 
 global.Raphael = Raphael
 Vue.config.productionTip = false

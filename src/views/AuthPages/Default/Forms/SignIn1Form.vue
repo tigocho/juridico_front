@@ -54,7 +54,6 @@ import Vue from 'vue'
 import SocialLoginForm from './SocialLoginForm'
 import { mapGetters } from 'vuex'
 import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:8000/api'
 
 export default {
   name: 'SignIn1Form',
@@ -80,13 +79,12 @@ export default {
       this.login()
     },
     login () {
-      console.log('weee', this.user.usr_email)
       axios.post('/login', this.user).then(res => {
         console.log(res.data)
         if (res.data.status_code === 200) {
           const token = res.data.token
           localStorage.setItem('access_token', token)
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+          this.axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
           this.$router.push({ name: 'dashboard.home-1' })
         } else {
           Vue.swal('Credenciales no validas')
