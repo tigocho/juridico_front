@@ -82,7 +82,7 @@
                 <a href="#" class="search-toggle iq-waves-effect d-flex align-items-center">
                   <img :src="userProfile" class="img-fluid rounded mr-3" alt="user">
                   <div class="caption">
-                    <h6 class="mb-0 line-height">Cris!</h6>
+                    <h6 class="mb-0 line-height">{{ userLogged.usr_name_first }} {{ userLogged.usr_lastname_first }}</h6>
                     <span class="font-size-12">{{ $t('nav.user.available') }}</span>
                   </div>
                 </a>
@@ -166,6 +166,7 @@
   </div>
 </template>
 <script>
+import auth from '@/logic/auth'
 import Loader from '../components/xray/loader/Loader'
 import SideBarStyle1 from '../components/xray/sidebars/SideBarStyle1'
 import NavBarStyle1 from '../components/xray/navbars/NavBarStyle1'
@@ -191,7 +192,10 @@ export default {
       selectedLang: 'Setting/langState',
       langsOptions: 'Setting/langOptionState',
       colors: 'Setting/colorState'
-    })
+    }),
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    }
   },
   watch: {
   },

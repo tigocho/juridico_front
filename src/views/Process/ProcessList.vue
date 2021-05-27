@@ -259,13 +259,16 @@
 </template>
 
 <script>
+import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
 axios.defaults.baseURL = 'http://localhost:8000/api'
+
 export default {
   data () {
     return {
+      user_id: '',
       process: [],
       audiencia: {},
       abogadoOptions: [],
@@ -303,7 +306,10 @@ export default {
   },
   methods: {
     getProcess () {
-      axios.get('/process').then(response => {
+      var user = JSON.parse(auth.getUserLogged())
+      this.user_id = user.usr_id
+      console.log('ahora por acá ' + this.user_id)
+      axios.get('/process/' + this.user_id).then(response => {
         this.process = response.data.process
         console.log('processshptaaa: ' + this.process)
       })

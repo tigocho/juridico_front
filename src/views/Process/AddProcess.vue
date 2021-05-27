@@ -1,75 +1,100 @@
 <template>
-    <b-container fluid>
-        <span v-if="proc_id != null" v-show="true">{{process[0].prore_id}}</span>
-        {{process[0]}}
-        <form-wizard @onComplete="onSubmit">
-            <tab-content title="Información General" :selected="true">
-                <b-container fluid>
-                    <b-row>
-                        <b-col md="12">
-                            <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-                            <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
-                                <b-row>
-                                    <b-col lg="12">
-                                        <iq-card>
-                                            <template v-slot:body>
-                                                <div class="new-user-info">
-                                                    <b-row>
-                                                        <b-form-group class="col-md-6" label="Fecha de Ingreso" label-for="prore_fec_ingreso">
-                                                            <div v-if="!editing && proc_id != null && process[0].prore_fec_ingreso != null">
-                                                                <span class='text' @click="enableEditing">{{proc.prore_fec_ingreso}}</span>
-                                                            </div>
-                                                            <div v-if="editing || proc_id == null || process[0].prore_fec_ingreso == null">
-                                                                <b-form-input id="exampleInputdate" v-model="proc.prore_fec_ingreso" type="date" value="2019-12-18"></b-form-input>
-                                                            </div>
-                                                            <div v-if="editing && proc_id != null">
-                                                                <b-button @click="disableEditing"> Cancelar </b-button>
-                                                                <b-button variant="primary" @click="saveEdit"> Guardar </b-button>
-                                                            </div>
-                                                        </b-form-group>
-                                                        <b-form-group class="col-md-6" label="Clinica/IPS:" label-for="selectuserrole">
-                                                            <b-form-select plain v-model="proc.prore_defendant_clin" :options="clinicaOptions" @search="fetchOptionsClinicas" id="selectuserrole">
-                                                                <template v-slot:first>
-                                                                <b-form-select-option :value="null">Seleccione</b-form-select-option>
-                                                                </template>
-                                                            </b-form-select>
-                                                        </b-form-group>
-                                                        <b-form-group class="col-md-6" label="Año del Siniestro" label-for="exampleInputNumber1">
-                                                            <div v-if="!editing && proc_id != null">
-                                                                <span class='text' @click="enableEditing">{{process[0].prore_year_sinister}}</span>
-                                                            </div>
-                                                            <div v-if="editing || proc_id == null || process[0].prore_year_sinister == null">
-                                                                <b-form-input id="exampleInputNumber1" v-model="proc.prore_year_sinister" type="number" value="2356"></b-form-input>
-                                                            </div>
-                                                            <div v-if="editing && proc_id != null">
-                                                                <b-button @click="disableEditing"> Cancelar </b-button>
-                                                                <b-button variant="primary" @click="saveEdit"> Guardar </b-button>
-                                                            </div>
-                                                        </b-form-group>
-                                                        <b-form-group class="col-md-6" label="Fecha del Siniestro" label-for="prore_fec_sinister">
-                                                            <div v-if="!editing && proc_id != null">
-                                                                <span class='text' @click="enableEditing">{{process[0].prore_fec_sinister}}</span>
-                                                            </div>
-                                                            <div v-if="editing || proc_id == null || process[0].prore_fec_sinister == null">
-                                                                <b-form-input id="exampleInputdate" v-model="proc.prore_fec_sinister" type="date" value="2019-12-18"></b-form-input>
-                                                            </div>
-                                                            <div v-if="editing && proc_id != null">
-                                                                <b-button @click="disableEditing"> Cancelar </b-button>
-                                                                <b-button variant="primary" @click="saveEdit"> Guardar </b-button>
-                                                            </div>
-                                                        </b-form-group>
-                                                        <b-form-group class="col-md-6" label="Año de Notificación" label-for="prore_year_notify">
-                                                            <div v-if="!editing && proc_id != null">
-                                                                <span class='text' @click="enableEditing">{{process[0].prore_year_notify}}</span>
-                                                            </div>
-                                                            <div v-if="editing || proc_id == null || process[0].prore_year_notify == null">
-                                                                <b-form-input id="exampleInputNumber1" v-model="proc.prore_year_notify" type="number" value="2356"></b-form-input>
-                                                            </div>
-                                                            <div v-if="editing && proc_id != null">
-                                                                <b-button @click="disableEditing"> Cancelar </b-button>
-                                                                <b-button variant="primary" @click="saveEdit"> Guardar </b-button>
-                                                            </div>
-                                                        </b-form-group>
+  <b-container fluid>
+    <span v-if="proc_id != null" v-show="true">{{process[0].prore_id}}</span>
+    {{process[0]}}
+    <form-wizard @onComplete="onSubmit">
+      <tab-content title="Información General" :selected="true">
+        <b-container fluid>
+          <b-row>
+            <b-col md="12">
+              <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                  <b-row>
+                    <b-col lg="12">
+                      <iq-card>
+                        <template v-slot:body>
+                          <div class="new-user-info">
+                          <b-row>
+                            <b-form-group class="col-md-6" label="Fecha de Ingreso" label-for="prore_fec_ingreso">
+                              <div v-if="!editing && proc_id != null && process[0].prore_fec_ingreso != null">
+                                <span class='text' @click="enableEditing">{{proc.prore_fec_ingreso}}</span>
+                              </div>
+                              <div v-if="editing || proc_id == null || process[0].prore_fec_ingreso == null">
+                                <b-form-input id="exampleInputdate" v-model="formData.prore_fec_ingreso" type="date" :class="hasError('prore_fec_ingreso') ? 'is-invalid' : ''"></b-form-input>
+                                <div v-if="hasError('prore_fec_ingreso')" class="invalid-feedback">
+                                  <div class="error" v-if="!$v.formData.prore_fec_ingreso.required">Por favor elige una fecha.</div>
+                                </div>
+                              </div>
+                              <div v-if="editing && proc_id != null">
+                                <b-button @click="disableEditing"> Cancelar </b-button>
+                                <b-button variant="primary" @click="saveEdit"> Guardar </b-button>
+                              </div>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Clinica/IPS:" label-for="selectuserrole">
+                              <b-form-select plain v-model="formData.prore_defendant_clin" :options="clinicaOptions" @search="fetchOptionsClinicas" id="selectuserrole" :class="hasError('prore_defendant_clin') ? 'is-invalid' : ''">
+                                <template v-slot:first>
+                                  <b-form-select-option :value="null">Seleccione</b-form-select-option>
+                                </template>
+                              </b-form-select>
+                              <div v-if="hasError('prore_defendant_clin')" class="invalid-feedback">
+                                <div class="error" v-if="!$v.formData.prore_defendant_clin.required">Por favor elige una clinica.</div>
+                              </div>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Año del Siniestro" label-for="exampleInputNumber1">
+                              <div v-if="!editing && proc_id != null">
+                                <span class='text' @click="enableEditing">{{process[0].prore_year_sinister}}</span>
+                              </div>
+                              <div v-if="editing || proc_id == null || process[0].prore_year_sinister == null">
+                                <b-form-input id="exampleInputNumber1" v-model="formData.prore_year_sinister" type="number" :class="hasError('prore_year_sinister') ? 'is-invalid' : ''"></b-form-input>
+                                <div v-if="hasError('prore_year_sinister')" class="invalid-feedback">
+                                  <div class="error" v-if="!$v.formData.prore_year_sinister.required">Por favor escriba el año del siniestro.</div>
+                                </div>
+                              </div>
+                              <div v-if="editing && proc_id != null">
+                                <b-button @click="disableEditing"> Cancelar </b-button>
+                                <b-button variant="primary" @click="saveEdit"> Guardar </b-button>
+                              </div>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Fecha del Siniestro" label-for="prore_fec_sinister">
+                              <div v-if="!editing && proc_id != null">
+                                <span class='text' @click="enableEditing">{{process[0].prore_fec_sinister}}</span>
+                              </div>
+                              <div v-if="editing || proc_id == null || process[0].prore_fec_sinister == null">
+                                <b-form-input id="exampleInputdate" v-model="proc.prore_fec_sinister" type="date" :format="{ year }" :class="hasError('prore_fec_sinister') ? 'is-invalid' : ''"></b-form-input>
+                                <div v-if="hasError('prore_fec_sinister')" class="invalid-feedback">
+                                  <div class="error" v-if="!$v.formData.prore_fec_sinister.required">Por favor seleccione la fecha del siniestro.</div>
+                                </div>
+                              </div>
+                              <div v-if="editing && proc_id != null">
+                                <b-button @click="disableEditing"> Cancelar </b-button>
+                                <b-button variant="primary" @click="saveEdit"> Guardar </b-button>
+                              </div>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Año de notificación" label-for="prore_year_notify">
+                              <b-form-select plain v-model="formData.prore_year_notify" :options="years" id="selectyearnotify" :class="hasError('prore_year_notify') ? 'is-invalid' : ''">
+                                <template v-slot:first>
+                                  <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
+                                </template>
+                              </b-form-select>
+                              <div v-if="hasError('prore_year_notify')" class="invalid-feedback">
+                                <div class="error" v-if="!$v.formData.prore_year_notify.required">Por favor elige una fecha.</div>
+                              </div>
+                            </b-form-group>
+                            <!--<b-form-group class="col-md-6" label="Año de Notificación" label-for="prore_year_notify">
+                              <div v-if="!editing && proc_id != null">
+                                <span class='text' @click="enableEditing">{{process[0].prore_year_notify}}</span>
+                              </div>
+                              <div v-if="editing || proc_id == null || process[0].prore_year_notify == null">
+                                <b-form-input id="exampleInputNumber1" v-model="proc.prore_year_notify" type="number" :class="hasError('prore_year_notify') ? 'is-invalid' : ''"></b-form-input>
+                                <div v-if="hasError('prore_year_notify')" class="invalid-feedback">
+                                  <div class="error" v-if="!$v.formData.prore_year_notify.required">Por favor seleccione la fecha del siniestro.</div>
+                                </div>
+                              </div>
+                              <div v-if="editing && proc_id != null">
+                                <b-button @click="disableEditing"> Cancelar </b-button>
+                                <b-button variant="primary" @click="saveEdit"> Guardar </b-button>
+                              </div>
+                            </b-form-group>-->
                                                         <b-form-group class="col-md-6" label="FECHA DE NOTIFICACION PREJUDICIAL" label-for="prore_fec_noti_preju">
                                                             <div v-if="!editing && proc_id != null">
                                                                 <span class='text' @click="enableEditing">{{process[0].prore_fec_noti_preju}}</span>
@@ -134,7 +159,7 @@
                                                             <div v-if="!editing && proc_id != null">
                                                                 <span class='text' @click="enableEditing">{{process[0].prore_cola_name_first}}</span>
                                                             </div>
-                                                            <div v-if="editing || proc_id == null || process[0].prore_fec_ingreso == null">
+                                                            <div v-if="editing || proc_id == null || process[0].prore_cola_name_first == null">
                                                                 <b-form-input type="text" v-model="proc.prore_cola_name_first" placeholder="Primer Apelldio"></b-form-input>
                                                             </div>
                                                             <div v-if="editing && proc_id != null">
@@ -142,7 +167,7 @@
                                                                 <b-button variant="primary" @click="saveEdit"> Guardar </b-button>
                                                             </div>
                                                         </b-form-group>
-                                                        <b-form-group class="col-md-6" label="Fecha de Inggreso a Juridico" label-for="prore_fec_ingreso_jur">
+                                                        <b-form-group class="col-md-6" label="Fecha de Ingreso a Juridico" label-for="prore_fec_ingreso_jur">
                                                             <div v-if="!editing && proc_id != null">
                                                                 <span class='text' @click="enableEditing">{{process[0].prore_fec_ingreso_jur}}</span>
                                                             </div>
@@ -833,7 +858,10 @@
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
-import { FormWizard, TabContent } from 'vue-step-wizard'
+import { FormWizard, TabContent, ValidationHelper } from 'vue-step-wizard'
+import { required } from 'vuelidate/lib/validators'
+// import { ValidationObserver } from 'vee-validate'
+// import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 import 'vue-step-wizard/dist/vue-step-wizard.css'
 axios.defaults.baseURL = 'http://localhost:8000/api'
 
@@ -842,6 +870,7 @@ export default {
   components: {
     FormWizard, TabContent
   },
+  mixins: [ ValidationHelper ],
   props: ['formType', 'email', 'password'],
   mounted () {
     xray.index()
@@ -851,7 +880,171 @@ export default {
   },
   data () {
     return {
+      formData: {
+        prore_fec_ingreso: '',
+        prore_responsable: '',
+        prore_num_proceso: '',
+        prore_year_sinister: '',
+        prore_fec_sinister: '',
+        prore_year_notify: '',
+        prore_diffence_year: '',
+        process_year: '',
+        prore_pro_id: '',
+        prore_propse_id: '',
+        prore_defendant_clin: '',
+        prore_defendant_name_first: '',
+        prore_defendant_name_second: '',
+        prore_defendant_lastname_first: '',
+        prore_defendant_lastname_second: '',
+        prore_defendant_phone: '',
+        prore_defendant_email: '',
+        prore_warranty_name_first: '',
+        prore_warranty_name_second: '',
+        prore_warranty_lastname_first: '',
+        prore_warranty_lastname_second: '',
+        prore_warranty_phone: '',
+        prore_warranty_email: '',
+        prore_typro_id: '',
+        prore_stpr_id: '',
+        prore_ase_id: '',
+        prore_city_id: '',
+        prore_court_id: '',
+        prore_pac_name_first: '',
+        prore_pac_name_second: '',
+        prore_pac_lastname_first: '',
+        prore_pac_lastname_second: '',
+        prore_pab_name: '',
+        prore_specialty_name: '',
+        prore_num_radicado: '',
+        prore_pathology: '',
+        prore_risk: '',
+        prore_val_luc_cesante: '',
+        prore_val_daño_emer: '',
+        prore_total_prejuicios: '',
+        prore_val_luc_cesante_poliza: '',
+        prore_val_daño_emer_poliza: '',
+        prore_total_prejuicios_poliza: '',
+        prore_estimacion_pago_preju: '',
+        prore_val_dano_moral: '',
+        prore_val_dano_vida: '',
+        prore_num_poliza: '',
+        prore_val_total_asegurado: '',
+        prore_deducible: '',
+        prore_pac_identification_type: '',
+        prore_pac_identification_num: '',
+        prore_pac_age: '',
+        prore_pac_gender: '',
+        prore_pac_day_of_birth: '',
+        prore_pac_email: '',
+        prore_pac_city: '',
+        prore_pac_department: '',
+        prore_pac_neighborhood: '',
+        prore_pac_comuna: '',
+        prore_pac_address: '',
+        prore_pac_cell_phone: '',
+        prore_pac_phone: '',
+        prore_applicant_name_first: '',
+        prore_applicant_name_secdon: '',
+        prore_applicant_lastname_first: '',
+        prore_applicant_lastname_second: '',
+        prore_applicant_phone: '',
+        prore_applicant_email: '',
+        prore_observation: '',
+        prore_fec_noti_preju: '',
+        prore_fec_audi_conci_preju: '',
+        prore_fec_sinies_aviso: '',
+        prore_fec_recibo_notify: '',
+        prore_fec_ingreso_jur: '',
+        prore_fec_ingreso_cli: '',
+        prore_sinies_description: '',
+        prore_pac_city_id: '',
+        prore_pac_department_id: '',
+        prore_estado: ''
+      },
       proc: {},
+      validationRules: [
+        {
+          prore_fec_ingreso: { required },
+          prore_responsable: { required },
+          prore_num_proceso: { required },
+          prore_year_sinister: { required },
+          prore_fec_sinister: { required },
+          prore_year_notify: { required },
+          prore_diffence_year: { required },
+          process_year: { required },
+          prore_pro_id: { required },
+          prore_propse_id: { required },
+          prore_defendant_clin: { required },
+          prore_defendant_name_first: { required },
+          prore_defendant_name_second: { required },
+          prore_defendant_lastname_first: { required },
+          prore_defendant_lastname_second: { required },
+          prore_defendant_phone: { required },
+          prore_defendant_email: { required },
+          prore_warranty_name_first: { required },
+          prore_warranty_name_second: { required },
+          prore_warranty_lastname_first: { required },
+          prore_warranty_lastname_second: { required },
+          prore_warranty_phone: { required },
+          prore_warranty_email: { required },
+          prore_typro_id: { required },
+          prore_stpr_id: { required },
+          prore_ase_id: { required },
+          prore_city_id: { required },
+          prore_court_id: { required },
+          prore_pac_name_first: { required },
+          prore_pac_name_second: { required },
+          prore_pac_lastname_first: { required },
+          prore_pac_lastname_second: { required },
+          prore_pab_name: { required },
+          prore_specialty_name: { required },
+          prore_num_radicado: { required },
+          prore_pathology: { required },
+          prore_risk: { required },
+          prore_val_luc_cesante: { required },
+          prore_val_daño_emer: { required },
+          prore_total_prejuicios: { required },
+          prore_val_luc_cesante_poliza: { required },
+          prore_val_daño_emer_poliza: { required },
+          prore_total_prejuicios_poliza: { required },
+          prore_estimacion_pago_preju: { required },
+          prore_val_dano_moral: { required },
+          prore_val_dano_vida: { required },
+          prore_num_poliza: { required },
+          prore_val_total_asegurado: { required },
+          prore_deducible: { required },
+          prore_pac_identification_type: { required },
+          prore_pac_identification_num: { required },
+          prore_pac_age: { required },
+          prore_pac_gender: { required },
+          prore_pac_day_of_birth: { required },
+          prore_pac_email: { required },
+          prore_pac_city: { required },
+          prore_pac_department: { required },
+          prore_pac_neighborhood: { required },
+          prore_pac_comuna: { required },
+          prore_pac_address: { required },
+          prore_pac_cell_phone: { required },
+          prore_pac_phone: { required },
+          prore_applicant_name_first: { required },
+          prore_applicant_name_secdon: { required },
+          prore_applicant_lastname_first: { required },
+          prore_applicant_lastname_second: { required },
+          prore_applicant_phone: { required },
+          prore_applicant_email: { required },
+          prore_observation: { required },
+          prore_fec_noti_preju: { required },
+          prore_fec_audi_conci_preju: { required },
+          prore_fec_sinies_aviso: { required },
+          prore_fec_recibo_notify: { required },
+          prore_fec_ingreso_jur: { required },
+          prore_fec_ingreso_cli: { required },
+          prore_sinies_description: { required },
+          prore_pac_city_id: { required },
+          prore_pac_department_id: { required },
+          prore_estado: { required }
+        }
+      ],
       process: [],
       procTemp: {},
       editing: false,
@@ -914,11 +1107,19 @@ export default {
     }
   },
   computed: {
-    fullName: function () {
+    fullNameUser: function () {
       return this.user.usr_name_first + ' ' + this.user.usr_lastname_first
+    },
+    years () {
+      const year = new Date().getFullYear()
+      return Array.from({ length: year - 1960 }, (value, index) => 1901 + index)
     }
   },
   methods: {
+    validateStep (ref) {
+      alert('This is called before switchind tabs')
+      return this.$refs[ref].validate()
+    },
     previewImage: function (event) {
       const input = event.target
 
@@ -954,7 +1155,7 @@ export default {
         axios.get('/process/edit/' + this.proc_id).then(response => {
           this.process = response.data.process
           this.proc = this.process[0]
-          console.log('processshptaaarrrrrrr: ' + this.process)
+          console.log('processs: ' + this.process)
         })
       }
     },
