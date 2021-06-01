@@ -15,7 +15,6 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
-import Vue from 'vue'
 export default {
   name: 'FullCalendar',
   props: {
@@ -39,7 +38,8 @@ export default {
         timeGridPlugin,
         interactionPlugin,
         listPlugin
-      ]
+      ],
+      select: this.handleDateSelect
     }
   },
   components: {
@@ -50,14 +50,30 @@ export default {
   computed: {
   },
   methods: {
+    handleDateSelect (selectInfo) {
+      let title = prompt('Please enter a new title for your event')
+      let calendarApi = selectInfo.view.calendar
+
+      calendarApi.unselect() // clear date selection
+
+      if (title) {
+        calendarApi.addEvent({
+          id: 1,
+          title,
+          start: selectInfo.startStr,
+          end: selectInfo.endStr,
+          allDay: selectInfo.allDay
+        })
+      }
+    },
     handleDateClick (e) {
-      console.log('handleDateClick: ' + this.calendarEvents)
+      console.log('handleDateClick: ' + this.calendarEvents + ' - ' + e)
     },
     handleSelect (e) {
       console.log('handleSelect: ' + Object.values(this.calendarEvents))
       console.log('this.calendarEvents: ' + this.calendarEvents[0])
       console.log('handleSelect: ' + Object.keys(e))
-      Vue.swal('Audiencia agendada al proceso correctamente')
+      this.$bvModal.show('modal-prevent-closing')
     }
   }
 }

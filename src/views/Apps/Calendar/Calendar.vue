@@ -2,9 +2,29 @@
   <b-container fluid>
     <b-row>
       <b-col md="3">
-        <iq-card class="calender-small">
+        <!--<iq-card class="calender-small">
           <template v-slot:body>
             <flat-pickr :config="config" value="" class="d-none"/>
+          </template>
+        </iq-card>-->
+        <iq-card>
+          <template v-slot:headerTitle>
+            <h4 class="card-title">Programa de hoy</h4>
+          </template>
+          <template v-slot:body>
+            <ul class="m-0 p-0 today-schedule">
+              <li class="d-flex" v-for='event in events' :key='event.id'>
+                <div class="schedule-icon"><i class="ri-checkbox-blank-circle-fill text-primary" /></div>
+                <div class="schedule-text"> <span>{{ event.title }}</span>
+                  <span> {{ event.start_date }} </span>
+                </div>
+              </li>
+              <!--<li class="d-flex">
+                <div class="schedule-icon"><i class="ri-checkbox-blank-circle-fill text-success" /></div>
+                <div class="schedule-text"> <span>Audiencia en el juzgado administrativo de Armenia</span>
+                  <span>14:00 to 16:00</span></div>
+              </li>-->
+            </ul>
           </template>
         </iq-card>
         <iq-card>
@@ -22,25 +42,6 @@
             </ul>
           </template>
         </iq-card>
-        <iq-card>
-          <template v-slot:headerTitle>
-            <h4 class="card-title">Programa de hoy</h4>
-          </template>
-          <template v-slot:body>
-            <ul class="m-0 p-0 today-schedule">
-              <li class="d-flex">
-                <div class="schedule-icon"><i class="ri-checkbox-blank-circle-fill text-primary" /></div>
-                <div class="schedule-text"> <span>Audiencia en el juzgado administrativo de Pereira</span>
-                  <span>09:00 to 12:00</span></div>
-              </li>
-              <li class="d-flex">
-                <div class="schedule-icon"><i class="ri-checkbox-blank-circle-fill text-success" /></div>
-                <div class="schedule-text"> <span>Audiencia en el juzgado administrativo de Armenia</span>
-                  <span>14:00 to 16:00</span></div>
-              </li>
-            </ul>
-          </template>
-        </iq-card>
       </b-col>
       <b-col md="9">
         <iq-card>
@@ -51,20 +52,59 @@
             <a href="#" class="btn btn-primary"><i class="ri-add-line mr-2"></i>Reservar una cita</a>
           </template>
           <template v-slot:body>
-            <FullCalendar lang="es" :calendarEvents="events">
-              <template v-slot:eventContent='events'>
-                <b>{{ events.title }}</b>
-                <i>{{ events.start_date }}</i>
-              </template>  </FullCalendar>
+            <FullCalendar lang="es" :calendarEvents="events" />
           </template>
         </iq-card>
       </b-col>
     </b-row>
+    <b-modal
+      id="modal-prevent-closing"
+      ref="modal"
+      title="Agregar audiencia"
+      @ok="handleOk"
+    >
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <b-form-group
+          label="Nombre de la audiencia"
+          label-for="name-input"
+        >
+          <b-form-input
+            id="name-input"
+            v-model="formData.aud_name"
+            placeholder="Audiencia de cargos"
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group>
+          <b-form-select v-model="formData.aud_prore_id" :options="processOpenedOptions" id="selectuserrole" >
+            <template v-slot:first>
+              <b-form-select-option :value="null" disabled>Seleccione un proceso</b-form-select-option>
+            </template>
+          </b-form-select>
+        </b-form-group>
+        <b-form-group>
+          <b-form-select v-model="formData.aud_pro_id" :options="abogadoOptions" @search="abogadoOptions" id="selectuserrole" >
+            <template v-slot:first>
+              <b-form-select-option :value="null" disabled>Seleccione un profesional</b-form-select-option>
+            </template>
+          </b-form-select>
+        </b-form-group>
+        <b-form-group label="Fecha de Inicio" label-for="agen_start_date">
+          <b-form-input id="exampleInputdate" v-model="formData.agen_start_date" type="date"></b-form-input>
+        </b-form-group>
+        <b-form-group label="Fecha Final" label-for="agen_end_date">
+          <b-form-input id="exampleInputdate" v-model="formData.agen_end_date" type="date"></b-form-input>
+        </b-form-group>
+        <b-form-group label="Hora de Audiencia" label-for="sch_start_hour">
+          <b-form-input id="sch_start_hour" v-model="formData.sch_start_hour" type="time"></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
   </b-container>
 </template>
 <script>
 import { xray } from '../../../config/pluginInit'
 import axios from 'axios'
+import Vue from 'vue'
 axios.defaults.baseURL = 'http://localhost:8000/api'
 export default {
   name: 'GoogleCalendar',
@@ -76,6 +116,16 @@ export default {
         inline: true
       },
       events: [],
+      formData: {
+        aud_name: '',
+        aud_prore_id: '',
+        aud_pro_id: '',
+        agen_start_date: '',
+        agen_end_date: '',
+        sch_start_hour: ''
+      },
+      processOpenedOptions: [],
+      abogadoOptions: [],
       events2: [
         {
           title: 'All Day Event',
@@ -87,108 +137,6 @@ export default {
           start: '2021-05-20',
           end: '2021-05-25',
           color: '#ffc107' // override!
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2021-05-09T16:00:00',
-          color: '#17a2b8'
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2021-05-10T16:00:00',
-          color: '#17a2b8'
-        },
-        {
-          title: 'Conference',
-          start: '2021-05-12',
-          end: '2021-05-15',
-          color: '#27e3f4' // override!
-        },
-        {
-          title: 'Meeting',
-          start: '2021-05-15T10:30:00',
-          end: '2021-05-16T12:30:00',
-          color: '#0084ff'
-        },
-        {
-          title: 'Lunch',
-          start: '2021-05-09T12:00:00',
-          color: '#777D74'
-        },
-        {
-          title: 'Meeting',
-          start: '2021-05-11T14:30:00',
-          color: '#0084ff'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2021-05-12T07:00:00',
-          color: '#28a745'
-        },
-        {
-          title: 'Meeting',
-          start: '2021-05-13T14:30:00',
-          color: '#0084ff'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2021-05-14T07:00:00',
-          color: '#28a745'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2020-01-25'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2021-05-15T07:00:00',
-          color: '#28a745'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2021-05-18'
-        },
-        {
-          title: 'Meeting',
-          start: '2020-01-12T14:30:00',
-          color: '#0084ff'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2021-05-20T07:00:00',
-          color: '#28a745'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2021-05-21'
-        },
-        {
-          title: 'All Day Event',
-          start: '2021-05-22',
-          color: '#fc9919'
-        },
-        {
-          title: 'Long Event',
-          start: '2021-05-23',
-          end: '2020-02-10',
-          color: '#ffc107' // override!
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2021-05-24T16:00:00',
-          color: '#17a2b8'
-        },
-        {
-          groupId: '999',
-          title: 'Repeating Event',
-          start: '2021-05-25T16:00:00',
-          color: '#17a2b8'
         }
       ]
     }
@@ -196,6 +144,8 @@ export default {
   mounted () {
     xray.index()
     this.getAgendas()
+    this.fetchOptionsAbogados()
+    this.fetchProcessOpened()
   },
   computed: {
   },
@@ -210,6 +160,48 @@ export default {
       })
       console.log('pille ps')
       console.log(this.events2)
+    },
+    handleOk (bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      // Trigger submit handler
+      this.handleSubmit()
+    },
+    handleSubmit () {
+      const toke = localStorage.getItem('access_token')
+      axios.post('/audience/store', this.formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+        // Hide the modal manually
+        this.$nextTick(() => {
+          this.$bvModal.hide('modal-prevent-closing')
+        })
+        if (res.data.status_code === 200) {
+          // this.audience.name = ''
+          // this.audience.telefono = ''
+          // this.audience.email = ''
+          Vue.swal('Audiencia creada correctamente')
+          this.getAgendas()
+          this.formData.aud_name = ''
+          this.formData.aud_prore_id = ''
+          this.formData.aud_pro_id = ''
+          this.formData.agen_start_date = ''
+          this.formData.agen_end_date = ''
+          this.formData.sch_start_hour = ''
+        } else {
+          Vue.swal('Datos no validos')
+        }
+      })
+    },
+    fetchProcessOpened () {
+      axios.get('/process/fetchProcessOpened').then(response => {
+        this.processOpenedOptions = response.data.process
+      })
+      console.log('this.processOpenedOptions opened: ' + this.processOpenedOptions)
+    },
+    fetchOptionsAbogados () {
+      axios.get('/professionals/fetch').then(response => {
+        console.log('response.data.professionals: ' + response.data.professionals)
+        this.abogadoOptions = response.data.professionals
+      })
     }
   }
 }
