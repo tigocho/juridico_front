@@ -322,6 +322,12 @@
                                 <div class="error" v-if="!$v.formData.prore_status_process_id.required">Por favor elige una clinica.</div>
                               </div>
                             </b-form-group>
+                            <b-form-group class="col-md-6" label="Identificador de litigando" label-for="prore_litigando_id">
+                              <b-form-input v-model="formData.prore_litigando_id" id="prore_litigando_id" type="number" :class="hasError('prore_litigando_id') ? 'is-invalid' : ''"></b-form-input>
+                              <div v-if="hasError('prore_litigando_id')" class="invalid-feedback">
+                                <div class="error" v-if="!$v.formData.prore_litigando_id.required">Por favor escribe el ID de litigando.</div>
+                              </div>
+                            </b-form-group>
                           </b-row>
                         </div>
                       </template>
@@ -1364,6 +1370,7 @@ export default {
         prore_court_id: '',
         prore_typro_id: '',
         prore_status_process_id: '',
+        prore_litigando_id: '',
         prore_ase_id: '',
         prore_city_id: '',
         prore_pac_name_first: '',

@@ -307,6 +307,7 @@ export default {
       selectedProce: '',
       fields: [
         { label: 'Num Radicado', key: 'prore_num_radicado', class: 'text-left' },
+        { label: 'ID Litigando', key: 'prore_litigando_id', class: 'text-left' },
         { label: 'Fec Ingreso', key: 'prore_fec_ingreso', class: 'text-left' },
         { label: 'Clinica', key: 'cli_name', class: 'text-left' },
         { label: 'Fec Siniestro', key: 'prore_fec_sinister', class: 'text-left' },
