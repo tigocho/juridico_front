@@ -3,6 +3,9 @@
                    :header="header"
                    :plugins="calendarPlugins"
                    :events="calendarEvents"
+                   :selectable="true"
+                    @select="handleSelect"
+                    @clickDate="handleDateClick"
                    time-zone="UTC"
   />
 </template>
@@ -35,7 +38,8 @@ export default {
         timeGridPlugin,
         interactionPlugin,
         listPlugin
-      ]
+      ],
+      select: this.handleDateSelect
     }
   },
   components: {
@@ -46,6 +50,32 @@ export default {
   computed: {
   },
   methods: {
+    handleDateSelect (selectInfo) {
+      let title = prompt('Please enter a new title for your event')
+      let calendarApi = selectInfo.view.calendar
+
+      calendarApi.unselect() // clear date selection
+
+      if (title) {
+        calendarApi.addEvent({
+          id: 1,
+          title,
+          start: selectInfo.startStr,
+          end: selectInfo.endStr,
+          allDay: selectInfo.allDay
+        })
+      }
+      console.log('dkjadk')
+    },
+    handleDateClick (e) {
+      console.log('handleDateClick: ' + this.calendarEvents + ' - ' + e)
+    },
+    handleSelect (e) {
+      // console.log(e)
+      // console.log('handleSelect: ' + Object.keys(e))
+      this.$bvModal.show('modal-prevent-closing')
+      // formData.agen_end_date = e.end
+    }
   }
 }
 </script>
