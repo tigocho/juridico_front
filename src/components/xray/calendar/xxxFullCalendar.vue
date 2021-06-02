@@ -65,15 +65,16 @@ export default {
           allDay: selectInfo.allDay
         })
       }
+      console.log('dkjadk')
     },
     handleDateClick (e) {
       console.log('handleDateClick: ' + this.calendarEvents + ' - ' + e)
     },
     handleSelect (e) {
-      console.log('handleSelect: ' + Object.values(this.calendarEvents))
-      console.log('this.calendarEvents: ' + this.calendarEvents[0])
-      console.log('handleSelect: ' + Object.keys(e))
+      // console.log(e)
+      // console.log('handleSelect: ' + Object.keys(e))
       this.$bvModal.show('modal-prevent-closing')
+      // formData.agen_end_date = e.end
     }
   }
 }

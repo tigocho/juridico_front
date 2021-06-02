@@ -105,6 +105,17 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-user-add-fill"
+      },
+      {
+        "title": "Process List 2",
+        "name": "sidebar.processList2",
+        "is_active": false,
+        "link": {
+          "name" : "process.list2"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-user-add-fill"
       }
     ]
   },
