@@ -16,7 +16,7 @@
       </div>
       <div v-else>
         <form-wizard @onComplete="onSubmit">
-          <tab-content title="Información General" :selected="true">
+          <tab-content title="Información General" :selected="true" >
             <b-container fluid>
               <b-row>
                 <b-col md="12">
@@ -26,7 +26,7 @@
                         <b-col lg="12">
                           <iq-card>
                             <template v-slot:body>
-                              <div class="new-user-info">
+                              <div class="new-process">
                               <b-row>
                                 <b-form-group class="col-md-6" label="Fecha de Ingreso" label-for="prore_fec_ingreso">
                                   <div v-if="!editing && proc_id != null && formData.prore_fec_ingreso != null">
@@ -152,7 +152,7 @@
                                     <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-12" label="Descripción del siniestro" label-for="prore_sinies_description">
+                                <b-form-group class="col-md-6" label="Descripción del siniestro" label-for="prore_sinies_description">
                                   <div v-if="!editing && proc_id != null">
                                     <span class='text' @click="enableEditing">{{formData.prore_sinies_description}}</span>
                                   </div>
@@ -357,6 +357,16 @@
                                   </b-form-select>
                                   <div v-if="hasError('prore_status_process_id')" class="invalid-feedback">
                                     <div class="error" v-if="!$v.formData.prore_status_process_id.required">Por favor elige una clinica.</div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Riesgo" label-for="risk_id">
+                                  <b-form-select plain v-model="formData.prore_risk_id" :options="risksOptions" @search="fetchRisks" id="risk_id" :class="hasError('prore_risk_id') ? 'is-invalid' : ''">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null" disabled>Seleccione un riesgo</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
+                                  <div v-if="hasError('prore_risk_id')" class="invalid-feedback">
+                                    <div class="error" v-if="!$v.formData.prore_risk_id.required">Por favor elige una opción.</div>
                                   </div>
                                 </b-form-group>
                                 <b-form-group class="col-md-6" label="Identificador de litigando" label-for="prore_litigando_id">
@@ -1353,10 +1363,10 @@
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
-import { FormWizard, TabContent, ValidationHelper } from 'vue-step-wizard'
 // import { required } from 'vuelidate/lib/validators'
 // import { ValidationObserver } from 'vee-validate'
 // import 'vue-form-wizard/dist/vue-form-wizard.min.css'
+import { FormWizard, TabContent, ValidationHelper } from 'vue-step-wizard'
 import 'vue-step-wizard/dist/vue-step-wizard.css'
 axios.defaults.baseURL = 'http://localhost:8000/api'
 
@@ -1371,24 +1381,24 @@ export default {
     this.getProcess()
   },
   mounted () {
-    setTimeout(() => {
-      xray.index()
-      this.fetchOptionsClinicas()
-      this.fetchOptionsAbogados()
-      this.fetchEstadosProceso()
-      this.fetchAseguradoras()
-      this.fetchEspecialidades()
-      this.fetchTypeProcess()
-      this.fetchCity()
-      this.fetchCourts()
-      this.barraCargando()
-    }, 2000)
+    xray.index()
+    this.fetchOptionsClinicas()
+    this.fetchOptionsAbogados()
+    this.fetchEstadosProceso()
+    this.fetchAseguradoras()
+    this.fetchEspecialidades()
+    this.fetchTypeProcess()
+    this.fetchCity()
+    this.fetchCourts()
+    this.fetchRisks()
+    this.barraCargando()
   },
   data () {
     return {
       year: null,
       progress_total: 4,
       max: 100,
+      nextTab: 'JEJE',
       loading: true,
       errored: false,
       animate: true,
@@ -1518,6 +1528,7 @@ export default {
       especialidadesOptions: {},
       typeProcessOptions: {},
       courtsOptions: {},
+      risksOptions: {},
       nuevo_court: {
         name: '',
         telefono: '',
@@ -1592,6 +1603,11 @@ export default {
     fetchCourts () {
       axios.get('/courts/fetch').then(response => {
         this.courtsOptions = response.data.courts
+      })
+    },
+    fetchRisks () {
+      axios.get('/risks/fetch').then(response => {
+        this.risksOptions = response.data.risks
       })
     },
     validateStep (ref) {

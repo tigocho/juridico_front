@@ -21,3 +21,7 @@ import Css
   text-decoration: underline;
   cursor: pointer;
 }
+
+.vue-step-wizard{
+  width: 1000px!important;
+}
