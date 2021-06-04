@@ -608,10 +608,8 @@ export default {
     getProcess () {
       var user = JSON.parse(auth.getUserLogged())
       this.user_id = user.usr_id
-      console.log('ahora por acá ' + this.user_id)
       axios.get('/process/' + this.user_id).then(response => {
         this.process = response.data.process
-        console.log('processs: ' + this.process)
       })
     },
     edit (item) {
@@ -622,10 +620,8 @@ export default {
       this.handleSubmit()
     },
     handleSubmit () {
-      console.log('audiencia: ', this.audiencia)
       const token = localStorage.getItem('access_token')
       axios.post('/audience/store', this.audiencia, { headers: { 'Authorization': token } }).then(res => {
-        console.log('respuesta!! ' + res.data)
         if (res.data.status_code === 200) {
           Vue.swal('Audiencia agendada al proceso correctamente')
           this.$bvModal.hide('modal-lg')
@@ -637,13 +633,10 @@ export default {
     },
     fetchOptionsAbogados () {
       axios.get('/professionals/fetch').then(response => {
-        console.log('response.data.professionals: ' + response.data.professionals)
         this.abogadoOptions = response.data.professionals
       })
-      console.log('this.abogadoOptions: ' + this.abogadoOptions)
     },
     sendInfo (item) {
-      console.log('item: ' + item)
       this.audiencia.aud_prore_id = item
     },
     info (item, index, button) {

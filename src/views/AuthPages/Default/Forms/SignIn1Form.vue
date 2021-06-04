@@ -84,13 +84,11 @@ export default {
     },
     handleLogin () {
       axios.get('/sanctum/csrf-cookie').then(response => {
-        console.log(response)
         this.login()
       })
     },
     login () {
       axios.post('/login', this.user).then(res => {
-        console.log(res.data)
         if (res.data.status_code === 200) {
           // this.user.nombre_completo = res.data.nombre_completo
           // this.user.id = res.data.user_id

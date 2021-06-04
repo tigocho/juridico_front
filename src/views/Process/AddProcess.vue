@@ -1655,16 +1655,12 @@ export default {
       }
     },
     getProcess () {
-      console.log(this.proc_id)
       if (this.proc_id != null) {
         axios.get('/process/edit/' + this.proc_id).then(response => {
           this.process = response.data.process
           this.formData = this.process[0]
         })
-          .catch(error => {
-            console.log(error)
-            this.errored = true
-          })
+          .catch(this.errored = true)
           .finally(setTimeout(() => {
             this.loading = false
           }, 3500))

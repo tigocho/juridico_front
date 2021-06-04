@@ -135,12 +135,9 @@ export default {
     },
     submit (item) {
       item.editable = 0
-      console.log('putooo usr_username: ' + item)
-      console.log('weeeusr_id: ', item.usr_id)
       this.user.usr_username = item.usr_username
       this.user.usr_email = item.usr_email
       axios.put('/users/update/' + item.usr_id, this.user).then(res => {
-        console.log(res.data.credentials)
         if (res.data.status_code === 200) {
           this.$router.push({ name: 'doctor.list' })
         } else {
@@ -155,11 +152,9 @@ export default {
     getUsers () {
       axios.get('/professionals').then(response => {
         this.abogados = response.data.professionals
-        console.log('this.abogados: ' + this.abogados)
       })
     },
     consultarProcesosJuridicos (usrId) {
-      console.log('dada')
     }
   },
   firestore () {

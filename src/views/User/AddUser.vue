@@ -177,9 +177,7 @@ export default {
       this.addUser()
     },
     addUser () {
-      console.log('weee', this.user.usr_email)
       axios.post('/register', this.user).then(res => {
-        console.log(res.data.credentials)
         if (res.data.status_code === 200) {
           Vue.swal('Usuario agregado correctamente')
           this.$router.push({ name: 'doctor.list' })

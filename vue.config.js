@@ -5,6 +5,12 @@ module.exports = {
     ? process.env.VUE_APP_BASE_URL
     : '/',
 
+  chainWebpack: config => {
+    config.performance
+      .maxEntrypointSize(4000000000)
+      .maxAssetSize(4000000000)
+  },
+
   configureWebpack: {
     plugins: [
       new webpack.ProvidePlugin({
