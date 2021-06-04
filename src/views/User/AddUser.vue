@@ -117,7 +117,7 @@
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
-axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/api'
+axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
 
 export default {
   name: 'AddUser',

@@ -89,7 +89,7 @@ import { xray } from '../../config/pluginInit'
 import axios from 'axios'
 import 'datatables.net'
 import 'datatables.net-bs4'
-axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/api'
+axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
 export default {
   name: 'UserList',
   data () {
