@@ -295,7 +295,7 @@ import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:8000/api'
+axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/api'
 
 export default {
   data () {
