@@ -6,25 +6,25 @@
           <h4 class="card-title">Usuarios</h4>
         </template>
         <template v-slot:body>
-          <b-table :items="abogados" :fields="columns" striped responsive>
-            <template v-slot:cell(pro_name_first)="data">
+          <b-table :items="usuarios" :fields="columns" striped responsive>
+            <template v-slot:cell(usr_name_first)="data">
               <span v-if="data.item.editable!=0">{{
-                data.item.pro_name_first
+                data.item.usr_name_first
               }}</span>
               <input
                 type="text"
-                v-model="data.item.pro_name_first"
+                v-model="data.item.usr_name_first"
                 v-else
                 class="form-control"
               />
             </template>
-            <template v-slot:cell(pro_lastname_first)="data">
+            <template v-slot:cell(usr_lastname_first)="data">
               <span v-if="data.item.editable!=0">{{
-                data.item.pro_lastname_first
+                data.item.usr_lastname_first
               }}</span>
               <input
                 type="text"
-                v-model="data.item.pro_lastname_first"
+                v-model="data.item.usr_lastname_first"
                 v-else
                 class="form-control"
               />
@@ -40,21 +40,28 @@
                 class="form-control"
               />
             </template>
-            <template v-slot:cell(pro_email)="data">
+            <template v-slot:cell(usr_email)="data">
               <span v-if="data.item.editable!=0">{{
-                data.item.pro_email
+                data.item.usr_email
               }}</span>
               <input
                 type="text"
-                v-model="data.item.pro_email"
+                v-model="data.item.usr_email"
                 v-else
                 class="form-control"
               />
             </template>
-            <template #cell(show_details)="row" >
-              <b-button size="sm" @click="row.toggleDetails" class="mr-2">
-              <!--<b-button size="sm" @click="consultarProcesosJuridicos(data.item.pro_id)" class="mr-2">-->
-                {{ row.detailsShowing ? 'Ocultar' : 'Ver'}} Procesos Juridicos
+            <template v-slot:cell(profile_name)="data">
+              <span v-if="data.item.editable!=0">{{
+                data.item.profile_name
+              }}</span>
+            </template>
+            <template #cell(show_details)="row">
+              <b-button :class="esAbogado(row.item.profile_id) ? '' : 'disabled'" size="sm" @click="row.toggleDetails" class="mr-2">
+                {{ row.detailsShowing ? 'Ocultar' : 'Ver'}} Procesos
+              </b-button>
+              <b-button size="sm" variant="primary" @click="editarUsuario(row.item.user_id)">
+                Editar
               </b-button>
             </template>
 
@@ -89,23 +96,23 @@ import { xray } from '../../config/pluginInit'
 import axios from 'axios'
 import 'datatables.net'
 import 'datatables.net-bs4'
-axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
 export default {
   name: 'UserList',
   data () {
     return {
-      abogados: [],
+      usuarios: [],
       user: {},
       columns: [
-        { label: 'Nombre', key: 'pro_name_first', class: 'text-left' },
-        { label: 'Apellido', key: 'pro_lastname_first', class: 'text-left' },
+        { label: 'Nombre', key: 'usr_name_first', class: 'text-left' },
+        { label: 'Apellido', key: 'usr_lastname_first', class: 'text-left' },
         {
           label: 'Identificación',
           key: 'pro_identificacion',
           class: 'text-left'
         },
-        { label: 'Correo electronico', key: 'pro_email', class: 'text-left' },
-        { label: 'Ver Procesos', key: 'show_details', class: 'text-left' }
+        { label: 'Correo electronico', key: 'usr_email', class: 'text-left' },
+        { label: 'Perfil', key: 'profile_name', class: 'text-center' },
+        { label: 'Acciones', key: 'show_details', class: 'text-center' }
       ]
     }
   },
@@ -150,11 +157,22 @@ export default {
       this.rows.splice(index, 1)
     },
     getUsers () {
-      axios.get('/professionals').then(response => {
-        this.abogados = response.data.professionals
+      axios.get('/users').then(response => {
+        this.usuarios = response.data.usuarios
       })
     },
     consultarProcesosJuridicos (usrId) {
+    },
+    esAbogado (profileId) {
+      if (profileId === 2) {
+        return true
+      } else {
+        return false
+      }
+    },
+    editarUsuario (usuarioId) {
+      // `/process/process-edit/${item}`
+      this.$router.push({ path: `/doctor/profile-edit/${usuarioId}` })
     }
   },
   firestore () {

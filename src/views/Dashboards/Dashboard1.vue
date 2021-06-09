@@ -9,7 +9,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                   <div class="rounded-circle iq-card-icon bg-primary"><i class="ri-user-fill"></i></div>
                   <div class="text-right">
-                    <h2 class="mb-0"><span class="counter">5600</span></h2>
+                    <h2 class="mb-0"><span class="counter">{{ cantidadUsuarios }}</span></h2>
                     <h5 class="">Doctors</h5>
                   </div>
                 </div>
@@ -447,14 +447,18 @@
 <script>
 import { xray } from '../../config/pluginInit'
 import IqCard from '../../components/xray/cards/iq-card'
+import axios from 'axios'
+
 export default {
   name: 'Dashboard1',
   components: { IqCard },
   mounted () {
     xray.index()
+    this.obtenerNumeroUsuarios()
   },
   data () {
     return {
+      cantidadUsuarios: '',
       slickOptions: {
         centerMode: false,
         centerPadding: '60px',
@@ -993,6 +997,17 @@ export default {
           show: false
         }
       }
+    }
+  },
+  methods: {
+    obtenerNumeroUsuarios: function () {
+      axios.get('/users/obtener-cantidad-usuarios').then(res => {
+        if (res.data.status_code === 200) {
+          this.$router.push({ name: 'doctor.list' })
+        } else {
+          alert('Datos no validos')
+        }
+      })
     }
   }
 }

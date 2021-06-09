@@ -505,7 +505,7 @@ const userChildRoute = (prop, mode = false) => [
     component: Profile
   },
   {
-    path: 'profile-edit',
+    path: 'profile-edit/:user_id',
     name: prop + '.edit',
     meta: { dark: mode, auth: true, name: 'Edit Profile' },
     component: ProfileEdit

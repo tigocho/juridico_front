@@ -1368,7 +1368,6 @@ import axios from 'axios'
 // import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 import { FormWizard, TabContent, ValidationHelper } from 'vue-step-wizard'
 import 'vue-step-wizard/dist/vue-step-wizard.css'
-axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
 
 export default {
   name: 'AddUser',
