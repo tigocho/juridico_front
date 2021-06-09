@@ -120,7 +120,7 @@ const childRoutes = (prop, mode) => [
     component: Dashboard5
   },
   {
-    path: '/',
+    path: '/home-4',
     name: prop + '.home-4',
     meta: { dark: mode, auth: true, name: 'Home 4' },
     component: Dashboard4
@@ -404,12 +404,6 @@ const authChildRoutes = (prop, mode = false) => [
     component: SignUp1
   },
   {
-    path: 'password-reset1',
-    name: prop + '.password-reset1',
-    meta: { dark: mode, auth: true },
-    component: RecoverPassword1
-  },
-  {
     path: 'lock-screen1',
     name: prop + '.lock-screen1',
     meta: { dark: mode, auth: true },
@@ -420,6 +414,12 @@ const authChildRoutes = (prop, mode = false) => [
     name: prop + '.confirm-mail1',
     meta: { dark: mode, auth: true },
     component: ConfirmMail1
+  },
+  {
+    path: 'password-reset1',
+    name: prop + 'password-reset1',
+    meta: { auth: false },
+    component: RecoverPassword1
   }
 ]
 
