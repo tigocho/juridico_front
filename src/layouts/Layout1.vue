@@ -21,7 +21,7 @@
               <!--<li class="nav-item iq-full-screen">
                 <a href="#" class="iq-waves-effect" id="btnFullscreen"><i class="ri-fullscreen-line"></i></a>
               </li>-->
-              <li class="nav-item">
+              <!--<li class="nav-item">
                 <a href="#" class="search-toggle iq-waves-effect">
                   <i class="ri-notification-3-fill"></i>
                   <span class="bg-danger dots"></span>
@@ -47,12 +47,12 @@
                     </div>
                   </div>
                 </div>
-              </li>
+              </li>-->
               <li class="nav-item">
                 <!--<a href="#" class="search-toggle iq-waves-effect">
                   <i class="ri-mail-open-fill"></i>
                   <span class="bg-primary count-mail"></span>
-                </a>-->
+                </a>
                 <div class="iq-sub-dropdown">
                   <div class="iq-card shadow-none m-0">
                     <div class="iq-card-body p-0 ">
@@ -72,7 +72,7 @@
                       </a>
                     </div>
                   </div>
-                </div>
+                </div>-->
               </li>
             </ul>
           </template>
@@ -83,17 +83,17 @@
                   <img :src="userProfile" class="img-fluid rounded mr-3" alt="user">
                   <div class="caption">
                     <h6 class="mb-0 line-height">{{ userLogged.usr_name_first }} {{ userLogged.usr_lastname_first }}</h6>
-                    <span class="font-size-12">{{ $t('nav.user.available') }}</span>
+                    <span class="font-size-12">{{ /*$t('nav.user.available')*/ }} Disponible</span>
                   </div>
                 </a>
                 <div class="iq-sub-dropdown iq-dropdown">
                   <div class="iq-card shadow-none m-0">
                     <div class="iq-card-body p-0 ">
                       <div class="bg-primary p-3">
-                        <h5 class="mb-0 text-white line-height">Hello Nik jone</h5>
-                        <span class="text-white font-size-12">{{ $t('nav.user.available') }}</span>
+                        <h5 class="mb-0 text-white line-height">Hola {{ userLogged.usr_name_first }} {{ userLogged.usr_lastname_first }}</h5>
+                        <span class="text-white font-size-12">{{ /*$t('nav.user.available')*/ }}Disponible</span>
                       </div>
-                      <a href="#" class="iq-sub-card iq-bg-primary-hover">
+                      <!--<a href="#" class="iq-sub-card iq-bg-primary-hover">
                         <div class="media align-items-center">
                           <div class="rounded iq-card-icon iq-bg-primary">
                             <i class="ri-file-line"></i>
@@ -125,20 +125,48 @@
                             <p class="mb-0 font-size-12">{{ $t('nav.user.accountSettingSub') }}</p>
                           </div>
                         </div>
-                      </a>
-                      <a href="#" class="iq-sub-card iq-bg-primary-secondary-hover">
+                      </a>-->
+                      <a href="#" v-b-modal.modal-prevent-closing class="iq-sub-card iq-bg-primary-secondary-hover">
                         <div class="media align-items-center">
                           <div class="rounded iq-card-icon iq-bg-secondary">
                             <i class="ri-lock-line"></i>
                           </div>
                           <div class="media-body ml-3">
-                            <h6 class="mb-0 ">{{ $t('nav.user.privacySettingTitle') }}</h6>
-                            <p class="mb-0 font-size-12">{{ $t('nav.user.privacySettingSub')}}</p>
+                            <h6 class="mb-0 ">{{ /*$t('nav.user.privacySettingTitle')*/ }} Cambiar contraseña</h6>
+                            <!--<p class="mb-0 font-size-12">{{ $t('nav.user.privacySettingSub')}}</p>-->
                           </div>
                         </div>
                       </a>
+                      <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                        <b-modal
+                          id="modal-prevent-closing"
+                          ref="modal"
+                          title="Cambiar contraseña"
+                          @ok="handleOk"
+                        >
+                          <!--<form ref="form" @submit.stop.prevent="handleSubmit">-->
+                          <form ref="form" @submit.stop.prevent="handleSubmit">
+                            <ValidationProvider name="Password" rules="confirmed:repeat_password|required" v-slot="{ errors }">
+                              <b-form-group class="col-md-12" label="Nueva contraseña" label-for="pass" >
+                              <b-form-input required v-model="newPassword" type="password" placeholder="Contraseña" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                              <div class="invalid-feedback">
+                                <span>{{ errors[0] }}</span>
+                              </div>
+                              </b-form-group>
+                            </ValidationProvider>
+                            <ValidationProvider vid="repeat_password" name="Repetir contraseña" rules="confirmed:repeat_password|required" v-slot="{ errors }">
+                              <b-form-group class="col-md-12" label="Repetir contraseña" label-for="rpass">
+                              <b-form-input  v-model="newPassword2" type="password" placeholder="Repeat Password" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                              <div class="invalid-feedback">
+                                <span>{{ errors[0] }}</span>
+                              </div>
+                              </b-form-group>
+                            </ValidationProvider>
+                          </form>
+                        </b-modal>
+                      </ValidationObserver>
                       <div class="d-inline-block w-100 text-center p-3">
-                        <a class="iq-bg-danger iq-sign-btn" href="javascript:void(0)" @click="logout" role="button">{{ $t('nav.user.signout') }}<i class="ri-login-box-line ml-2"></i></a>
+                        <a class="iq-bg-danger iq-sign-btn" href="javascript:void(0)" @click="logout" role="button">{{ /*$t('nav.user.signout')*/ }}Cerrar Sesión<i class="ri-login-box-line ml-2"></i></a>
                       </div>
                     </div>
                   </div>
@@ -158,7 +186,7 @@
             <li class="list-inline-item"><a href="#">Terms of Use</a></li>
           </template>
           <template v-slot:right>
-            Copyright 2020 <a href="#">Xray</a> All Rights Reserved.
+            Copyright 2020 <a href="#">Juridico App V 1.0</a> Todos los derechos reservados.
           </template>
         </FooterStyle1>
       </div>
@@ -177,6 +205,9 @@ import loader from '../assets/images/logo.png'
 import { xray } from '../config/pluginInit'
 import { Users } from '../FackApi/api/chat'
 import { mapGetters, mapActions } from 'vuex'
+import axios from 'axios'
+import Vue from 'vue'
+
 export default {
   name: 'Layout1',
   components: {
@@ -202,6 +233,8 @@ export default {
   // sidebarTicket
   data () {
     return {
+      newPassword: '',
+      newPassword2: '',
       horizontal: false,
       mini: false,
       darkMode: false,
@@ -217,21 +250,16 @@ export default {
       userProfile: profile,
       logo: loader,
       usersList: Users,
-      rtl: false,
-      message: [
-        { image: require('../assets/images/user/01.jpg'), name: 'Nik Emma Watson', date: '13 jan' },
-        { image: require('../assets/images/user/02.jpg'), name: 'Greta Life', date: '14 Jun' },
-        { image: require('../assets/images/user/03.jpg'), name: 'Barb Ackue', date: '16 Aug' },
-        { image: require('../assets/images/user/04.jpg'), name: 'Anna Sthesia', date: '21 Sept' },
-        { image: require('../assets/images/user/05.jpg'), name: 'Bob Frapples', date: '29 Sept' }
-      ],
-      notification: [
-        { image: require('../assets/images/user/01.jpg'), name: 'Nik Emma Watson', date: '23 hour ago', description: 'Enjoy smart access to videos, games' },
-        { image: require('../assets/images/user/02.jpg'), name: 'Greta Life', date: '14 hour ago', description: 'Google Chromecast: Enjoy a world of entertainment' },
-        { image: require('../assets/images/user/03.jpg'), name: 'Barb Ackue', date: '16 hour ago', description: 'Dell Inspiron Laptop: Get speed and performance from' },
-        { image: require('../assets/images/user/04.jpg'), name: 'Anna Sthesia', date: '21 hour ago', description: 'Deliver your favorite playlist anywhere in your home ' },
-        { image: require('../assets/images/user/05.jpg'), name: 'Bob Frapples', date: '11 hour ago', description: 'MacBook Air features up to 8GB of memory, a fifth-generation' }
-      ]
+      modelValidations: {
+        email: {
+          required: true,
+          email: true
+        },
+        password: {
+          required: true,
+          min: 5
+        }
+      }
     }
   },
   methods: {
@@ -269,6 +297,32 @@ export default {
       this.animated = { enter: 'zoomIn', exit: 'zoomOut' }
       this.light()
     },
+    handleOk (bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      // Trigger submit handler
+      console.log(this.newPassword)
+      if (this.newPassword !== '' && this.newPassword2 !== '' && (this.newPassword === this.newPassword2)) {
+        this.cambiarPassword()
+      }
+    },
+    cambiarPassword () {
+      const token = localStorage.getItem('access_token')
+      if (this.userLogged.usr_id !== undefined) {
+        axios.post('/users/update/' + this.userLogged.usr_id, { 'newPassword': this.newPassword }, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+          this.$nextTick(() => {
+            this.$bvModal.hide('modal-prevent-closing')
+          })
+          if (res.data.status_code === 200) {
+            this.newPassword = ''
+            this.newPassword2 = ''
+            Vue.swal(res.data.message)
+          } else {
+            Vue.swal(res.data.message)
+          }
+        })
+      }
+    },
     logout () {
       localStorage.removeItem('user')
       localStorage.removeItem('access_token')
@@ -277,6 +331,7 @@ export default {
     langChange (lang) {
       this.langChangeState(lang)
       this.$i18n.locale = lang.value
+      console.log(lang.value)
       document.getElementsByClassName('iq-show')[0].classList.remove('iq-show')
       if (lang.value === 'ar') {
         this.rtlAdd(lang)

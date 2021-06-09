@@ -16,8 +16,9 @@
         <div class="form-group">
           <label for="passwordInput">Contraseña</label>
           <router-link to="/auth/password-reset1" class="float-right">
-            ¿Olvidó la contraseña?
+            ¿Olvidaste tu contraseña?
           </router-link>
+          <!--<a href="#" @click="recuperarPassword" class="float-right">¿Olvidaste tu contraseña?</a>-->
           <input type="password"  :class="'form-control mb-0' +(errors.length > 0 ? ' is-invalid' : '')"
                  id="passwordInput"
                  v-model="user.usr_password" placeholder="Contraseña" required>
@@ -31,7 +32,7 @@
           <input type="checkbox" class="custom-control-input" :id="formType">
           <label class="custom-control-label" :for="formType">Recuerdame</label>
         </div>
-        <button type="submit" class="btn btn-primary float-right">Iniciar Sesión</button>
+        <button type="submit" class="btn btn-primary float-right" :class="estado">{{ texto }}</button>
       </div>
       <!--<div class="sign-info">
           <span class="dark-color d-inline-block line-height-2">
@@ -64,7 +65,9 @@ export default {
     user: {
       usr_email: '',
       usr_password: ''
-    }
+    },
+    texto: 'Iniciar Sesión',
+    estado: ''
   }),
   mounted () {
     this.user.usr_email = this.$props.email
@@ -81,6 +84,8 @@ export default {
     onSubmit () {
       // this.handleLogin()
       this.login()
+      this.texto = 'Iniciando sesión...'
+      this.estado = 'disabled'
     },
     handleLogin () {
       axios.get('/sanctum/csrf-cookie').then(response => {
@@ -98,9 +103,15 @@ export default {
           auth.setUserLogged(res.data.user)
           this.$router.push({ name: 'dashboard.home-1' })
         } else {
+          this.texto = 'Iniciar Sesión'
+          this.estado = ''
           Vue.swal('Credenciales no validas')
         }
       })
+    },
+    recuperarPassword () {
+      console.log('oeee')
+      this.$router.push({ name: 'auth.password-reset1' })
     }
   }
 }
