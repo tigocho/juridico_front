@@ -60,17 +60,6 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-user-add-fill"
-      },
-      {
-        "title": "Edit Doctor",
-        "name": "sidebar.doctorEdit",
-        "is_active": false,
-        "link": {
-          "name" : "doctor.edit"
-        },
-        "class_name": "",
-        "is_icon_class": true,
-        "icon": "ri-file-edit-fill"
       }
     ]
   },

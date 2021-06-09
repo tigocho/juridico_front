@@ -13,7 +13,10 @@ import VueSweetalert2 from 'vue-sweetalert2'
 // import VueFormWizard from 'vue-form-wizard'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import axios from 'axios'
-axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
+axios.defaults.baseURL = process.env.NODE_ENV === 'production'
+  ? 'http://181.129.171.26:9898/juridico_api/public/api'
+  : 'http://localhost/ospedale/juridico/juridico_api/public/api'
+// axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
 var token = localStorage.getItem('token')
 if (token) {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token

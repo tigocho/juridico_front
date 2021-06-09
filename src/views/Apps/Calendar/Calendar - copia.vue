@@ -105,7 +105,6 @@
 import { xray } from '../../../config/pluginInit'
 import axios from 'axios'
 import Vue from 'vue'
-axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
 export default {
   name: 'GoogleCalendar',
   components: { },
