@@ -65,7 +65,7 @@
   },
   {
     "title": "Process",
-    "name": "sidebar.process",
+    "name": "sidebar.procesos",
     "is_heading": false,
     "is_active": false,
     "link": "",
@@ -75,7 +75,7 @@
     "children": [
       {
         "title": "Add Proces",
-        "name": "sidebar.processAdd",
+        "name": "sidebar.agregarProceso",
         "is_active": false,
         "link": {
           "name" : "process.add"
@@ -86,7 +86,7 @@
       },
       {
         "title": "Process List",
-        "name": "sidebar.processList",
+        "name": "sidebar.ListaProcesos",
         "is_active": false,
         "link": {
           "name" : "process.list"

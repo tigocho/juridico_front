@@ -79,6 +79,7 @@ import Profile from '../views/User/Profile'
 import ProfileEdit from '../views/User/ProfileEdit'
 import AddUser from '../views/User/AddUser'
 import UserList from '../views/User/UserList'
+import ChangePassword from '../views/User/ChangePassword'
 /* Process View */
 import AddProcess from '../views/Process/AddProcess'
 import ProcessList from '../views/Process/ProcessList'
@@ -521,6 +522,11 @@ const userChildRoute = (prop, mode = false) => [
     name: prop + '.list',
     meta: { dark: mode, auth: true, name: 'User List' },
     component: UserList
+  },
+  {
+    path: 'change-password/:token',
+    name: prop + 'change-password',
+    component: ChangePassword
   }
 ]
 
