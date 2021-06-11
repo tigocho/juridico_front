@@ -2,10 +2,10 @@
   <b-container fluid>
     <!--<span v-if="proc_id != null && process != null" v-show="true">{{proc_id}}</span>-->
     <!--{{process}}-->
-    <section v-if="errored && proc_id !== undefined">
+    <!--<section v-if="errored && proc_id !== undefined">
       <p>Lo sentimos, no es posible obtener la información en este momento, por favor intente nuevamente mas tarde</p>
-    </section>
-    <section v-else>
+    </section>-->
+    <section>
       <div class="py-5" v-if="proc_id !== undefined && loading">
         <!--<b-progress height="2rem" show-progress :progress_total="progress_total" variant="success" striped :animated="animate"><h5 v-if="progress_total > 0">Cargando...</h5></b-progress>-->
         <b-progress :max="max" height="2rem">

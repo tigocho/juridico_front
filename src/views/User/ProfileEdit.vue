@@ -110,11 +110,29 @@
                           </ValidationProvider>
                         </b-form-group>
                         <b-form-group class="col-md-6" label="Color para el usuario" label-for="usr_color">
-                          <ValidationProvider name="Número de Identificación" rules="required" v-slot="{ errors }">
+                          <ValidationProvider name="Color para el usuario" rules="required" v-slot="{ errors }">
                             <b-form-input v-model="user.usr_color" type="color" placeholder="Color" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                             <div class="invalid-feedback">
                               <span>{{ errors[0] }}</span>
                             </div>
+                          </ValidationProvider>
+                        </b-form-group>
+                        <b-form-group class="col-md-6" label="Genero del usuario" label-for="pro_gender">
+                          <ValidationProvider name="Genero del usuario" rules="required" v-slot="{ errors }">
+                            <template v-for="(item,index) in state">
+                              <b-form-radio inline v-model="user.pro_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="(errors.length > 0 ? ' is-invalid' : '')">{{ item.label }}</b-form-radio>
+                            </template>
+                            <div class="invalid-feedback">
+                              <span>{{ errors[0] }}</span>
+                            </div>
+                          </ValidationProvider>
+                        </b-form-group>
+                        <b-form-group class="col-md-6" label="Teléfono/Celular" label-for="pro_cell_phone">
+                          <ValidationProvider name="Teléfono/Celular" rules="required" v-slot="{ errors }">
+                            <b-form-input v-model="user.pro_cell_phone" type="number" placeholder="ej: 3019972139" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                              <div class="invalid-feedback">
+                                <span>{{ errors[0] }}</span>
+                              </div>
                           </ValidationProvider>
                         </b-form-group>
                       </b-row>
@@ -124,7 +142,7 @@
                           <input type="checkbox" class="custom-control-input" id="user.usr_is_active" v-model="user.usr_is_active" :value="user.usr_is_active">
                           <label class="custom-control-label" for="user.usr_is_active"></label>
                         </div>
-                        </div>
+                      </div>
                       <b-button @click="guardarInformacionPersonal" variant="primary" class="mr-2">Guardar</b-button>
                       <b-button @click="volverListadoUsuarios" variant="none" class="iq-bg-danger">Cancelar</b-button>
                   </template>
@@ -294,19 +312,19 @@ export default {
       ],
       newPassword: '',
       newPassword2: '',
-      countries: [
-        { value: 'Canada', text: 'Canada' },
-        { value: 'Niada', text: 'Niada' },
-        { value: 'USA', text: 'USA' },
-        { value: 'India', text: 'India' },
-        { value: 'Africa', text: 'Africa' }
-      ],
-      states: [
-        { value: 'California', text: 'California' },
-        { value: 'Florida', text: 'Florida' },
-        { value: 'Georgia', text: 'Georgia' },
-        { value: 'Connecticut', text: 'Connecticut' },
-        { value: 'Louisiana', text: 'Louisiana' }
+      state: [
+        {
+          name: 'genero',
+          label: 'Masculino',
+          value: 2,
+          disabled: false
+        },
+        {
+          name: 'genero',
+          label: 'Femenino',
+          value: 1,
+          disabled: false
+        }
       ]
     }
   },

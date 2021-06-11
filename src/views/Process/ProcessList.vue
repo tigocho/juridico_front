@@ -128,7 +128,7 @@
         <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
           + Info
         </b-button>-->
-        <b-button size="sm" @click="row.toggleDetails">
+        <b-button size="sm" @click="row.toggleDetails" class="mr-1">
           {{ row.detailsShowing ? 'Ocultar' : 'Mostrar' }}
         </b-button>
         <b-button size="sm" v-b-modal.modal-lg variant="primary" @click="sendInfo(row.item.prore_id)">

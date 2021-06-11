@@ -21,13 +21,8 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
-                    <b-form-group class="col-md-6" label="Segundo Nombre:" label-for="usr_name_first">
-                      <ValidationProvider name="Segundo Nombre" rules="required" v-slot="{ errors }">
-                        <b-form-input v-model="user.usr_name_last" type="text" placeholder="Segundo Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                        <div class="invalid-feedback">
-                          <span>Segundo Nombre invalido</span>
-                        </div>
-                      </ValidationProvider>
+                    <b-form-group class="col-md-6" label="Segundo Nombre:" label-for="usr_name_second">
+                      <b-form-input v-model="user.usr_name_second" type="text" placeholder="Segundo Nombre" ></b-form-input>
                     </b-form-group>
                     <b-form-group class="col-md-6" label="Primer Apellido:" label-for="usr_lastname_first">
                       <ValidationProvider name="Primer Apellido" rules="required" v-slot="{ errors }">
@@ -37,13 +32,8 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
-                    <b-form-group class="col-md-6" label="Segundo Apellido:" label-for="usr_lastname_first">
-                      <ValidationProvider name="Segundo Apellido" rules="required" v-slot="{ errors }">
-                        <b-form-input v-model="user.usr_lastname_last" type="text" placeholder="Segundo Apellido" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                        <div class="invalid-feedback">
-                          <span>Segundo Apellido invalido</span>
-                        </div>
-                      </ValidationProvider>
+                    <b-form-group class="col-md-6" label="Segundo Apellido:" label-for="usr_lastname_second">
+                      <b-form-input v-model="user.usr_lastname_second" type="text" placeholder="Segundo Apellido" ></b-form-input>
                     </b-form-group>
                   </b-row>
                   <hr>
@@ -56,15 +46,7 @@
                       </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Nombre de Usuario:" label-for="uname">
-                    <ValidationProvider name="Nombre de Usuario" rules="required" v-slot="{ errors }">
-                      <b-form-input v-model="user.usr_username" type="text" placeholder="Nombre de Usuario" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                      <div class="invalid-feedback">
-                        <span>Nombre de Usuario invalido</span>
-                      </div>
-                    </ValidationProvider>
-                  </b-form-group>
-                  <b-form-group class="col-md-6" label="Correo Electronico:" label-for="uname">
+                  <b-form-group class="col-md-6" label="Correo Electronico:" label-for="usr_email">
                     <ValidationProvider name="Correo Electronico" rules="required|email" v-slot="{ errors }">
                       <b-form-input v-model="user.usr_email" type="text" placeholder="Correo Electronico" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                       <div class="invalid-feedback">
@@ -72,15 +54,23 @@
                       </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Perfil de Usuario:" label-for="selectuserrole">
+                  <b-form-group class="col-md-6" label="Perfil de Usuario:" label-for="usr_role_id">
                     <ValidationProvider name="Perfil de Usuario" rules="required" v-slot="{ errors }">
-                      <b-form-select plain v-model="user.usr_role_id" :options="roles" id="selectuserrole" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                      <b-form-select plain v-model="user.usr_role_id" :options="roles" id="usr_role_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
                         <template v-slot:first>
                           <b-form-select-option :value="null" disabled>Seleccione un perfil</b-form-select-option>
                         </template>
                       </b-form-select>
                       <div class="invalid-feedback">
                         <span>Debe de seleccionar una opción</span>
+                      </div>
+                    </ValidationProvider>
+                  </b-form-group>
+                  <b-form-group class="col-md-6" label="Color para el usuario" label-for="usr_color">
+                    <ValidationProvider name="Color para el usuario" rules="required" v-slot="{ errors }">
+                      <b-form-input v-model="user.usr_color" type="color" placeholder="Color" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                      <div class="invalid-feedback">
+                        <span>{{ errors[0] }}</span>
                       </div>
                     </ValidationProvider>
                   </b-form-group>
@@ -99,8 +89,49 @@
                       </div>
                     </ValidationProvider>
                   </b-form-group>
+                  <b-form-group class="col-md-6" label="Genero del usuario" label-for="pro_gender">
+                    <ValidationProvider name="Genero del usuario" rules="required" v-slot="{ errors }">
+                      <template v-for="(item,index) in state">
+                        <b-form-radio inline v-model="user.pro_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="(errors.length > 0 ? ' is-invalid' : '')">{{ item.label }}</b-form-radio>
+                      </template>
+                      <div class="invalid-feedback">
+                        <span>{{ errors[0] }}</span>
+                      </div>
+                    </ValidationProvider>
+                  </b-form-group>
+                  <b-form-group class="col-md-6" label="Teléfono/Celular" label-for="pro_cell_phone">
+                    <ValidationProvider name="Teléfono/Celular" rules="required" v-slot="{ errors }">
+                      <b-form-input v-model="user.pro_cell_phone" type="number" placeholder="ej: 3019972139" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                        <div class="invalid-feedback">
+                          <span>{{ errors[0] }}</span>
+                        </div>
+                    </ValidationProvider>
+                  </b-form-group>
+                  <b-form-group class="col-md-6" label="Nueva contraseña" label-for="pass">
+                    <ValidationProvider name="Password" rules="confirmed:repeat_password" v-slot="{ errors }">
+                      <b-form-input autocomplete="new-password" v-model="user.usr_password" type="password" placeholder="Contraseña" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                      <div class="invalid-feedback">
+                        <span>{{ errors[0] }}</span>
+                      </div>
+                    </ValidationProvider>
+                  </b-form-group>
+                  <b-form-group class="col-md-6" label="Repetir contraseña" label-for="rpass">
+                    <ValidationProvider vid="repeat_password" name="Repetir contraseña" rules="required" v-slot="{ errors }">
+                      <b-form-input v-model="user.newPassword2" type="password" placeholder="Repeat Password" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                      <div class="invalid-feedback">
+                        <span>{{ errors[0] }}</span>
+                      </div>
+                    </ValidationProvider>
+                  </b-form-group>
                 </b-row>
-                <b-button variant="primary" type="submit">Agregar Usuario</b-button>
+                <div class="form-group row align-items-center">
+                  <label class="col-auto" for="user.usr_is_active">Usuario activo:</label>
+                  <div class="col-auto custom-control custom-switch" style="min-height:33px;">
+                    <input type="checkbox" class="custom-control-input" id="user.usr_is_active" v-model="user.usr_is_active" :value="user.usr_is_active" >
+                    <label class="custom-control-label" for="user.usr_is_active"></label>
+                  </div>
+                </div>
+                <b-button variant="primary" type="submit" :class="estadoBoton">{{ textoBoton }}</b-button>
               </div>
               </template>
             </iq-card>
@@ -125,22 +156,43 @@ export default {
   },
   data () {
     return {
+      estadoBoton: '',
+      textoBoton: 'Agregar Usuario',
       user: {
         usr_name_first: '',
         usr_lastname_first: '',
-        usr_name_last: '',
-        usr_lastname_last: '',
+        usr_name_second: '',
+        usr_lastname_second: '',
         usr_identification_type: 1,
         usr_identification: '',
         usr_birthday: '',
         usr_username: '',
-        usr_password: '123456',
         usr_email: '',
         profile_image: require('../../assets/images/user/11.png'),
         city: '',
         usr_role_id: '',
-        usr_accept_terms: 1
+        usr_accept_terms: 1,
+        pro_gender: '',
+        pro_cell_phone: '',
+        usr_is_active: 1,
+        usr_color: '',
+        usr_password: '',
+        newPassword2: ''
       },
+      state: [
+        {
+          name: 'genero',
+          label: 'Masculino',
+          value: 2,
+          disabled: false
+        },
+        {
+          name: 'genero',
+          label: 'Femenino',
+          value: 1,
+          disabled: false
+        }
+      ],
       roles: [
         { text: 'Administrador', value: 1 },
         { text: 'Abogado', value: 2 }
@@ -173,9 +225,11 @@ export default {
       }
     },
     onSubmit () {
+      this.estadoBoton = 'disabled'
       this.addUser()
     },
     addUser () {
+      this.textoBoton = 'Creando usuario...'
       axios.post('/register', this.user).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal('Usuario agregado correctamente')

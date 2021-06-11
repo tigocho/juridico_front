@@ -182,11 +182,11 @@
         </transition>
         <FooterStyle1>
           <template v-slot:left>
-            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-            <li class="list-inline-item"><a href="#">Terms of Use</a></li>
+            <li class="list-inline-item"><a href="#">Políticas de privacidad</a></li>
+            <li class="list-inline-item"><a href="#">Términos y condiciones</a></li>
           </template>
           <template v-slot:right>
-            Copyright 2020 <a href="#">Juridico App V 1.0</a> Todos los derechos reservados.
+            Copyright 2021 <a href="#">Juridico App V 1.0</a> Todos los derechos reservados.
           </template>
         </FooterStyle1>
       </div>
@@ -200,7 +200,8 @@ import SideBarStyle1 from '../components/xray/sidebars/SideBarStyle1'
 import NavBarStyle1 from '../components/xray/navbars/NavBarStyle1'
 import SideBarItems from '../FackApi/json/SideBar'
 import HorizontalItems from '../FackApi/json/HorizontalMenu'
-import profile from '../assets/images/user/1.jpg'
+import profileMen from '../assets/images/user/09.jpg'
+import profileWomen from '../assets/images/user/15.jpg'
 import loader from '../assets/images/logo.png'
 import { xray } from '../config/pluginInit'
 import { Users } from '../FackApi/api/chat'
@@ -217,6 +218,7 @@ export default {
   },
   mounted () {
     this.updateRadio()
+    this.definirAvatarPerfil()
   },
   computed: {
     ...mapGetters({
@@ -247,7 +249,9 @@ export default {
       ],
       horizontalMenu: HorizontalItems,
       verticalMenu: SideBarItems,
-      userProfile: profile,
+      userProfile: '',
+      userProfileMen: profileMen,
+      userProfileWomen: profileWomen,
       logo: loader,
       usersList: Users,
       modelValidations: {
@@ -321,6 +325,14 @@ export default {
             Vue.swal(res.data.message)
           }
         })
+      }
+    },
+    definirAvatarPerfil () {
+      console.log(this.userLogged.usr_gender)
+      if (this.userLogged.usr_gender === '1') {
+        this.userProfile = this.userProfileMen
+      } else {
+        this.userProfile = this.userProfileWomen
       }
     },
     logout () {
