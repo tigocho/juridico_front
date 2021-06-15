@@ -190,9 +190,11 @@ export const xray = {
   sideBarToggle () {
     const elementExist = this.checkElement('class', 'iq-sidebar-menu')
     if (elementExist) {
-      $('.iq-sidebar-menu li').click(function (ele) {
+      $(document).on('click', '.iq-sidebar-menu li', function (ele) {
         $('.iq-sidebar-menu li').has('.iq-submenu').removeClass('active')
         $(this).has('.iq-submenu').toggleClass('active')
+        console.log('fakdn')
+        console.log($(this))
       })
     }
   },

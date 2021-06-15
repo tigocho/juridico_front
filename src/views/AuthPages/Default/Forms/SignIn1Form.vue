@@ -110,7 +110,6 @@ export default {
       })
     },
     recuperarPassword () {
-      console.log('oeee')
       this.$router.push({ name: 'auth.password-reset1' })
     }
   }

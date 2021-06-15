@@ -1323,18 +1323,26 @@
                             <template v-slot:body>
                               <div class="new-user-info">
                                 <b-row>
-                                  <b-form-group class="col-md-6" label="Link de sharepoint" label-for="prore_link_documentacion">
+                                  <b-form-group class="col-md-6" label="Nombre del link" label-for="prore_link_documentacion">
                                     <div>
-                                      <b-form-input type="text" v-model="formData.links" placeholder="ej: https://gospedale.sharepoint.com/:u:/r/sites/msteams_1da9eb/Shared%20Documents/General/CRISTHIAN%20CASTRO/AppReport/Sqls-Necesarios/incident_report.sql?csf=1"></b-form-input>
-                                    </div>
-                                    <div v-if="proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" > Agregar </b-button>
+                                      <b-form-input type="text" v-model="nuevoLink.link_name" placeholder="ej: Resultado primera audiencia"></b-form-input>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Links guardados" label-for="prore_link_documentacion">
-                                    <iq-card-text v-for="(link, index) in links" :key="link.link_id">
-                                      <a v-link="link">Link # {{ index }}</a>
-                                    </iq-card-text>
+                                  <b-form-group class="col-md-6" label="Link de sharepoint" label-for="prore_link_documentacion">
+                                    <div>
+                                      <b-form-input type="text" v-model="nuevoLink.link_url" placeholder="ej: https://gospedale.sharepoint.com/:u:/r/sites/msteams_1da9eb/Shared%20Documents/General/CRISTHIAN%20CASTRO/AppReport/Sqls-Necesarios/incident_report.sql?csf=1" ></b-form-input>
+                                    </div>
+                                    <div v-if="proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="agregarLink"> Agregar </b-button>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-12" label="Links guardados" label-for="prore_link_documentacion">
+                                    <div v-for="(link, index) in links" :key="index">
+                                      <span>
+                                        <a v-bind:href="link.link_url" target="_blank">Link #{{ index }}: {{ link.link_name }}</a>
+                                      </span>
+                                      <span> <a class="pl-2" href="javascript:void(0)" @click="eliminarLink(link.link_id)"><i class="ri-close-circle-line text-danger" style="font-size:17px;"></i></a></span>
+                                    </div>
                                   </b-form-group>
                                   <!--<b-form-group class="col-md-6" label="Descripción de la Actuación" label-for="prore_sinies_description">
                                     <div v-if="!editing && proc_id != null">
@@ -1386,6 +1394,7 @@ import { required } from 'vuelidate/lib/validators'
 import { FormWizard, TabContent, ValidationHelper } from 'vue-step-wizard'
 import 'vue-step-wizard/dist/vue-step-wizard.css'
 import IqCard from '../../components/xray/cards/iq-card.vue'
+import auth from '@/logic/auth'
 
 export default {
   name: 'AddUser',
@@ -1411,6 +1420,18 @@ export default {
     this.barraCargando()
     this.obtenerGeneroPaciente()
   },
+  computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    },
+    fullNameUser: function () {
+      return this.user.usr_name_first + ' ' + this.user.usr_lastname_first
+    },
+    years () {
+      const year = new Date().getFullYear()
+      return Array.from({ length: year - 1995 }, (value, index) => 2000 + index)
+    }
+  },
   data () {
     return {
       year: null,
@@ -1422,6 +1443,11 @@ export default {
       animate: true,
       genderPaciente: 'N/A',
       links: [],
+      nuevoLink: {
+        link_name: '',
+        link_url: '',
+        link_prore_id: this.$route.params.id
+      },
       formData: {
         prore_fec_ingreso: '',
         prore_responsable: '',
@@ -1653,15 +1679,6 @@ export default {
       users: []
     }
   },
-  computed: {
-    fullNameUser: function () {
-      return this.user.usr_name_first + ' ' + this.user.usr_lastname_first
-    },
-    years () {
-      const year = new Date().getFullYear()
-      return Array.from({ length: year - 1995 }, (value, index) => 2000 + index)
-    }
-  },
   methods: {
     fetchEstadosProceso () {
       axios.get('/statusProcess/fetch').then(response => {
@@ -1711,23 +1728,11 @@ export default {
         reader.onload = e => {
           this.user.profile_image = e.target.result
         }
-
         reader.readAsDataURL(input.files[0])
       }
     },
     onSubmit () {
-      this.addProcess()
-    },
-    addProcess () {
-      const toke = localStorage.getItem('access_token')
-      axios.post('/process/store', this.formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
-        if (res.data.status_code === 200) {
-          Vue.swal('Proceso agregado correctamente')
-          this.$router.push({ name: 'process.list' })
-        } else {
-          Vue.swal('Datos no validos')
-        }
-      })
+      this.updateProcess()
     },
     updateProcess () {
       if (this.proc_id != null) {
@@ -1744,15 +1749,25 @@ export default {
     },
     getProcess () {
       if (this.proc_id != null) {
-        axios.get('/process/edit/' + this.proc_id).then(response => {
-          this.process = response.data.process
+        axios.get('/process/edit/' + this.proc_id).then(res => {
+          this.process = res.data.process
           this.formData = this.process[0]
         })
           .catch(this.errored = true)
           .finally(setTimeout(() => {
             this.loading = false
+            this.getLinksProcess(this.proc_id)
           }, 3500))
       }
+    },
+    getLinksProcess (proccessId) {
+      axios.get('/links/obtenerLinksProceso/' + proccessId).then(res => {
+        if (res.data.status_code === 200) {
+          this.links = res.data.links
+        } else {
+          Vue.swal('Error tratando de obtener los links.')
+        }
+      })
     },
     enableEditing () {
       this.editing = true
@@ -1816,6 +1831,46 @@ export default {
           this.genderPaciente = 'Masculino'
         }
       }
+    },
+    agregarLink () {
+      if (this.nuevoLink.link_name === '' || this.nuevoLink.link_name === undefined) {
+        Vue.swal('Por favor escribir el nombre del link')
+        return false
+      }
+      if (this.nuevoLink.link_url === '' || this.nuevoLink.link_url === undefined) {
+        Vue.swal('Por favor escribir el link')
+        return false
+      }
+      this.links.push({ link_id: 1, link_name: this.nuevoLink.link_name, link_url: this.nuevoLink.link_url })
+      this.nuevoLink.link_user_id = this.userLogged.usr_id
+      const token = localStorage.getItem('access_token')
+      axios.post('/links/store', this.nuevoLink, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+        if (res.data.status_code === 200) {
+          this.nuevoLink.link_name = ''
+          this.nuevoLink.link_url = ''
+          Vue.swal(res.data.message)
+          this.getLinksProcess(this.proc_id)
+        } else {
+          Vue.swal(res.data.message)
+        }
+      })
+        .catch((err) => {
+          Vue.swal('Algo salio mal ' + err)
+        })
+    },
+    eliminarLink (linkId) {
+      const token = localStorage.getItem('access_token')
+      axios.post('/links/delete/' + linkId, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+        if (res.data.status_code === 200) {
+          Vue.swal(res.data.message)
+          this.getLinksProcess(this.proc_id)
+        } else {
+          Vue.swal(res.data.message)
+        }
+      })
+        .catch((err) => {
+          Vue.swal('Algo salio mal ' + err)
+        })
     }
   }
 }

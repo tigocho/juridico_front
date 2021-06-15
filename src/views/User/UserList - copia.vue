@@ -420,7 +420,6 @@ export default {
     getUsers () {
       axios.get('/users').then(response => {
         this.usuarios = response.data.usuarios
-        console.log(this.usuarios.pro_id)
       })
     },
     consultarProcesosJuridicos (usrId) {
@@ -448,8 +447,7 @@ export default {
         }
       })
         .catch((err) => {
-          Vue.swal('Ups sucedió un error tratando de consulta la información')
-          console.log(err)
+          Vue.swal('Ups sucedió un error tratando de consulta la información. ' + err)
         })
     },
     ocultarProcesos () {

@@ -1323,19 +1323,26 @@
                             <template v-slot:body>
                               <div class="new-user-info">
                                 <b-row>
-                                  <b-form-group class="col-md-6" label="Link de sharepoint" label-for="prore_link_documentacion">
+                                  <b-form-group class="col-md-6" label="Nombre del link" label-for="prore_link_documentacion">
                                     <div>
-                                      <b-form-input type="text" v-model="formData.links" placeholder="ej: https://gospedale.sharepoint.com/:u:/r/sites/msteams_1da9eb/Shared%20Documents/General/CRISTHIAN%20CASTRO/AppReport/Sqls-Necesarios/incident_report.sql?csf=1"></b-form-input>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                      <b-form-input type="text" v-model="nuevoLink.link_name" placeholder="ej: Resultado primera audiencia"></b-form-input>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Links guardados" label-for="prore_link_documentacion">
-                                    <iq-card-text v-for="(link, index) in links" :key="link.link_id">
-                                      <a v-link="link">Link # {{ index }}</a>
-                                    </iq-card-text>
+                                  <b-form-group class="col-md-6" label="Link de sharepoint" label-for="prore_link_documentacion">
+                                    <div>
+                                      <b-form-input type="text" v-model="nuevoLink.link_url" placeholder="ej: https://gospedale.sharepoint.com/:u:/r/sites/msteams_1da9eb/Shared%20Documents/General/CRISTHIAN%20CASTRO/AppReport/Sqls-Necesarios/incident_report.sql?csf=1" ></b-form-input>
+                                    </div>
+                                    <div>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="agregarLink"> Agregar </b-button>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-12" label="Links guardados" label-for="prore_link_documentacion">
+                                    <div v-for="(link, index) in links" :key="index">
+                                      <span>
+                                        <a v-bind:href="link.link_url" target="_blank">Link #{{ index }}: {{ link.link_name }}</a>
+                                      </span>
+                                      <span> <a class="pl-2" href="javascript:void(0)" @click="eliminarLink(index)"><i class="ri-close-circle-line text-danger" style="font-size:17px;"></i></a></span>
+                                    </div>
                                   </b-form-group>
                                   <!--<b-form-group class="col-md-6" label="Descripción de la Actuación" label-for="prore_sinies_description">
                                     <div v-if="!editing && proc_id != null">
@@ -1387,6 +1394,7 @@ import { required } from 'vuelidate/lib/validators'
 import { FormWizard, TabContent, ValidationHelper } from 'vue-step-wizard'
 import 'vue-step-wizard/dist/vue-step-wizard.css'
 import IqCard from '../../components/xray/cards/iq-card.vue'
+import auth from '@/logic/auth'
 
 export default {
   name: 'AddUser',
@@ -1420,6 +1428,11 @@ export default {
       animate: true,
       genderPaciente: 'N/A',
       links: [],
+      nuevoLink: {
+        link_name: '',
+        link_url: '',
+        link_user_id: ''
+      },
       formData: {
         prore_fec_ingreso: '',
         prore_responsable: '',
@@ -1652,6 +1665,9 @@ export default {
     }
   },
   computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    },
     fullNameUser: function () {
       return this.user.usr_name_first + ' ' + this.user.usr_lastname_first
     },
@@ -1718,7 +1734,7 @@ export default {
     },
     addProcess () {
       const toke = localStorage.getItem('access_token')
-      axios.post('/process/store', this.formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+      axios.post('/process/store', { formulario: this.formData, links: this.links }, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal('Proceso agregado correctamente')
           this.$router.push({ name: 'process.list' })
@@ -1801,6 +1817,17 @@ export default {
           this.genderPaciente = 'Masculino'
         }
       }
+    },
+    agregarLink () {
+      if (this.nuevoLink.link_name === '' || this.nuevoLink.link_name === undefined) {
+        Vue.swal('Por favor escribir el nombre del link')
+        return false
+      }
+      if (this.nuevoLink.link_url === '' || this.nuevoLink.link_url === undefined) {
+        Vue.swal('Por favor escribir el link')
+        return false
+      }
+      this.links.push({ link_name: this.nuevoLink.link_name, link_url: this.nuevoLink.link_url, link_user_id: this.userLogged.usr_id })
     }
   }
 }

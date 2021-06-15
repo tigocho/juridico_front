@@ -2,43 +2,30 @@
   <b-container fluid>
     <b-row>
       <b-col md="3">
-        <!--<iq-card class="calender-small">
-          <template v-slot:body>
-            <flat-pickr :config="config" value="" class="d-none"/>
-          </template>
-        </iq-card>-->
         <iq-card>
           <template v-slot:headerTitle>
             <h4 class="card-title">Programa de hoy</h4>
           </template>
           <template v-slot:body>
             <ul class="m-0 p-0 today-schedule">
-              <li class="d-flex" v-for='event in events' :key='event.id'>
-                <div class="schedule-icon"><i class="ri-checkbox-blank-circle-fill text-primary" /></div>
+              <li class="d-flex" v-for='event in eventsToday' :key='event.id'>
+                <div class="schedule-icon"><i class="ri-checkbox-blank-circle-fill" v-bind:style="{ color: event.color }" /></div>
                 <div class="schedule-text"> <span>{{ event.title }}</span>
                   <span> {{ event.start_date }} </span>
                 </div>
               </li>
-              <!--<li class="d-flex">
-                <div class="schedule-icon"><i class="ri-checkbox-blank-circle-fill text-success" /></div>
-                <div class="schedule-text"> <span>Audiencia en el juzgado administrativo de Armenia</span>
-                  <span>14:00 to 16:00</span></div>
-              </li>-->
             </ul>
           </template>
         </iq-card>
         <iq-card>
           <template v-slot:headerTitle>
-            <h4 class="card-title ">Clasificación</h4>
-          </template>
-          <template v-slot:headerAction>
-            <a><i class="fa fa-plus  mr-0" aria-hidden="true" /></a>
+            <h4 class="card-title ">Usuarios</h4>
           </template>
           <template v-slot:body>
             <ul class="m-0 p-0 job-classification">
-              <li class=""><i class="ri-check-line bg-danger" />Reuniones</li>
-              <li class=""><i class="ri-check-line bg-success" />Audiencias</li>
-              <li class=""><i class="ri-check-line bg-warning" />Notificación de sentencias</li>
+              <li v-for="usuario in usuarios" :key="usuario.usr_id">
+                <i class="ri-check-line" v-bind:style="{ background: usuario.usr_color }" />{{ usuario.usr_name_first }} {{ usuario.usr_lastname_first }}
+              </li>
             </ul>
           </template>
         </iq-card>
@@ -51,30 +38,34 @@
           <template v-slot:headerAction>
             <a href="#" class="btn btn-primary" @click="newEvent"><i class="ri-add-line mr-2" ></i>Crear audiencia</a>
           </template>
-          <Fullcalendar
-              :plugins="calendarPlugins"
-              :header="{
-                  center: 'title',
-                  right: 'dayGridMonth, timeGridWeek, timeGridDay, listWeek',
-                  left: 'prev today next'
-              }"
-              :buttonText="{
-                  today: 'Hoy',
-                  month: 'Mes',
-                  week: 'Semana',
-                  day: 'Día',
-                  list: 'Lista'
-              }"
-              :weekends="false"
-              :selectable="true"
-              :editable="true"
-              :events="events"
-              @select="handleSelect"
-              @eventClick="handleEventClick"
-              @eventResize="updateEvent"
-              @eventDrop="updateEvent"
-              @eventRender="renderEvent"
-          />
+          <template v-slot:body>
+            <Fullcalendar
+                :height="750"
+                :plugins="calendarPlugins"
+                :lang="esLocale"
+                :header="{
+                    center: 'title',
+                    right: 'dayGridMonth, timeGridWeek, timeGridDay, listWeek',
+                    left: 'prev today next'
+                }"
+                :buttonText="{
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día',
+                    list: 'Lista'
+                }"
+                :weekends="false"
+                :selectable="true"
+                :editable="true"
+                :events="events"
+                @select="handleSelect"
+                @eventClick="handleEventClick"
+                @eventResize="updateEvent"
+                @eventDrop="updateEvent"
+                @eventRender="renderEvent"
+            />
+          </template>
         </iq-card>
       </b-col>
     </b-row>
@@ -134,6 +125,7 @@ import DayGridPlugin from '@fullcalendar/daygrid'
 import TimeGridPlugin from '@fullcalendar/timegrid'
 import InteractionPlugin from '@fullcalendar/interaction'
 import ListPlugin from '@fullcalendar/list'
+import esLocale from '@fullcalendar/core/locales/es'
 import { xray } from '../../../config/pluginInit'
 import axios from 'axios'
 import Vue from 'vue'
@@ -147,8 +139,10 @@ export default {
     ],
     config: {
       dateFormat: 'Y-m-d',
-      inline: true
+      inline: true,
+      locale: esLocale
     },
+    eventsToday: [],
     events: [],
     title_modal_text: 'Crear audiencia',
     processOpenedOptions: [],
@@ -162,13 +156,15 @@ export default {
       agen_end_date: '',
       sch_start_hour: '',
       sch_end_hour: ''
-    }
+    },
+    usuarios: []
   }),
   mounted () {
     xray.index()
     this.getAgendas()
     this.fetchOptionsAbogados()
     this.fetchProcessOpened()
+    this.getUsuariosActivos()
   },
   components: { Fullcalendar },
   computed: {
@@ -178,6 +174,14 @@ export default {
       axios.get('/agenda').then(response => {
         this.events = Object.keys(response.data.audiencias).map((key) => {
           return response.data.audiencias[key]
+        })
+        this.getAgendaHoy()
+      })
+    },
+    getAgendaHoy () {
+      axios.get('/agenda/obtenerEventosHoy').then(response => {
+        this.eventsToday = Object.keys(response.data.audiencias_hoy).map((key) => {
+          return response.data.audiencias_hoy[key]
         })
       })
     },
@@ -280,6 +284,11 @@ export default {
     fetchOptionsAbogados () {
       axios.get('/professionals/fetch').then(response => {
         this.abogadoOptions = response.data.professionals
+      })
+    },
+    getUsuariosActivos () {
+      axios.get('/users/usuariosActivos').then(response => {
+        this.usuarios = response.data.usuarios
       })
     },
     formatDate (date) {

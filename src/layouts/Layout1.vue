@@ -305,7 +305,6 @@ export default {
       // Prevent modal from closing
       bvModalEvt.preventDefault()
       // Trigger submit handler
-      console.log(this.newPassword)
       if (this.newPassword !== '' && this.newPassword2 !== '' && (this.newPassword === this.newPassword2)) {
         this.cambiarPassword()
       }
@@ -328,7 +327,6 @@ export default {
       }
     },
     definirAvatarPerfil () {
-      console.log(this.userLogged.usr_gender)
       if (this.userLogged.usr_gender === '1') {
         this.userProfile = this.userProfileMen
       } else {
@@ -343,7 +341,6 @@ export default {
     langChange (lang) {
       this.langChangeState(lang)
       this.$i18n.locale = lang.value
-      console.log(lang.value)
       document.getElementsByClassName('iq-show')[0].classList.remove('iq-show')
       if (lang.value === 'ar') {
         this.rtlAdd(lang)

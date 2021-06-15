@@ -48,7 +48,7 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-file-list-fill"
+        "icon": "ri-folder-user-line"
       },
       {
         "title": "Add Doctor",
@@ -74,17 +74,6 @@
     "icon": "ri-file-list-fill",
     "children": [
       {
-        "title": "Add Proces",
-        "name": "sidebar.agregarProceso",
-        "is_active": false,
-        "link": {
-          "name" : "process.add"
-        },
-        "class_name": "",
-        "is_icon_class": true,
-        "icon": "ri-user-add-fill"
-      },
-      {
         "title": "Process List",
         "name": "sidebar.ListaProcesos",
         "is_active": false,
@@ -93,7 +82,18 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-user-add-fill"
+        "icon": "ri-book-mark-line"
+      },
+      {
+        "title": "Add Proces",
+        "name": "sidebar.agregarProceso",
+        "is_active": false,
+        "link": {
+          "name" : "process.add"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-folder-add-line"
       }
     ]
   },
