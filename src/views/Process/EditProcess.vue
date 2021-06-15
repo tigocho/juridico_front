@@ -697,10 +697,10 @@
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
-                                    <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-juzaga>Crear juzgado</b-card-text>
+                                    <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-juzgado>Crear juzgado</b-card-text>
                                   </b-form-group>
                                   <b-modal
-                                    id="modal-crear-juzaga"
+                                    id="modal-crear-juzgado"
                                     ref="modal"
                                     title="Agregar juzgado"
                                     @ok="handleOk"
@@ -1327,9 +1327,8 @@
                                     <div>
                                       <b-form-input type="text" v-model="formData.links" placeholder="ej: https://gospedale.sharepoint.com/:u:/r/sites/msteams_1da9eb/Shared%20Documents/General/CRISTHIAN%20CASTRO/AppReport/Sqls-Necesarios/incident_report.sql?csf=1"></b-form-input>
                                     </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    <div v-if="proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" > Agregar </b-button>
                                     </div>
                                   </b-form-group>
                                   <b-form-group class="col-md-6" label="Links guardados" label-for="prore_link_documentacion">
@@ -1395,6 +1394,9 @@ export default {
   },
   mixins: [ ValidationHelper ],
   props: ['formType', 'email', 'password'],
+  created: function () {
+    this.getProcess()
+  },
   mounted () {
     xray.index()
     this.fetchOptionsClinicas()
@@ -1733,10 +1735,23 @@ export default {
         axios.post('/process/update/' + this.proc_id, this.formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
           if (res.data.status_code === 200) {
             Vue.swal('Proceso actualizado correctamente')
+            this.getProcess()
           } else {
             Vue.swal('Error tratando de actualizar proceso. ' + res.data.message)
           }
         })
+      }
+    },
+    getProcess () {
+      if (this.proc_id != null) {
+        axios.get('/process/edit/' + this.proc_id).then(response => {
+          this.process = response.data.process
+          this.formData = this.process[0]
+        })
+          .catch(this.errored = true)
+          .finally(setTimeout(() => {
+            this.loading = false
+          }, 3500))
       }
     },
     enableEditing () {
@@ -1773,7 +1788,7 @@ export default {
       axios.post('/courts/store', this.nuevo_court, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
         // Hide the modal manually
         this.$nextTick(() => {
-          this.$bvModal.hide('modal-crear-juzaga')
+          this.$bvModal.hide('modal-crear-juzgado')
         })
         if (res.data.status_code === 200) {
           this.nuevo_court.name = ''

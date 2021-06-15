@@ -82,6 +82,7 @@ import UserList from '../views/User/UserList'
 import ChangePassword from '../views/User/ChangePassword'
 /* Process View */
 import AddProcess from '../views/Process/AddProcess'
+import EditProcess from '../views/Process/EditProcess'
 import ProcessList from '../views/Process/ProcessList'
 import ProcessList2 from '../views/Process/ProcessList2'
 /* Todo */
@@ -541,7 +542,7 @@ const processChildRoute = (prop, mode = false) => [
     path: 'process-edit/:id',
     name: prop + '.edit',
     meta: { dark: mode, auth: true, name: 'Edit Porcess' },
-    component: AddProcess
+    component: EditProcess
   },
   {
     path: 'process-list',
