@@ -206,7 +206,6 @@ export default {
     getUsers () {
       axios.get('/users').then(response => {
         this.usuarios = response.data.usuarios
-        console.log(response.data.usuarios[0].pro_id)
       })
     },
     esAbogado (profileId) {
@@ -247,8 +246,7 @@ export default {
           }
         })
           .catch((err) => {
-            Vue.swal('Ups sucedió un error tratando de consulta la información')
-            console.log(err)
+            Vue.swal('Ups sucedió un error tratando de consulta la información. ' + err)
           })
       }
     },
