@@ -84,7 +84,6 @@ import ChangePassword from '../views/User/ChangePassword'
 import AddProcess from '../views/Process/AddProcess'
 import EditProcess from '../views/Process/EditProcess'
 import ProcessList from '../views/Process/ProcessList'
-import ProcessList2 from '../views/Process/ProcessList2'
 /* Todo */
 import Callback from '../views/AuthPages/Default/Callback'
 /* Plugins Views */
@@ -549,12 +548,6 @@ const processChildRoute = (prop, mode = false) => [
     name: prop + '.list',
     meta: { dark: mode, auth: true, name: 'Porcess List' },
     component: ProcessList
-  },
-  {
-    path: 'process-list',
-    name: prop + '.list2',
-    meta: { dark: mode, auth: true, name: 'Porcess List' },
-    component: ProcessList2
   }
 ]
 

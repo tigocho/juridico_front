@@ -42,7 +42,6 @@
             <Fullcalendar
                 :height="750"
                 :plugins="calendarPlugins"
-                :lang="esLocale"
                 :header="{
                     center: 'title',
                     right: 'dayGridMonth, timeGridWeek, timeGridDay, listWeek',
@@ -125,7 +124,7 @@ import DayGridPlugin from '@fullcalendar/daygrid'
 import TimeGridPlugin from '@fullcalendar/timegrid'
 import InteractionPlugin from '@fullcalendar/interaction'
 import ListPlugin from '@fullcalendar/list'
-import esLocale from '@fullcalendar/core/locales/es'
+
 import { xray } from '../../../config/pluginInit'
 import axios from 'axios'
 import Vue from 'vue'
@@ -139,8 +138,7 @@ export default {
     ],
     config: {
       dateFormat: 'Y-m-d',
-      inline: true,
-      locale: esLocale
+      inline: true
     },
     eventsToday: [],
     events: [],
