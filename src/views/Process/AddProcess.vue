@@ -768,7 +768,11 @@
                                         <span class='text'>{{formData.prore_ejecutante}}</span>
                                       </div>
                                       <div v-else>
-                                        <b-form-input v-model="formData.prore_ejecutante" type="text" placeholder="Ejecutante"></b-form-input>
+                                        <b-form-input v-model="formData.prore_ejecutante" type="text" placeholder="Ejecutante" :class="hasError('prore_ejecutante') ? 'is-invalid' : ''"></b-form-input>
+                                        <div v-if="hasError('prore_ejecutante')" class="invalid-feedback">
+                                          <div class="error" v-if="!$v.formData.prore_ejecutante.required">Por favor escriba el ejecutante.
+                                          </div>
+                                        </div>
                                       </div>
                                     </b-form-group>
                                     <b-form-group class="col-md-6" label="Medida Cautelar*" label-for="prore_medida_cautelar">
@@ -1405,17 +1409,7 @@ export default {
   props: ['formType', 'email', 'password'],
   mounted () {
     xray.index()
-    this.fetchOptionsClinicas()
-    this.fetchOptionsAbogados()
-    this.fetchEstadosProceso()
-    this.fetchAseguradoras()
-    this.fetchEspecialidades()
-    this.fetchTypeProcess()
-    this.fetchCity()
-    this.fetchCourts()
-    this.fetchRisks()
-    this.barraCargando()
-    this.obtenerGeneroPaciente()
+    this.ejecutarConsultas()
   },
   data () {
     return {
@@ -1677,6 +1671,29 @@ export default {
     }
   },
   methods: {
+    ejecutarConsultas () {
+      setTimeout(() => {
+        this.fetchOptionsClinicas()
+        this.fetchOptionsAbogados()
+        setTimeout(() => {
+          this.fetchEstadosProceso()
+          this.fetchAseguradoras()
+          setTimeout(() => {
+            this.fetchEspecialidades()
+            this.fetchTypeProcess()
+            setTimeout(() => {
+              this.fetchCity()
+              this.fetchCourts()
+              setTimeout(() => {
+                this.fetchRisks()
+                this.barraCargando()
+                this.obtenerGeneroPaciente()
+              }, 500)
+            }, 500)
+          }, 500)
+        }, 500)
+      }, 500)
+    },
     fetchEstadosProceso () {
       axios.get('/statusProcess/fetch').then(response => {
         this.statusProcessOptions = response.data.status_process

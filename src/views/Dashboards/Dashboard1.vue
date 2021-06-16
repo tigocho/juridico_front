@@ -30,10 +30,10 @@
             </iq-card>
           </b-col>
           <b-col md="6" lg="3">
-            <iq-card class-name="iq-card-block iq-card-stretch iq-card-height" body-class="iq-bg-danger rounded">
+            <iq-card class-name="iq-card-block iq-card-stretch iq-card-height" body-class="iq-bg-success rounded">
               <template v-slot:body >
                 <div class="d-flex align-items-center justify-content-between">
-                  <div class="rounded-circle iq-card-icon bg-danger"><i class="ri-close-circle-line"></i></div>
+                  <div class="rounded-circle iq-card-icon bg-success"><i class="ri-checkbox-circle-line"></i></div>
                   <div class="text-right">
                     <h2 class="mb-0"><span class="counter">{{ procesosCerrados }}</span></h2>
                     <h5 class="">Proc. cerrados</h5>
