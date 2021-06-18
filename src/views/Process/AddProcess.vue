@@ -1059,7 +1059,7 @@
                                     </div>
                                   </b-form-group>
                                   <b-form-group class="col-md-6" label="Aseguradora*" label-for="prore_aseguradora_id">
-                                    <b-form-select plain v-model="formData.prore_aseguradora_id" :options="aseguradorasOptions" id="prore_aseguradora_id" :class="hasError('prore_applicant_lastname_first') ? 'is-invalid' : ''">
+                                    <b-form-select plain v-model="formData.prore_aseguradora_id" :options="aseguradorasOptions" id="prore_aseguradora_id" :class="hasError('prore_aseguradora_id') ? 'is-invalid' : ''">
                                       <template v-slot:first>
                                         <b-form-select-option :value="null" disabled>Seleccione una Aseguradora</b-form-select-option>
                                       </template>

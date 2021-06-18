@@ -42,7 +42,7 @@
             <h4 class="card-title">Litigios/Solicitudes</h4>
           </template>
           <template v-slot:headerAction>
-            <b-button variant="primary" @click="descargarInforme">Descargar informe</b-button>
+            <b-button variant="primary" @click="descargarInforme" :class="estadoBotonDescargarInforme">{{ botonDescargarInforme }}</b-button>
           </template>
           <template v-slot:body>
             <b-row>
@@ -125,6 +125,16 @@
 
               <template #row-details="row">
                 <b-card>
+                  <b-row class="col-md-12 pt-1">
+                    <b-card-text class="my-0" ><b><a href="#" @click="cargarLinksProcess(row.item.prore_id)"> Mostrar links:</a></b></b-card-text>
+                    <div class="col-md-12 pl-0" v-if="links !== undefined && links.length > 0">
+                      <b-card-text class="my-0" v-for="(link, index) in links" :key="index"><a v-bind:href="link.link_url" target="_blank">Link #{{ index }}: {{ link.link_name }}</a>
+                      </b-card-text>
+                    </div>
+                    <div class="col-md-12 pl-0" v-else>
+                      <span> No hay links en este proceso</span>
+                    </div>
+                  </b-row>
                   <b-row class="col-md-12 pt-1">
                     <b-card-text class="my-0"><b>Etapa procesal:</b></b-card-text>
                     <b-card-text class="px-1 my-0" v-if="row.item.editable!=0">{{ row.item.estado_proceso }}</b-card-text>
@@ -530,12 +540,22 @@ import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
+const FileDownload = require('js-file-download')
+
 export default {
   data () {
     return {
+      botonDescargarInforme: 'Descargar Informe',
+      estadoBotonDescargarInforme: '',
       user_id: '',
       process: [],
-      audiencia: {},
+      audiencia: {
+        aud_name: '',
+        aud_pro_id: '',
+        agen_start_date: '',
+        agen_end_date: '',
+        sch_start_hour: ''
+      },
       abogadoOptions: [],
       fields: [
         // { key: 'name', label: 'Person full name', sortable: true, sortDirection: 'desc' },
@@ -573,7 +593,8 @@ export default {
         id: 'info-modal',
         title: '',
         content: ''
-      }
+      },
+      links: {}
     }
   },
   computed: {
@@ -606,7 +627,13 @@ export default {
     },
     handleOk (bvModalEvt) {
       bvModalEvt.preventDefault()
-      this.handleSubmit()
+      if (this.audiencia.aud_name !== '' && this.audiencia.aud_pro_id !== '' &&
+      this.audiencia.agen_start_date !== '' && this.audiencia.agen_end_date !== '' && this.audiencia.sch_start_hour !== '') {
+        // Trigger submit handler
+        this.handleSubmit()
+      } else {
+        Vue.swal('Por favor completa todo el formulario')
+      }
     },
     handleSubmit () {
       const token = localStorage.getItem('access_token')
@@ -650,9 +677,32 @@ export default {
       }
     },
     descargarInforme () {
-      axios.get('/process/downloadReport').then(response => {
-        this.abogadoOptions = response.data.professionals
+      this.botonDescargarInforme = 'Descargando informe...'
+      this.estadoBotonDescargarInforme = 'disabled'
+      axios({
+        url: '/process/exportReport',
+        method: 'GET',
+        responseType: 'blob'
+      }).then((response) => {
+        this.botonDescargarInforme = 'Descargar informe'
+        this.estadoBotonDescargarInforme = ''
+        FileDownload(response.data, 'report-process.xlsx')
       })
+        .catch((err) => {
+          this.botonDescargarInforme = 'Descargar informe'
+          this.estadoBotonDescargarInforme = ''
+          console.log(err)
+          Vue.swal('Ups, ocurrió un error')
+        })
+    },
+    cargarLinksProcess (processId) {
+      axios.get('/links/obtenerLinksProceso/' + processId).then(response => {
+        this.links = response.data.links
+      })
+        .catch((err) => {
+          console.log(err)
+          Vue.swal('Ups, ocurrió un error')
+        })
     }
   }
 }

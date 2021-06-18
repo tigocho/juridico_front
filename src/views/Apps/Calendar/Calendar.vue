@@ -186,8 +186,13 @@ export default {
     handleOk (bvModalEvt) {
       // Prevent modal from closing
       bvModalEvt.preventDefault()
-      // Trigger submit handler
-      this.handleSubmit()
+      if (this.formData.agen_name !== '' && this.formData.agen_prore_id && this.formData.agen_pro_id !== '' &&
+      this.formData.agen_start_date !== '' && this.formData.agen_end_date !== '' && this.formData.sch_start_hour !== '' && this.formData.sch_end_hour) {
+        // Trigger submit handler
+        this.handleSubmit()
+      } else {
+        Vue.swal('Por favor completa todo el formulario')
+      }
     },
     handleSubmit () {
       const toke = localStorage.getItem('access_token')
