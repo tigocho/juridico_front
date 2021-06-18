@@ -193,7 +193,6 @@ export const xray = {
       $(document).on('click', '.iq-sidebar-menu li', function (ele) {
         $('.iq-sidebar-menu li').has('.iq-submenu').removeClass('active')
         $(this).has('.iq-submenu').toggleClass('active')
-        console.log('dkahd')
       })
     }
   },

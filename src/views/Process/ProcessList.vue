@@ -691,8 +691,7 @@ export default {
         .catch((err) => {
           this.botonDescargarInforme = 'Descargar informe'
           this.estadoBotonDescargarInforme = ''
-          console.log(err)
-          Vue.swal('Ups, ocurrió un error')
+          Vue.swal('Ups, ocurrió un error ' + err)
         })
     },
     cargarLinksProcess (processId) {
@@ -700,8 +699,7 @@ export default {
         this.links = response.data.links
       })
         .catch((err) => {
-          console.log(err)
-          Vue.swal('Ups, ocurrió un error')
+          Vue.swal('Ups, ocurrió un error ' + err)
         })
     }
   }
