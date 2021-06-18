@@ -22,10 +22,10 @@
               <tab-content-item :active="true" id="personal-information" >
                 <iq-card>
                   <template v-slot:headerTitle>
-                    <h4 class="card-title">Personal Information</h4>
+                    <h4 class="card-title">Información Personal</h4>
                   </template>
                   <template v-slot:body>
-                      <b-form-group class="row align-items-center">
+                      <!--<b-form-group class="row align-items-center">
                         <b-col md="12">
                           <div class="profile-img-edit">
                             <b-img :src="user.profile_image" class="profile-pic height-150 width-150" alt="profile-pic"/>
@@ -38,7 +38,7 @@
                             </div>
                           </div>
                         </b-col>
-                      </b-form-group>
+                      </b-form-group>-->
                       <b-row align-v="center">
                         <b-form-group class="col-md-6" label="Primer nombre" label-for="usr_name_first">
                           <ValidationProvider name="Primer nombre" rules="required" v-slot="{ errors }">
@@ -156,7 +156,7 @@
                   <template v-slot:body>
                     <b-form-group class="col-md-6" label="Nueva contraseña" label-for="pass">
                       <ValidationProvider name="Password" rules="confirmed:repeat_password" v-slot="{ errors }">
-                        <b-form-input v-model="newPassword" type="password" placeholder="Contraseña" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                        <b-form-input v-model="newPassword" type="password" placeholder="Contraseña" autocomplete="new-password" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                         <div class="invalid-feedback">
                           <span>{{ errors[0] }}</span>
                         </div>
