@@ -25,3 +25,7 @@ import Css
 .vue-step-wizard{
   width: 1000px!important;
 }
+
+[dir=ltr] .iq-sidebar-menu .iq-menu li ul li a{
+  color: #ffffff!important;
+}
