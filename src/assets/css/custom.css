@@ -26,6 +26,6 @@ import Css
   width: 1000px!important;
 }
 
-[dir=ltr] .iq-sidebar-menu .iq-menu li ul li a{
+[dir=ltr] .iq-sidebar-menu .iq-menu li:not(.active) ul li a{
   color: #ffffff!important;
 }
