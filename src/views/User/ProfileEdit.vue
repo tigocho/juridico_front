@@ -286,6 +286,8 @@ export default {
     return {
       user_id: this.$route.params.user_id,
       user: {
+        usr_identification_type: '',
+        usr_identification: '',
         usr_name_first: '',
         usr_lastname_first: '',
         usr_name_second: '',

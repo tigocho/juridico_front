@@ -9,7 +9,7 @@
               <a class="sign-in-logo mb-5" href="#"><img :src="logo" class="img-fluid" alt="logo"></a>
               <Slick :option="slickOptions">
                 <div class="item">
-                  <img :src="require('../../assets/images/login/1.png')" class="img-fluid mb-4" alt="logo">
+                  <img :src="require('../../assets/images/login/juridico-4.jpg')" class="img-fluid mb-4" alt="logo">
                   <h4 class="mb-1 text-white">Puedes crear tus litigios</h4>
                   <p>Crea tus litigios de manera fácil y digitaliza la información. Siempre disponible.</p>
                 </div>
