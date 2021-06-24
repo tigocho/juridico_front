@@ -328,9 +328,9 @@ export default {
     },
     definirAvatarPerfil () {
       if (this.userLogged.usr_gender === '1') {
-        this.userProfile = this.userProfileMen
-      } else {
         this.userProfile = this.userProfileWomen
+      } else {
+        this.userProfile = this.userProfileMen
       }
     },
     logout () {
