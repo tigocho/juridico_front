@@ -290,7 +290,7 @@ export default {
       })
     },
     getUsuariosActivos () {
-      axios.get('/users/usuariosActivos').then(response => {
+      axios.get('/users/abogadosActivos').then(response => {
         this.usuarios = response.data.usuarios
       })
     },
