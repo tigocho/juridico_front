@@ -333,14 +333,14 @@
                                     <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Riesgo" label-for="risk_id">
+                                <b-form-group class="col-md-6" label="Riesgo NIIF" label-for="risk_id">
                                   <div v-if="!editing && proc_id != null">
                                     <span class='text' @click="enableEditing">{{ formData.risk_name }}</span>
                                   </div>
                                   <div v-if="editing || proc_id == null">
                                     <b-form-select plain v-model="formData.prore_risk_id" :options="risksOptions" @search="fetchRisks" id="risk_id" :class="hasError('prore_risk_id') ? 'is-invalid' : ''">
                                       <template v-slot:first>
-                                        <b-form-select-option :value="null">Seleccione un riesgo</b-form-select-option>
+                                        <b-form-select-option :value="null">Seleccione el riesgo NIIF</b-form-select-option>
                                       </template>
                                     </b-form-select>
                                     <div v-if="hasError('prore_risk_id')" class="invalid-feedback">
@@ -1030,22 +1030,6 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Riesgo Nif*" label-for="prore_riesgo_niif">
-                                    <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_riesgo_niif}}</span>
-                                    </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_riesgo_niif == null">
-                                      <b-form-input id="prore_riesgo_niif" v-model="formData.prore_riesgo_niif" type="text" placeholder="Riesgo Niif" :class="hasError('prore_riesgo_niif') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_riesgo_niif')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_riesgo_niif.required">Por favor escriba el riesgo NIIF.
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
-                                  </b-form-group>
                                   <b-form-group class="col-md-6" label="Valor a Provisionar" label-for="prore_valor_provisionar">
                                     <div v-if="!editing && proc_id != null">
                                       <span class='text' @click="enableEditing">{{formData.prore_valor_provisionar}}</span>
@@ -1504,7 +1488,6 @@ export default {
         prore_estimacion_pago_perju_inmateriales: '',
         prore_val_cubre_poliza_perjuicios_inmat: '',
         prore_cuantia_pretenciones: '',
-        prore_riesgo_niif: '',
         prore_valor_provisionar: '',
         prore_aseguradora_id: '',
         prore_num_poliza: '',
@@ -1596,7 +1579,6 @@ export default {
           prore_total_perjuicios_inmateriales: { required },
           prore_estimacion_pago_perju_inmateriales: { required },
           prore_cuantia_pretenciones: { required },
-          prore_riesgo_niif: { required },
           prore_aseguradora_id: { required },
           prore_num_poliza: { required },
           prore_fec_sentencia_primera_instancia: { required },

@@ -30,40 +30,6 @@
     "icon": ""
   },
   {
-    "title": "Doctors",
-    "name": "sidebar.doctor",
-    "is_heading": false,
-    "is_active": false,
-    "link": "",
-    "class_name": "",
-    "is_icon_class": true,
-    "icon": "ri-user-3-fill",
-    "children": [
-      {
-        "title": "All Doctors",
-        "name": "sidebar.doctorList",
-        "is_active": false,
-        "link": {
-          "name" : "doctor.list"
-        },
-        "class_name": "",
-        "is_icon_class": true,
-        "icon": "ri-folder-user-line"
-      },
-      {
-        "title": "Add Doctor",
-        "name": "sidebar.doctorAdd",
-        "is_active": false,
-        "link": {
-          "name" : "doctor.add"
-        },
-        "class_name": "",
-        "is_icon_class": true,
-        "icon": "ri-user-add-fill"
-      }
-    ]
-  },
-  {
     "title": "Process",
     "name": "sidebar.procesos",
     "is_heading": false,
