@@ -212,7 +212,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Primer Nombre Paciente*" label-for="prore_pac_name_first">
+                                <b-form-group class="col-md-6" label="Primer Nombre Paciente" label-for="prore_pac_name_first">
                                   <div v-if="proc_id != null && formData.prore_pac_name_first != null">
                                     <span class='text'>{{formData.prore_pac_name_first}}</span>
                                   </div>
@@ -234,7 +234,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Primer Apellido Paciente*" label-for="prore_pac_lastname_first">
+                                <b-form-group class="col-md-6" label="Primer Apellido Paciente" label-for="prore_pac_lastname_first">
                                   <div v-if="proc_id != null && formData.prore_pac_lastname_first != null">
                                     <span class='text'>{{formData.prore_pac_lastname_first}}</span>
                                   </div>
@@ -245,7 +245,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Apellido Paciente*" label-for="prore_pac_lastname_second">
+                                <b-form-group class="col-md-6" label="Segundo Apellido Paciente" label-for="prore_pac_lastname_second">
                                   <div v-if="proc_id != null">
                                     <span class='text'>{{formData.prore_pac_lastname_second}}</span>
                                   </div>
@@ -256,7 +256,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Genero del paciente*" label-for="usr_lastname_first">
+                                <b-form-group class="col-md-6" label="Genero del paciente" label-for="usr_lastname_first">
                                   <div v-if="proc_id != null && formData.prore_pac_gender != null">
                                     <span class='text'>{{ genderPaciente }}</span>
                                   </div>
@@ -269,7 +269,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Edad del paciente*" label-for="prore_pac_age">
+                                <b-form-group class="col-md-6" label="Edad del paciente" label-for="prore_pac_age">
                                   <div v-if="proc_id != null && formData.prore_pac_age != null">
                                     <span class='text'>{{formData.prore_pac_age}}</span>
                                   </div>
@@ -280,7 +280,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Especialidad*" label-for="selectuserrole">
+                                <b-form-group class="col-md-6" label="Especialidad" label-for="selectuserrole">
                                   <div v-if="proc_id != null && formData.prore_propse_id != null">
                                     <span class='text'>{{formData.spe_name}}</span>
                                   </div>
@@ -402,7 +402,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Nombre*" label-for="prore_applicant_name_secdon">
+                                <b-form-group class="col-md-6" label="Segundo Nombre" label-for="prore_applicant_name_secdon">
                                   <div v-if="proc_id != null">
                                     <span class='text'>{{formData.prore_applicant_name_secdon}}</span>
                                   </div>
@@ -424,7 +424,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Apellido*" label-for="prore_applicant_lastname_second">
+                                <b-form-group class="col-md-6" label="Segundo Apellido" label-for="prore_applicant_lastname_second">
                                   <div v-if="proc_id != null">
                                     <span class='text'>{{formData.prore_applicant_lastname_second}}</span>
                                   </div>
@@ -484,7 +484,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Nombre*" label-for="prore_defendant_name_second">
+                                  <b-form-group class="col-md-6" label="Segundo Nombre" label-for="prore_defendant_name_second">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_defendant_name_second}}</span>
                                     </div>
@@ -506,7 +506,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Apellido*" label-for="prore_defendant_lastname_second">
+                                  <b-form-group class="col-md-6" label="Segundo Apellido" label-for="prore_defendant_lastname_second">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_defendant_lastname_second}}</span>
                                     </div>
@@ -565,7 +565,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Nombre*" label-for="prore_warranty_name_second">
+                                  <b-form-group class="col-md-6" label="Segundo Nombre" label-for="prore_warranty_name_second">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_warranty_name_second}}</span>
                                     </div>
@@ -595,7 +595,7 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Apellido*" label-for="prore_warranty_lastname_second">
+                                  <b-form-group class="col-md-6" label="Segundo Apellido" label-for="prore_warranty_lastname_second">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_warranty_lastname_second}}</span>
                                     </div>
@@ -728,7 +728,7 @@
                                       <span class='text' @click="enableEditing">{{formData.prore_num_radicado}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_num_radicado == null">
-                                      <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="number" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="text" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_num_radicado')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_num_radicado.required">Por favor escriba el número radicado.</div>
                                       </div>
@@ -751,7 +751,7 @@
                                     </div>
                                   </b-form-group>
                                   <template>
-                                    <b-form-group class="col-md-6" label="Proceso Ejecutivo*" label-for="prore_proceso_ejecutivo">
+                                    <b-form-group class="col-md-6" label="Proceso Ejecutivo" label-for="prore_proceso_ejecutivo">
                                       <div v-if="proc_id != null">
                                         <span class='text'>{{formData.prore_proceso_ejecutivo}}</span>
                                       </div>
@@ -763,7 +763,7 @@
                                         </div>
                                       </div>
                                     </b-form-group>
-                                    <b-form-group class="col-md-6" label="Ejecutante*" label-for="prore_ejecutante">
+                                    <b-form-group class="col-md-6" label="Ejecutante" label-for="prore_ejecutante">
                                       <div v-if="proc_id != null">
                                         <span class='text'>{{formData.prore_ejecutante}}</span>
                                       </div>
@@ -775,7 +775,7 @@
                                         </div>
                                       </div>
                                     </b-form-group>
-                                    <b-form-group class="col-md-6" label="Medida Cautelar*" label-for="prore_medida_cautelar">
+                                    <b-form-group class="col-md-6" label="Medida Cautelar" label-for="prore_medida_cautelar">
                                       <div v-if="proc_id != null">
                                         <span class='text'>{{formData.prore_medida_cautelar}}</span>
                                       </div>
@@ -787,7 +787,7 @@
                                         </div>
                                       </div>
                                     </b-form-group>
-                                    <b-form-group class="col-md-6" label="Pretenciones/Capital/Interes/Honorarios" label-for="prore_pretenciones_cap_int_hon">
+                                    <b-form-group class="col-md-6" label="Pretensiones/Capital/Interes/Honorarios" label-for="prore_pretenciones_cap_int_hon">
                                       <div v-if="!editing && proc_id != null">
                                         <span class='text' @click="enableEditing">{{formData.prore_pretenciones_cap_int_hon}}</span>
                                       </div>
@@ -886,7 +886,7 @@
                                       </div>
                                     </b-form-group>
                                   </template>
-                                  <b-form-group class="col-md-6" label="Valor Lucro Cesante*" label-for="prore_val_luc_cesante">
+                                  <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="prore_val_luc_cesante">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_val_luc_cesante}}</span>
                                     </div>
@@ -898,7 +898,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Valor daño Emergente*" label-for="prore_val_dano_emergente">
+                                  <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="prore_val_dano_emergente">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_val_dano_emergente}}</span>
                                     </div>
@@ -910,7 +910,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Total Perjuicios Materiales*" label-for="prore_total_perjuicios_materiales">
+                                  <b-form-group class="col-md-6" label="Total Perjuicios Materiales" label-for="prore_total_perjuicios_materiales">
                                     <div v-if="!editing && proc_id != null">
                                       <span class='text'>{{formData.prore_total_perjuicios_materiales}}</span>
                                     </div>
@@ -922,7 +922,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Materiales*" label-for="prore_estimacion_pago_perju">
+                                  <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Materiales" label-for="prore_estimacion_pago_perju">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_estimacion_pago_perju_materiales}}</span>
                                     </div>
@@ -946,7 +946,7 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Valor Daño Moral*" label-for="prore_val_dano_moral">
+                                  <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="prore_val_dano_moral">
                                     <div v-if="proc_id != null">
                                       <span class='number'>{{formData.prore_val_dano_moral}}</span>
                                     </div>
@@ -958,7 +958,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos y Otros*" label-for="prore_val_dano_vida">
+                                  <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos y Otros" label-for="prore_val_dano_vida">
                                     <div v-if="proc_id != null">
                                       <span class='number'>{{formData.prore_val_dano_vida}}</span>
                                     </div>
@@ -970,7 +970,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Total Perjuicios Inmateriales*" label-for="prore_total_perjuicios_inmateriales">
+                                  <b-form-group class="col-md-6" label="Total Perjuicios Inmateriales" label-for="prore_total_perjuicios_inmateriales">
                                     <div v-if="!editing && proc_id != null">
                                       <span class='number' @click="enableEditing">{{formData.prore_total_perjuicios_inmateriales}}</span>
                                     </div>
@@ -986,7 +986,7 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Inmateriales*" label-for="prore_estimacion_pago_perju_inmateriales">
+                                  <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Inmateriales" label-for="prore_estimacion_pago_perju_inmateriales">
                                     <div v-if="!editing && proc_id != null">
                                       <span class='text' @click="enableEditing">{{formData.prore_estimacion_pago_perju_inmateriales}}</span>
                                     </div>
@@ -1042,7 +1042,7 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Aseguradora*" label-for="prore_aseguradora_id">
+                                  <b-form-group class="col-md-6" label="Aseguradora" label-for="prore_aseguradora_id">
                                     <b-form-select plain v-model="formData.prore_aseguradora_id" :options="aseguradorasOptions" id="prore_aseguradora_id" :class="hasError('prore_aseguradora_id') ? 'is-invalid' : ''">
                                       <template v-slot:first>
                                         <b-form-select-option :value="null" disabled>Seleccione una Aseguradora</b-form-select-option>
@@ -1052,7 +1052,7 @@
                                       <div class="error" v-if="!$v.formData.prore_aseguradora_id.required">Por elige una opción.</div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Número de Poliza*" label-for="prore_num_poliza">
+                                  <b-form-group class="col-md-6" label="Número de Poliza" label-for="prore_num_poliza">
                                     <div v-if="!editing && proc_id != null">
                                       <span class='text' @click="enableEditing">{{formData.prore_num_poliza}}</span>
                                     </div>
@@ -1138,7 +1138,7 @@
                                       <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0" v-model="formData.prore_prescritas" value="1">Prescritas</b-form-checkbox>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Fecha Sentencia Primera Instancia*" label-for="prore_fec_sentencia_primera_instancia">
+                                  <b-form-group class="col-md-6" label="Fecha Sentencia Primera Instancia" label-for="prore_fec_sentencia_primera_instancia">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_fec_sentencia_primera_instancia}}</span>
                                     </div>
@@ -1151,7 +1151,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Fecha de Consulta*" label-for="prore_fec_consulta">
+                                  <b-form-group class="col-md-6" label="Fecha de Consulta" label-for="prore_fec_consulta">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_fec_consulta}}</span>
                                     </div>
@@ -1164,7 +1164,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Fecha de Sentencia Segunda Instancia*" label-for="prore_fec_sentencia_segunda_instancia">
+                                  <b-form-group class="col-md-6" label="Fecha de Sentencia Segunda Instancia" label-for="prore_fec_sentencia_segunda_instancia">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_fec_sentencia_segunda_instancia}}</span>
                                     </div>
@@ -1189,7 +1189,7 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Sentencia Final*" label-for="prore_sentencia_final">
+                                  <b-form-group class="col-md-6" label="Sentencia Final" label-for="prore_sentencia_final">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_sentencia_final}}</span>
                                     </div>
@@ -1209,7 +1209,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Valor De La Sentencia Final*" label-for="prore_val_sentencia_final">
+                                  <b-form-group class="col-md-6" label="Valor De La Sentencia Final" label-for="prore_val_sentencia_final">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_val_sentencia_final}}</span>
                                     </div>
@@ -1222,7 +1222,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Discriminar Valor De La Condena*" label-for="prore_discriminar_val_condena">
+                                  <b-form-group class="col-md-6" label="Discriminar Valor De La Condena" label-for="prore_discriminar_val_condena">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_discriminar_val_condena}}</span>
                                     </div>
@@ -1235,7 +1235,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Costas De La Sentencia*" label-for="prore_costas_sentencia">
+                                  <b-form-group class="col-md-6" label="Costas De La Sentencia" label-for="prore_costas_sentencia">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_costas_sentencia}}</span>
                                     </div>
@@ -1248,7 +1248,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Costas Procesales Primera Instancia*" label-for="prore_costas_procesales_primera_instancia">
+                                  <b-form-group class="col-md-6" label="Costas Procesales Primera Instancia" label-for="prore_costas_procesales_primera_instancia">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_costas_procesales_primera_instancia}}</span>
                                     </div>
@@ -1261,7 +1261,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Costas Procesales Segunda Instancia*" label-for="prore_costas_procesales_segunda_instancia">
+                                  <b-form-group class="col-md-6" label="Costas Procesales Segunda Instancia" label-for="prore_costas_procesales_segunda_instancia">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_costas_procesales_segunda_instancia}}</span>
                                     </div>
@@ -1274,7 +1274,7 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Total Costas*" label-for="prore_total_costas">
+                                  <b-form-group class="col-md-6" label="Total Costas" label-for="prore_total_costas">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_total_costas}}</span>
                                     </div>
@@ -1543,54 +1543,18 @@ export default {
           prore_fec_ingreso_jur: { required },
           prore_fec_ingreso_cli: { required },
           prore_city_id: { required },
-          prore_pac_name_first: { required },
-          prore_pac_name_second: { required },
-          prore_pac_lastname_first: { required },
-          prore_pac_lastname_second: { required },
-          prore_pac_gender: { required },
-          prore_pac_age: { required },
-          prore_propse_id: { required },
           prore_litigando_id: { required }
         },
         {
           prore_applicant_name_first: { required },
-          prore_applicant_name_secdon: { required },
           prore_applicant_lastname_first: { required },
-          prore_applicant_lastname_second: { required },
           prore_defendant_name_first: { required },
-          prore_defendant_name_second: { required },
           prore_defendant_lastname_first: { required },
-          prore_defendant_lastname_second: { required },
           prore_warranty_name_first: { required },
-          prore_warranty_name_second: { required },
-          prore_warranty_lastname_first: { required },
-          prore_warranty_lastname_second: { required }
+          prore_warranty_lastname_first: { required }
         },
         {
-          prore_proceso_ejecutivo: { required },
-          prore_ejecutante: { required },
-          prore_medida_cautelar: { required },
-          prore_val_luc_cesante: { required },
-          prore_val_dano_emergente: { required },
-          prore_total_perjuicios_materiales: { required },
-          prore_estimacion_pago_perju_materiales: { required },
-          prore_val_dano_moral: { required },
-          prore_val_dano_vida: { required },
-          prore_total_perjuicios_inmateriales: { required },
-          prore_estimacion_pago_perju_inmateriales: { required },
-          prore_cuantia_pretenciones: { required },
-          prore_aseguradora_id: { required },
-          prore_num_poliza: { required },
-          prore_fec_sentencia_primera_instancia: { required },
-          prore_fec_consulta: { required },
-          prore_fec_sentencia_segunda_instancia: { required },
-          prore_sentencia_final: { required },
-          prore_val_sentencia_final: { required },
-          prore_discriminar_val_condena: { required },
-          prore_costas_sentencia: { required },
-          prore_costas_procesales_primera_instancia: { required },
-          prore_costas_procesales_segunda_instancia: { required },
-          prore_total_costas: { required }
+          prore_cuantia_pretenciones: { required }
         }
       ],
       proc: {},
