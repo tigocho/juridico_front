@@ -187,21 +187,27 @@
                                   </div>
                                 </b-form-group>
                                 <b-form-group class="col-md-6" label="Fecha de Ingreso a Clínica*" label-for="prore_fec_ingreso_cli">
-                                  <div v-if="proc_id != null && formData.prore_fec_ingreso_cli != null">
-                                    <span class='text'>{{formData.prore_fec_ingreso_cli}}</span>
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.prore_fec_ingreso_cli !== null" class='text' @click="enableEditing">{{ formData.prore_fec_ingreso_cli }}</span>
+                                    <span v-else class='text' @click="enableEditing">Clic para editar</span>
                                   </div>
-                                  <div v-if="proc_id == null || formData.prore_fec_ingreso_cli == null">
+                                  <div v-if="editing || proc_id == null || formData.prore_fec_ingreso_cli == null">
                                     <b-form-input id="prore_fec_ingreso_cli" v-model="formData.prore_fec_ingreso_cli" type="date" :class="hasError('prore_fec_ingreso_cli') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_fec_ingreso_cli')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_fec_ingreso_cli.required">Por favor elige una fecha.</div>
                                     </div>
                                   </div>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                  </div>
                                 </b-form-group>
                                 <b-form-group class="col-md-6" label="Ciudad*" label-for="prore_city_id">
-                                  <div v-if="proc_id != null && formData.prore_city_id != null">
-                                    <span class='text'>{{formData.city_name}}</span>
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.prore_city_id !== null" class='text' @click="enableEditing">{{ formData.city_name }}</span>
+                                    <span v-else class='text' @click="enableEditing">Clic para editar</span>
                                   </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_name_first == null">
+                                  <div v-if="editing || proc_id == null || formData.prore_pac_name_first == null">
                                     <b-form-select plain v-model="formData.prore_city_id" :options="citiesOptions" id="select_city" :class="hasError('prore_city_id') ? 'is-invalid' : ''">
                                       <template v-slot:first>
                                         <b-form-select-option :value="null" disabled>Seleccione una Ciudad</b-form-select-option>
@@ -211,56 +217,81 @@
                                       <div class="error" v-if="!$v.formData.prore_city_id.required">Por favor elige una fecha.</div>
                                     </div>
                                   </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Primer Nombre Paciente*" label-for="prore_pac_name_first">
-                                  <div v-if="proc_id != null && formData.prore_pac_name_first != null">
-                                    <span class='text'>{{formData.prore_pac_name_first}}</span>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_name_first == null">
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Primer Nombre Paciente" label-for="prore_pac_name_first">
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.prore_pac_name_first !== null" class='text' @click="enableEditing">{{ formData.prore_pac_name_first }}</span>
+                                    <span v-else class='text' @click="enableEditing">Clic para editar</span>
+                                  </div>
+                                  <div v-if="editing || proc_id == null || formData.prore_pac_name_first == null">
                                     <b-form-input v-model="formData.prore_pac_name_first" type="text" placeholder="Primer Nombre" :class="hasError('prore_pac_name_first') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_pac_name_first')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_pac_name_first.required">Por favor escriba el primer nombre del paciente.</div>
                                     </div>
                                   </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Nombre Paciente*" label-for="prore_pac_name_second">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_pac_name_second}}</span>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
-                                  <div v-if="proc_id == null">
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Segundo Nombre Paciente" label-for="prore_pac_name_second">
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.prore_pac_name_second !== null" class='text' @click="enableEditing">{{ formData.prore_pac_name_second }}</span>
+                                    <span v-else class='text' @click="enableEditing">Clic para editar</span>
+                                  </div>
+                                  <div v-if="editing || proc_id == null">
                                     <b-form-input v-model="formData.prore_pac_name_second" type="text" placeholder="Segundo Nombre" :class="hasError('prore_pac_name_second') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_pac_name_second')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_pac_name_second.required">Por favor escriba el segundo nombre del paciente.</div>
                                     </div>
                                   </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Primer Apellido Paciente*" label-for="prore_pac_lastname_first">
-                                  <div v-if="proc_id != null && formData.prore_pac_lastname_first != null">
-                                    <span class='text'>{{formData.prore_pac_lastname_first}}</span>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_lastname_first == null">
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Primer Apellido Paciente" label-for="prore_pac_lastname_first">
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.prore_pac_lastname_first !== null" class='text' @click="enableEditing">{{ formData.prore_pac_lastname_first }}</span>
+                                    <span v-else class='text' @click="enableEditing">Clic para editar</span>
+                                  </div>
+                                  <div v-if="editing || proc_id == null || formData.prore_pac_lastname_first == null">
                                     <b-form-input v-model="formData.prore_pac_lastname_first" type="text" placeholder="Primer Apellido" :class="hasError('prore_pac_lastname_first') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_pac_lastname_first')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_pac_lastname_first.required">Por favor escriba el primer apellido del paciente.</div>
                                     </div>
                                   </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Apellido Paciente*" label-for="prore_pac_lastname_second">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_pac_lastname_second}}</span>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
-                                  <div v-if="proc_id == null">
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Segundo Apellido Paciente" label-for="prore_pac_lastname_second">
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.prore_pac_lastname_second !== null" class='text' @click="enableEditing">{{ formData.prore_pac_lastname_second }}</span>
+                                    <span v-else class='text' @click="enableEditing">Clic para editar</span>
+                                  </div>
+                                  <div v-if="editing || proc_id == null">
                                     <b-form-input v-model="formData.prore_pac_lastname_second" type="text" placeholder="Segundo Apellido" :class="hasError('prore_pac_lastname_second') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_pac_lastname_second')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_pac_lastname_second.required">Por favor escriba el segundo apellido del paciente.</div>
                                     </div>
                                   </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Genero del paciente*" label-for="usr_lastname_first">
-                                  <div v-if="proc_id != null && formData.prore_pac_gender != null">
-                                    <span class='text'>{{ genderPaciente }}</span>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_gender == null">
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Genero del paciente" label-for="prore_pac_gender">
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.prore_pac_genders !== null" class='text' @click="enableEditing">{{ formData.prore_pac_genders }}</span>
+                                    <span v-else class='text' @click="enableEditing">Clic para editar</span>
+                                  </div>
+                                  <div v-if="editing || proc_id == null || formData.prore_pac_gender == null">
                                     <template v-for="(item,index) in state">
                                       <b-form-radio inline v-model="formData.prore_pac_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="hasError('prore_pac_gender') ? 'is-invalid' : ''">{{ item.label }}</b-form-radio>
                                     </template>
@@ -268,23 +299,33 @@
                                       <div class="error" v-if="!$v.formData.prore_pac_gender.required">Por favor elige un género.</div>
                                     </div>
                                   </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Edad del paciente*" label-for="prore_pac_age">
-                                  <div v-if="proc_id != null && formData.prore_pac_age != null">
-                                    <span class='text'>{{formData.prore_pac_age}}</span>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_age == null">
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Edad del paciente" label-for="prore_pac_age">
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.prore_pac_age !== null" class='text' @click="enableEditing">{{ formData.prore_pac_age }}</span>
+                                    <span v-else class='text' @click="enableEditing">Clic para editar</span>
+                                  </div>
+                                  <div v-if="editing || proc_id == null || formData.prore_pac_age == null">
                                     <b-form-input v-model="formData.prore_pac_age" id="prore_pac_age" type="number" :class="hasError('prore_pac_age') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_pac_age')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_pac_age.required">Por favor escriba la edad del paciente.</div>
                                     </div>
                                   </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Especialidad*" label-for="selectuserrole">
-                                  <div v-if="proc_id != null && formData.prore_propse_id != null">
-                                    <span class='text'>{{formData.spe_name}}</span>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
-                                  <div v-if="proc_id == null || formData.prore_propse_id == null">
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Especialidad" label-for="selectuserrole">
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.spe_name !== null" class='text' @click="enableEditing">{{ formData.spe_name }}</span>
+                                    <span v-else class='text' @click="enableEditing">Clic para editar</span>
+                                  </div>
+                                  <div v-if="editing || proc_id == null || formData.prore_propse_id == null">
                                     <b-form-select plain v-model="formData.prore_propse_id" :options="especialidadesOptions" id="select_especialidad" :class="hasError('prore_propse_id') ? 'is-invalid' : ''">
                                       <template v-slot:first>
                                         <b-form-select-option :value="null" disabled>Seleccione una especialidad</b-form-select-option>
@@ -293,6 +334,10 @@
                                     <div v-if="hasError('prore_propse_id')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_propse_id.required">Por favor elige una opción.</div>
                                     </div>
+                                  </div>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
                                 </b-form-group>
                                 <b-form-group class="col-md-6" label="Asignar Abogada/o" label-for="prore_pro_id">
@@ -405,15 +450,20 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Nombre*" label-for="prore_applicant_name_secdon">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_applicant_name_secdon}}</span>
+                                <b-form-group class="col-md-6" label="Segundo Nombre" label-for="prore_applicant_name_secdon">
+                                  <div v-if="!editing">
+                                    <span v-if="formData.prore_applicant_name_secdon !== null" class='text' @click="enableEditing">{{formData.prore_applicant_name_secdon}}</span>
+                                    <span v-else @click="enableEditing">Clic para editar</span>
                                   </div>
-                                  <div v-if="proc_id == null">
+                                  <div v-else>
                                     <b-form-input v-model="formData.prore_applicant_name_secdon" type="text" placeholder="Segundo Nombre" :class="hasError('prore_applicant_name_secdon') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_applicant_lastname_second')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_applicant_name_secdon.required">Por favor escriba el segundo nombre del demandante.</div>
                                     </div>
+                                  </div>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
                                 </b-form-group>
                                 <b-form-group class="col-md-6" label="Primer Apellido*" label-for="prore_applicant_lastname_first">
@@ -427,15 +477,20 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Apellido*" label-for="prore_applicant_lastname_second">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_applicant_lastname_second}}</span>
+                                <b-form-group class="col-md-6" label="Segundo Apellido" label-for="prore_applicant_lastname_second">
+                                  <div v-if="!editing && proc_id != null">
+                                    <span v-if="formData.prore_applicant_lastname_second !== null" class='text' @click="enableEditing">{{formData.prore_applicant_lastname_second}}</span>
+                                    <span v-else @click="enableEditing">Clic para editar</span>
                                   </div>
                                   <div v-else>
                                     <b-form-input v-model="formData.prore_applicant_lastname_second" type="text" placeholder="Segundo Apellido" :class="hasError('prore_applicant_lastname_second') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_applicant_lastname_second')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_applicant_lastname_first.required">Por favor escriba el segundo apellido del demandante.</div>
                                     </div>
+                                  </div>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                   </div>
                                 </b-form-group>
                               </b-row>
@@ -446,7 +501,7 @@
                                     <span v-if="formData.prore_applicant_phone !== null" class='text' @click="enableEditing">{{formData.prore_applicant_phone}}</span>
                                     <span v-else @click="enableEditing">Clic para editar</span>
                                   </div>
-                                  <div v-if="editing || proc_id == null">
+                                  <div v-else>
                                     <b-form-input v-model="formData.prore_applicant_phone" type="number" placeholder="3015456561" :class="hasError('prore_applicant_phone') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_applicant_phone')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_applicant_phone.required">Por favor escriba el número del demandante.</div>
@@ -462,7 +517,7 @@
                                     <span v-if="formData.prore_applicant_email != null" class='text' @click="enableEditing">{{formData.prore_applicant_email}}</span>
                                     <span v-else @click="enableEditing">Clic para editar</span>
                                   </div>
-                                  <div v-if="editing || proc_id == null">
+                                  <div v-else>
                                     <b-form-input v-model="formData.prore_applicant_email" type="email" placeholder="Correo Electronico" :class="hasError('prore_applicant_email') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_applicant_email')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_applicant_email.required">Por favor escriba el número del demandante.</div>
@@ -489,15 +544,20 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Nombre*" label-for="prore_defendant_name_second">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_defendant_name_second}}</span>
+                                  <b-form-group class="col-md-6" label="Segundo Nombre" label-for="prore_defendant_name_second">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_defendant_name_second !== null" class='text' @click="enableEditing">{{formData.prore_defendant_name_second}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input v-model="formData.prore_defendant_name_second" type="text" placeholder="Segundo Nombre" :class="hasError('prore_defendant_name_second') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_defendant_name_second')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_defendant_name_second.required">Por favor escriba el segundo nombre del demandado.</div>
                                       </div>
+                                    </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
                                   <b-form-group class="col-md-6" label="Primer Apellido*" label-for="prore_defendant_lastname_first">
@@ -511,15 +571,20 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Apellido*" label-for="prore_defendant_lastname_second">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_defendant_lastname_second}}</span>
+                                  <b-form-group class="col-md-6" label="Segundo Apellido" label-for="prore_defendant_lastname_second">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_defendant_lastname_second !== null" class='text' @click="enableEditing">{{formData.prore_defendant_lastname_second}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input v-model="formData.prore_defendant_lastname_second" type="text" placeholder="Segundo Apellido" :class="hasError('prore_defendant_lastname_second') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_defendant_lastname_second')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_defendant_lastname_second.required">Por favor escriba el segundo apellido del demandado.</div>
                                       </div>
+                                    </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
                                 </b-row>
@@ -572,9 +637,10 @@
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Nombre*" label-for="prore_warranty_name_second">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_warranty_name_second}}</span>
+                                  <b-form-group class="col-md-6" label="Segundo Nombre" label-for="prore_warranty_name_second">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_warranty_name_second !== null" class='text' @click="enableEditing">{{formData.prore_warranty_name_second}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input v-model="formData.prore_warranty_name_second" type="text" placeholder="Segundo Nombre" :class="hasError('prore_warranty_name_second') ? 'is-invalid' : ''"></b-form-input>
@@ -602,9 +668,10 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Apellido*" label-for="prore_warranty_lastname_second">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_warranty_lastname_second}}</span>
+                                  <b-form-group class="col-md-6" label="Segundo Apellido" label-for="prore_warranty_lastname_second">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_warranty_lastname_second !== null" class='text' @click="enableEditing">{{formData.prore_warranty_lastname_second}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input v-model="formData.prore_warranty_lastname_second" type="text" placeholder="Segundo Apellido" :class="hasError('prore_warranty_lastname_second') ? 'is-invalid' : ''"></b-form-input>
@@ -740,7 +807,7 @@
                                       <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-if="editing || proc_id == null">
-                                      <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="number" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="text" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_num_radicado')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_num_radicado.required">Por favor escriba el número radicado.</div>
                                       </div>
@@ -764,9 +831,10 @@
                                     </div>
                                   </b-form-group>
                                   <template>
-                                    <b-form-group class="col-md-6" label="Proceso Ejecutivo*" label-for="prore_proceso_ejecutivo">
-                                      <div v-if="proc_id != null">
-                                        <span class='text'>{{formData.prore_proceso_ejecutivo}}</span>
+                                    <b-form-group class="col-md-6" label="Proceso Ejecutivo" label-for="prore_proceso_ejecutivo">
+                                      <div v-if="!editing && proc_id != null">
+                                        <span v-if="formData.prore_proceso_ejecutivo !== null" class='text' @click="enableEditing">{{formData.prore_proceso_ejecutivo}}</span>
+                                        <span v-else @click="enableEditing">Clic para editar</span>
                                       </div>
                                       <div v-else>
                                         <b-form-input v-model="formData.prore_proceso_ejecutivo" type="text" placeholder="Proceso Ejecutivo" :class="hasError('prore_proceso_ejecutivo') ? 'is-invalid' : ''"></b-form-input>
@@ -775,10 +843,15 @@
                                           </div>
                                         </div>
                                       </div>
+                                      <div v-if="editing && proc_id != null">
+                                        <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                        <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                      </div>
                                     </b-form-group>
-                                    <b-form-group class="col-md-6" label="Ejecutante*" label-for="prore_ejecutante">
-                                      <div v-if="proc_id != null">
-                                        <span class='text'>{{formData.prore_ejecutante}}</span>
+                                    <b-form-group class="col-md-6" label="Ejecutante" label-for="prore_ejecutante">
+                                      <div v-if="!editing && proc_id != null">
+                                        <span v-if="formData.prore_ejecutante !== null" class='text' @click="enableEditing">{{formData.prore_ejecutante}}</span>
+                                        <span v-else @click="enableEditing">Clic para editar</span>
                                       </div>
                                       <div v-else>
                                         <b-form-input v-model="formData.prore_ejecutante" type="text" placeholder="Ejecutante" :class="hasError('prore_ejecutante') ? 'is-invalid' : ''"></b-form-input>
@@ -787,10 +860,15 @@
                                           </div>
                                         </div>
                                       </div>
+                                      <div v-if="editing && proc_id != null">
+                                        <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                        <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                      </div>
                                     </b-form-group>
-                                    <b-form-group class="col-md-6" label="Medida Cautelar*" label-for="prore_medida_cautelar">
-                                      <div v-if="proc_id != null">
-                                        <span class='text'>{{formData.prore_medida_cautelar}}</span>
+                                    <b-form-group class="col-md-6" label="Medida Cautelar" label-for="prore_medida_cautelar">
+                                      <div v-if="!editing && proc_id != null">
+                                        <span v-if="formData.prore_medida_cautelar !== null" class='text' @click="enableEditing">{{formData.prore_medida_cautelar}}</span>
+                                        <span v-else @click="enableEditing">Clic para editar</span>
                                       </div>
                                       <div v-else>
                                         <b-form-input id="prore_medida_cautelar" type="text" placeholder="Medida cautelas" v-model="formData.prore_medida_cautelar" :class="hasError('prore_medida_cautelar') ? 'is-invalid' : ''"></b-form-input>
@@ -799,8 +877,12 @@
                                           </div>
                                         </div>
                                       </div>
+                                      <div v-if="editing && proc_id != null">
+                                        <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                        <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                      </div>
                                     </b-form-group>
-                                    <b-form-group class="col-md-6" label="Pretenciones/Capital/Interes/Honorarios" label-for="prore_pretenciones_cap_int_hon">
+                                    <b-form-group class="col-md-6" label="Pretensiones/Capital/Interes/Honorarios" label-for="prore_pretenciones_cap_int_hon">
                                       <div v-if="!editing && proc_id != null">
                                         <span class='text' @click="enableEditing">{{formData.prore_pretenciones_cap_int_hon}}</span>
                                       </div>
@@ -899,9 +981,10 @@
                                       </div>
                                     </b-form-group>
                                   </template>
-                                  <b-form-group class="col-md-6" label="Valor Lucro Cesante*" label-for="prore_val_luc_cesante">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_val_luc_cesante}}</span>
+                                  <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="prore_val_luc_cesante">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_val_luc_cesante !== null" class='text' @click="enableEditing">{{formData.prore_val_luc_cesante}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input v-model="formData.prore_val_luc_cesante" type="number" placeholder="$" :class="hasError('prore_val_luc_cesante') ? 'is-invalid' : ''"></b-form-input>
@@ -910,10 +993,15 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Valor daño Emergente*" label-for="prore_val_dano_emergente">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_val_dano_emergente}}</span>
+                                  <b-form-group class="col-md-6" label="Valor daño Emergente" label-for="prore_val_dano_emergente">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_val_dano_emergente !== null" class='text' @click="enableEditing">{{formData.prore_val_dano_emergente}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input v-model="formData.prore_val_dano_emergente" type="number" placeholder="$" :class="hasError('prore_val_dano_emergente') ? 'is-invalid' : ''"></b-form-input>
@@ -922,22 +1010,32 @@
                                         </div>
                                       </div>
                                     </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Total Perjuicios Materiales*" label-for="prore_total_perjuicios_materiales">
-                                    <div v-if="!editing && proc_id != null">
-                                      <span class='text'>{{formData.prore_total_perjuicios_materiales}}</span>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_total_perjuicios_materiales == null">
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Total Perjuicios Materiales" label-for="prore_total_perjuicios_materiales">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_total_perjuicios_materiales !== null" class='text' @click="enableEditing">{{formData.prore_total_perjuicios_materiales}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
+                                    </div>
+                                    <div v-else>
                                       <b-form-input id="prore_total_perjuicios_materiales" v-model="formData.prore_total_perjuicios_materiales" type="number" placeholder="$" :class="hasError('prore_total_perjuicios_materiales') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_total_perjuicios_materiales')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_total_perjuicios_materiales.required">Por favor escriba el total de perjuicios materiales.
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Materiales*" label-for="prore_estimacion_pago_perju">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_estimacion_pago_perju_materiales}}</span>
+                                  <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Materiales" label-for="prore_estimacion_pago_perju">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_estimacion_pago_perju_materiales !== null" class='text' @click="enableEditing">{{formData.prore_estimacion_pago_perju_materiales}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input id="prore_estimacion_pago_perju_materiales" v-model="formData.prore_estimacion_pago_perju_materiales" type="number" placeholder="$" :class="hasError('prore_estimacion_pago_perju_materiales') ? 'is-invalid' : ''"></b-form-input>
@@ -945,6 +1043,10 @@
                                         <div class="error" v-if="!$v.formData.prore_estimacion_pago_perju_materiales.required">Por favor escriba el estimado del monto a pagar por perjuiciosos materiales.
                                         </div>
                                       </div>
+                                    </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
                                   <b-form-group class="col-md-6" label="Valor Que Cubre La Poliza Por Perjuicios Materiales" label-for="prore_val_cubre_poliza_perjuicios_mat">
@@ -960,21 +1062,27 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Valor Daño Moral*" label-for="prore_val_dano_moral">
-                                    <div v-if="proc_id != null">
-                                      <span class='number'>{{formData.prore_val_dano_moral}}</span>
+                                  <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="prore_val_dano_moral">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_val_dano_moral !== null" class='text' @click="enableEditing">{{formData.prore_val_dano_moral}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
-                                    <div v-if="proc_id == null || formData.prore_val_dano_moral == null">
+                                    <div v-else>
                                       <b-form-input v-model="formData.prore_val_dano_moral" type="number" placeholder="$" :class="hasError('prore_val_dano_moral') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_val_dano_moral')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_val_dano_moral.required">Por favor escriba el valor en daño moral.
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos y Otros*" label-for="prore_val_dano_vida">
-                                    <div v-if="proc_id != null">
-                                      <span class='number'>{{formData.prore_val_dano_vida}}</span>
+                                  <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos y Otros" label-for="prore_val_dano_vida">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_val_dano_vida !== null" class='text' @click="enableEditing">{{formData.prore_val_dano_vida}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input v-model="formData.prore_val_dano_vida" type="number" placeholder="$" :class="hasError('prore_val_dano_vida') ? 'is-invalid' : ''"></b-form-input>
@@ -982,6 +1090,10 @@
                                         <div class="error" v-if="!$v.formData.prore_val_dano_vida.required">Por favor escriba el valor de daño a la vida o perjuicios.
                                         </div>
                                       </div>
+                                    </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
                                   <b-form-group class="col-md-6" label="Total Perjuicios Inmateriales*" label-for="prore_total_perjuicios_inmateriales">
@@ -1000,11 +1112,12 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Inmateriales*" label-for="prore_estimacion_pago_perju_inmateriales">
+                                  <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Inmateriales" label-for="prore_estimacion_pago_perju_inmateriales">
                                     <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_estimacion_pago_perju_inmateriales}}</span>
+                                      <span v-if="formData.prore_estimacion_pago_perju_inmateriales !== null" class='text' @click="enableEditing">{{formData.prore_estimacion_pago_perju_inmateriales}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_estimacion_pago_perju_inmateriales == null">
+                                    <div v-else>
                                       <b-form-input id="prore_estimacion_pago_perju_inmateriales" v-model="formData.prore_estimacion_pago_perju_inmateriales" type="number" placeholder="$" :class="hasError('prore_estimacion_pago_perju_inmateriales') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_estimacion_pago_perju_inmateriales')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_estimacion_pago_perju_inmateriales.required">Por favor escriba el estimado de perjuicios inmateriales.
@@ -1058,9 +1171,10 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Aseguradora*" label-for="prore_aseguradora_id">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.ase_name}}</span>
+                                  <b-form-group class="col-md-6" label="Aseguradora" label-for="prore_aseguradora_id">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.ase_name !== null" class='text' @click="enableEditing">{{formData.ase_name}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-select plain v-model="formData.prore_aseguradora_id" :options="aseguradorasOptions" id="prore_aseguradora_id" :class="hasError('prore_aseguradora_id') ? 'is-invalid' : ''">
@@ -1068,16 +1182,21 @@
                                           <b-form-select-option :value="null" disabled>Seleccione una Aseguradora</b-form-select-option>
                                         </template>
                                       </b-form-select>
+                                      <div v-if="hasError('prore_aseguradora_id')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_aseguradora_id.required">Por elige una opción.</div>
+                                      </div>
                                     </div>
-                                    <div v-if="hasError('prore_aseguradora_id')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_aseguradora_id.required">Por elige una opción.</div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Número de Poliza*" label-for="prore_num_poliza">
+                                  <b-form-group class="col-md-6" label="Número de Poliza" label-for="prore_num_poliza">
                                     <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_num_poliza}}</span>
+                                      <span v-if="formData.prore_num_poliza !== null" class='text' @click="enableEditing">{{formData.prore_num_poliza}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_num_poliza == null">
+                                    <div v-else>
                                       <b-form-input id="prore_num_poliza" v-model="formData.prore_num_poliza" type="number" placeholder="Número póliza" :class="hasError('prore_num_poliza') ? 'is-invalid' : ''"></b-form-input>
                                        <div v-if="hasError('prore_num_poliza')" class="invalid-feedback">
                                           <div class="error" v-if="!$v.formData.prore_num_poliza.required">
@@ -1164,9 +1283,10 @@
                                       <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0" v-model="formData.prore_prescritas" value="1">Prescritas</b-form-checkbox>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Fecha Sentencia Primera Instancia*" label-for="prore_fec_sentencia_primera_instancia">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_fec_sentencia_primera_instancia}}</span>
+                                  <b-form-group class="col-md-6" label="Fecha Sentencia Primera Instancia" label-for="prore_fec_sentencia_primera_instancia">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_fec_sentencia_primera_instancia !== null" class='text' @click="enableEditing">{{formData.prore_fec_sentencia_primera_instancia}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input id="prore_fec_sentencia_primera_instancia" v-model="formData.prore_fec_sentencia_primera_instancia" type="date" :class="hasError('prore_fec_sentencia_primera_instancia') ? 'is-invalid' : ''"></b-form-input>
@@ -1176,10 +1296,15 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Fecha de Consulta*" label-for="prore_fec_consulta">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_fec_consulta}}</span>
+                                  <b-form-group class="col-md-6" label="Fecha de Consulta" label-for="prore_fec_consulta">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_fec_consulta !== null" class='text' @click="enableEditing">{{formData.prore_fec_consulta}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input id="prore_fec_consulta" v-model="formData.prore_fec_consulta" type="date" :class="hasError('prore_fec_consulta') ? 'is-invalid' : ''"></b-form-input>
@@ -1189,8 +1314,12 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Fecha de Sentencia Segunda Instancia*" label-for="prore_fec_sentencia_segunda_instancia">
+                                  <b-form-group class="col-md-6" label="Fecha de Sentencia Segunda Instancia" label-for="prore_fec_sentencia_segunda_instancia">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_fec_sentencia_segunda_instancia}}</span>
                                     </div>
@@ -1216,9 +1345,10 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Sentencia Final*" label-for="prore_sentencia_final">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_sentencia_final}}</span>
+                                  <b-form-group class="col-md-6" label="Sentencia Final" label-for="prore_sentencia_final">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_sentencia_final !== null" class='text' @click="enableEditing">{{formData.prore_sentencia_final}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-select plain v-model="formData.prore_sentencia_final" id="prore_sentencia_final" :class="hasError('prore_sentencia_final') ? 'is-invalid' : ''">
@@ -1235,10 +1365,15 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Valor De La Sentencia Final*" label-for="prore_val_sentencia_final">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_val_sentencia_final}}</span>
+                                  <b-form-group class="col-md-6" label="Valor De La Sentencia Final" label-for="prore_val_sentencia_final">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_val_sentencia_final !== null" class='text' @click="enableEditing">{{formData.prore_val_sentencia_final}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input id="prore_val_sentencia_final" v-model="formData.prore_val_sentencia_final" type="number" placeholder="$" :class="hasError('prore_val_sentencia_final') ? 'is-invalid' : ''"></b-form-input>
@@ -1248,10 +1383,15 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Discriminar Valor De La Condena*" label-for="prore_discriminar_val_condena">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_discriminar_val_condena}}</span>
+                                  <b-form-group class="col-md-6" label="Discriminar Valor De La Condena" label-for="prore_discriminar_val_condena">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_discriminar_val_condena !== null" class='text' @click="enableEditing">{{formData.prore_discriminar_val_condena}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input id="prore_discriminar_val_condena" v-model="formData.prore_discriminar_val_condena" type="number" placeholder="$" :class="hasError('prore_discriminar_val_condena') ? 'is-invalid' : ''"></b-form-input>
@@ -1261,10 +1401,15 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Costas De La Sentencia*" label-for="prore_costas_sentencia">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_costas_sentencia}}</span>
+                                  <b-form-group class="col-md-6" label="Costas De La Sentencia" label-for="prore_costas_sentencia">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_costas_sentencia !== null" class='text' @click="enableEditing">{{formData.prore_costas_sentencia}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input id="prore_costas_sentencia" v-model="formData.prore_costas_sentencia" type="number" placeholder="$" :class="hasError('prore_costas_sentencia') ? 'is-invalid' : ''"></b-form-input>
@@ -1274,10 +1419,15 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Costas Procesales Primera Instancia*" label-for="prore_costas_procesales_primera_instancia">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_costas_procesales_primera_instancia}}</span>
+                                  <b-form-group class="col-md-6" label="Costas Procesales Primera Instancia" label-for="prore_costas_procesales_primera_instancia">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_costas_procesales_primera_instancia !== null" class='text' @click="enableEditing">{{formData.prore_costas_procesales_primera_instancia}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input id="prore_costas_procesales_primera_instancia" v-model="formData.prore_costas_procesales_primera_instancia" type="number" placeholder="$" :class="hasError('prore_costas_procesales_primera_instancia') ? 'is-invalid' : ''"></b-form-input>
@@ -1287,10 +1437,15 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Costas Procesales Segunda Instancia*" label-for="prore_costas_procesales_segunda_instancia">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_costas_procesales_segunda_instancia}}</span>
+                                  <b-form-group class="col-md-6" label="Costas Procesales Segunda Instancia" label-for="prore_costas_procesales_segunda_instancia">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_costas_procesales_segunda_instancia !== null" class='text' @click="enableEditing">{{formData.prore_costas_procesales_segunda_instancia}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input id="prore_costas_procesales_segunda_instancia" v-model="formData.prore_costas_procesales_segunda_instancia" type="number" placeholder="$" :class="hasError('prore_costas_procesales_segunda_instancia') ? 'is-invalid' : ''"></b-form-input>
@@ -1300,10 +1455,15 @@
                                         </div>
                                       </div>
                                     </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Total Costas*" label-for="prore_total_costas">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_total_costas}}</span>
+                                  <b-form-group class="col-md-6" label="Total Costas" label-for="prore_total_costas">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span v-if="formData.prore_total_costas !== null" class='text' @click="enableEditing">{{formData.prore_total_costas}}</span>
+                                      <span v-else @click="enableEditing">Clic para editar</span>
                                     </div>
                                     <div v-else>
                                       <b-form-input id="prore_total_costas" v-model="formData.prore_total_costas" type="number" placeholder="$" :class="hasError('prore_total_costas') ? 'is-invalid' : ''"></b-form-input>
@@ -1312,6 +1472,10 @@
                                           Por favor escriba un valor.
                                         </div>
                                       </div>
+                                    </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
                                 </b-row>
@@ -1562,55 +1726,19 @@ export default {
           prore_fec_ingreso_jur: { required },
           prore_fec_ingreso_cli: { required },
           prore_city_id: { required },
-          prore_pac_name_first: { required },
-          prore_pac_name_second: { required },
-          prore_pac_lastname_first: { required },
-          prore_pac_lastname_second: { required },
-          prore_pac_gender: { required },
-          prore_pac_age: { required },
-          prore_propse_id: { required },
           prore_litigando_id: { required },
           prore_risk_id: { required }
         },
         {
           prore_applicant_name_first: { required },
-          prore_applicant_name_secdon: { required },
           prore_applicant_lastname_first: { required },
-          prore_applicant_lastname_second: { required },
           prore_defendant_name_first: { required },
-          prore_defendant_name_second: { required },
           prore_defendant_lastname_first: { required },
-          prore_defendant_lastname_second: { required },
           prore_warranty_name_first: { required },
-          prore_warranty_name_second: { required },
-          prore_warranty_lastname_first: { required },
-          prore_warranty_lastname_second: { required }
+          prore_warranty_lastname_first: { required }
         },
         {
-          prore_proceso_ejecutivo: { required },
-          prore_ejecutante: { required },
-          prore_medida_cautelar: { required },
-          prore_val_luc_cesante: { required },
-          prore_val_dano_emergente: { required },
-          prore_total_perjuicios_materiales: { required },
-          prore_estimacion_pago_perju_materiales: { required },
-          prore_val_dano_moral: { required },
-          prore_val_dano_vida: { required },
-          prore_total_perjuicios_inmateriales: { required },
-          prore_estimacion_pago_perju_inmateriales: { required },
-          prore_cuantia_pretenciones: { required },
-          prore_aseguradora_id: { required },
-          prore_num_poliza: { required },
-          prore_fec_sentencia_primera_instancia: { required },
-          prore_fec_consulta: { required },
-          prore_fec_sentencia_segunda_instancia: { required },
-          prore_sentencia_final: { required },
-          prore_val_sentencia_final: { required },
-          prore_discriminar_val_condena: { required },
-          prore_costas_sentencia: { required },
-          prore_costas_procesales_primera_instancia: { required },
-          prore_costas_procesales_segunda_instancia: { required },
-          prore_total_costas: { required }
+          prore_cuantia_pretenciones: { required }
         }
       ],
       proc: {},
