@@ -473,6 +473,22 @@
                             <h4 class="card-title">Información del Demandado:</h4>
                               <div class="new-user-info">
                                 <b-row>
+                                  <b-form-group class="col-md-6" label="Tipo de identificación*" label-for="prore_defendant_identification_type">
+                                    <b-form-select plain v-model="formData.prore_defendant_identification_type" :options="ids" id="prore_defendant_identification_type" :class="hasError('prore_defendant_identification_type') ? 'is-invalid' : ''">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                    <div v-if="hasError('prore_defendant_identification_type')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_defendant_identification_type.required">Por favor elija una opción.</div>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Identificación del demandado*" label-for="prore_defendant_identification">
+                                    <b-form-input v-model="formData.prore_defendant_identification" type="text" placeholder="Identificación del demandado" :class="hasError('prore_defendant_identification') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_defendant_identification')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_defendant_identification.required">Por favor escriba el número de documento.</div>
+                                    </div>
+                                  </b-form-group>
                                   <b-form-group class="col-md-6" label="Primer Nombre*" label-for="prore_defendant_name_first">
                                     <div v-if="proc_id != null">
                                       <span class='text'>{{formData.prore_defendant_name_first}}</span>
@@ -1423,6 +1439,8 @@ export default {
         prore_pro_id: '',
         prore_propse_id: '',
         prore_defendant_clin: '',
+        prore_defendant_identification_type: '',
+        prore_defendant_identification: '',
         prore_defendant_name_first: '',
         prore_defendant_name_second: '',
         prore_defendant_lastname_first: '',
@@ -1548,6 +1566,8 @@ export default {
         {
           prore_applicant_name_first: { required },
           prore_applicant_lastname_first: { required },
+          prore_defendant_identification_type: { required },
+          prore_defendant_identification: { required },
           prore_defendant_name_first: { required },
           prore_defendant_lastname_first: { required },
           prore_warranty_name_first: { required },
@@ -1576,7 +1596,8 @@ export default {
       ids: [
         { text: 'CC.', value: 1 },
         { text: 'TI.', value: 2 },
-        { text: 'RC.', value: 3 }
+        { text: 'RC.', value: 3 },
+        { text: 'NIT', value: 4 }
       ],
       aseguradorasOptions: {},
       citiesOptions: {},
