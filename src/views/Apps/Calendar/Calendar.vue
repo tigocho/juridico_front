@@ -33,10 +33,10 @@
       <b-col md="9">
         <iq-card>
           <template v-slot:headerTitle>
-            <h4 class="card-title">Crear audiencia</h4>
+            <h4 class="card-title">Crear evento</h4>
           </template>
           <template v-slot:headerAction>
-            <a href="#" class="btn btn-primary" @click="newEvent"><i class="ri-add-line mr-2" ></i>Crear audiencia</a>
+            <a href="#" class="btn btn-primary" @click="newEvent"><i class="ri-add-line mr-2" ></i>Crear evento</a>
           </template>
           <template v-slot:body>
             <Fullcalendar
@@ -72,13 +72,12 @@
       id="modal-audience"
       ref="modal"
       v-bind:title="title_modal_text"
-      @ok="handleOk"
-      @hidden="cancelado"
+      hide-footer
     >
       <form ref="form" @submit.stop.prevent="handleSubmit">
         <input type="hidden" name="hide" v-model="formData.sch_id">
         <b-form-group
-          label="Nombre de la audiencia"
+          label="Nombre del evento"
           label-for="name-input"
         >
           <b-form-input
@@ -107,13 +106,18 @@
         <b-form-group label="Fecha Final" label-for="agen_end_date">
           <b-form-input id="exampleInputdate" v-model="formData.agen_end_date" type="date"></b-form-input>
         </b-form-group>
-        <b-form-group label="Hora de Audiencia" label-for="sch_start_hour">
+        <b-form-group label="Hora de inicio" label-for="sch_start_hour">
           <b-form-input id="sch_start_hour" v-model="formData.sch_start_hour" type="time"></b-form-input>
         </b-form-group>
         <b-form-group label="Hora de finalización" label-for="sch_end_hour">
-          <b-form-input id="sch_start_hour" v-model="formData.sch_end_hour" type="time"></b-form-input>
+          <b-form-input id="sch_start_end" v-model="formData.sch_end_hour" type="time"></b-form-input>
         </b-form-group>
       </form>
+      <div class="text-right">
+        <b-button v-if="formData.sch_id !== ''" class="sm-3 mr-1" variant="danger" :class="botonEliminarModal" @click="eliminarEvento(formData.sch_id)">Eliminar evento</b-button>
+        <b-button class="sm-3 mr-1" variant="secondary" @click="cancelado">Cancelar</b-button>
+        <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="handleOk">Guardar</b-button>
+      </div>
     </b-modal>
   </b-container>
   <!--<modals-container />-->
@@ -140,9 +144,11 @@ export default {
       dateFormat: 'Y-m-d',
       inline: true
     },
+    botonEliminarModal: '',
+    botonGuardarModal: '',
     eventsToday: [],
     events: [],
-    title_modal_text: 'Crear audiencia',
+    title_modal_text: 'Crear evento',
     processOpenedOptions: [],
     abogadoOptions: [],
     formData: {
@@ -183,6 +189,49 @@ export default {
         })
       })
     },
+    eliminarEvento (eventoId) {
+      this.botonEliminarModal = 'disabled'
+      this.botonGuardarModal = 'disabled'
+      this.$bvModal.msgBoxConfirm('¿Estás seguro de eliminar este evento?', {
+        title: 'Por favor confirmar acción',
+        size: 'sm',
+        buttonSize: 'sm',
+        okVariant: 'danger',
+        okTitle: 'Confirmar',
+        cancelTitle: 'Cancelar',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      })
+        .then(value => {
+          if (value) {
+            this.confirmarEliminacion(eventoId)
+          } else {
+            this.botonEliminarModal = ''
+            this.botonGuardarModal = ''
+          }
+        })
+        .catch(err => {
+          this.botonEliminarModal = ''
+          this.botonGuardarModal = ''
+          Vue.swal(err)
+        })
+    },
+    confirmarEliminacion (eventoId) {
+      const toke = localStorage.getItem('access_token')
+      axios.post('/agenda/deleteSchedule/' + eventoId, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+        if (res.data.status_code === 200) {
+          Vue.swal(res.data.message)
+          this.getAgendas()
+          this.limpiarModal()
+          this.$bvModal.hide('modal-audience')
+        } else {
+          Vue.swal(res.data.message)
+        }
+        this.botonEliminarModal = ''
+        this.botonGuardarModal = ''
+      })
+    },
     handleOk (bvModalEvt) {
       // Prevent modal from closing
       bvModalEvt.preventDefault()
@@ -203,7 +252,7 @@ export default {
             this.$bvModal.hide('modal-audience')
           })
           if (res.data.status_code === 200) {
-            Vue.swal('Audiencia modificada correctamente')
+            Vue.swal('Evento modificado correctamente')
             this.getAgendas()
             this.limpiarModal()
           } else {
@@ -217,7 +266,7 @@ export default {
             this.$bvModal.hide('modal-audience')
           })
           if (res.data.status_code === 200) {
-            Vue.swal('Audiencia creada correctamente')
+            Vue.swal('Evento creado correctamente')
             this.getAgendas()
             this.limpiarModal()
           } else {
@@ -227,6 +276,7 @@ export default {
       }
     },
     cancelado () {
+      this.$bvModal.hide('modal-audience')
       this.limpiarModal()
     },
     limpiarModal () {
@@ -238,7 +288,7 @@ export default {
       this.formData.sch_start_hour = ''
       this.formData.sch_id = ''
       this.formData.sch_end_hour = ''
-      this.title_modal_text = 'Crear audiencia'
+      this.title_modal_text = 'Crear evento'
     },
     newEvent () {
       this.limpiarModal()
@@ -270,7 +320,7 @@ export default {
     },
     handleEventClick (arg) {
       this.formData.sch_id = arg.event.id
-      this.title_modal_text = 'Editar audiencia #' + this.formData.sch_id
+      this.title_modal_text = 'Editar evento #' + this.formData.sch_id
       this.formData.agen_name = arg.event.title
       this.formData.agen_prore_id = arg.event.extendedProps.agen_prore_id
       this.formData.agen_pro_id = arg.event.extendedProps.agen_pro_id
