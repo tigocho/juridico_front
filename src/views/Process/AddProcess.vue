@@ -1789,7 +1789,7 @@ export default {
       this.links.push({ link_name: this.nuevoLink.link_name, link_url: this.nuevoLink.link_url, link_user_id: this.userLogged.usr_id })
     },
     eliminarLink (linkId) {
-      console.log(linkId)
+      this.links.splice(linkId, 1)
     },
     agregarImplicated () {
       if (this.nuevoImplicated.imp_nombres === '' || this.nuevoImplicated.imp_nombres === undefined) {

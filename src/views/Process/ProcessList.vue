@@ -337,7 +337,6 @@ export default {
       this.user_id = user.usr_id
       axios.get('/process/' + this.user_id).then(response => {
         this.process = response.data.process
-        console.log(this.process)
       })
     },
     edit (item) {
