@@ -46,7 +46,7 @@ import SideBarItems from '../../../FackApi/json/SideBar'
 export default {
   name: 'NavBarStyle1',
   props: {
-    homeURL: { type: Object, default: () => ({ name: 'layout1.dashboard' }) },
+    homeURL: { type: Object, default: () => ({ name: 'dashboard.home-1' }) },
     title: { type: String, default: 'Dashboard' },
     logo: { type: String, default: require('../../../assets/images/logo.png') },
     horizontal: { type: Boolean, default: false },
