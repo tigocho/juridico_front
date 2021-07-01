@@ -388,89 +388,57 @@
                             <h4 class="card-title">Campos marcados con * son obligatorios</h4>
                           </template>
                           <template v-slot:body>
-                            <h4 class="card-title">Información del Demandante:</h4>
+                            <h4 class="card-title">Información de los involucrados:</h4>
                             <div class="new-user-info">
                               <b-row>
-                                <b-form-group class="col-md-6" label="Primer Nombre*" label-for="prore_applicant_name_first">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_applicant_name_first}}</span>
+                                <div v-if="implicated !== undefined && implicated !==''" class="col-md-12">
+                                  <b-table
+                                    :items="implicated"
+                                    :fields="fields"
+                                    stacked="md"
+                                    show-empty
+                                    small
+                                  >
+                                    <template #cell(name)="row">
+                                      {{ row.value.first }} {{ row.value.last }}
+                                    </template>
+                                    <template #cell(actions)="row">
+                                      <b-button size="sm" v-b-modal.modal-lg variant="danger" @click="deleteImplicated(row.index)"> Remover </b-button>
+                                    </template>
+                                  </b-table>
+                                  <hr>
+                                </div>
+                                <!--<b-form-group class="col-md-12" label="Demandantes" label-for="nuevoImplicated">
+                                  <div class="text-black" v-for="(implica, index) in implicated" :key="index">
+                                    <span> {{ implica.imp_nombres }} - {{ implica.imp_apellidos }} </span> <span v-if="implica.imp_telefonos !== undefined && implica.imp_telefonos !== ''"> - {{ implica.imp_telefonos}} </span> <span v-if="implica.imp_emails !== undefined && implica.imp_emails !== ''"> - {{ implica.imp_emails }} </span> <span> - {{ tipoPerfil(implica.imp_profile_id) }} </span>
+                                    <span> <a class="pl-2" href="javascript:void(0)" @click="eliminarDemandante(index)"><i class="ri-close-circle-line text-danger" style="font-size:17px;"></i></a></span>
                                   </div>
-                                  <div v-if="proc_id == null">
-                                    <b-form-input v-model="formData.prore_applicant_name_first" type="text" placeholder="Primer Nombre" :class="hasError('prore_applicant_name_first') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_applicant_name_first')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_applicant_name_first.required">Por favor escriba el nombre del demandante.</div>
-                                    </div>
-                                  </div>
+                                </b-form-group>-->
+                                <b-form-group class="col-md-4" label="Nombres*" label-for="imp_nombres">
+                                  <b-form-input v-model="nuevoImplicated.imp_nombres" type="text" placeholder="Nombres"></b-form-input>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Nombre" label-for="prore_applicant_name_secdon">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_applicant_name_secdon}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null">
-                                    <b-form-input v-model="formData.prore_applicant_name_secdon" type="text" placeholder="Segundo Nombre" :class="hasError('prore_applicant_name_secdon') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_applicant_lastname_second')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_applicant_name_secdon.required">Por favor escriba el segundo nombre del demandante.</div>
-                                    </div>
-                                  </div>
+                                <b-form-group class="col-md-4" label="Apellidos*" label-for="imp_apellidos">
+                                  <b-form-input v-model="nuevoImplicated.imp_apellidos" type="text" placeholder="Apellidos"></b-form-input>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Primer Apellido*" label-for="prore_applicant_lastname_first">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_applicant_lastname_first}}</span>
-                                  </div>
-                                  <div v-else>
-                                    <b-form-input v-model="formData.prore_applicant_lastname_first" type="text" placeholder="Primer Apellido" :class="hasError('prore_applicant_lastname_first') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_applicant_lastname_first')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_applicant_lastname_first.required">Por favor escriba el primer apellido del demandante.</div>
-                                    </div>
-                                  </div>
+                                <b-form-group class="col-md-4" label="Perfil*" label-for="imp_profile_id">
+                                  <b-form-select plain v-model="nuevoImplicated.imp_profile_id" :options="profilesOptions" id="imp_profile_id">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Apellido" label-for="prore_applicant_lastname_second">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_applicant_lastname_second}}</span>
-                                  </div>
-                                  <div v-else>
-                                    <b-form-input v-model="formData.prore_applicant_lastname_second" type="text" placeholder="Segundo Apellido" :class="hasError('prore_applicant_lastname_second') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_applicant_lastname_second')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_applicant_lastname_first.required">Por favor escriba el segundo apellido del demandante.</div>
-                                    </div>
-                                  </div>
+                                <b-form-group class="col-md-5" label="Teléfonos" label-for="imp_telefonos">
+                                  <b-form-input v-model="nuevoImplicated.imp_telefonos" type="text" placeholder="Ej 3176669800, 3110910092" :class="hasError('imp_telefonos') ? 'is-invalid' : ''"></b-form-input>
                                 </b-form-group>
-                              </b-row>
-                              <hr>
-                              <b-row>
-                                <b-form-group class="col-md-6" label="Telefono/Celular" label-for="prore_applicant_phone">
-                                  <div v-if="!editing && proc_id != null">
-                                    <span class='text' @click="enableEditing">{{formData.prore_applicant_phone}}</span>
-                                  </div>
-                                  <div v-if="editing || proc_id == null || formData.prore_applicant_phone == null">
-                                    <b-form-input v-model="formData.prore_applicant_phone" type="number" placeholder="3015456561" :class="hasError('prore_applicant_phone') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_applicant_phone')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_applicant_phone.required">Por favor escriba el número del demandante.</div>
-                                    </div>
-                                  </div>
-                                  <div v-if="editing && proc_id != null">
-                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                  </div>
+                                <b-form-group class="col-md-5" label="Correos" label-for="imp_emails">
+                                  <b-form-input v-model="nuevoImplicated.imp_emails" type="text" placeholder="Ej hola@example.com, prueba@example.com" :class="hasError('imp_emails') ? 'is-invalid' : ''"></b-form-input>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Correo Electronico" label-for="prore_applicant_email">
-                                  <div v-if="!editing && proc_id != null">
-                                    <span class='text' @click="enableEditing">{{formData.prore_applicant_email}}</span>
-                                  </div>
-                                  <div v-if="editing || proc_id == null || formData.prore_applicant_email == null">
-                                    <b-form-input v-model="formData.prore_applicant_email" type="email" placeholder="Correo Electronico" :class="hasError('prore_applicant_email') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_applicant_email')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_applicant_email.required">Por favor escriba el número del demandante.</div>
-                                    </div>
-                                  </div>
-                                  <div v-if="editing && proc_id != null">
-                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                  </div>
-                                </b-form-group>
+                                <div class="col-md-1 pt-4">
+                                  <b-button class="mt-3 mr-1" size="sm" variant="primary" @click="agregarImplicated"> Agregar </b-button>
+                                </div>
                               </b-row>
                             </div>
-                            <h4 class="card-title">Información del Demandado:</h4>
+                            <!--<h4 class="card-title">Información del Demandado:</h4>
                               <div class="new-user-info">
                                 <b-row>
                                   <b-form-group class="col-md-6" label="Tipo de identificación*" label-for="prore_defendant_identification_type">
@@ -653,7 +621,7 @@
                                     </div>
                                   </b-form-group>
                                 </b-row>
-                              </div>
+                              </div>-->
                             </template>
                           </iq-card>
                         </b-col>
@@ -1392,7 +1360,7 @@
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
-import { required } from 'vuelidate/lib/validators'
+// import { required } from 'vuelidate/lib/validators'
 // import { ValidationObserver } from 'vee-validate'
 // import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 import { FormWizard, TabContent, ValidationHelper } from 'vue-step-wizard'
@@ -1427,6 +1395,38 @@ export default {
         link_url: '',
         link_user_id: ''
       },
+      implicated: [],
+      nuevoImplicated: {
+        imp_nombres: '',
+        imp_apellidos: '',
+        imp_telefonos: '',
+        imp_emails: '',
+        imp_profile_id: ''
+      },
+      fields: [
+        { key: 'imp_nombres', label: 'Nombres', class: 'text-center' },
+        { key: 'imp_apellidos', label: 'Apellidos', class: 'text-center' },
+        { key: 'imp_telefonos', label: 'Teléfonos', class: 'text-center' },
+        { key: 'imp_emails', label: 'Correos', class: 'text-center' },
+        {
+          key: 'imp_profile_id',
+          label: 'Perfil',
+          formatter: (value, key, item) => {
+            // profileId = 3 Abogado demandante; 4 = demandante; 5 = demandado; 6 = llamado en garantía
+            if (value === 3) {
+              return 'Abogado Demandante'
+            } else if (value === 4) {
+              return 'Demandante'
+            } else if (value === 5) {
+              return 'Demandado'
+            } else {
+              return 'Llamado en garantía'
+            }
+          },
+          class: 'text-center'
+        },
+        { key: 'actions', label: 'Acciones', class: 'text-center' }
+      ],
       formData: {
         prore_fec_ingreso: '',
         prore_responsable: '',
@@ -1544,39 +1544,6 @@ export default {
         file1: '',
         prore_link_documentacion: ''
       },
-      validationRules: [
-        {
-          prore_fec_ingreso: { required },
-          prore_defendant_clin: { required },
-          prore_year_sinister: { required },
-          prore_fec_sinister: { required },
-          prore_year_notify: { required },
-          prore_fec_noti_preju: { required },
-          prore_fec_audi_conci_preju: { required },
-          prore_fec_sinies_aviso: { required },
-          prore_sinies_description: { required },
-          prore_pathology: { required },
-          prore_fec_recibo_notify: { required },
-          prore_colaborador_ips: { required },
-          prore_fec_ingreso_jur: { required },
-          prore_fec_ingreso_cli: { required },
-          prore_city_id: { required },
-          prore_litigando_id: { required }
-        },
-        {
-          prore_applicant_name_first: { required },
-          prore_applicant_lastname_first: { required },
-          prore_defendant_identification_type: { required },
-          prore_defendant_identification: { required },
-          prore_defendant_name_first: { required },
-          prore_defendant_lastname_first: { required },
-          prore_warranty_name_first: { required },
-          prore_warranty_lastname_first: { required }
-        },
-        {
-          prore_cuantia_pretenciones: { required }
-        }
-      ],
       proc: {},
       process: [],
       procTemp: {},
@@ -1601,6 +1568,7 @@ export default {
       ],
       aseguradorasOptions: {},
       citiesOptions: {},
+      profilesOptions: {},
       statusProcessOptions: {},
       stateActive: {
         genero: 'active',
@@ -1651,6 +1619,7 @@ export default {
             setTimeout(() => {
               this.fetchCity()
               this.fetchCourts()
+              this.fetchProfiles()
               setTimeout(() => {
                 this.fetchRisks()
                 this.barraCargando()
@@ -1696,6 +1665,12 @@ export default {
         this.risksOptions = response.data.risks
       })
     },
+    fetchProfiles () {
+      // solo trae los perfiles que no tengan que ver con la plataforma
+      axios.get('/profiles/fetchExterns').then(response => {
+        this.profilesOptions = response.data.profiles
+      })
+    },
     validateStep (ref) {
       alert('This is called before switchind tabs')
       return this.$refs[ref].validate()
@@ -1718,7 +1693,7 @@ export default {
     },
     addProcess () {
       const toke = localStorage.getItem('access_token')
-      axios.post('/process/store', { formulario: this.formData, links: this.links }, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+      axios.post('/process/store', { formulario: this.formData, links: this.links, implicated: this.implicated }, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal('Proceso agregado correctamente')
           this.$router.push({ name: 'process.list' })
@@ -1812,6 +1787,35 @@ export default {
         return false
       }
       this.links.push({ link_name: this.nuevoLink.link_name, link_url: this.nuevoLink.link_url, link_user_id: this.userLogged.usr_id })
+    },
+    eliminarLink (linkId) {
+      console.log(linkId)
+    },
+    agregarImplicated () {
+      if (this.nuevoImplicated.imp_nombres === '' || this.nuevoImplicated.imp_nombres === undefined) {
+        Vue.swal('Por favor escribir los nombres')
+        return false
+      }
+      if (this.nuevoImplicated.imp_apellidos === '' || this.nuevoImplicated.imp_apellidos === undefined) {
+        Vue.swal('Por favor escribir los apellidos')
+        return false
+      }
+      if (this.nuevoImplicated.imp_profile_id === '' || this.nuevoImplicated.imp_profile_id === undefined) {
+        Vue.swal('Por favor seleccionar la relación en el proceso')
+        return false
+      }
+      this.implicated.push({ imp_nombres: this.nuevoImplicated.imp_nombres, imp_apellidos: this.nuevoImplicated.imp_apellidos, imp_telefonos: this.nuevoImplicated.imp_telefonos, imp_emails: this.nuevoImplicated.imp_emails, imp_profile_id: this.nuevoImplicated.imp_profile_id })
+      this.limpiarNuevoImplicated()
+    },
+    deleteImplicated (implicatedId) {
+      this.implicated.splice(implicatedId, 1)
+    },
+    limpiarNuevoImplicated () {
+      this.nuevoImplicated.imp_nombres = ''
+      this.nuevoImplicated.imp_apellidos = ''
+      this.nuevoImplicated.imp_telefonos = ''
+      this.nuevoImplicated.imp_emails = ''
+      this.nuevoImplicated.imp_profile_id = ''
     }
   }
 }
