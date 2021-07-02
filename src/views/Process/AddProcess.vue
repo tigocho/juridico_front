@@ -142,7 +142,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Patología*" label-for="patologia">
+                                <b-form-group class="col-md-6" label="Patología" label-for="patologia">
                                   <div v-if="proc_id != null && formData.prore_pathology != null">
                                     <span class='text'>{{formData.prore_pathology}}</span>
                                   </div>
@@ -414,6 +414,16 @@
                                     <span> <a class="pl-2" href="javascript:void(0)" @click="eliminarDemandante(index)"><i class="ri-close-circle-line text-danger" style="font-size:17px;"></i></a></span>
                                   </div>
                                 </b-form-group>-->
+                                <b-form-group class="col-md-6" label="Tipo identificación" label-for="imp_tipo_identificacion">
+                                  <b-form-select plain v-model="nuevoImplicated.imp_tipo_identificacion" :options="ids" id="imp_profile_id">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Identificación" label-for="imp_identificacion">
+                                  <b-form-input v-model="nuevoImplicated.imp_identificacion" type="text" placeholder="Identificación"></b-form-input>
+                                </b-form-group>
                                 <b-form-group class="col-md-4" label="Nombres*" label-for="imp_nombres">
                                   <b-form-input v-model="nuevoImplicated.imp_nombres" type="text" placeholder="Nombres"></b-form-input>
                                 </b-form-group>
@@ -1360,7 +1370,7 @@
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
-// import { required } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 // import { ValidationObserver } from 'vee-validate'
 // import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 import { FormWizard, TabContent, ValidationHelper } from 'vue-step-wizard'
@@ -1397,6 +1407,8 @@ export default {
       },
       implicated: [],
       nuevoImplicated: {
+        imp_tipo_identificacion: '',
+        imp_identificacion: '',
         imp_nombres: '',
         imp_apellidos: '',
         imp_telefonos: '',
@@ -1426,6 +1438,25 @@ export default {
           class: 'text-center'
         },
         { key: 'actions', label: 'Acciones', class: 'text-center' }
+      ],
+      validationRules: [
+        {
+          prore_fec_ingreso: { required },
+          prore_defendant_clin: { required },
+          prore_year_sinister: { required },
+          prore_fec_sinister: { required },
+          prore_year_notify: { required },
+          prore_fec_noti_preju: { required },
+          prore_fec_audi_conci_preju: { required },
+          prore_fec_sinies_aviso: { required },
+          prore_sinies_description: { required },
+          prore_fec_recibo_notify: { required },
+          prore_colaborador_ips: { required },
+          prore_fec_ingreso_jur: { required },
+          prore_fec_ingreso_cli: { required },
+          prore_city_id: { required },
+          prore_litigando_id: { required }
+        }
       ],
       formData: {
         prore_fec_ingreso: '',
@@ -1804,13 +1835,15 @@ export default {
         Vue.swal('Por favor seleccionar la relación en el proceso')
         return false
       }
-      this.implicated.push({ imp_nombres: this.nuevoImplicated.imp_nombres, imp_apellidos: this.nuevoImplicated.imp_apellidos, imp_telefonos: this.nuevoImplicated.imp_telefonos, imp_emails: this.nuevoImplicated.imp_emails, imp_profile_id: this.nuevoImplicated.imp_profile_id })
+      this.implicated.push({ imp_tipo_identificacion: this.nuevoImplicated.imp_tipo_identificacion, imp_identificacion: this.nuevoImplicated.imp_identificacion, imp_nombres: this.nuevoImplicated.imp_nombres, imp_apellidos: this.nuevoImplicated.imp_apellidos, imp_telefonos: this.nuevoImplicated.imp_telefonos, imp_emails: this.nuevoImplicated.imp_emails, imp_profile_id: this.nuevoImplicated.imp_profile_id })
       this.limpiarNuevoImplicated()
     },
     deleteImplicated (implicatedId) {
       this.implicated.splice(implicatedId, 1)
     },
     limpiarNuevoImplicated () {
+      this.nuevoImplicated.imp_tipo_identificacion = ''
+      this.nuevoImplicated.imp_identificacion = ''
       this.nuevoImplicated.imp_nombres = ''
       this.nuevoImplicated.imp_apellidos = ''
       this.nuevoImplicated.imp_telefonos = ''

@@ -106,6 +106,22 @@
         <b-form-group label="Fecha Final" label-for="agen_end_date">
           <b-form-input id="exampleInputdate" v-model="formData.agen_end_date" type="date"></b-form-input>
         </b-form-group>
+        <b-row>
+          <b-col md="6">
+            <b-form-group class="sm-6" label="Aviso " label-for="agen_notification">
+              <b-form-input id="agen_notification" v-model="formData.agen_notification" :value="formData.agen_notification" type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "2"></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col md="6">
+            <b-form-group class="sm-6" label="Tipo (minutos, horas, días)" label-for="tipo_tiempo">
+              <b-form-select v-model="formData.tipo_tiempo" id="selectuserrole" :options="tiposTiempo">
+                <template v-slot:first>
+                  <b-form-select-option :value="null" disabled>Seleccione un tipo de tiempo</b-form-select-option>
+                </template>
+              </b-form-select>
+            </b-form-group>
+          </b-col>
+        </b-row>
         <b-form-group label="Hora de inicio" label-for="sch_start_hour">
           <b-form-input id="sch_start_hour" v-model="formData.sch_start_hour" type="time"></b-form-input>
         </b-form-group>
@@ -151,6 +167,11 @@ export default {
     title_modal_text: 'Crear evento',
     processOpenedOptions: [],
     abogadoOptions: [],
+    tiposTiempo: [
+      { text: 'Minutos', value: 1 },
+      { text: 'Horas', value: 2 },
+      { text: 'Días', value: 3 }
+    ],
     formData: {
       sch_id: '',
       agen_name: '',
@@ -159,7 +180,9 @@ export default {
       agen_start_date: '',
       agen_end_date: '',
       sch_start_hour: '',
-      sch_end_hour: ''
+      sch_end_hour: '',
+      agen_notification: '',
+      tipo_tiempo: ''
     },
     usuarios: []
   }),
@@ -237,8 +260,16 @@ export default {
       bvModalEvt.preventDefault()
       if (this.formData.agen_name !== '' && this.formData.agen_prore_id && this.formData.agen_pro_id !== '' &&
       this.formData.agen_start_date !== '' && this.formData.agen_end_date !== '' && this.formData.sch_start_hour !== '' && this.formData.sch_end_hour) {
-        // Trigger submit handler
-        this.handleSubmit()
+        if (this.formData.agen_start_date > this.formData.agen_end_date) {
+          Vue.swal('La fecha de inicio no puede ser mayor a la fecha de finalización')
+        } else if (this.formData.sch_start_hour > this.formData.sch_end_hour) {
+          console.log(this.formData.sch_start_hour)
+          console.log(this.formData.sch_end_hour)
+          Vue.swal('La hora de inicio no puede ser mayor a la hora de finalización')
+        } else {
+          // Trigger submit handler
+          this.handleSubmit()
+        }
       } else {
         Vue.swal('Por favor completa todo el formulario')
       }
@@ -288,6 +319,8 @@ export default {
       this.formData.sch_start_hour = ''
       this.formData.sch_id = ''
       this.formData.sch_end_hour = ''
+      this.formData.agen_notification = ''
+      this.formData.tipo_tiempo = ''
       this.title_modal_text = 'Crear evento'
     },
     newEvent () {
@@ -297,9 +330,15 @@ export default {
     renderEvent (arg) {
     },
     updateEvent (arg) {
+      console.log(arg.event)
       this.formData.sch_id = arg.event.id
       var hourStart = this.formatHour(arg.event.start)
-      var hourEnd = this.formatHour(arg.event.end)
+      var hourEnd = ''
+      if (arg.event.end !== null && arg.event.end !== undefined) {
+        hourEnd = this.formatHour(arg.event.end)
+      } else {
+        hourEnd = arg.event.extendedProps.end_hour
+      }
       this.formData.agen_name = arg.event.title
       this.formData.agen_pro_id = arg.event.extendedProps.agen_pro_id
       this.formData.agen_prore_id = arg.event.extendedProps.agen_prore_id
@@ -307,9 +346,12 @@ export default {
       this.formData.agen_end_date = this.formatDate(arg.event.end)
       this.formData.sch_start_hour = hourStart
       this.formData.sch_end_hour = hourEnd
+      this.formData.agen_notification = arg.event.extendedProps.agen_notification
+      this.formData.tipo_tiempo = arg.event.extendedProps.tipo_tiempo
       this.handleSubmit()
     },
     handleSelect (arg) {
+      this.limpiarModal()
       var hourStart = this.formatHour(arg.start)
       var hourEnd = this.formatHour(arg.end)
       this.formData.agen_start_date = this.formatDate(arg.start)
@@ -327,6 +369,9 @@ export default {
       this.formData.agen_start_date = arg.event.extendedProps.agen_start_date
       this.formData.agen_end_date = arg.event.extendedProps.agen_end_date
       this.formData.sch_start_hour = arg.event.extendedProps.hour
+      this.formData.sch_end_hour = arg.event.extendedProps.end_hour
+      this.formData.agen_notification = arg.event.extendedProps.agen_notification
+      this.formData.tipo_tiempo = arg.event.tipo_tiempo
       this.$bvModal.show('modal-audience')
     },
     fetchProcessOpened () {

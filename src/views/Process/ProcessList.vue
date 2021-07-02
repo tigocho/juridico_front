@@ -207,9 +207,13 @@
                       <h6><b class="text-black" style="text-decoration:underline;">{{ implicate.profile.prof_name }}</b></h6>
                     </b-row>
                     <b-row class="col-md-12 pt-1">
+                      <b-card-text class="px-2 my-0"><b>Tipo identificación: </b>{{ tipoIdentificacion(implicate.imp_tipo_identificacion) }}</b-card-text>
+                      <b-card-text class="px-2 my-0"><b>Identificación: </b>{{ implicate.imp_identificacion }}</b-card-text>
                       <b-card-text class="px-2 my-0"><b>Nombres: </b>{{ implicate.imp_nombres }}</b-card-text>
-                      <b-card-text class="px-1 my-0"><b>Apellidos: </b>{{ implicate.imp_apellido }}</b-card-text>
-                      <b-card-text class="pl-3 my-0"><b>Teléfonos: </b>{{ implicate.imp_telefonos }}</b-card-text>
+                      <b-card-text class="px-1 my-0"><b>Apellidos: </b>{{ implicate.imp_apellidos }}</b-card-text>
+                    </b-row>
+                    <b-row class="col-md-12 pt-1">
+                      <b-card-text class="px-2 my-0"><b>Teléfonos: </b>{{ implicate.imp_telefonos }}</b-card-text>
                       <b-card-text class="pl-3 my-0"><b>Emails: </b>{{ implicate.imp_emails }}</b-card-text>
                       <b-card-text class="pl-3 my-0"><b>ID Proceso: </b>{{ implicate.imp_process_request_id }}</b-card-text>
                       <b-card-text class="px-1 my-0" v-if="row.item.editable!=0">{{ row.item.prore_applicant_name_secdon }}</b-card-text>
@@ -410,6 +414,17 @@ export default {
           this.estadoBotonDescargarInforme = ''
           Vue.swal('Ups, ocurrió un error ' + err)
         })
+    },
+    tipoIdentificacion (tipoIdentificacionId) {
+      if (tipoIdentificacionId === 1) {
+        return 'C.C'
+      } else if (tipoIdentificacionId === 2) {
+        return 'T.I'
+      } else if (tipoIdentificacionId === 3) {
+        return 'C.C'
+      } else if (tipoIdentificacionId === 4) {
+        return 'NIT'
+      }
     }
   }
 }
