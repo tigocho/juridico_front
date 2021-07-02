@@ -263,8 +263,6 @@ export default {
         if (this.formData.agen_start_date > this.formData.agen_end_date) {
           Vue.swal('La fecha de inicio no puede ser mayor a la fecha de finalización')
         } else if (this.formData.sch_start_hour > this.formData.sch_end_hour) {
-          console.log(this.formData.sch_start_hour)
-          console.log(this.formData.sch_end_hour)
           Vue.swal('La hora de inicio no puede ser mayor a la hora de finalización')
         } else {
           // Trigger submit handler
@@ -330,7 +328,6 @@ export default {
     renderEvent (arg) {
     },
     updateEvent (arg) {
-      console.log(arg.event)
       this.formData.sch_id = arg.event.id
       var hourStart = this.formatHour(arg.event.start)
       var hourEnd = ''
