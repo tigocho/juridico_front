@@ -31,6 +31,17 @@
                             <template v-slot:body>
                               <div class="new-process">
                               <b-row>
+                                <b-form-group class="col-md-6" label="Número del proceso*" label-for="prore_num_proceso">
+                                  <div v-if="proc_id != null && formData.prore_num_proceso != null">
+                                    <span class='text' >{{formData.prore_num_proceso}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_num_proceso == null">
+                                    <b-form-input id="prore_num_proceso" v-model="formData.prore_num_proceso" type="text" :class="hasError('prore_num_proceso') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_num_proceso')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_num_proceso.required">Por favor escribe el número del proceso.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
                                 <b-form-group class="col-md-6" label="Fecha de Ingreso*" label-for="prore_fec_ingreso">
                                   <div v-if="proc_id != null && formData.prore_fec_ingreso != null">
                                     <span class='text' >{{formData.prore_fec_ingreso}}</span>
@@ -95,6 +106,21 @@
                                     </b-form-select>
                                     <div v-if="hasError('prore_year_notify')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_year_notify.required">Por favor seleccione el año de notificación.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Año del proceso*" label-for="prore_process_year">
+                                  <div v-if="proc_id != null && formData.prore_process_year != null">
+                                    <span class='text'>{{formData.prore_process_year}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_sinister == null">
+                                    <b-form-select plain v-model="formData.prore_process_year" :options="years" id="selectyearnotify" :class="hasError('prore_process_year') ? 'is-invalid' : ''">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                    <div v-if="hasError('prore_process_year')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_process_year.required">Por favor seleccione el año del proceso.</div>
                                     </div>
                                   </div>
                                 </b-form-group>
@@ -299,7 +325,7 @@
                                   <div v-if="!editing && proc_id != null">
                                     <span class='text' @click="enableEditing">{{ formData.pro_name_first }} {{ formData.pro_lastname_first }}</span>
                                   </div>
-                                  <div v-if="editing || proc_id == null || formData.prore_propse_id == null">
+                                  <div v-if="editing || proc_id == null || formData.prore_pro_id == null">
                                     <b-form-select plain v-model="formData.prore_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole" :class="hasError('prore_pro_id') ? 'is-invalid' : ''">
                                       <template v-slot:first>
                                         <b-form-select-option :value="null">Seleccione un abogado</b-form-select-option>
@@ -1008,7 +1034,7 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Cuantía de las Pretensiones*" label-for="prore_cuantia_pretenciones">
+                                  <b-form-group class="col-md-6" label="Cuantía de las Pretensiones" label-for="prore_cuantia_pretenciones">
                                     <div v-if="!editing && proc_id != null">
                                       <span class='text' @click="enableEditing">{{formData.prore_cuantia_pretenciones}}</span>
                                     </div>
@@ -1441,11 +1467,13 @@ export default {
       ],
       validationRules: [
         {
+          prore_num_proceso: { required },
           prore_fec_ingreso: { required },
           prore_defendant_clin: { required },
           prore_year_sinister: { required },
           prore_fec_sinister: { required },
           prore_year_notify: { required },
+          prore_process_year: { required },
           prore_fec_noti_preju: { required },
           prore_fec_audi_conci_preju: { required },
           prore_fec_sinies_aviso: { required },
@@ -1467,6 +1495,7 @@ export default {
         prore_fec_sinister: '',
         prore_year_notify: '',
         prore_diffence_year: '',
+        prore_process_year: '',
         prore_pro_id: '',
         prore_propse_id: '',
         prore_defendant_clin: '',
@@ -1573,7 +1602,8 @@ export default {
         prore_sinies_description: '',
         prore_estado: '',
         file1: '',
-        prore_link_documentacion: ''
+        prore_link_documentacion: '',
+        prore_user_id: ''
       },
       proc: {},
       process: [],
@@ -1723,6 +1753,9 @@ export default {
       this.addProcess()
     },
     addProcess () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        this.formData.prore_user_id = this.userLogged.usr_id
+      }
       const toke = localStorage.getItem('access_token')
       axios.post('/process/store', { formulario: this.formData, links: this.links, implicated: this.implicated }, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
         if (res.data.status_code === 200) {
