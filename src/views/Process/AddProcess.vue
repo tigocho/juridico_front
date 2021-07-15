@@ -98,7 +98,7 @@
                                   <div v-if="proc_id != null && formData.prore_year_notify != null">
                                     <span class='text'>{{formData.prore_year_notify}}</span>
                                   </div>
-                                  <div v-if="proc_id == null || formData.prore_fec_sinister == null">
+                                  <div v-if="proc_id == null || formData.prore_year_notify == null">
                                     <b-form-select plain v-model="formData.prore_year_notify" :options="years" id="selectyearnotify" :class="hasError('prore_year_notify') ? 'is-invalid' : ''">
                                       <template v-slot:first>
                                         <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
