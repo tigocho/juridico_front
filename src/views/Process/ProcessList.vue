@@ -219,12 +219,11 @@
                       <b-card-text class="px-1 my-0" v-if="row.item.editable!=0">{{ row.item.prore_applicant_name_secdon }}</b-card-text>
                     </b-row>
                   </div>
-                  <hr>
-                  <b-row class="col-md-12 pt-1">
+                  <b-row class="col-md-12 pt-1" v-if="row.item.tipo_proceso != null && row.item.juzgado != null && row.item.prore_num_radicado != null">
+                    <hr>
                     <b-card-text class="px-2 my-0" v-if="row.item.tipo_proceso != null"><b>Tipo de proceso: </b>{{ row.item.tipo_proceso.typro_name }}</b-card-text>
                     <b-card-text class="pl-3 my-0" v-if="row.item.juzgado != null"><b>Juzgado: </b>{{ row.item.juzgado.court_name }}</b-card-text>
-                    <b-card-text class="pl-3 my-0"><b>Número radicado:</b></b-card-text>
-                    <b-card-text class="px-1 my-0" v-if="row.item.editable!=0">{{ row.item.prore_num_radicado }}</b-card-text>
+                    <b-card-text class="pl-3 my-0" v-if="row.item.prore_num_radicado != null"><b>Número radicado: </b>{{ row.item.prore_num_radicado }}</b-card-text>
                   </b-row>
                   <hr>
                   <b-row class="col-md-12 pt-5">

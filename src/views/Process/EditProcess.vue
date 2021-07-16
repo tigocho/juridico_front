@@ -15,13 +15,13 @@
         </b-progress>
       </div>
       <div v-else>
-        <form-wizard @onComplete="onSubmit">
+        <form-wizard @onComplete="onSubmit" v-bind:class="submitEstado">
           <tab-content title="Información General" :selected="true" >
             <b-container fluid>
               <b-row>
                 <b-col md="12">
-                  <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-                    <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                  <ValidationObserver ref="formulario" v-slot="{ handleSubmit }">
+                    <form ref="formulario" class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
                       <b-row>
                         <b-col lg="12">
                           <iq-card>
@@ -439,7 +439,7 @@
             <b-row>
               <b-col md="12">
                 <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-                  <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                  <form ref="formulario" class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
                     <b-row>
                       <b-col lg="12">
                         <iq-card>
@@ -520,7 +520,7 @@
               <b-row>
                 <b-col md="12">
                   <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-                    <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                    <form ref="formulario" class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
                       <b-row>
                         <b-col lg="12">
                           <iq-card>
@@ -1295,7 +1295,7 @@
             <b-container fluid>
               <b-row>
                 <b-col md="12">
-                  <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                  <ValidationObserver ref="formulario" v-slot="{ handleSubmit }">
                     <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
                       <b-row>
                         <b-col lg="12">
@@ -1381,6 +1381,7 @@ export default {
   },
   data () {
     return {
+      submitEstado: 'disabled',
       estadoIconoEliminarLink: '',
       estadoBotonEliminarImplicated: '',
       botonActualizarProceso: 'Actualizar involucrados',
@@ -1586,7 +1587,7 @@ export default {
         reader.readAsDataURL(input.files[0])
       }
     },
-    onSubmit () {
+    onSubmit: function () {
       this.updateProcess()
     },
     actualizarProceso () {
