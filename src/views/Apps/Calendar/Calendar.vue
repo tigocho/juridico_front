@@ -76,6 +76,14 @@
     >
       <form ref="form" @submit.stop.prevent="handleSubmit">
         <input type="hidden" name="hide" v-model="formData.sch_id">
+        <b-row>
+          <b-col md="12">
+            <b-form-group class="sm-6" label="Tipo de evento" label-for="agen_type_eve_id">
+              <b-form-select v-model="formData.agen_type_eve_id" id="selectuserrole" :options="typeEventsOptions">
+              </b-form-select>
+            </b-form-group>
+          </b-col>
+        </b-row>
         <b-form-group
           label="Nombre del evento"
           label-for="name-input"
@@ -83,23 +91,31 @@
           <b-form-input
             id="name-input"
             v-model="formData.agen_name"
-            placeholder="Audiencia de cargos"
+            placeholder="Presentar pruebas"
           ></b-form-input>
         </b-form-group>
-        <b-form-group label="ID del Proceso">
-          <b-form-select v-model="formData.agen_prore_id" :options="processOpenedOptions" id="selectuserrole" >
-            <template v-slot:first>
-              <b-form-select-option :value="null" disabled>Seleccione un proceso</b-form-select-option>
-            </template>
-          </b-form-select>
-        </b-form-group>
-        <b-form-group label="Abogado/a">
-          <b-form-select v-model="formData.agen_pro_id" :options="abogadoOptions" @search="abogadoOptions" id="selectuserrole" >
-            <template v-slot:first>
-              <b-form-select-option :value="null" disabled>Seleccione un profesional</b-form-select-option>
-            </template>
-          </b-form-select>
-        </b-form-group>
+        <b-row>
+          <b-col md="12">
+            <b-form-group  class="sm-6" label="ID del Proceso" label-for="agen_prore_id">
+              <b-form-select v-model="formData.agen_prore_id" :options="processOpenedOptions" id="selectuserrole" >
+                <template v-slot:first>
+                  <b-form-select-option :value="null" disabled>Seleccione un proceso</b-form-select-option>
+                </template>
+              </b-form-select>
+            </b-form-group>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col md="12">
+            <b-form-group label="Abogado/a" label-for="agen_pro_id">
+              <b-form-select v-model="formData.agen_pro_id" :options="abogadoOptions" @search="abogadoOptions" id="selectuserrole" >
+                <template v-slot:first>
+                  <b-form-select-option :value="null" disabled>Seleccione un profesional</b-form-select-option>
+                </template>
+              </b-form-select>
+            </b-form-group>
+          </b-col>
+        </b-row>
         <b-form-group label="Fecha de Inicio" label-for="agen_start_date">
           <b-form-input id="exampleInputdate" v-model="formData.agen_start_date" type="date"></b-form-input>
         </b-form-group>
@@ -107,17 +123,9 @@
           <b-form-input id="exampleInputdate" v-model="formData.agen_end_date" type="date"></b-form-input>
         </b-form-group>
         <b-row>
-          <b-col md="6">
-            <b-form-group class="sm-6" label="Aviso " label-for="agen_notification">
-              <b-form-input id="agen_notification" v-model="formData.agen_notification" :value="formData.agen_notification" type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "2"></b-form-input>
-            </b-form-group>
-          </b-col>
-          <b-col md="6">
-            <b-form-group class="sm-6" label="Tipo (minutos, horas, días)" label-for="tipo_tiempo">
-              <b-form-select v-model="formData.tipo_tiempo" id="selectuserrole" :options="tiposTiempo">
-                <template v-slot:first>
-                  <b-form-select-option :value="null" disabled>Seleccione un tipo de tiempo</b-form-select-option>
-                </template>
+          <b-col md="12">
+            <b-form-group class="sm-6" label="Notificar desde" label-for="agen_type_not_id">
+              <b-form-select v-model="formData.agen_type_not_id" id="selectuserrole" :options="typeNotificationsOptions">
               </b-form-select>
             </b-form-group>
           </b-col>
@@ -162,6 +170,8 @@ export default {
     },
     botonEliminarModal: '',
     botonGuardarModal: '',
+    typeNotificationsOptions: [],
+    typeEventsOptions: [],
     eventsToday: [],
     events: [],
     title_modal_text: 'Crear evento',
@@ -181,8 +191,8 @@ export default {
       agen_end_date: '',
       sch_start_hour: '',
       sch_end_hour: '',
-      agen_notification: '',
-      tipo_tiempo: ''
+      agen_type_eve_id: '',
+      agen_type_not_id: ''
     },
     usuarios: []
   }),
@@ -192,6 +202,10 @@ export default {
     this.fetchOptionsAbogados()
     this.fetchProcessOpened()
     this.getUsuariosActivos()
+    setTimeout(() => {
+      this.getTypeNotifications()
+      this.getTypeEvents()
+    }, 500)
   },
   components: { Fullcalendar },
   computed: {
@@ -210,6 +224,24 @@ export default {
         this.eventsToday = Object.keys(response.data.audiencias_hoy).map((key) => {
           return response.data.audiencias_hoy[key]
         })
+      })
+    },
+    getTypeNotifications () {
+      axios.get('/type_notifications/fetchTypeNotifications').then(response => {
+        this.typeNotificationsOptions = response.data.type_notifications
+        if (this.typeNotificationsOptions[0] !== undefined) {
+          this.formData.agen_type_not_id = this.typeNotificationsOptions[0].value
+        }
+        console.log(this.formData.agen_type_not_id)
+      })
+    },
+    getTypeEvents () {
+      axios.get('/type_events/fetchTypeEvents').then(response => {
+        this.typeEventsOptions = response.data.type_events
+        if (this.typeEventsOptions[0] !== undefined) {
+          this.formData.agen_type_eve_id = this.typeEventsOptions[0].value
+        }
+        console.log(this.formData.agen_type_eve_id)
       })
     },
     eliminarEvento (eventoId) {
@@ -265,6 +297,7 @@ export default {
         } else if (this.formData.sch_start_hour > this.formData.sch_end_hour) {
           Vue.swal('La hora de inicio no puede ser mayor a la hora de finalización')
         } else {
+          this.botonGuardarModal = 'disabled'
           // Trigger submit handler
           this.handleSubmit()
         }
@@ -287,9 +320,10 @@ export default {
           } else {
             Vue.swal('Datos no validos')
           }
+          this.botonGuardarModal = ''
         })
       } else {
-        axios.post('/audience/store', this.formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+        axios.post('/agenda/store', this.formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
           // Hide the modal manually
           this.$nextTick(() => {
             this.$bvModal.hide('modal-audience')
@@ -301,6 +335,7 @@ export default {
           } else {
             Vue.swal('Datos no validos')
           }
+          this.botonGuardarModal = ''
         })
       }
     },
@@ -317,12 +352,12 @@ export default {
       this.formData.sch_start_hour = ''
       this.formData.sch_id = ''
       this.formData.sch_end_hour = ''
-      this.formData.agen_notification = ''
-      this.formData.tipo_tiempo = ''
       this.title_modal_text = 'Crear evento'
     },
     newEvent () {
       this.limpiarModal()
+      this.formData.agen_type_not_id = 1
+      this.formData.agen_type_eve_id = 1
       this.$bvModal.show('modal-audience')
     },
     renderEvent (arg) {
@@ -343,8 +378,8 @@ export default {
       this.formData.agen_end_date = this.formatDate(arg.event.end)
       this.formData.sch_start_hour = hourStart
       this.formData.sch_end_hour = hourEnd
-      this.formData.agen_notification = arg.event.extendedProps.agen_notification
-      this.formData.tipo_tiempo = arg.event.extendedProps.tipo_tiempo
+      this.formData.agen_type_eve_id = arg.event.extendedProps.agen_type_eve_id
+      this.formData.agen_type_not_id = arg.event.extendedProps.agen_type_not_id
       this.handleSubmit()
     },
     handleSelect (arg) {
@@ -367,8 +402,8 @@ export default {
       this.formData.agen_end_date = arg.event.extendedProps.agen_end_date
       this.formData.sch_start_hour = arg.event.extendedProps.hour
       this.formData.sch_end_hour = arg.event.extendedProps.end_hour
-      this.formData.agen_notification = arg.event.extendedProps.agen_notification
-      this.formData.tipo_tiempo = arg.event.tipo_tiempo
+      this.formData.agen_type_eve_id = arg.event.extendedProps.agen_type_eve_id
+      this.formData.agen_type_not_id = arg.event.extendedProps.agen_type_not_id
       this.$bvModal.show('modal-audience')
     },
     fetchProcessOpened () {

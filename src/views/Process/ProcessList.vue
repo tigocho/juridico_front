@@ -3,7 +3,7 @@
     <div>
       <b-modal id="modal-lg" size="lg" title="Agendar Audiencia" @ok="handleOk">
         <form ref="form" @submit.stop.prevent="handleSubmit">
-          <input type="hidden" name="hide" v-model="audiencia.aud_prore_id">
+          <input type="hidden" name="hide" v-model="agenda.agen_prore_id">
           <b-form-group
             label="Nombre"
             label-for="name-input"
@@ -11,25 +11,36 @@
           >
             <b-form-input
               id="name-input"
-              v-model="audiencia.aud_name"
+              v-model="agenda.agen_name"
               required
             ></b-form-input>
           </b-form-group>
           <b-form-group label="Asignar Abogada/o:" label-for="agen_pro_id">
-            <b-form-select plain v-model="audiencia.aud_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
+            <b-form-select plain v-model="agenda.agen_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
               <template v-slot:first>
                 <b-form-select-option :value="null" disabled>Seleccione</b-form-select-option>
               </template>
             </b-form-select>
           </b-form-group>
+          <b-row>
+            <b-col md="12">
+              <b-form-group class="sm-6" label="Notificar desde" label-for="agen_type_not_id">
+                <b-form-select v-model="agenda.agen_type_not_id" id="selectuserrole" :options="typeNotificationsOptions">
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+          </b-row>
           <b-form-group label="Fecha de Inicio" label-for="agen_start_date">
-            <b-form-input id="exampleInputdate" v-model="audiencia.agen_start_date" type="date" value="2019-12-18"></b-form-input>
+            <b-form-input id="exampleInputdate" v-model="agenda.agen_start_date" type="date" value="2019-12-18"></b-form-input>
           </b-form-group>
           <b-form-group label="Fecha Final" label-for="agen_end_date">
-            <b-form-input id="exampleInputdate" v-model="audiencia.agen_end_date" type="date" value="2019-12-18"></b-form-input>
+            <b-form-input id="exampleInputdate" v-model="agenda.agen_end_date" type="date" value="2019-12-18"></b-form-input>
           </b-form-group>
-          <b-form-group label="Hora de Audiencia" label-for="hora_udiencia">
-            <b-form-input id="hora_udiencia" v-model="audiencia.sch_start_hour" type="time" value="13:45"></b-form-input>
+          <b-form-group label="Hora de audiencia" label-for="hora_udiencia">
+            <b-form-input id="hora_udiencia" v-model="agenda.sch_start_hour" type="time"></b-form-input>
+          </b-form-group>
+          <b-form-group label="Hora fin de audiencia" label-for="sch_end_hour">
+            <b-form-input id="sch_end_hour" v-model="agenda.sch_end_hour" type="time"></b-form-input>
           </b-form-group>
       </form>
       </b-modal>
@@ -269,12 +280,16 @@ export default {
       estadoBotonDescargarInforme: '',
       user_id: '',
       process: [],
-      audiencia: {
-        aud_name: '',
-        aud_pro_id: '',
+      typeNotificationsOptions: [],
+      agenda: {
+        agen_name: '',
+        agen_pro_id: '',
         agen_start_date: '',
         agen_end_date: '',
-        sch_start_hour: ''
+        sch_start_hour: '',
+        sch_end_hour: '',
+        agen_type_eve_id: '',
+        agen_type_not_id: ''
       },
       abogadoOptions: [],
       fields: [
@@ -331,10 +346,20 @@ export default {
     xray.index()
     this.getProcess()
     this.fetchOptionsAbogados()
+    this.getTypeNotifications()
     // Set the initial number of items
     this.totalRows = this.process.length
   },
   methods: {
+    getTypeNotifications () {
+      axios.get('/type_notifications/fetchTypeNotifications').then(response => {
+        this.typeNotificationsOptions = response.data.type_notifications
+        if (this.typeNotificationsOptions[0] !== undefined) {
+          this.formData.agen_type_not_id = this.typeNotificationsOptions[0].value
+        }
+        console.log(this.formData.agen_type_not_id)
+      })
+    },
     getProcess () {
       var user = JSON.parse(auth.getUserLogged())
       this.user_id = user.usr_id
@@ -347,8 +372,8 @@ export default {
     },
     handleOk (bvModalEvt) {
       bvModalEvt.preventDefault()
-      if (this.audiencia.aud_name !== '' && this.audiencia.aud_pro_id !== '' &&
-      this.audiencia.agen_start_date !== '' && this.audiencia.agen_end_date !== '' && this.audiencia.sch_start_hour !== '') {
+      if (this.agenda.aud_name !== '' && this.agenda.aud_pro_id !== '' &&
+      this.agenda.agen_start_date !== '' && this.agenda.agen_end_date !== '' && this.agenda.sch_start_hour !== '') {
         // Trigger submit handler
         this.handleSubmit()
       } else {
@@ -357,7 +382,7 @@ export default {
     },
     handleSubmit () {
       const token = localStorage.getItem('access_token')
-      axios.post('/audience/store', this.audiencia, { headers: { 'Authorization': token } }).then(res => {
+      axios.post('/agenda/guardarAudiencia', this.agenda, { headers: { 'Authorization': token } }).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal('Audiencia agendada al proceso correctamente')
           this.$bvModal.hide('modal-lg')
@@ -372,8 +397,9 @@ export default {
         this.abogadoOptions = response.data.professionals
       })
     },
-    sendInfo (item) {
-      this.audiencia.aud_prore_id = item
+    sendInfo (proreId) {
+      this.agenda.agen_type_not_id = 1
+      this.agenda.agen_prore_id = proreId
     },
     info (item, index, button) {
       this.infoModal.title = `Row index: ${index}`
