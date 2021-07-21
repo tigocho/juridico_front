@@ -15,7 +15,7 @@
               required
             ></b-form-input>
           </b-form-group>
-          <b-form-group label="Asignar Abogada/o:" label-for="agen_pro_id">
+          <b-form-group label="Asignar Abogada/o:*" label-for="agen_pro_id">
             <b-form-select plain v-model="agenda.agen_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
               <template v-slot:first>
                 <b-form-select-option :value="null" disabled>Seleccione</b-form-select-option>
@@ -42,9 +42,109 @@
           <b-form-group label="Hora fin de audiencia" label-for="sch_end_hour">
             <b-form-input id="sch_end_hour" v-model="agenda.sch_end_hour" type="time"></b-form-input>
           </b-form-group>
-      </form>
+        </form>
       </b-modal>
     </div>
+    <!-- FIN MODAL DE AUDIENCIA -->
+    <!-- INICIAL DE MODAL DE ACTUACIÓN -->
+    <div>
+      <b-modal id="modal-nueva-actuacion" size="lg" title="Agregar actuación" hide-footer>
+        <form ref="form">
+          <input type="hidden" name="agen_prore_id" v-model="proceeding.proce_prore_id">
+          <p v-if="errors.length">
+            <b>Por favor, corrija el(los) siguiente(s) error(es):</b>
+            <ul>
+              <li v-for="error in errors" :key="error">{{ error }}</li>
+            </ul>
+          </p>
+          <b-row>
+            <b-col md="3">
+              <b-form-group label="Asignar Abogada/o*" label-for="agen_pro_id">
+                <b-form-select plain v-model="proceeding.proce_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
+                  <template v-slot:first>
+                    <b-form-select-option :value="null" disabled>Seleccione abogado</b-form-select-option>
+                  </template>
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+            <b-col md="3">
+              <b-form-group label="Tipo de actuación*" label-for="proce_sta_id">
+                <b-form-select plain v-model="proceeding.proce_sta_id" :options="statusProcessOptions" id="proce_sta_id">
+                  <template v-slot:first>
+                    <b-form-select-option :value="null" disabled>Seleccione un estado</b-form-select-option>
+                  </template>
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+            <b-col md="3">
+              <b-form-group label="Fecha de ingreso*" label-for="proce_fecha_ingreso">
+                <b-form-input id="proce_fecha_ingreso" v-model="proceeding.proce_fecha_ingreso" type="date" ></b-form-input>
+              </b-form-group>
+            </b-col>
+            <b-col md="3">
+              <b-form-group label="Fecha de actualización*" label-for="proce_fecha_actualizacion">
+                <b-form-input id="proce_fecha_actualizacion" v-model="proceeding.proce_fecha_actualizacion" type="date"></b-form-input>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col md="5">
+              <b-form-group label="Fecha de siguiente audiencia" label-for="proce_fecha_siguiente_audiencia">
+                <b-form-input id="proce_fecha_siguiente_audiencia" v-model="proceeding.proce_fecha_siguiente_audiencia" type="date"></b-form-input>
+              </b-form-group>
+            </b-col>
+            <b-col md="5">
+              <b-form-group label="Hora de siguiente audiencia" label-for="proce_hora_siguiente_audiencia">
+                <b-form-input id="proce_hora_siguiente_audiencia" v-model="proceeding.proce_hora_siguiente_audiencia" type="time"></b-form-input>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col md="12">
+              <b-form-textarea v-model="proceeding.proce_descripcion" type="text" placeholder="Descripción de la actuación*"></b-form-textarea>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col col-auto>
+              <b-form-group  label="Nombre del link" label-for="link_proce_id">
+                <b-form-input v-model="nuevoLinkProceeding.link_name" type="text" placeholder="Página de Google"></b-form-input>
+              </b-form-group>
+            </b-col>
+            <b-col col-auto>
+              <b-form-group  label="URL del link" label-for="imp_nombres">
+                <b-form-input v-model="nuevoLinkProceeding.link_url" type="text" placeholder="www.google.com.co"></b-form-input>
+              </b-form-group>
+            </b-col>
+            <b-col class="text-left col-auto">
+              <b-form-group  label=" " label-for="link_proce_id">
+                <a style="pointer-events:all;" href="#" @click="agregarLinkProceeding"><i class="ri-add-circle-line" style="font-size: 40px;color: green;"></i></a>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col md="12">
+              <div v-if="linksProceeding !== undefined && linksProceeding !==''">
+                <b-table :items="linksProceeding" :fields="columnasLinkActuacion" stacked="md" small>
+                  <template #cell(name)="row">
+                    {{ row.value.first }} {{ row.value.last }}
+                  </template>
+                  <template #cell(actions)="row">
+                    <b-button size="sm" variant="danger" @click="deleteLinkProceeding(row.index)" :class="estadoBotonEliminarLinkProceeding"> Remover </b-button>
+                  </template>
+                </b-table>
+                <hr>
+              </div>
+            </b-col>
+          </b-row>
+          <div class="text-right pt-1">
+            <b-button v-if="proceeding.proce_id !== null" class="sm-3 mr-1" variant="danger" :class="botonEliminarModal" @click="eliminarActuacion(proceeding.proce_id)">Eliminar Actuación</b-button>
+            <b-button class="sm-3 mr-1" variant="secondary" @click="cancelado">Cancelar</b-button>
+            <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="guardarActuacion">{{ textoGuardarActuacion }}</b-button>
+          </div>
+        </form>
+      </b-modal>
+    </div>
+    <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
     <!-- User Interface controls -->
     <b-row>
       <b-col lg="12">
@@ -123,9 +223,9 @@
               </template>
 
               <template #cell(actions)="row">
-                <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
-                  + Info
-                </b-button>-->
+                <b-button size="sm" v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)" class="mr-1">
+                  + Actuación
+                </b-button>
                 <b-button size="sm" @click="row.toggleDetails" class="mr-1">
                   {{ row.detailsShowing ? 'Ocultar' : 'Mostrar' }}
                 </b-button>
@@ -265,7 +365,7 @@
         <pre>{{ infoModal.content }}</pre>
       </b-modal>
     </b-container>
-  </template>
+</template>
 <script>
 import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
@@ -276,11 +376,16 @@ const FileDownload = require('js-file-download')
 export default {
   data () {
     return {
+      estadoBotonEliminarLinkProceeding: '',
       botonDescargarInforme: 'Descargar Informe',
       estadoBotonDescargarInforme: '',
+      botonGuardarModal: '',
+      textoGuardarActuacion: 'Guardar',
+      botonEliminarModal: '',
       user_id: '',
       process: [],
       typeNotificationsOptions: [],
+      statusProcessOptions: [],
       agenda: {
         agen_name: '',
         agen_pro_id: '',
@@ -291,6 +396,18 @@ export default {
         agen_type_eve_id: '',
         agen_type_not_id: ''
       },
+      errors: [],
+      proceeding: {
+        proce_id: null,
+        proce_prore_id: null,
+        proce_pro_id: null,
+        proce_sta_id: null,
+        proce_fecha_ingreso: null,
+        proce_fecha_actualizacion: null,
+        proce_descripcion: null,
+        proce_fecha_siguiente_audiencia: null,
+        proce_hora_siguiente_audiencia: null
+      },
       abogadoOptions: [],
       fields: [
         // { key: 'name', label: 'Person full name', sortable: true, sortDirection: 'desc' },
@@ -300,18 +417,17 @@ export default {
         { key: 'professional.nombre_abogado', label: 'Abogado/a', sortable: true, class: 'text-left' },
         { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left' },
         { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
-        { key: 'prore_fec_sinister', label: 'Fec de Siniestro', sortable: true, class: 'text-center' },
         { key: 'status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
-        // {
-        // key: 'isActive',
-        // label: 'Is Active',
-        // formatter: (value, key, item) => {
-        // return value ? 'Yes' : 'No'
-        // },
-        // sortable: true,
-        // sortByFormatted: true,
-        // filterByFormatted: true
-        // },
+        { key: 'actions', label: 'Acciones', class: 'text-center' }
+      ],
+      nuevoLinkProceeding: {
+        link_name: null,
+        link_url: null
+      },
+      linksProceeding: [],
+      columnasLinkActuacion: [
+        { key: 'link_name', label: 'Nombre', class: 'text-center' },
+        { key: 'link_url', label: 'URL', class: 'text-center' },
         { key: 'actions', label: 'Acciones', class: 'text-center' }
       ],
       totalRows: 1,
@@ -333,6 +449,9 @@ export default {
     }
   },
   computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    },
     sortOptions () {
       // Create an options list from our fields
       return this.fields
@@ -347,6 +466,9 @@ export default {
     this.getProcess()
     this.fetchOptionsAbogados()
     this.getTypeNotifications()
+    setTimeout(() => {
+      this.getEstadosProceso()
+    }, 500)
     // Set the initial number of items
     this.totalRows = this.process.length
   },
@@ -355,10 +477,23 @@ export default {
       axios.get('/type_notifications/fetchTypeNotifications').then(response => {
         this.typeNotificationsOptions = response.data.type_notifications
         if (this.typeNotificationsOptions[0] !== undefined) {
-          this.formData.agen_type_not_id = this.typeNotificationsOptions[0].value
+          this.agenda.agen_type_not_id = this.typeNotificationsOptions[0].value
+          console.log(this.agenda.agen_type_not_id)
         }
-        console.log(this.formData.agen_type_not_id)
       })
+        .catch((err) => {
+          console.log('Ocurrió un error ' + err)
+          this.getTypeNotifications()
+        })
+    },
+    getEstadosProceso () {
+      axios.get('/statusProcess/fetch').then(response => {
+        this.statusProcessOptions = response.data.status_process
+      })
+        .catch((err) => {
+          console.log('Ocurrió un error ' + err)
+          this.getEstadosProceso()
+        })
     },
     getProcess () {
       var user = JSON.parse(auth.getUserLogged())
@@ -450,6 +585,111 @@ export default {
       } else if (tipoIdentificacionId === 4) {
         return 'NIT'
       }
+    },
+    agregarActuacion (proreId) {
+      this.proceeding.proce_prore_id = proreId
+    },
+    guardarActuacion (bvModalEvt) {
+      bvModalEvt.preventDefault()
+      if (this.checkFormActuacion()) {
+        this.botonGuardarModal = 'disabled'
+        this.textoGuardarActuacion = 'Guardando actuación...'
+        const token = localStorage.getItem('access_token')
+        if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+          this.proceeding.proce_user_id = this.userLogged.usr_id
+        }
+        axios.post('/proceedings/store', { formulario_proceeding: this.proceeding, links: this.linksProceeding }, { headers: { 'Authorization': token } }).then(res => {
+          this.textoGuardarActuacion = 'Guardar'
+          this.botonGuardarModal = ''
+          if (res.data.status_code === 200) {
+            Vue.swal(res.data.message)
+            this.$bvModal.hide('modal-nueva-actuacion')
+            this.limpiarModalActuacion()
+          } else {
+            Vue.swal(res.data.message)
+          }
+        })
+          .catch((err) => {
+            this.textoGuardarActuacion = 'Guardar'
+            this.botonGuardarModal = ''
+            Vue.swal('Ups, ocurrió un error ' + err)
+          })
+      } else {
+        return false
+      }
+    },
+    checkFormActuacion () {
+      if (this.proceeding.proce_pro_id && this.proceeding.proce_sta_id && this.proceeding.proce_fecha_ingreso && this.proceeding.proce_fecha_actualizacion && this.proceeding.proce_descripcion) {
+        this.errors = []
+        return true
+      }
+      this.errors = []
+      if (!this.proceeding.proce_pro_id) {
+        this.errors.push('El abogado es obligatorio.')
+      }
+      if (!this.proceeding.proce_sta_id) {
+        this.errors.push('La etapa del proceso es obligatoria.')
+      }
+      if (!this.proceeding.proce_fecha_ingreso) {
+        this.errors.push('La fecha de ingreso es obligatoria.')
+      }
+      if (!this.proceeding.proce_fecha_actualizacion) {
+        this.errors.push('La fecha de actualización es obligatoria.')
+      }
+      if (!this.proceeding.proce_descripcion) {
+        this.errors.push('La descripción es obligatoria.')
+      }
+    },
+    cancelado () {
+      this.$bvModal.hide('modal-nueva-actuacion')
+    },
+    limpiarModalActuacion () {
+      this.proceeding.proce_prore_id = null
+      this.proceeding.proce_pro_id = null
+      this.proceeding.proce_sta_id = null
+      this.proceeding.proce_fecha_ingreso = null
+      this.proceeding.proce_fecha_actualizacion = null
+      this.proceeding.proce_descripcion = null
+      this.proceeding.proce_fecha_siguiente_audiencia = null
+      this.proceeding.proce_hora_siguiente_audiencia = null
+    },
+    deleteLinkProceeding (proceedingLinkId) {
+      this.estadoBotonEliminarLinkProceeding = 'disabled'
+      this.$bvModal.msgBoxConfirm('¿Estás seguro de eliminar este link?', {
+        title: 'Por favor confirmar acción',
+        size: 'sm',
+        buttonSize: 'sm',
+        okVariant: 'danger',
+        okTitle: 'Confirmar',
+        cancelTitle: 'Cancelar',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      })
+        .then(value => {
+          this.estadoBotonEliminarLinkProceeding = ''
+          if (value) {
+            this.linksProceeding.splice(proceedingLinkId, 1)
+          }
+        })
+        .catch(err => {
+          this.estadoBotonEliminarLinkProceeding = ''
+          Vue.swal(err)
+        })
+    },
+    agregarLinkProceeding () {
+      console.log(this.nuevoLinkProceeding)
+      if (this.nuevoLinkProceeding.link_name === null || this.nuevoLinkProceeding.link_url === null) {
+        Vue.swal('Por favor ingrese información del link')
+        return false
+      } else {
+        this.linksProceeding.push({ link_name: this.nuevoLinkProceeding.link_name, link_url: this.nuevoLinkProceeding.link_url })
+        this.limpiarNuevoLinkProceeding()
+      }
+    },
+    limpiarNuevoLinkProceeding () {
+      this.nuevoLinkProceeding.link_name = null
+      this.nuevoLinkProceeding.link_url = null
     }
   }
 }
