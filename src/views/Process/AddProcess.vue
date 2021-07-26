@@ -238,74 +238,6 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Primer Nombre Paciente" label-for="prore_pac_name_first">
-                                  <div v-if="proc_id != null && formData.prore_pac_name_first != null">
-                                    <span class='text'>{{formData.prore_pac_name_first}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_name_first == null">
-                                    <b-form-input v-model="formData.prore_pac_name_first" type="text" placeholder="Primer Nombre" :class="hasError('prore_pac_name_first') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_pac_name_first')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_pac_name_first.required">Por favor escriba el primer nombre del paciente.</div>
-                                    </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Nombre Paciente" label-for="prore_pac_name_second">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_pac_name_second}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null">
-                                    <b-form-input v-model="formData.prore_pac_name_second" type="text" placeholder="Segundo Nombre" :class="hasError('prore_pac_name_second') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_pac_name_second')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_pac_name_second.required">Por favor escriba el segundo nombre del paciente.</div>
-                                    </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Primer Apellido Paciente" label-for="prore_pac_lastname_first">
-                                  <div v-if="proc_id != null && formData.prore_pac_lastname_first != null">
-                                    <span class='text'>{{formData.prore_pac_lastname_first}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_lastname_first == null">
-                                    <b-form-input v-model="formData.prore_pac_lastname_first" type="text" placeholder="Primer Apellido" :class="hasError('prore_pac_lastname_first') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_pac_lastname_first')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_pac_lastname_first.required">Por favor escriba el primer apellido del paciente.</div>
-                                    </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Segundo Apellido Paciente" label-for="prore_pac_lastname_second">
-                                  <div v-if="proc_id != null">
-                                    <span class='text'>{{formData.prore_pac_lastname_second}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null">
-                                    <b-form-input v-model="formData.prore_pac_lastname_second" type="text" placeholder="Segundo Apellido" :class="hasError('prore_pac_lastname_second') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_pac_lastname_second')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_pac_lastname_second.required">Por favor escriba el segundo apellido del paciente.</div>
-                                    </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Genero del paciente" label-for="usr_lastname_first">
-                                  <div v-if="proc_id != null && formData.prore_pac_gender != null">
-                                    <span class='text'>{{ genderPaciente }}</span>
-                                  </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_gender == null">
-                                    <template v-for="(item,index) in state">
-                                      <b-form-radio inline v-model="formData.prore_pac_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="hasError('prore_pac_gender') ? 'is-invalid' : ''">{{ item.label }}</b-form-radio>
-                                    </template>
-                                    <div v-if="hasError('prore_pac_gender')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_pac_gender.required">Por favor elige un género.</div>
-                                    </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Edad del paciente" label-for="prore_pac_age">
-                                  <div v-if="proc_id != null && formData.prore_pac_age != null">
-                                    <span class='text'>{{formData.prore_pac_age}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_age == null">
-                                    <b-form-input v-model="formData.prore_pac_age" id="prore_pac_age" type="number" :class="hasError('prore_pac_age') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_pac_age')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_pac_age.required">Por favor escriba la edad del paciente.</div>
-                                    </div>
-                                  </div>
-                                </b-form-group>
                                 <b-form-group class="col-md-6" label="Especialidad" label-for="selectuserrole">
                                   <div v-if="proc_id != null && formData.prore_propse_id != null">
                                     <span class='text'>{{formData.spe_name}}</span>
@@ -434,39 +366,46 @@
                                   </b-table>
                                   <hr>
                                 </div>
-                                <!--<b-form-group class="col-md-12" label="Demandantes" label-for="nuevoImplicated">
-                                  <div class="text-black" v-for="(implica, index) in implicated" :key="index">
-                                    <span> {{ implica.imp_nombres }} - {{ implica.imp_apellidos }} </span> <span v-if="implica.imp_telefonos !== undefined && implica.imp_telefonos !== ''"> - {{ implica.imp_telefonos}} </span> <span v-if="implica.imp_emails !== undefined && implica.imp_emails !== ''"> - {{ implica.imp_emails }} </span> <span> - {{ tipoPerfil(implica.imp_profile_id) }} </span>
-                                    <span> <a class="pl-2" href="javascript:void(0)" @click="eliminarDemandante(index)"><i class="ri-close-circle-line text-danger" style="font-size:17px;"></i></a></span>
-                                  </div>
-                                </b-form-group>-->
-                                <b-form-group class="col-md-6" label="Tipo identificación" label-for="imp_tipo_identificacion">
+                                <b-form-group class="col-md-3" label="Tipo identificación" label-for="imp_tipo_identificacion">
                                   <b-form-select plain v-model="nuevoImplicated.imp_tipo_identificacion" :options="ids" id="imp_profile_id">
                                     <template v-slot:first>
                                       <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
                                     </template>
                                   </b-form-select>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Identificación" label-for="imp_identificacion">
+                                <b-form-group class="col-md-3" label="Identificación" label-for="imp_identificacion">
                                   <b-form-input v-model="nuevoImplicated.imp_identificacion" type="text" placeholder="Identificación"></b-form-input>
                                 </b-form-group>
-                                <b-form-group class="col-md-4" label="Nombres*" label-for="imp_nombres">
+                                <b-form-group class="col-md-3" label="Nombres*" label-for="imp_nombres">
                                   <b-form-input v-model="nuevoImplicated.imp_nombres" type="text" placeholder="Nombres"></b-form-input>
                                 </b-form-group>
-                                <b-form-group class="col-md-4" label="Apellidos*" label-for="imp_apellidos">
+                                <b-form-group class="col-md-3" label="Apellidos*" label-for="imp_apellidos">
                                   <b-form-input v-model="nuevoImplicated.imp_apellidos" type="text" placeholder="Apellidos"></b-form-input>
                                 </b-form-group>
-                                <b-form-group class="col-md-4" label="Perfil*" label-for="imp_profile_id">
+                                <b-form-group class="col-md-3" label="Genero" label-for="imp_genero_id">
+                                  <b-form-select plain v-model="nuevoImplicated.imp_genero_id" :options="generoOptions" id="imp_genero_id">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Perfil*" label-for="imp_profile_id">
                                   <b-form-select plain v-model="nuevoImplicated.imp_profile_id" :options="profilesOptions" id="imp_profile_id">
                                     <template v-slot:first>
                                       <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
                                     </template>
                                   </b-form-select>
                                 </b-form-group>
-                                <b-form-group class="col-md-5" label="Teléfonos" label-for="imp_telefonos">
+                                  <b-form-group class="col-md-3" label="Edad" label-for="imp_edad">
+                                  <b-form-input v-model="nuevoImplicated.imp_edad" type="number" placeholder="Ej: 18"></b-form-input>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Dirección" label-for="imp_direccion">
+                                  <b-form-input v-model="nuevoImplicated.imp_direccion" type="text" placeholder="Ej: calle 36 #101-22"></b-form-input>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Teléfonos" label-for="imp_telefonos">
                                   <b-form-input v-model="nuevoImplicated.imp_telefonos" type="text" placeholder="Ej 3176669800, 3110910092" :class="hasError('imp_telefonos') ? 'is-invalid' : ''"></b-form-input>
                                 </b-form-group>
-                                <b-form-group class="col-md-5" label="Correos" label-for="imp_emails">
+                                <b-form-group class="col-md-3" label="Correos" label-for="imp_emails">
                                   <b-form-input v-model="nuevoImplicated.imp_emails" type="text" placeholder="Ej hola@example.com, prueba@example.com" :class="hasError('imp_emails') ? 'is-invalid' : ''"></b-form-input>
                                 </b-form-group>
                                 <div class="col-md-1 pt-4">
@@ -1437,6 +1376,9 @@ export default {
         imp_identificacion: '',
         imp_nombres: '',
         imp_apellidos: '',
+        imp_direccion: '',
+        imp_edad: '',
+        imp_genero_id: '',
         imp_telefonos: '',
         imp_emails: '',
         imp_profile_id: ''
@@ -1450,14 +1392,19 @@ export default {
           key: 'imp_profile_id',
           label: 'Perfil',
           formatter: (value, key, item) => {
-            // profileId = 3 Abogado demandante; 4 = demandante; 5 = demandado; 6 = llamado en garantía
-            if (value === 3) {
-              return 'Abogado Demandante'
-            } else if (value === 4) {
-              return 'Demandante'
+            // profileId = 4 Firma de abogados; 5 = Paciente;
+            // 6 = Abogado demandante; 7 = Demandante; 8 = Demandado; 9 = Llamado en garantía
+            if (value === 4) {
+              return 'Firma de abogados'
             } else if (value === 5) {
+              return 'Paciente'
+            } else if (value === 6) {
+              return 'Abogado demandante'
+            } else if (value === 7) {
+              return 'Demandante'
+            } else if (value === 8) {
               return 'Demandado'
-            } else {
+            } else if (value === 9) {
               return 'Llamado en garantía'
             }
           },
@@ -1637,18 +1584,14 @@ export default {
         colorDisabled: 'five',
         color: 'danger'
       },
-      state: [
+      generoOptions: [
         {
-          name: 'genero',
-          label: 'Masculino',
-          value: 2,
-          disabled: false
+          text: 'Masculino',
+          value: 2
         },
         {
-          name: 'genero',
-          label: 'Femenino',
-          value: 1,
-          disabled: false
+          text: 'Femenino',
+          value: 1
         }
       ],
       users: []
@@ -1868,7 +1811,7 @@ export default {
         Vue.swal('Por favor seleccionar la relación en el proceso')
         return false
       }
-      this.implicated.push({ imp_tipo_identificacion: this.nuevoImplicated.imp_tipo_identificacion, imp_identificacion: this.nuevoImplicated.imp_identificacion, imp_nombres: this.nuevoImplicated.imp_nombres, imp_apellidos: this.nuevoImplicated.imp_apellidos, imp_telefonos: this.nuevoImplicated.imp_telefonos, imp_emails: this.nuevoImplicated.imp_emails, imp_profile_id: this.nuevoImplicated.imp_profile_id })
+      this.implicated.push({ imp_tipo_identificacion: this.nuevoImplicated.imp_tipo_identificacion, imp_identificacion: this.nuevoImplicated.imp_identificacion, imp_nombres: this.nuevoImplicated.imp_nombres, imp_apellidos: this.nuevoImplicated.imp_apellidos, imp_telefonos: this.nuevoImplicated.imp_telefonos, imp_emails: this.nuevoImplicated.imp_emails, imp_profile_id: this.nuevoImplicated.imp_profile_id, imp_direccion: this.nuevoImplicated.imp_direccion, imp_edad: this.nuevoImplicated.imp_edad, imp_genero_id: this.nuevoImplicated.imp_genero_id })
       this.limpiarNuevoImplicated()
     },
     deleteImplicated (implicatedId) {
@@ -1880,6 +1823,9 @@ export default {
       this.nuevoImplicated.imp_nombres = ''
       this.nuevoImplicated.imp_apellidos = ''
       this.nuevoImplicated.imp_telefonos = ''
+      this.nuevoImplicated.imp_direccion = ''
+      this.nuevoImplicated.imp_genero_id = ''
+      this.nuevoImplicated.imp_edad = ''
       this.nuevoImplicated.imp_emails = ''
       this.nuevoImplicated.imp_profile_id = ''
     }

@@ -205,61 +205,61 @@
                     </template>
                     <template v-slot:body>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="my-0"><b>Etapa procesal:</b></b-card-text>
+                        <b-card-text class="my-0 pr-3"><b>Etapa procesal:</b></b-card-text>
                         <b-card-text class="px-1 my-0 text-dark" v-if="process.statusProcess != null">{{ process.statusProcess.estado_proceso }}</b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>ID Litigando: </b> <span v-if="process.prore_litigando_id != null">{{ process.prore_litigando_id }} </span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3"><b>Número de Radicado:</b> <span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>ID Litigando: </b> <span v-if="process.prore_litigando_id != null">{{ process.prore_litigando_id }} </span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3"><b>Número de Radicado:</b> <span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span v-else>Sin asignar</span></b-card-text>
                       </b-row>
                       <b>Abogado Líder:</b>
                       <b-row class="col-md-12 pt-1" v-if="process.professional != null">
-                        <b-card-text><b>Nombre: </b>{{ process.professional.pro_name_first }}</b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Apellido: </b>{{ process.professional.pro_lastname_first }}</b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Identificación: </b>{{ process.professional.pro_identificacion }}</b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Correo electrónico: </b>{{ process.professional.pro_email }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Nombre: </b>{{ process.professional.pro_name_first }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Apellido: </b>{{ process.professional.pro_lastname_first }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Identificación: </b>{{ process.professional.pro_identificacion }}</b-card-text>
+                        <b-card-text class="my-0"><b>Correo electrónico: </b>{{ process.professional.pro_email }}</b-card-text>
                       </b-row>
                       <hr>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text><b>Tipo de proceso: </b><span v-if="process.tipo_proceso != null">{{ process.tipo_proceso.typro_name }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Juzgado: </b><span v-if="process.juzgado != null">{{ process.juzgado.court_name }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Número radicado: </b><span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Tipo de proceso: </b><span v-if="process.tipo_proceso != null">{{ process.tipo_proceso.typro_name }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Juzgado: </b><span v-if="process.juzgado != null">{{ process.juzgado.court_name }}</span><span v-else>Sin asignar</span></b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text><b>Objeto del Litigio:</b> <span v-if="process.prore_objeto_litigio != null">{{ process.prore_objeto_litigio }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3"><b>Proceso Ejecutivo:</b> <span v-if="process.prore_proceso_ejecutivo != null">{{ process.prore_proceso_ejecutivo }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3"><b>Ejecutante:</b> <span v-if="process.prore_ejecutante != null">{{ process.prore_ejecutante }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3"><b>Medida Cautelar:</b> <span v-if="process.prore_medida_cautelar != null">{{ process.prore_medida_cautelar }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="my-0 pr-3"><b>Número radicado: </b><span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Objeto del Litigio:</b> <span v-if="process.prore_objeto_litigio != null">{{ process.prore_objeto_litigio }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Proceso Ejecutivo:</b> <span v-if="process.prore_proceso_ejecutivo != null">{{ process.prore_proceso_ejecutivo }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Ejecutante:</b> <span v-if="process.prore_ejecutante != null">{{ process.prore_ejecutante }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text><b>Medida Cautelar:</b> <span v-if="process.prore_medida_cautelar != null">{{ process.prore_medida_cautelar }}</span><span v-else>Sin asignar</span></b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text><b>Ciudad:</b> <span v-if="process.ciudad != null">{{ process.ciudad.city_name }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Fecha ingreso: </b>{{ process.prore_fec_ingreso }}</b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Clinica:</b> <span v-if="process.clinica != null">{{ process.clinica.cli_name }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Fecha siniestro: </b>{{ process.prore_fec_sinister }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Ciudad:</b> <span v-if="process.ciudad != null">{{ process.ciudad.city_name }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Fecha ingreso: </b>{{ process.prore_fec_ingreso }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Clinica:</b> <span v-if="process.clinica != null">{{ process.clinica.cli_name }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Fecha siniestro: </b>{{ process.prore_fec_sinister }}</b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text><b>Fecha aviso:</b> {{ process.prore_fec_sinies_aviso }}</b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Fecha de notificación IPS:</b> {{ process.prore_fec_recibo_notify }}</b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Colaborador de IPS:</b> {{ process.prore_colaborador_ips }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Fecha aviso:</b> {{ process.prore_fec_sinies_aviso }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Fecha de notificación IPS:</b> {{ process.prore_fec_recibo_notify }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Colaborador de IPS:</b> {{ process.prore_colaborador_ips }}</b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text><b>Año de notificación: </b>{{ process.prore_year_notify }}</b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Fecha notificación prejudicial: </b>{{ process.prore_fec_noti_preju }}</b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Fecha notificación prejudicial:</b> {{ process.prore_fec_audi_conci_preju }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Año de notificación: </b>{{ process.prore_year_notify }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial: </b>{{ process.prore_fec_noti_preju }}</b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial:</b> {{ process.prore_fec_audi_conci_preju }}</b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
                         <b-card-text><b>Descripción del siniestro: </b>{{ process.prore_sinies_description }}</b-card-text>
                       </b-row>
                       <hr>
-                      <b>Conclusiones:</b>
+                      <b style="text-decoration:underline;">Conclusiones:</b>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ process.prore_sentencia_final }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ process.prore_val_sentencia_final }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Discriminar Valor De La Condena:</b> <span v-if="process.prore_discriminar_val_condena != null">{{ process.prore_discriminar_val_condena }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ process.prore_sentencia_final }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ process.prore_val_sentencia_final }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Discriminar Valor De La Condena:</b> <span v-if="process.prore_discriminar_val_condena != null">{{ process.prore_discriminar_val_condena }}</span><span v-else>Sin asignar</span></b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="my-0"><b>Costas De La Sentencia: </b><span v-if="process.prore_costas_sentencia != null">{{ process.prore_costas_sentencia }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Costas Procesales Primera Instancia: </b><span v-if="process.prore_costas_procesales_primera_instancia != null">{{ process.prore_costas_procesales_primera_instancia }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text><b>Costas Procesales Segunda Instancia:</b> <span v-if="process.prore_costas_procesales_segunda_instancia != null">{{ process.prore_costas_procesales_segunda_instancia }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Total Costas: </b><span v-if="process.prore_total_costas != null">{{ process.prore_total_costas }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Costas De La Sentencia: </b><span v-if="process.prore_costas_sentencia != null">{{ process.prore_costas_sentencia }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Costas Procesales Primera Instancia: </b><span v-if="process.prore_costas_procesales_primera_instancia != null">{{ process.prore_costas_procesales_primera_instancia }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Costas Procesales Segunda Instancia:</b> <span v-if="process.prore_costas_procesales_segunda_instancia != null">{{ process.prore_costas_procesales_segunda_instancia }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Total Costas: </b><span v-if="process.prore_total_costas != null">{{ process.prore_total_costas }}</span><span v-else>Sin asignar</span></b-card-text>
                       </b-row>
                     </template>
                   </iq-card>
@@ -279,9 +279,11 @@
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="px-2 my-0"><b>Tipo identificación: </b>{{ tipoIdentificacion(implicate.imp_tipo_identificacion) }}</b-card-text>
-                          <b-card-text class="px-2 my-0"><b>Identificación: </b>{{ implicate.imp_identificacion }}</b-card-text>
-                          <b-card-text class="px-2 my-0"><b>Nombres: </b>{{ implicate.imp_nombres }}</b-card-text>
-                          <b-card-text class="px-1 my-0"><b>Apellidos: </b>{{ implicate.imp_apellidos }}</b-card-text>
+                          <b-card-text class="pr-2 my-0"><b>Identificación: </b>{{ implicate.imp_identificacion }}</b-card-text>
+                          <b-card-text class="pr-2 my-0"><b>Nombres: </b>{{ implicate.imp_nombres }}</b-card-text>
+                          <b-card-text class="pr-2 my-0"><b>Apellidos: </b>{{ implicate.imp_apellidos }}</b-card-text>
+                          <b-card-text class="pr-2 my-0"><b>Edad: </b>{{ implicate.imp_edad }}</b-card-text>
+                          <b-card-text class="pr-2 my-0"><b>Genero: </b>{{ generoInvolucrado(implicate.imp_genero_id) }}</b-card-text>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="px-2 my-0"><b>Dirección: </b>{{ implicate.imp_direccion }}</b-card-text>
@@ -1087,6 +1089,15 @@ export default {
         userId = this.userLogged.usr_id
       }
       return userId
+    },
+    generoInvolucrado (generoId) {
+      if (generoId === 1) {
+        return 'Femenino'
+      } else if (generoId === 2) {
+        return 'Masculino'
+      } else {
+        return 'Sin asignar'
+      }
     },
     tipoIdentificacion (tipoIdentificacionId) {
       if (tipoIdentificacionId === 1) {
