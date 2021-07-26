@@ -83,6 +83,7 @@ import ChangePassword from '../views/User/ChangePassword'
 /* Process View */
 import AddProcess from '../views/Process/AddProcess'
 import EditProcess from '../views/Process/EditProcess'
+import ShowProcess from '../views/Process/ShowProcess'
 import ProcessList from '../views/Process/ProcessList'
 /* Todo */
 import Callback from '../views/AuthPages/Default/Callback'
@@ -542,6 +543,12 @@ const processChildRoute = (prop, mode = false) => [
     name: prop + '.edit',
     meta: { dark: mode, auth: true, name: 'Edit Porcess' },
     component: EditProcess
+  },
+  {
+    path: 'process-show/:prore_id',
+    name: prop + '.show',
+    meta: { dark: mode, auth: true, name: 'Ver detalle' },
+    component: ShowProcess
   },
   {
     path: 'process-list',

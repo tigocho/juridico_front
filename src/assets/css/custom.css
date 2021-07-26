@@ -29,3 +29,7 @@ import Css
 [dir=ltr] .iq-sidebar-menu .iq-menu li:not(.active) ul li a{
   color: #ffffff!important;
 }
+
+.pagina-detalle-proceso b, .pagina-detalle-proceso p{
+  color: #343a40!important;
+}

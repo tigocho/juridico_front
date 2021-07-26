@@ -58,7 +58,7 @@
             </ul>
           </p>
           <b-row>
-            <b-col md="3">
+            <b-col md="4">
               <b-form-group label="Asignar Abogada/o*" label-for="agen_pro_id">
                 <b-form-select plain v-model="proceeding.proce_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
                   <template v-slot:first>
@@ -67,7 +67,7 @@
                 </b-form-select>
               </b-form-group>
             </b-col>
-            <b-col md="3">
+            <b-col md="4">
               <b-form-group label="Tipo de actuación*" label-for="proce_sta_id">
                 <b-form-select plain v-model="proceeding.proce_sta_id" :options="statusProcessOptions" id="proce_sta_id">
                   <template v-slot:first>
@@ -76,24 +76,24 @@
                 </b-form-select>
               </b-form-group>
             </b-col>
-            <b-col md="3">
+            <b-col md="4">
               <b-form-group label="Fecha de ingreso*" label-for="proce_fecha_ingreso">
                 <b-form-input id="proce_fecha_ingreso" v-model="proceeding.proce_fecha_ingreso" type="date" ></b-form-input>
               </b-form-group>
             </b-col>
-            <b-col md="3">
+          </b-row>
+          <b-row>
+            <b-col md="4">
               <b-form-group label="Fecha de actualización*" label-for="proce_fecha_actualizacion">
                 <b-form-input id="proce_fecha_actualizacion" v-model="proceeding.proce_fecha_actualizacion" type="date"></b-form-input>
               </b-form-group>
             </b-col>
-          </b-row>
-          <b-row>
-            <b-col md="5">
+            <b-col md="4">
               <b-form-group label="Fecha de siguiente audiencia" label-for="proce_fecha_siguiente_audiencia">
                 <b-form-input id="proce_fecha_siguiente_audiencia" v-model="proceeding.proce_fecha_siguiente_audiencia" type="date"></b-form-input>
               </b-form-group>
             </b-col>
-            <b-col md="5">
+            <b-col md="4">
               <b-form-group label="Hora de siguiente audiencia" label-for="proce_hora_siguiente_audiencia">
                 <b-form-input id="proce_hora_siguiente_audiencia" v-model="proceeding.proce_hora_siguiente_audiencia" type="time"></b-form-input>
               </b-form-group>
@@ -137,7 +137,6 @@
             </b-col>
           </b-row>
           <div class="text-right pt-1">
-            <b-button v-if="proceeding.proce_id !== null" class="sm-3 mr-1" variant="danger" :class="botonEliminarModal" @click="eliminarActuacion(proceeding.proce_id)">Eliminar Actuación</b-button>
             <b-button class="sm-3 mr-1" variant="secondary" @click="cancelado">Cancelar</b-button>
             <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="guardarActuacion">{{ textoGuardarActuacion }}</b-button>
           </div>
@@ -226,9 +225,10 @@
                 <b-button size="sm" v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)" class="mr-1">
                   + Actuación
                 </b-button>
-                <b-button size="sm" @click="row.toggleDetails" class="mr-1">
+                <!--<b-button size="sm" @click="row.toggleDetails" class="mr-1">
                   {{ row.detailsShowing ? 'Ocultar' : 'Mostrar' }}
-                </b-button>
+                </b-button>-->
+                <b-button variant="primary" size="sm" class="mr-1" @click="verDetalle(row.item.prore_id)">Abrir</b-button>
                 <b-button size="sm" v-b-modal.modal-lg variant="primary" @click="sendInfo(row.item.prore_id)">
                   Audiencia
                 </b-button>
@@ -498,12 +498,15 @@ export default {
     getProcess () {
       var user = JSON.parse(auth.getUserLogged())
       this.user_id = user.usr_id
-      axios.get('/process/' + this.user_id).then(response => {
+      axios.get('/process').then(response => {
         this.process = response.data.process
       })
     },
     edit (item) {
       this.$router.push({ path: `/process/process-edit/${item}` })
+    },
+    verDetalle (proreId) {
+      this.$router.push({ path: `/process/process-show/${proreId}` })
     },
     handleOk (bvModalEvt) {
       bvModalEvt.preventDefault()
@@ -678,7 +681,6 @@ export default {
         })
     },
     agregarLinkProceeding () {
-      console.log(this.nuevoLinkProceeding)
       if (this.nuevoLinkProceeding.link_name === null || this.nuevoLinkProceeding.link_url === null) {
         Vue.swal('Por favor ingrese información del link')
         return false

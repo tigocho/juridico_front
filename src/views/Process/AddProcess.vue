@@ -234,7 +234,7 @@
                                       </template>
                                     </b-form-select>
                                     <div v-if="hasError('prore_city_id')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_city_id.required">Por favor elige una fecha.</div>
+                                      <div class="error" v-if="!$v.formData.prore_city_id.required">Por favor elige una ciudad.</div>
                                     </div>
                                   </div>
                                 </b-form-group>
