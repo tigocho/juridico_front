@@ -154,7 +154,6 @@ export default {
               this.botonEjecutarImportacion = 'Ejecutar Importación'
               this.uploading = false
               this.error = response.data
-              console.log('check error: ', this.error)
             }
           })
           .catch(error => {
@@ -167,7 +166,6 @@ export default {
             this.botonEjecutarImportacion = 'Ejecutar Importación'
             this.uploading = false
             this.error = error.response.data
-            console.log('check error: ', this.error)
           })
       } else {
         Vue.swal('Por favor elige un archivo')
@@ -203,7 +201,6 @@ export default {
               this.botonEjecutarImportacionImplicated = 'Ejecutar Importación'
               this.uploading = false
               this.errorImplicated = response.data
-              console.log('check error: ', this.errorImplicated)
             }
           })
           .catch(error => {
@@ -216,7 +213,6 @@ export default {
             this.botonEjecutarImportacionImplicated = 'Ejecutar Importación'
             this.uploading = false
             this.errorImplicated = error.response.data
-            console.log('check error: ', this.errorImplicated)
           })
       } else {
         Vue.swal('Por favor elige un archivo')

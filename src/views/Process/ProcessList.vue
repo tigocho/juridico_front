@@ -444,7 +444,8 @@ export default {
         content: ''
       },
       links: {},
-      intentos: 0
+      intentos: 0,
+      errores: {}
     }
   },
   computed: {
@@ -479,10 +480,11 @@ export default {
         if (this.typeNotificationsOptions[0] !== undefined) {
           this.agenda.agen_type_not_id = this.typeNotificationsOptions[0].value
           this.intentos = 0
+          this.errores = {}
         }
       })
         .catch((err) => {
-          console.log('Ocurrió un error ' + err)
+          this.errores = err
           if (this.intentos < 2) {
             this.getTypeNotifications()
             this.intentos++
@@ -493,9 +495,10 @@ export default {
       axios.get('/statusProcess/fetch').then(response => {
         this.statusProcessOptions = response.data.status_process
         this.intentos = 0
+        this.errores = {}
       })
         .catch((err) => {
-          console.log('Ocurrió un error ' + err)
+          this.errores = err
           if (this.intentos < 2) {
             this.getEstadosProceso()
             this.intentos++
@@ -510,9 +513,10 @@ export default {
         // Set the initial number of items
         this.totalRows = this.process.length
         this.intentos = 0
+        this.errores = {}
       })
         .catch(error => {
-          console.log('Errores ' + error)
+          this.errores = error
           if (this.intentos < 2) {
             this.getProcess()
             this.intentos++
