@@ -152,6 +152,7 @@
             <h4 class="card-title">Litigios/Solicitudes</h4>
           </template>
           <template v-slot:headerAction>
+            <b-button variant="primary" class="mr-2" @click="importarArchivo" >Importar procesos</b-button>
             <b-button variant="primary" @click="descargarInforme" :class="estadoBotonDescargarInforme">{{ botonDescargarInforme }}</b-button>
           </template>
           <template v-slot:body>
@@ -222,16 +223,13 @@
               </template>
 
               <template #cell(actions)="row">
-                <b-button size="sm" v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)" class="mr-1">
-                  + Actuación
-                </b-button>
-                <!--<b-button size="sm" @click="row.toggleDetails" class="mr-1">
-                  {{ row.detailsShowing ? 'Ocultar' : 'Mostrar' }}
-                </b-button>-->
-                <b-button variant="primary" size="sm" class="mr-1" @click="verDetalle(row.item.prore_id)">Abrir</b-button>
-                <b-button size="sm" v-b-modal.modal-lg variant="primary" @click="sendInfo(row.item.prore_id)">
-                  Audiencia
-                </b-button>
+                <b-dropdown variant="primary" text="Acciones">
+                  <b-dropdown-item @click="verDetalle(row.item.prore_id)">Abrir</b-dropdown-item>
+                  <b-dropdown-item @click="edit(row.item.prore_id)">Editar</b-dropdown-item>
+                  <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
+                  ">+ Actuación</b-dropdown-item>
+                  <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
+                </b-dropdown>
               </template>
 
               <template #row-details="row">
@@ -396,6 +394,8 @@ export default {
         agen_type_eve_id: '',
         agen_type_not_id: ''
       },
+      error: {},
+      import_file: '',
       errors: [],
       proceeding: {
         proce_id: null,
@@ -412,9 +412,7 @@ export default {
       fields: [
         // { key: 'name', label: 'Person full name', sortable: true, sortDirection: 'desc' },
         // { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
-        { key: 'prore_id', label: 'ID', sortable: true, sortDirection: 'desc', class: 'text-center' },
-        { key: 'prore_litigando_id', label: 'ID Litigando', sortable: true, class: 'text-center' },
-        { key: 'professional.nombre_abogado', label: 'Abogado/a', sortable: true, class: 'text-left' },
+        { key: 'prore_num_proceso', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-center' },
         { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left' },
         { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
         { key: 'status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
@@ -445,7 +443,8 @@ export default {
         title: '',
         content: ''
       },
-      links: {}
+      links: {},
+      intentos: 0
     }
   },
   computed: {
@@ -469,30 +468,38 @@ export default {
     setTimeout(() => {
       this.getEstadosProceso()
     }, 500)
-    // Set the initial number of items
-    this.totalRows = this.process.length
   },
   methods: {
+    importarArchivo () {
+      this.$router.push({ path: `/process/process-import` })
+    },
     getTypeNotifications () {
       axios.get('/type_notifications/fetchTypeNotifications').then(response => {
         this.typeNotificationsOptions = response.data.type_notifications
         if (this.typeNotificationsOptions[0] !== undefined) {
           this.agenda.agen_type_not_id = this.typeNotificationsOptions[0].value
-          console.log(this.agenda.agen_type_not_id)
+          this.intentos = 0
         }
       })
         .catch((err) => {
           console.log('Ocurrió un error ' + err)
-          this.getTypeNotifications()
+          if (this.intentos < 2) {
+            this.getTypeNotifications()
+            this.intentos++
+          }
         })
     },
     getEstadosProceso () {
       axios.get('/statusProcess/fetch').then(response => {
         this.statusProcessOptions = response.data.status_process
+        this.intentos = 0
       })
         .catch((err) => {
           console.log('Ocurrió un error ' + err)
-          this.getEstadosProceso()
+          if (this.intentos < 2) {
+            this.getEstadosProceso()
+            this.intentos++
+          }
         })
     },
     getProcess () {
@@ -500,7 +507,17 @@ export default {
       this.user_id = user.usr_id
       axios.get('/process').then(response => {
         this.process = response.data.process
+        // Set the initial number of items
+        this.totalRows = this.process.length
+        this.intentos = 0
       })
+        .catch(error => {
+          console.log('Errores ' + error)
+          if (this.intentos < 2) {
+            this.getProcess()
+            this.intentos++
+          }
+        })
     },
     edit (item) {
       this.$router.push({ path: `/process/process-edit/${item}` })

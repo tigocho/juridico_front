@@ -84,6 +84,7 @@ import ChangePassword from '../views/User/ChangePassword'
 import AddProcess from '../views/Process/AddProcess'
 import EditProcess from '../views/Process/EditProcess'
 import ShowProcess from '../views/Process/ShowProcess'
+import ImportProcess from '../views/Process/ImportProcess'
 import ProcessList from '../views/Process/ProcessList'
 /* Todo */
 import Callback from '../views/AuthPages/Default/Callback'
@@ -549,6 +550,12 @@ const processChildRoute = (prop, mode = false) => [
     name: prop + '.show',
     meta: { dark: mode, auth: true, name: 'Ver detalle' },
     component: ShowProcess
+  },
+  {
+    path: 'process-import',
+    name: prop + '.import',
+    meta: { dark: mode, auth: true, name: 'Importar Procesos' },
+    component: ImportProcess
   },
   {
     path: 'process-list',

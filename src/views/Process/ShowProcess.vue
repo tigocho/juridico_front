@@ -203,6 +203,9 @@
                     <template v-slot:headerTitle>
                       <h4 class="card-title">Información del proceso</h4>
                     </template>
+                    <template v-slot:headerAction>
+                      <b-button variant="primary" @click="editarProceso">Editar Proceso</b-button>
+                    </template>
                     <template v-slot:body>
                       <b-row class="col-md-12 pt-1">
                         <b-card-text class="my-0 pr-3"><b>Etapa procesal:</b></b-card-text>
@@ -596,6 +599,9 @@ export default {
           console.log('Ocurrió un error ' + err)
           this.getEstadosProceso()
         })
+    },
+    editarProceso () {
+      this.$router.push({ path: `/process/process-edit/` + this.prore_id })
     },
     agregarLinkProceeding () {
       if (this.nuevoLinkProceeding.link_name === null || this.nuevoLinkProceeding.link_url === null) {
