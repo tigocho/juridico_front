@@ -42,7 +42,29 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Fecha de Ingreso*" label-for="prore_fec_ingreso">
+                                <b-form-group class="col-md-6" label="Identificador de litigando*" label-for="prore_litigando_id">
+                                  <div v-if="proc_id != null">
+                                    <span class='text' >{{ formData.prore_litigando_id }}</span>
+                                  </div>
+                                  <div v-if="proc_id == null">
+                                    <b-form-input v-model="formData.prore_litigando_id" id="prore_litigando_id" type="number" :class="hasError('prore_litigando_id') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_litigando_id')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_litigando_id.required">Por favor escribe el ID de litigando.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha de Ingreso a Juridico*" label-for="prore_fec_ingreso_jur">
+                                  <div v-if="proc_id != null && formData.prore_fec_ingreso_jur != null">
+                                    <span class='text'>{{formData.prore_fec_ingreso_jur}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_ingreso_jur == null">
+                                    <b-form-input id="prore_fec_ingreso_jur" v-model="formData.prore_fec_ingreso_jur" type="date" :class="hasError('prore_fec_ingreso_jur') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_fec_ingreso_jur')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_fec_ingreso_jur.required">Por favor elige una fecha.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha Traslado Decreto 806*" label-for="prore_fec_ingreso">
                                   <div v-if="proc_id != null && formData.prore_fec_ingreso != null">
                                     <span class='text' >{{formData.prore_fec_ingreso}}</span>
                                   </div>
@@ -179,7 +201,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Fecha de recibo de notificación IPS*" label-for="prore_fec_recibo_notify">
+                                <b-form-group class="col-md-6" label="Fecha de recibo de notificación IPS" label-for="prore_fec_recibo_notify">
                                   <div v-if="proc_id != null && formData.prore_fec_recibo_notify">
                                     <span class='text'>{{formData.prore_fec_recibo_notify}}</span>
                                   </div>
@@ -190,7 +212,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Colaborador de IPS que recibe notificación*" label-for="prore_fec_recibo_notify">
+                                <b-form-group class="col-md-6" label="Colaborador de IPS que recibe notificación" label-for="prore_fec_recibo_notify">
                                   <div v-if="proc_id != null && formData.prore_colaborador_ips != null">
                                     <span class='text'>{{formData.prore_colaborador_ips}}</span>
                                   </div>
@@ -198,17 +220,6 @@
                                     <b-form-input type="text" v-model="formData.prore_colaborador_ips" placeholder="Nombre completo colaborador" :class="hasError('prore_colaborador_ips') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_colaborador_ips')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_colaborador_ips.required">Por favor escriba un nombre.</div>
-                                    </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Fecha de Ingreso a Juridico*" label-for="prore_fec_ingreso_jur">
-                                  <div v-if="proc_id != null && formData.prore_fec_ingreso_jur != null">
-                                    <span class='text'>{{formData.prore_fec_ingreso_jur}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null || formData.prore_fec_ingreso_jur == null">
-                                    <b-form-input id="prore_fec_ingreso_jur" v-model="formData.prore_fec_ingreso_jur" type="date" :class="hasError('prore_fec_ingreso_jur') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_fec_ingreso_jur')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_fec_ingreso_jur.required">Por favor elige una fecha.</div>
                                     </div>
                                   </div>
                                 </b-form-group>
@@ -308,17 +319,6 @@
                                   <div v-if="editing && proc_id != null">
                                     <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
                                     <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Identificador de litigando*" label-for="prore_litigando_id">
-                                  <div v-if="proc_id != null">
-                                    <span class='text' >{{ formData.prore_litigando_id }}</span>
-                                  </div>
-                                  <div v-if="proc_id == null">
-                                    <b-form-input v-model="formData.prore_litigando_id" id="prore_litigando_id" type="number" :class="hasError('prore_litigando_id') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_litigando_id')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_litigando_id.required">Por favor escribe el ID de litigando.</div>
-                                    </div>
                                   </div>
                                 </b-form-group>
                               </b-row>
@@ -1415,6 +1415,7 @@ export default {
       validationRules: [
         {
           prore_num_proceso: { required },
+          prore_fec_ingreso_jur: { required },
           prore_fec_ingreso: { required },
           prore_defendant_clin: { required },
           prore_year_sinister: { required },
@@ -1425,9 +1426,6 @@ export default {
           prore_fec_audi_conci_preju: { required },
           prore_fec_sinies_aviso: { required },
           prore_sinies_description: { required },
-          prore_fec_recibo_notify: { required },
-          prore_colaborador_ips: { required },
-          prore_fec_ingreso_jur: { required },
           prore_fec_ingreso_cli: { required },
           prore_city_id: { required },
           prore_litigando_id: { required }
