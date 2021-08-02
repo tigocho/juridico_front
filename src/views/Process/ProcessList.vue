@@ -524,7 +524,7 @@ export default {
         })
     },
     edit (item) {
-      this.$router.push({ path: `/process/process-edit/${item}` })
+      this.$router.push({ path: `/process/process-show/${item}/true` })
     },
     verDetalle (proreId) {
       this.$router.push({ path: `/process/process-show/${proreId}` })

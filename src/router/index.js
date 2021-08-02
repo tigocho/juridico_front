@@ -546,7 +546,7 @@ const processChildRoute = (prop, mode = false) => [
     component: EditProcess
   },
   {
-    path: 'process-show/:prore_id',
+    path: 'process-show/:prore_id/:editar',
     name: prop + '.show',
     meta: { dark: mode, auth: true, name: 'Ver detalle' },
     component: ShowProcess
