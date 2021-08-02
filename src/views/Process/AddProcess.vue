@@ -1316,7 +1316,7 @@
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
-// import { required } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 // import { ValidationObserver } from 'vee-validate'
 // import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 import { FormWizard, TabContent, ValidationHelper } from 'vue-step-wizard'
@@ -1395,6 +1395,22 @@ export default {
           class: 'text-center'
         },
         { key: 'actions', label: 'Acciones', class: 'text-center' }
+      ],
+      validationRules: [
+        {
+          prore_num_radicado: { required },
+          prore_fec_ingreso_jur: { required },
+          prore_defendant_clin: { required },
+          prore_year_sinister: { required },
+          prore_fec_sinister: { required },
+          prore_year_notify: { required },
+          prore_process_year: { required },
+          prore_fec_audi_conci_preju: { required },
+          prore_sinies_description: { required },
+          prore_fec_ingreso_cli: { required },
+          prore_city_id: { required },
+          prore_litigando_id: { required }
+        }
       ],
       formData: {
         prore_fec_ingreso: '',
