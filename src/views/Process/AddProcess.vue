@@ -679,7 +679,7 @@
                                         ></b-form-input>
                                       </b-form-group>
                                       <b-form-group label="Teléfono del juzgado">
-                                        <b-form-input v-model="nuevo_court.telefono" type="number" placeholder="ej: 3015456561"></b-form-input>
+                                        <b-form-input v-model="nuevo_court.telefono" type="text" placeholder="ej: 3015456561"></b-form-input>
                                       </b-form-group>
                                       <b-form-group label="Correo del juzgado">
                                         <b-form-input v-model="nuevo_court.email" type="email" placeholder="info@example.com"></b-form-input>
