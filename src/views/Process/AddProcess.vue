@@ -31,14 +31,14 @@
                             <template v-slot:body>
                               <div class="new-process">
                               <b-row>
-                                <b-form-group class="col-md-6" label="Número del proceso*" label-for="prore_num_proceso">
-                                  <div v-if="proc_id != null && formData.prore_num_proceso != null">
-                                    <span class='text' >{{formData.prore_num_proceso}}</span>
+                                <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
+                                  <div v-if="proc_id != null && formData.prore_num_radicado != null">
+                                    <span class='text' >{{formData.prore_num_radicado}}</span>
                                   </div>
-                                  <div v-if="proc_id == null || formData.prore_num_proceso == null">
-                                    <b-form-input id="prore_num_proceso" v-model="formData.prore_num_proceso" type="text" :class="hasError('prore_num_proceso') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_num_proceso')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_num_proceso.required">Por favor escribe el número del proceso.</div>
+                                  <div v-if="proc_id == null || formData.prore_num_radicado == null">
+                                    <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="text" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_num_radicado')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_num_radicado.required">Por favor escribe el número de radicado.</div>
                                     </div>
                                   </div>
                                 </b-form-group>
@@ -64,7 +64,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Fecha Traslado Decreto 806*" label-for="prore_fec_ingreso">
+                                <b-form-group class="col-md-6" label="Fecha Traslado Decreto 806" label-for="prore_fec_ingreso">
                                   <div v-if="proc_id != null && formData.prore_fec_ingreso != null">
                                     <span class='text' >{{formData.prore_fec_ingreso}}</span>
                                   </div>
@@ -146,7 +146,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Fecha de notificación prejudicial*" label-for="prore_fec_noti_preju">
+                                <b-form-group class="col-md-6" label="Fecha de notificación prejudicial" label-for="prore_fec_noti_preju">
                                   <div v-if="proc_id != null && formData.prore_fec_noti_preju != null">
                                     <span class='text'>{{formData.prore_fec_noti_preju}}</span>
                                   </div>
@@ -168,7 +168,7 @@
                                     </div>
                                   </div>
                                 </b-form-group>
-                                <b-form-group class="col-md-6" label="Fecha aviso del siniestro*" label-for="prore_fec_sinies_aviso">
+                                <b-form-group class="col-md-6" label="Fecha aviso del siniestro" label-for="prore_fec_sinies_aviso">
                                   <div v-if="proc_id != null && formData.prore_fec_sinies_aviso != null">
                                     <span class='text'>{{formData.prore_fec_sinies_aviso}}</span>
                                   </div>
@@ -376,10 +376,10 @@
                                 <b-form-group class="col-md-3" label="Identificación" label-for="imp_identificacion">
                                   <b-form-input v-model="nuevoImplicated.imp_identificacion" type="text" placeholder="Identificación"></b-form-input>
                                 </b-form-group>
-                                <b-form-group class="col-md-3" label="Nombres*" label-for="imp_nombres">
+                                <b-form-group class="col-md-3" label="Nombres/Razón social*" label-for="imp_nombres">
                                   <b-form-input v-model="nuevoImplicated.imp_nombres" type="text" placeholder="Nombres"></b-form-input>
                                 </b-form-group>
-                                <b-form-group class="col-md-3" label="Apellidos*" label-for="imp_apellidos">
+                                <b-form-group class="col-md-3" label="Apellidos" label-for="imp_apellidos">
                                   <b-form-input v-model="nuevoImplicated.imp_apellidos" type="text" placeholder="Apellidos"></b-form-input>
                                 </b-form-group>
                                 <b-form-group class="col-md-3" label="Genero" label-for="imp_genero_id">
@@ -396,8 +396,12 @@
                                     </template>
                                   </b-form-select>
                                 </b-form-group>
-                                  <b-form-group class="col-md-3" label="Edad" label-for="imp_edad">
-                                  <b-form-input v-model="nuevoImplicated.imp_edad" type="number" placeholder="Ej: 18"></b-form-input>
+                                <b-form-group class="col-md-3" label="Rango de edad" label-for="imp_rango_edad">
+                                  <b-form-select plain v-model="nuevoImplicated.imp_rango_edad" :options="rangoEdadOptions" id="imp_rango_edad">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null">Seleccione una opción</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
                                 </b-form-group>
                                 <b-form-group class="col-md-3" label="Dirección" label-for="imp_direccion">
                                   <b-form-input v-model="nuevoImplicated.imp_direccion" type="text" placeholder="Ej: calle 36 #101-22"></b-form-input>
@@ -656,13 +660,13 @@
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
-                                    <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-juzaga>Crear juzgado</b-card-text>
+                                    <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-juzagado>Crear juzgado</b-card-text>
                                   </b-form-group>
                                   <b-modal
-                                    id="modal-crear-juzaga"
+                                    id="modal-crear-juzagado"
                                     ref="modal"
                                     title="Agregar juzgado"
-                                    @ok="handleOk"
+                                    hide-footer
                                   >
                                     <form ref="form" @submit.stop.prevent="handleSubmit">
                                       <b-form-group
@@ -680,35 +684,12 @@
                                       <b-form-group label="Correo del juzgado">
                                         <b-form-input v-model="nuevo_court.email" type="email" placeholder="info@example.com"></b-form-input>
                                       </b-form-group>
+                                      <div class="text-right pt-1">
+                                        <b-button class="sm-3 mr-1" variant="secondary" @click="$bvModal.hide('modal-crear-juzagado')">Cancelar</b-button>
+                                        <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="handleOk">{{ textoGuardarModal }}</b-button>
+                                      </div>
                                     </form>
                                   </b-modal>
-                                  <b-form-group class="col-md-6" label="Número de Radicado" label-for="prore_num_radicado">
-                                    <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_num_radicado}}</span>
-                                    </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_num_radicado == null">
-                                      <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="text" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_num_radicado')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_num_radicado.required">Por favor escriba el número radicado.</div>
-                                      </div>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Objeto del Litigio" label-for="prore_objeto_litigio">
-                                    <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_objeto_litigio}}</span>
-                                    </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_objeto_litigio == null">
-                                      <b-form-input v-model="formData.prore_objeto_litigio" type="text" placeholder="Objeto"></b-form-input>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
-                                  </b-form-group>
                                   <template>
                                     <b-form-group class="col-md-6" label="Proceso Ejecutivo" label-for="prore_proceso_ejecutivo">
                                       <div v-if="proc_id != null">
@@ -1356,6 +1337,8 @@ export default {
   },
   data () {
     return {
+      botonGuardarModal: '',
+      textoGuardarModal: 'Guardar',
       year: null,
       progress_total: 4,
       max: 100,
@@ -1378,6 +1361,7 @@ export default {
         imp_apellidos: '',
         imp_direccion: '',
         imp_edad: '',
+        imp_rango_edad: '',
         imp_genero_id: '',
         imp_telefonos: '',
         imp_emails: '',
@@ -1414,17 +1398,14 @@ export default {
       ],
       validationRules: [
         {
-          prore_num_proceso: { required },
+          prore_num_radicado: { required },
           prore_fec_ingreso_jur: { required },
-          prore_fec_ingreso: { required },
           prore_defendant_clin: { required },
           prore_year_sinister: { required },
           prore_fec_sinister: { required },
           prore_year_notify: { required },
           prore_process_year: { required },
-          prore_fec_noti_preju: { required },
           prore_fec_audi_conci_preju: { required },
-          prore_fec_sinies_aviso: { required },
           prore_sinies_description: { required },
           prore_fec_ingreso_cli: { required },
           prore_city_id: { required },
@@ -1584,12 +1565,34 @@ export default {
       },
       generoOptions: [
         {
+          text: 'No aplica',
+          value: null
+        },
+        {
           text: 'Masculino',
           value: 2
         },
         {
           text: 'Femenino',
           value: 1
+        }
+      ],
+      rangoEdadOptions: [
+        {
+          text: '0-18 años',
+          value: '0-18 años'
+        },
+        {
+          text: '19- 60 años',
+          value: '19- 60 años'
+        },
+        {
+          text: '+ 60 años',
+          value: '+ 60 años'
+        },
+        {
+          text: 'No aplica',
+          value: 'No aplica'
         }
       ],
       users: []
@@ -1745,6 +1748,8 @@ export default {
       if (this.nuevo_court.name === '' || this.nuevo_court.name === null || this.nuevo_court.telefono === '' || this.nuevo_court.telefono === null) {
         Vue.swal('Por favor complete los datos.')
       } else {
+        this.botonGuardarModal = 'disabled'
+        this.textoGuardarModal = 'Guardando'
         this.handleSubmit()
       }
     },
@@ -1753,15 +1758,20 @@ export default {
       axios.post('/courts/store', this.nuevo_court, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
         // Hide the modal manually
         this.$nextTick(() => {
-          this.$bvModal.hide('modal-crear-juzaga')
+          this.$bvModal.hide('modal-crear-juzagado')
         })
         if (res.data.status_code === 200) {
+          this.botonGuardarModal = ''
+          this.textoGuardarModal = 'Guardar'
           this.nuevo_court.name = ''
           this.nuevo_court.telefono = ''
           this.nuevo_court.email = ''
+          this.formData.prore_court_id = res.data.court_id
           Vue.swal('Juzgado agregado correctamente')
           this.fetchCourts()
         } else {
+          this.botonGuardarModal = ''
+          this.textoGuardarModal = 'Guardar'
           Vue.swal('Datos no validos')
         }
       })
@@ -1801,15 +1811,21 @@ export default {
         Vue.swal('Por favor escribir los nombres')
         return false
       }
-      if (this.nuevoImplicated.imp_apellidos === '' || this.nuevoImplicated.imp_apellidos === undefined) {
-        Vue.swal('Por favor escribir los apellidos')
-        return false
-      }
       if (this.nuevoImplicated.imp_profile_id === '' || this.nuevoImplicated.imp_profile_id === undefined) {
         Vue.swal('Por favor seleccionar la relación en el proceso')
         return false
       }
-      this.implicated.push({ imp_tipo_identificacion: this.nuevoImplicated.imp_tipo_identificacion, imp_identificacion: this.nuevoImplicated.imp_identificacion, imp_nombres: this.nuevoImplicated.imp_nombres, imp_apellidos: this.nuevoImplicated.imp_apellidos, imp_telefonos: this.nuevoImplicated.imp_telefonos, imp_emails: this.nuevoImplicated.imp_emails, imp_profile_id: this.nuevoImplicated.imp_profile_id, imp_direccion: this.nuevoImplicated.imp_direccion, imp_edad: this.nuevoImplicated.imp_edad, imp_genero_id: this.nuevoImplicated.imp_genero_id })
+      this.implicated.push({ imp_tipo_identificacion: this.nuevoImplicated.imp_tipo_identificacion,
+        imp_identificacion: this.nuevoImplicated.imp_identificacion,
+        imp_nombres: this.nuevoImplicated.imp_nombres,
+        imp_apellidos: this.nuevoImplicated.imp_apellidos,
+        imp_telefonos: this.nuevoImplicated.imp_telefonos,
+        imp_emails: this.nuevoImplicated.imp_emails,
+        imp_profile_id: this.nuevoImplicated.imp_profile_id,
+        imp_direccion: this.nuevoImplicated.imp_direccion,
+        imp_edad: this.nuevoImplicated.imp_edad,
+        imp_rango_edad: this.nuevoImplicated.imp_rango_edad,
+        imp_genero_id: this.nuevoImplicated.imp_genero_id })
       this.limpiarNuevoImplicated()
     },
     deleteImplicated (implicatedId) {
@@ -1824,6 +1840,7 @@ export default {
       this.nuevoImplicated.imp_direccion = ''
       this.nuevoImplicated.imp_genero_id = ''
       this.nuevoImplicated.imp_edad = ''
+      this.nuevoImplicated.imp_rango_edad = ''
       this.nuevoImplicated.imp_emails = ''
       this.nuevoImplicated.imp_profile_id = ''
     }
