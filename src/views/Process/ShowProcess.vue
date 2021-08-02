@@ -132,23 +132,41 @@
                   </b-form-group>
                 </b-col>
                 <b-col md="3">
-                  <b-form-group label="Nombres*" label-for="imp_nombres">
+                  <b-form-group label="Nombres/Razón social*" label-for="imp_nombres">
                     <b-form-input v-model="nuevoImplicated.imp_nombres" type="text" placeholder="Nombres"></b-form-input>
                   </b-form-group>
                 </b-col>
                 <b-col md="3">
-                  <b-form-group label="Apellidos*" label-for="imp_apellidos">
+                  <b-form-group label="Apellidos" label-for="imp_apellidos">
                     <b-form-input v-model="nuevoImplicated.imp_apellidos" type="text" placeholder="Apellidos"></b-form-input>
                   </b-form-group>
                 </b-col>
               </b-row>
               <b-row>
-                <b-col md="3">
+                <b-col md="4">
+                  <b-form-group label="Rango de edad" label-for="imp_rango_edad">
+                    <b-form-select plain v-model="nuevoImplicated.imp_rango_edad" :options="rangoEdadOptions" id="imp_rango_edad">
+                      <template v-slot:first>
+                        <b-form-select-option :value="null">Seleccione una opción</b-form-select-option>
+                      </template>
+                    </b-form-select>
+                  </b-form-group>
+                </b-col>
+                <b-col md="4">
+                  <b-form-group label="Genero" label-for="imp_genero_id">
+                    <b-form-select plain v-model="nuevoImplicated.imp_genero_id" :options="generoOptions" id="imp_genero_id">
+                      <template v-slot:first>
+                        <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                      </template>
+                    </b-form-select>
+                  </b-form-group>
+                </b-col>
+                <b-col md="4">
                   <b-form-group label="Dirección residencia" label-for="imp_direccion">
                     <b-form-input id="imp_direccion" v-model="nuevoImplicated.imp_direccion" type="text"></b-form-input>
                   </b-form-group>
                 </b-col>
-                <b-col md="3">
+                <b-col md="4">
                   <b-form-group label="Perfil*" label-for="imp_profile_id">
                     <b-form-select plain v-model="nuevoImplicated.imp_profile_id" :options="profilesOptions" id="imp_profile_id">
                       <template v-slot:first>
@@ -285,12 +303,14 @@
                           <b-card-text class="pr-2 my-0"><b>Identificación: </b>{{ implicate.imp_identificacion }}</b-card-text>
                           <b-card-text class="pr-2 my-0"><b>Nombres: </b>{{ implicate.imp_nombres }}</b-card-text>
                           <b-card-text class="pr-2 my-0"><b>Apellidos: </b>{{ implicate.imp_apellidos }}</b-card-text>
-                          <b-card-text class="pr-2 my-0"><b>Edad: </b>{{ implicate.imp_edad }}</b-card-text>
-                          <b-card-text class="pr-2 my-0"><b>Genero: </b>{{ generoInvolucrado(implicate.imp_genero_id) }}</b-card-text>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
+                          <b-card-text class="px-2 my-0"><b>Edad o rango de edad: </b><span v-if="implicate.imp_edad > 0">{{ implicate.imp_edad }}</span><span v-else>{{ implicate.imp_rango_edad }}</span></b-card-text>
+                          <b-card-text class="pr-2 my-0"><b>Genero: </b>{{ generoInvolucrado(implicate.imp_genero_id) }}</b-card-text>
                           <b-card-text class="px-2 my-0"><b>Dirección: </b>{{ implicate.imp_direccion }}</b-card-text>
-                          <b-card-text class="pl-3 my-0"><b>Teléfonos: </b>{{ implicate.imp_telefonos }}</b-card-text>
+                        </b-row>
+                        <b-row class="col-md-12 pt-1">
+                          <b-card-text class="px-2 my-0"><b>Teléfonos: </b>{{ implicate.imp_telefonos }}</b-card-text>
                           <b-card-text class="pl-3 my-0"><b>Emails: </b>{{ implicate.imp_emails }}</b-card-text>
                           <b-card-text class="pl-3 my-0"><b>ID Proceso: </b>{{ implicate.imp_process_request_id }}</b-card-text>
                         </b-row>
@@ -317,8 +337,7 @@
                           </b-row>-->
                           <b-row class="col-md-12 pt-1">
                             <b-card-text class="my-0"><b>Abogado: </b><span v-if="proceeding.professional != null">{{ proceeding.professional.pro_name_first }} {{ proceeding.professional.pro_lastname_first }}</span></b-card-text>
-                            <b-card-text class="pl-3 my-0"><b>Fecha de ingreso: </b>{{ proceeding.proce_fecha_ingreso }}</b-card-text>
-                            <b-card-text class="pl-3 my-0"><b>Fecha actualización: </b>{{ proceeding.proce_fecha_actualizacion }}</b-card-text>
+                            <b-card-text class="pl-3 my-0"><b>Fecha de registro: </b>{{ proceeding.proce_fecha_ingreso }}</b-card-text>
                             <b-card-text class="pl-3 my-0"><b>Fecha sig. audiencia: </b>{{ proceeding.proce_fecha_siguiente_audiencia }}</b-card-text>
                             <b-card-text class="my-0"><b>Hora sig. audiencia: </b>{{ proceeding.proce_hora_siguiente_audiencia }}</b-card-text>
                           </b-row>
@@ -546,11 +565,45 @@ export default {
         imp_nombres: '',
         imp_apellidos: '',
         imp_direccion: '',
+        imp_rango_edad: '',
         imp_telefonos: '',
         imp_emails: '',
         imp_profile_id: '',
+        imp_genero_id: '',
         imp_process_request_id: this.$route.params.prore_id
       },
+      generoOptions: [
+        {
+          text: 'No aplica',
+          value: null
+        },
+        {
+          text: 'Masculino',
+          value: 2
+        },
+        {
+          text: 'Femenino',
+          value: 1
+        }
+      ],
+      rangoEdadOptions: [
+        {
+          text: '0-18 años',
+          value: '0-18 años'
+        },
+        {
+          text: '19- 60 años',
+          value: '19- 60 años'
+        },
+        {
+          text: '+ 60 años',
+          value: '+ 60 años'
+        },
+        {
+          text: 'No aplica',
+          value: 'No aplica'
+        }
+      ],
       profilesOptions: {},
       errores: {}
     }
@@ -1009,7 +1062,7 @@ export default {
         })
     },
     checkFormImplicated () {
-      if (this.nuevoImplicated.imp_nombres && this.nuevoImplicated.imp_apellidos && this.nuevoImplicated.imp_profile_id) {
+      if (this.nuevoImplicated.imp_nombres && this.nuevoImplicated.imp_profile_id) {
         this.errors = []
         return true
       }
@@ -1056,6 +1109,8 @@ export default {
       this.nuevoImplicated.imp_telefonos = this.implicateds[implicatedIndex].imp_telefonos
       this.nuevoImplicated.imp_emails = this.implicateds[implicatedIndex].imp_emails
       this.nuevoImplicated.imp_profile_id = this.implicateds[implicatedIndex].imp_profile_id
+      this.nuevoImplicated.imp_rango_edad = this.implicateds[implicatedIndex].imp_rango_edad
+      this.nuevoImplicated.imp_genero_id = this.implicateds[implicatedIndex].imp_genero_id
       this.$bvModal.show('modal-nuevo-implicated')
     },
     deleteImplicated (implicated) {
