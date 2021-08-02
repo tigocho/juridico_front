@@ -412,7 +412,7 @@ export default {
       fields: [
         // { key: 'name', label: 'Person full name', sortable: true, sortDirection: 'desc' },
         // { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
-        { key: 'prore_num_proceso', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-center' },
+        { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left' },
         { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left' },
         { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
         { key: 'status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },

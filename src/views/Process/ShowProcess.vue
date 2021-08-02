@@ -228,8 +228,8 @@
                       <b-row class="col-md-12 pt-1">
                         <b-card-text class="my-0 pr-3"><b>Etapa procesal:</b></b-card-text>
                         <b-card-text class="px-1 my-0 text-dark" v-if="process.statusProcess != null">{{ process.statusProcess.estado_proceso }}</b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>ID Litigando: </b> <span v-if="process.prore_litigando_id != null">{{ process.prore_litigando_id }} </span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3"><b>Número de Radicado:</b> <span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>ID Litigando: </b> <span v-if="process.prore_litigando_id != null">{{ process.prore_litigando_id }} </span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3"><b>Número de Radicado:</b> <span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                       </b-row>
                       <b>Abogado Líder:</b>
                       <b-row class="col-md-12 pt-1" v-if="process.professional != null">
@@ -240,20 +240,20 @@
                       </b-row>
                       <hr>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="pr-3 my-0"><b>Tipo de proceso: </b><span v-if="process.tipo_proceso != null">{{ process.tipo_proceso.typro_name }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Juzgado: </b><span v-if="process.juzgado != null">{{ process.juzgado.court_name }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Tipo de proceso: </b><span v-if="process.tipo_proceso != null">{{ process.tipo_proceso.typro_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Juzgado: </b><span v-if="process.juzgado != null">{{ process.juzgado.court_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="my-0 pr-3"><b>Número radicado: </b><span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Objeto del Litigio:</b> <span v-if="process.prore_objeto_litigio != null">{{ process.prore_objeto_litigio }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Proceso Ejecutivo:</b> <span v-if="process.prore_proceso_ejecutivo != null">{{ process.prore_proceso_ejecutivo }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Ejecutante:</b> <span v-if="process.prore_ejecutante != null">{{ process.prore_ejecutante }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text><b>Medida Cautelar:</b> <span v-if="process.prore_medida_cautelar != null">{{ process.prore_medida_cautelar }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="my-0 pr-3"><b>Número radicado: </b><span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Objeto del Litigio:</b> <span v-if="process.prore_objeto_litigio != null">{{ process.prore_objeto_litigio }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Proceso Ejecutivo:</b> <span v-if="process.prore_proceso_ejecutivo != null">{{ process.prore_proceso_ejecutivo }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Ejecutante:</b> <span v-if="process.prore_ejecutante != null">{{ process.prore_ejecutante }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text><b>Medida Cautelar:</b> <span v-if="process.prore_medida_cautelar != null">{{ process.prore_medida_cautelar }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="pr-3 my-0"><b>Ciudad:</b> <span v-if="process.ciudad != null">{{ process.ciudad.city_name }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Ciudad:</b> <span v-if="process.ciudad != null">{{ process.ciudad.city_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         <b-card-text class="pr-3 my-0"><b>Fecha ingreso: </b>{{ process.prore_fec_ingreso }}</b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Clinica:</b> <span v-if="process.clinica != null">{{ process.clinica.cli_name }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Clinica:</b> <span v-if="process.clinica != null">{{ process.clinica.cli_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         <b-card-text class="pr-3 my-0"><b>Fecha siniestro: </b>{{ process.prore_fec_sinister }}</b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
@@ -272,15 +272,15 @@
                       <hr>
                       <b style="text-decoration:underline;">Conclusiones:</b>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ process.prore_sentencia_final }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ process.prore_val_sentencia_final }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Discriminar Valor De La Condena:</b> <span v-if="process.prore_discriminar_val_condena != null">{{ process.prore_discriminar_val_condena }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ process.prore_sentencia_final }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ process.prore_val_sentencia_final }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Discriminar Valor De La Condena:</b> <span v-if="process.prore_discriminar_val_condena != null">{{ process.prore_discriminar_val_condena }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="pr-3 my-0"><b>Costas De La Sentencia: </b><span v-if="process.prore_costas_sentencia != null">{{ process.prore_costas_sentencia }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Costas Procesales Primera Instancia: </b><span v-if="process.prore_costas_procesales_primera_instancia != null">{{ process.prore_costas_procesales_primera_instancia }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Costas Procesales Segunda Instancia:</b> <span v-if="process.prore_costas_procesales_segunda_instancia != null">{{ process.prore_costas_procesales_segunda_instancia }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pr-3 my-0"><b>Total Costas: </b><span v-if="process.prore_total_costas != null">{{ process.prore_total_costas }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Costas De La Sentencia: </b><span v-if="process.prore_costas_sentencia != null">{{ process.prore_costas_sentencia }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Costas Procesales Primera Instancia: </b><span v-if="process.prore_costas_procesales_primera_instancia != null">{{ process.prore_costas_procesales_primera_instancia }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Costas Procesales Segunda Instancia:</b> <span v-if="process.prore_costas_procesales_segunda_instancia != null">{{ process.prore_costas_procesales_segunda_instancia }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pr-3 my-0"><b>Total Costas: </b><span v-if="process.prore_total_costas != null">{{ process.prore_total_costas }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                       </b-row>
                     </template>
                   </iq-card>
@@ -363,28 +363,28 @@
                     <template v-slot:body>
                       <b-row>
                         <b-col md="6">
-                          <b-card-text><b>Pretensiones/Capital/Interes/Honorarios:</b> <span v-if="process.prore_pretenciones_cap_int_hon != null">{{ process.prore_pretenciones_cap_int_hon }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pretensiones Laborales:</b> <span v-if="process.prore_pretenciones_laborales != null">{{ process.prore_pretenciones_laborales }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pretensiones Sociales:</b> <span v-if="process.prore_prestaciones_sociales != null">{{ process.prore_prestaciones_sociales }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pretensiones por Vacaciones:</b> <span v-if="process.prore_pretenciones_vacaciones != null">{{ process.prore_pretenciones_vacaciones }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pretensiones por Indemnización:</b> <span v-if="process.prore_pretenciones_indemnizacion != null">{{ process.prore_pretenciones_indemnizacion }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pago de Seguridad Social en Salud:</b> <span v-if="process.prore_pago_seguridad_social_sa != null">{{ process.prore_pago_seguridad_social_sa }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Salarios dejados de Percibir:</b> <span v-if="process.prore_salario_dejados_percibir != null">{{ process.prore_salario_dejados_percibir }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Otros:</b> <span v-if="process.prore_otros_valores != null">{{ process.prore_otros_valores }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor Lucro Cesante:</b> <span v-if="process.prore_val_luc_cesante != null">{{ process.prore_val_luc_cesante }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor Daño Emergente:</b> <span v-if="process.prore_val_dano_emergente != null">{{ process.prore_val_dano_emergente }}</span><span v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Pretensiones/Capital/Interes/Honorarios:</b> <span v-if="process.prore_pretenciones_cap_int_hon != null">{{ process.prore_pretenciones_cap_int_hon }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Pretensiones Laborales:</b> <span v-if="process.prore_pretenciones_laborales != null">{{ process.prore_pretenciones_laborales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Pretensiones Sociales:</b> <span v-if="process.prore_prestaciones_sociales != null">{{ process.prore_prestaciones_sociales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Pretensiones por Vacaciones:</b> <span v-if="process.prore_pretenciones_vacaciones != null">{{ process.prore_pretenciones_vacaciones }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Pretensiones por Indemnización:</b> <span v-if="process.prore_pretenciones_indemnizacion != null">{{ process.prore_pretenciones_indemnizacion }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Pago de Seguridad Social en Salud:</b> <span v-if="process.prore_pago_seguridad_social_sa != null">{{ process.prore_pago_seguridad_social_sa }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Salarios dejados de Percibir:</b> <span v-if="process.prore_salario_dejados_percibir != null">{{ process.prore_salario_dejados_percibir }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Otros:</b> <span v-if="process.prore_otros_valores != null">{{ process.prore_otros_valores }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Valor Lucro Cesante:</b> <span v-if="process.prore_val_luc_cesante != null">{{ process.prore_val_luc_cesante }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Valor Daño Emergente:</b> <span v-if="process.prore_val_dano_emergente != null">{{ process.prore_val_dano_emergente }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-col>
                         <b-col md="6">
-                          <b-card-text><b>Total Perjuicios Materiales:</b> <span v-if="process.prore_total_perjuicios_materiales != null">{{ process.prore_total_perjuicios_materiales }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Estimado a Pagar Por Perjuicios Mat.:</b> <span v-if="process.prore_estimacion_pago_perju_materiales != null">{{ process.prore_estimacion_pago_perju_materiales }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor Que Cubre La Poliza Por Perjuicios Mat.:</b> <span v-if="process.prore_val_cubre_poliza_perjuicios_mat != null">{{ process.prore_val_cubre_poliza_perjuicios_mat }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor Daño Moral:</b> <span v-if="process.prore_val_dano_moral != null">{{ process.prore_val_dano_moral }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Daño a la Vida ó Prejuicios Fisiologicos y Otros:</b> <span v-if="process.prore_val_dano_vida != null">{{ process.prore_val_dano_vida }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Total Perjuicios Inmateriales:</b> <span v-if="process.prore_total_perjuicios_inmateriales != null">{{ process.prore_total_perjuicios_inmateriales }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Estimado a Pagar Por Perjuicios Inmat.:</b> <span v-if="process.prore_estimacion_pago_perju_inmateriales != null">{{ process.prore_estimacion_pago_perju_inmateriales }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor que Cube la Poliza Prejuicios Inmat.:</b> <span v-if="process.prore_val_cubre_poliza_perjuicios_inmat != null">{{ process.prore_val_cubre_poliza_perjuicios_inmat }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Cuantía de las Pretensiones:</b> <span v-if="process.prore_cuantia_pretenciones != null">{{ process.prore_cuantia_pretenciones }}</span><span v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor a Provisionar:</b> <span v-if="process.prore_valor_provisionar != null">{{ process.prore_valor_provisionar }}</span><span v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Total Perjuicios Materiales:</b> <span v-if="process.prore_total_perjuicios_materiales != null">{{ process.prore_total_perjuicios_materiales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Estimado a Pagar Por Perjuicios Mat.:</b> <span v-if="process.prore_estimacion_pago_perju_materiales != null">{{ process.prore_estimacion_pago_perju_materiales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Valor Que Cubre La Poliza Por Perjuicios Mat.:</b> <span v-if="process.prore_val_cubre_poliza_perjuicios_mat != null">{{ process.prore_val_cubre_poliza_perjuicios_mat }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Valor Daño Moral:</b> <span v-if="process.prore_val_dano_moral != null">{{ process.prore_val_dano_moral }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Daño a la Vida ó Prejuicios Fisiologicos y Otros:</b> <span v-if="process.prore_val_dano_vida != null">{{ process.prore_val_dano_vida }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Total Perjuicios Inmateriales:</b> <span v-if="process.prore_total_perjuicios_inmateriales != null">{{ process.prore_total_perjuicios_inmateriales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Estimado a Pagar Por Perjuicios Inmat.:</b> <span v-if="process.prore_estimacion_pago_perju_inmateriales != null">{{ process.prore_estimacion_pago_perju_inmateriales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Valor que Cube la Poliza Prejuicios Inmat.:</b> <span v-if="process.prore_val_cubre_poliza_perjuicios_inmat != null">{{ process.prore_val_cubre_poliza_perjuicios_inmat }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Cuantía de las Pretensiones:</b> <span v-if="process.prore_cuantia_pretenciones != null">{{ process.prore_cuantia_pretenciones }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text><b>Valor a Provisionar:</b> <span v-if="process.prore_valor_provisionar != null">{{ process.prore_valor_provisionar }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-col>
                       </b-row>
                       <hr>
@@ -398,14 +398,14 @@
                     </template>
                     <template v-slot:body>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="my-0"><b>Aseguradora :</b><span v-if="process.aseguradora != null">{{ process.aseguradora.ase_name }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Monto Total Asegurado: </b> <span v-if="process.prore_val_total_asegurado != null">{{ process.prore_val_total_asegurado }} </span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3"><b>Si La Poliza Fue Afectada Por Que Valor:</b> <span v-if="process.prore_val_afectado_poliza != null">{{ process.prore_val_afectado_poliza }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="my-0"><b>Aseguradora :</b><span v-if="process.aseguradora != null">{{ process.aseguradora.ase_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pl-3 my-0"><b>Monto Total Asegurado: </b> <span v-if="process.prore_val_total_asegurado != null">{{ process.prore_val_total_asegurado }} </span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pl-3"><b>Si La Poliza Fue Afectada Por Que Valor:</b> <span v-if="process.prore_val_afectado_poliza != null">{{ process.prore_val_afectado_poliza }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                       </b-row>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="my-0"><b>Deducible :</b><span v-if="process.prore_deducible != null">{{ process.prore_deducible }}</span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Cobertura Actual Poliza: </b> <span v-if="process.prore_val_cobertura_poliza != null">{{ process.prore_val_cobertura_poliza }} </span><span v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3"><b>Provisiones Constituidas:</b> <span v-if="process.prore_val_provisiones_constituidas != null">{{ process.prore_val_provisiones_constituidas }}</span><span v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="my-0"><b>Deducible :</b><span v-if="process.prore_deducible != null">{{ process.prore_deducible }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pl-3 my-0"><b>Cobertura Actual Poliza: </b> <span v-if="process.prore_val_cobertura_poliza != null">{{ process.prore_val_cobertura_poliza }} </span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        <b-card-text class="pl-3"><b>Provisiones Constituidas:</b> <span v-if="process.prore_val_provisiones_constituidas != null">{{ process.prore_val_provisiones_constituidas }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         <b-card-text class="pl-3"><b>Prescritas:</b> <span v-if="process.prore_prescritas != 1">No</span><span v-else>Si</span></b-card-text>
                       </b-row>
                     </template>
@@ -444,7 +444,7 @@
                           <input type="text" v-model="row.item.link_name" v-else class="form-control">
                         </template>
                         <template v-slot:cell(link_url)="row">
-                          <span v-if="!row.item.editable">{{ row.item.link_url }}</span>
+                          <a style="word-break: break-all;" v-bind:href="row.item.link_url" target="_blank" v-if="!row.item.editable">{{ row.item.link_url }}</a>
                           <input type="text" v-model="row.item.link_url" v-else class="form-control">
                         </template>
                         <template #cell(actions)="row">
