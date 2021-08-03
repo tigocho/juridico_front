@@ -524,10 +524,12 @@ export default {
         })
     },
     edit (item) {
-      this.$router.push({ path: `/process/process-show/${item}/true` })
+      var editar = true
+      this.$router.push({ path: `/process/process-show/${item}/${editar}` })
     },
     verDetalle (proreId) {
-      this.$router.push({ path: `/process/process-show/${proreId}` })
+      var editar = false
+      this.$router.push({ path: `/process/process-show/${proreId}/${editar}` })
     },
     handleOk (bvModalEvt) {
       bvModalEvt.preventDefault()

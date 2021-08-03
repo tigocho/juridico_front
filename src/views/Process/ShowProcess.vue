@@ -737,7 +737,7 @@ export default {
       estadoBotonEliminarLinkProceeding: '',
       intentos: 0,
       prore_id: this.$route.params.prore_id,
-      editando: this.$route.params.editar,
+      editando: false,
       implicateds: [],
       process: [],
       loading: true,
@@ -879,6 +879,7 @@ export default {
   },
   methods: {
     barraCargando () {
+      this.transformarBoolean(this.$route.params.editar)
       let vm = this
       let timer = setInterval(function () {
         vm.progress_total += 4
@@ -1596,6 +1597,13 @@ export default {
           Vue.swal('Datos no validos')
         }
       })
+    },
+    transformarBoolean (edicion) {
+      if (edicion === 'true') {
+        this.editando = true
+      } else {
+        this.editando = false
+      }
     },
     tipoIdentificacion (tipoIdentificacionId) {
       if (tipoIdentificacionId === 1) {
