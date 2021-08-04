@@ -277,14 +277,20 @@ export default {
         return 'Total pagado por tercero'
       } else if (attribute === '38') {
         return 'Total sentencia'
-      } else if (attribute === '39') {
-        return 'Monto total asegurado'
-      } else if (attribute === '40') {
-        return 'Si la poliza fue afectada, por qué valor'
       } else if (attribute === '41') {
-        return 'Deducible'
+        return 'Monto total asegurado'
+      // } else if (attribute === '40') {
+        // return 'El número de poliza debe de ser un string'
       } else if (attribute === '42') {
+        return 'Si la poliza fue afectada, por qué valor'
+      } else if (attribute === '43') {
+        return 'Deducible'
+      } else if (attribute === '44') {
         return 'Cobertura actual de la poliza'
+      } else if (attribute === '45') {
+        return 'Provisiones constituidas'
+      } else if (attribute === '50') {
+        return 'Fecha fin del proceso'
       } else {
         return 'No especificado'
       }
