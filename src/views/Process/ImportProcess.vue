@@ -235,6 +235,8 @@ export default {
         return 'Año del proceso'
       } else if (attribute === '7') {
         return 'Ciudad'
+      } else if (attribute === '11') {
+        return 'Número de radicado'
       } else if (attribute === '14') {
         return 'Etapa procesal'
       } else if (attribute === '18') {
@@ -244,52 +246,58 @@ export default {
       } else if (attribute === '20') {
         return 'Total perjuicios materiales en la demanda'
       } else if (attribute === '21') {
-        return 'Total perjuicios mat. cubre la poliza'
+        return 'Valor que cubre la poliza por lucro cesante'
       } else if (attribute === '22') {
-        return 'Estimación monto a pagar perjuicios mat.'
+        return 'Total perjuicios mat. cubre la poliza'
       } else if (attribute === '23') {
-        return 'Valor daño moral en la demanda'
+        return 'Valor que cubre la póliza por daño emergente  '
       } else if (attribute === '24') {
-        return 'Daño a la vida en la demanda'
+        return 'Estimación monto a pagar perjuicios mat.'
       } else if (attribute === '25') {
-        return 'Total perjuicios inmat. en la demanda'
+        return 'Valor daño moral en la demanda'
       } else if (attribute === '26') {
-        return 'Total perjuicios inmat. cubre la poliza'
+        return 'Daño a la vida en la demanda'
       } else if (attribute === '27') {
-        return 'Estimación monto a pagar perjuicios inmat.'
+        return 'Total perjuicios inmat. indicados en la demanda'
       } else if (attribute === '28') {
-        return 'Cuantía de las pretensiones en la demanda'
+        return 'Valor que cubre la póliza por daño moral'
+      } else if (attribute === '29') {
+        return 'Daño a la vida en relación indicado o perjuicio fisiológicos que cubre la póliza'
       } else if (attribute === '30') {
-        return 'Costas primera instancia'
+        return 'Total perjuicios inmat. cubre la poliza'
       } else if (attribute === '31') {
-        return 'Costas segunda instancia'
+        return 'Estimación monto a pagar perjuicios inmat.'
       } else if (attribute === '32') {
-        return 'Total Costas'
-      } else if (attribute === '33') {
-        return 'Total sentencia perjuicios inmat.'
+        return ' Cuantía de las pretensiones en la demanda'
       } else if (attribute === '34') {
-        return 'Total sentencia perjuicios mat.'
+        return ' Costas primera instancia'
       } else if (attribute === '35') {
-        return 'Total pagado clinica'
+        return 'Costas segunda instancia'
       } else if (attribute === '36') {
-        return 'Total pagado aseguradoa'
+        return 'Total Costas'
       } else if (attribute === '37') {
-        return 'Total pagado por tercero'
+        return 'Total sentencia perjuicios inmat.'
       } else if (attribute === '38') {
-        return 'Total sentencia'
+        return 'Total sentencia perjuicios mat.'
+      } else if (attribute === '39') {
+        return ' Total pagado clinica '
+      } else if (attribute === '40') {
+        return 'Total pagado aseguradora'
       } else if (attribute === '41') {
-        return 'Monto total asegurado'
-      // } else if (attribute === '40') {
-        // return 'El número de poliza debe de ser un string'
+        return 'Total pagado por tercero'
       } else if (attribute === '42') {
-        return 'Si la poliza fue afectada, por qué valor'
-      } else if (attribute === '43') {
-        return 'Deducible'
-      } else if (attribute === '44') {
-        return 'Cobertura actual de la poliza'
+        return 'Total sentencia'
       } else if (attribute === '45') {
-        return 'Provisiones constituidas'
+        return 'Monto total asegurado'
+      } else if (attribute === '46') {
+        return 'Si la póliza fue afectada, por que valor'
+      } else if (attribute === '47') {
+        return 'Deducible'
+      } else if (attribute === '49') {
+        return 'Cobertura actual de la poliza'
       } else if (attribute === '50') {
+        return 'Provisiones constituidas'
+      } else if (attribute === '54') {
         return 'Fecha fin del proceso'
       } else {
         return 'No especificado'
