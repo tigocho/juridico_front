@@ -30,16 +30,163 @@
                             </template>
                             <template v-slot:body>
                               <div class="new-process">
-                                <b-row>
-                                  <b-form-group class="col-md-6" label="Número del proceso*" label-for="prore_num_proceso">
-                                    <div v-if="proc_id != null && formData.prore_num_proceso != null">
-                                      <span class='text' >{{formData.prore_num_proceso}}</span>
+                              <b-row>
+                                <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
+                                  <div v-if="proc_id != null && formData.prore_num_radicado != null">
+                                    <span class='text' >{{formData.prore_num_radicado}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_num_radicado == null">
+                                    <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="text" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_num_radicado')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_num_radicado.required">Por favor escribe el número de radicado.</div>
                                     </div>
-                                    <div v-if="proc_id == null || formData.prore_num_proceso == null">
-                                      <b-form-input id="prore_num_proceso" v-model="formData.prore_num_proceso" type="text" :class="hasError('prore_num_proceso') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_num_proceso')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_num_proceso.required">Por favor escribe el número del proceso.</div>
-                                      </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Identificador de litigando*" label-for="prore_litigando_id">
+                                  <div v-if="proc_id != null">
+                                    <span class='text' >{{ formData.prore_litigando_id }}</span>
+                                  </div>
+                                  <div v-if="proc_id == null">
+                                    <b-form-input v-model="formData.prore_litigando_id" id="prore_litigando_id" type="number" :class="hasError('prore_litigando_id') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_litigando_id')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_litigando_id.required">Por favor escribe el ID de litigando.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha de Ingreso a Juridico*" label-for="prore_fec_ingreso_jur">
+                                  <div v-if="proc_id != null && formData.prore_fec_ingreso_jur != null">
+                                    <span class='text'>{{formData.prore_fec_ingreso_jur}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_ingreso_jur == null">
+                                    <b-form-input id="prore_fec_ingreso_jur" v-model="formData.prore_fec_ingreso_jur" type="date" :class="hasError('prore_fec_ingreso_jur') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_fec_ingreso_jur')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_fec_ingreso_jur.required">Por favor elige una fecha.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha Traslado Decreto 806" label-for="prore_fec_ingreso">
+                                  <div v-if="proc_id != null && formData.prore_fec_ingreso != null">
+                                    <span class='text' >{{formData.prore_fec_ingreso}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_ingreso == null">
+                                    <b-form-input id="prore_fec_ingreso" v-model="formData.prore_fec_ingreso" type="date" :class="hasError('prore_fec_ingreso') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_fec_ingreso')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_fec_ingreso.required">Por favor elige una fecha.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Clinica/IPS*" label-for="prore_defendant_clin">
+                                  <div v-if="proc_id != null && formData.prore_defendant_clin != null">
+                                    <span class='text'>{{formData.cli_name}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_defendant_clin == null">
+                                    <b-form-select plain v-model="formData.prore_defendant_clin" :options="clinicaOptions" @search="fetchOptionsClinicas" id="prore_defendant_clin" :class="hasError('prore_defendant_clin') ? 'is-invalid' : ''">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una clinica</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                    <div v-if="hasError('prore_defendant_clin')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_defendant_clin.required">Por favor elige una clinica.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Año del Siniestro*" label-for="prore_year_sinister">
+                                  <div v-if="proc_id != null && formData.prore_year_sinister != null">
+                                    <span class='text'>{{formData.prore_year_sinister}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_year_sinister == null">
+                                    <b-form-select plain v-model="formData.prore_year_sinister" :options="years" id="prore_year_sinister" :class="hasError('prore_year_sinister') ? 'is-invalid' : ''">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                    <div v-if="hasError('prore_year_sinister')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_year_sinister.required">Por favor seleccione el año del siniestro.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
+                                  <div v-if="proc_id != null && formData.prore_fec_sinister != null">
+                                    <span class='text'>{{formData.prore_fec_sinister}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_sinister == null">
+                                    <b-form-input id="prore_fec_sinister" v-model="formData.prore_fec_sinister" type="date" :format="{ year }" :class="hasError('prore_fec_sinister') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_fec_sinister')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_fec_sinister.required">Por favor seleccione la fecha del siniestro.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Año de notificación*" label-for="prore_year_notify">
+                                  <div v-if="proc_id != null && formData.prore_year_notify != null">
+                                    <span class='text'>{{formData.prore_year_notify}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_year_notify == null">
+                                    <b-form-select plain v-model="formData.prore_year_notify" :options="years" id="selectyearnotify" :class="hasError('prore_year_notify') ? 'is-invalid' : ''">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                    <div v-if="hasError('prore_year_notify')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_year_notify.required">Por favor seleccione el año de notificación.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Año del proceso*" label-for="prore_process_year">
+                                  <div v-if="proc_id != null && formData.prore_process_year != null">
+                                    <span class='text'>{{formData.prore_process_year}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_sinister == null">
+                                    <b-form-select plain v-model="formData.prore_process_year" :options="years" id="selectyearnotify" :class="hasError('prore_process_year') ? 'is-invalid' : ''">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                    <div v-if="hasError('prore_process_year')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_process_year.required">Por favor seleccione el año del proceso.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha de notificación prejudicial" label-for="prore_fec_noti_preju">
+                                  <div v-if="proc_id != null && formData.prore_fec_noti_preju != null">
+                                    <span class='text'>{{formData.prore_fec_noti_preju}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_noti_preju == null">
+                                    <b-form-input id="exampleInputdate" v-model="formData.prore_fec_noti_preju" type="date" :class="hasError('prore_fec_noti_preju') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_fec_noti_preju')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_fec_noti_preju.required">Por favor elige una fecha.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial*" label-for="prore_fec_audi_conci_preju">
+                                  <div v-if="proc_id != null && formData.prore_fec_audi_conci_preju != null">
+                                    <span class='text'>{{formData.prore_fec_audi_conci_preju}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_audi_conci_preju == null">
+                                    <b-form-input id="exampleInputdate" v-model="formData.prore_fec_audi_conci_preju" type="date" :class="hasError('prore_fec_audi_conci_preju') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_fec_audi_conci_preju')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_fec_audi_conci_preju.required">Por favor elige una fecha.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha aviso del siniestro" label-for="prore_fec_sinies_aviso">
+                                  <div v-if="proc_id != null && formData.prore_fec_sinies_aviso != null">
+                                    <span class='text'>{{formData.prore_fec_sinies_aviso}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_sinies_aviso == null">
+                                    <b-form-input id="exampleInputdate" v-model="formData.prore_fec_sinies_aviso" type="date" :class="hasError('prore_fec_sinies_aviso') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_fec_sinies_aviso')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_fec_sinies_aviso.required">Por favor elige una fecha.</div>
+                                    </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Descripción del siniestro*" label-for="prore_sinies_description">
+                                  <div v-if="proc_id != null && formData.prore_sinies_description != null">
+                                    <span class='text'>{{formData.prore_sinies_description}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_sinies_description == null">
+                                    <b-form-textarea v-model="formData.prore_sinies_description" type="text" placeholder="Descripción" :class="hasError('prore_sinies_description') ? 'is-invalid' : ''"></b-form-textarea>
+                                    <div v-if="hasError('prore_sinies_description')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_sinies_description.required">Por favor deja una descripción del siniestro.</div>
                                     </div>
                                   </b-form-group>
                                   <b-form-group class="col-md-6" label="Fecha de Ingreso*" label-for="prore_fec_ingreso">
@@ -52,35 +199,38 @@
                                         <div class="error" v-if="!$v.formData.prore_fec_ingreso.required">Por favor elige una fecha.</div>
                                       </div>
                                     </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Clinica/IPS*" label-for="prore_defendant_clin">
-                                    <div v-if="proc_id != null && formData.prore_defendant_clin != null">
-                                      <span class='text'>{{formData.cli_name}}</span>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha de recibo de notificación IPS" label-for="prore_fec_recibo_notify">
+                                  <div v-if="proc_id != null && formData.prore_fec_recibo_notify">
+                                    <span class='text'>{{formData.prore_fec_recibo_notify}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_recibo_notify == null">
+                                    <b-form-input id="exampleInputdate" v-model="formData.prore_fec_recibo_notify" type="date" :class="hasError('prore_fec_recibo_notify') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_fec_recibo_notify')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_fec_recibo_notify.required">Por favor elige una fecha.</div>
                                     </div>
-                                    <div v-if="proc_id == null || formData.prore_defendant_clin == null">
-                                      <b-form-select plain v-model="formData.prore_defendant_clin" :options="clinicaOptions" @search="fetchOptionsClinicas" id="prore_defendant_clin" :class="hasError('prore_defendant_clin') ? 'is-invalid' : ''">
-                                        <template v-slot:first>
-                                          <b-form-select-option :value="null" disabled>Seleccione una clinica</b-form-select-option>
-                                        </template>
-                                      </b-form-select>
-                                      <div v-if="hasError('prore_defendant_clin')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_defendant_clin.required">Por favor elige una clinica.</div>
-                                      </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Colaborador de IPS que recibe notificación" label-for="prore_fec_recibo_notify">
+                                  <div v-if="proc_id != null && formData.prore_colaborador_ips != null">
+                                    <span class='text'>{{formData.prore_colaborador_ips}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_colaborador_ips == null">
+                                    <b-form-input type="text" v-model="formData.prore_colaborador_ips" placeholder="Nombre completo colaborador" :class="hasError('prore_colaborador_ips') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_colaborador_ips')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_colaborador_ips.required">Por favor escriba un nombre.</div>
                                     </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Año del Siniestro*" label-for="prore_year_sinister">
-                                    <div v-if="proc_id != null && formData.prore_year_sinister != null">
-                                      <span class='text'>{{formData.prore_year_sinister}}</span>
-                                    </div>
-                                    <div v-if="proc_id == null || formData.prore_year_sinister == null">
-                                      <b-form-select plain v-model="formData.prore_year_sinister" :options="years" id="prore_year_sinister" :class="hasError('prore_year_sinister') ? 'is-invalid' : ''">
-                                        <template v-slot:first>
-                                          <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
-                                        </template>
-                                      </b-form-select>
-                                      <div v-if="hasError('prore_year_sinister')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_year_sinister.required">Por favor seleccione el año del siniestro.</div>
-                                      </div>
+                                  </div>
+                                </b-form-group>
+                                <b-form-group class="col-md-6" label="Fecha de Ingreso a Clínica*" label-for="prore_fec_ingreso_cli">
+                                  <div v-if="proc_id != null && formData.prore_fec_ingreso_cli != null">
+                                    <span class='text'>{{formData.prore_fec_ingreso_cli}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_fec_ingreso_cli == null">
+                                    <b-form-input id="prore_fec_ingreso_cli" v-model="formData.prore_fec_ingreso_cli" type="date" :class="hasError('prore_fec_ingreso_cli') ? 'is-invalid' : ''"></b-form-input>
+                                    <div v-if="hasError('prore_fec_ingreso_cli')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_fec_ingreso_cli.required">Por favor elige una fecha.</div>
                                     </div>
                                   </b-form-group>
                                   <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
@@ -123,27 +273,119 @@
                                         <div class="error" v-if="!$v.formData.prore_process_year.required">Por favor seleccione el año del proceso.</div>
                                       </div>
                                     </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Fecha de notificación prejudicial*" label-for="prore_fec_noti_preju">
-                                    <div v-if="proc_id != null && formData.prore_fec_noti_preju != null">
-                                      <span class='text'>{{formData.prore_fec_noti_preju}}</span>
-                                    </div>
-                                    <div v-if="proc_id == null || formData.prore_fec_noti_preju == null">
-                                      <b-form-input id="exampleInputdate" v-model="formData.prore_fec_noti_preju" type="date" :class="hasError('prore_fec_noti_preju') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_fec_noti_preju')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_fec_noti_preju.required">Por favor elige una fecha.</div>
-                                      </div>
-                                    </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial*" label-for="prore_fec_audi_conci_preju">
-                                    <div v-if="proc_id != null && formData.prore_fec_audi_conci_preju != null">
-                                      <span class='text'>{{formData.prore_fec_audi_conci_preju}}</span>
-                                    </div>
-                                    <div v-if="proc_id == null || formData.prore_fec_audi_conci_preju == null">
-                                      <b-form-input id="exampleInputdate" v-model="formData.prore_fec_audi_conci_preju" type="date" :class="hasError('prore_fec_audi_conci_preju') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_fec_audi_conci_preju')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_fec_audi_conci_preju.required">Por favor elige una fecha.</div>
-                                      </div>
+                                  </div>
+                                  <div v-if="editing && proc_id != null">
+                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                  </div>
+                                </b-form-group>
+                              </b-row>
+                            </div>
+                          </template>
+                        </iq-card>
+                      </b-col>
+                    </b-row>
+                  </form>
+                </ValidationObserver>
+              </b-col>
+            </b-row>
+          </b-container>
+        </tab-content>
+        <tab-content title="Partes del Proceso">
+          <b-container fluid>
+            <b-row>
+              <b-col md="12">
+                <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                  <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                    <b-row>
+                      <b-col lg="12">
+                        <iq-card>
+                          <template v-slot:headerTitle>
+                            <h4 class="card-title">Campos marcados con * son obligatorios</h4>
+                          </template>
+                          <template v-slot:body>
+                            <h4 class="card-title">Información de los involucrados:</h4>
+                            <div class="new-user-info">
+                              <b-row>
+                                <div v-if="implicated !== undefined && implicated !==''" class="col-md-12">
+                                  <b-table
+                                    :items="implicated"
+                                    :fields="fields"
+                                    stacked="md"
+                                    show-empty
+                                    small
+                                  >
+                                    <template #cell(name)="row">
+                                      {{ row.value.first }} {{ row.value.last }}
+                                    </template>
+                                    <template #cell(actions)="row">
+                                      <b-button size="sm" v-b-modal.modal-lg variant="danger" @click="deleteImplicated(row.index)"> Remover </b-button>
+                                    </template>
+                                  </b-table>
+                                  <hr>
+                                </div>
+                                <b-form-group class="col-md-3" label="Tipo identificación" label-for="imp_tipo_identificacion">
+                                  <b-form-select plain v-model="nuevoImplicated.imp_tipo_identificacion" :options="ids" id="imp_profile_id">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Identificación" label-for="imp_identificacion">
+                                  <b-form-input v-model="nuevoImplicated.imp_identificacion" type="text" placeholder="Identificación"></b-form-input>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Nombres/Razón social*" label-for="imp_nombres">
+                                  <b-form-input v-model="nuevoImplicated.imp_nombres" type="text" placeholder="Nombres"></b-form-input>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Apellidos" label-for="imp_apellidos">
+                                  <b-form-input v-model="nuevoImplicated.imp_apellidos" type="text" placeholder="Apellidos"></b-form-input>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Genero" label-for="imp_genero_id">
+                                  <b-form-select plain v-model="nuevoImplicated.imp_genero_id" :options="generoOptions" id="imp_genero_id">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Perfil*" label-for="imp_profile_id">
+                                  <b-form-select plain v-model="nuevoImplicated.imp_profile_id" :options="profilesOptions" id="imp_profile_id">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Rango de edad" label-for="imp_rango_edad">
+                                  <b-form-select plain v-model="nuevoImplicated.imp_rango_edad" :options="rangoEdadOptions" id="imp_rango_edad">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null">Seleccione una opción</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Dirección" label-for="imp_direccion">
+                                  <b-form-input v-model="nuevoImplicated.imp_direccion" type="text" placeholder="Ej: calle 36 #101-22"></b-form-input>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Teléfonos" label-for="imp_telefonos">
+                                  <b-form-input v-model="nuevoImplicated.imp_telefonos" type="text" placeholder="Ej 3176669800, 3110910092" :class="hasError('imp_telefonos') ? 'is-invalid' : ''"></b-form-input>
+                                </b-form-group>
+                                <b-form-group class="col-md-3" label="Correos" label-for="imp_emails">
+                                  <b-form-input v-model="nuevoImplicated.imp_emails" type="text" placeholder="Ej hola@example.com, prueba@example.com" :class="hasError('imp_emails') ? 'is-invalid' : ''"></b-form-input>
+                                </b-form-group>
+                                <div class="col-md-1 pt-4">
+                                  <b-button class="mt-3 mr-1" size="sm" variant="primary" @click="agregarImplicated"> Agregar </b-button>
+                                </div>
+                              </b-row>
+                            </div>
+                            <!--<h4 class="card-title">Información del Demandado:</h4>
+                              <div class="new-user-info">
+                                <b-row>
+                                  <b-form-group class="col-md-6" label="Tipo de identificación*" label-for="prore_defendant_identification_type">
+                                    <b-form-select plain v-model="formData.prore_defendant_identification_type" :options="ids" id="prore_defendant_identification_type" :class="hasError('prore_defendant_identification_type') ? 'is-invalid' : ''">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                    <div v-if="hasError('prore_defendant_identification_type')" class="invalid-feedback">
+                                      <div class="error" v-if="!$v.formData.prore_defendant_identification_type.required">Por favor elija una opción.</div>
                                     </div>
                                   </b-form-group>
                                   <b-form-group class="col-md-6" label="Fecha aviso del siniestro*" label-for="prore_fec_sinies_aviso">
@@ -472,13 +714,13 @@
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
-                                    <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-juzaga>Crear juzgado</b-card-text>
+                                    <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-juzagado>Crear juzgado</b-card-text>
                                   </b-form-group>
                                   <b-modal
-                                    id="modal-crear-juzaga"
+                                    id="modal-crear-juzagado"
                                     ref="modal"
                                     title="Agregar juzgado"
-                                    @ok="handleOk"
+                                    hide-footer
                                   >
                                     <form ref="form" @submit.stop.prevent="handleSubmit">
                                       <b-form-group
@@ -491,40 +733,17 @@
                                         ></b-form-input>
                                       </b-form-group>
                                       <b-form-group label="Teléfono del juzgado">
-                                        <b-form-input v-model="nuevo_court.telefono" type="number" placeholder="ej: 3015456561"></b-form-input>
+                                        <b-form-input v-model="nuevo_court.telefono" type="text" placeholder="ej: 3015456561"></b-form-input>
                                       </b-form-group>
                                       <b-form-group label="Correo del juzgado">
                                         <b-form-input v-model="nuevo_court.email" type="email" placeholder="info@example.com"></b-form-input>
                                       </b-form-group>
+                                      <div class="text-right pt-1">
+                                        <b-button class="sm-3 mr-1" variant="secondary" @click="$bvModal.hide('modal-crear-juzagado')">Cancelar</b-button>
+                                        <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="handleOk">{{ textoGuardarModal }}</b-button>
+                                      </div>
                                     </form>
                                   </b-modal>
-                                  <b-form-group class="col-md-6" label="Número de Radicado" label-for="prore_num_radicado">
-                                    <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_num_radicado}}</span>
-                                    </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_num_radicado == null">
-                                      <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="text" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_num_radicado')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_num_radicado.required">Por favor escriba el número radicado.</div>
-                                      </div>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Objeto del Litigio" label-for="prore_objeto_litigio">
-                                    <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_objeto_litigio}}</span>
-                                    </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_objeto_litigio == null">
-                                      <b-form-input v-model="formData.prore_objeto_litigio" type="text" placeholder="Objeto"></b-form-input>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
-                                  </b-form-group>
                                   <template>
                                     <b-form-group class="col-md-6" label="Proceso Ejecutivo" label-for="prore_proceso_ejecutivo">
                                       <div v-if="proc_id != null">
@@ -666,7 +885,7 @@
                                       <span class='text'>{{formData.prore_val_luc_cesante}}</span>
                                     </div>
                                     <div v-else>
-                                      <b-form-input v-model="formData.prore_val_luc_cesante" type="number" placeholder="$" :class="hasError('prore_val_luc_cesante') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input @keyup="totalPerjuiciosMateriales" v-model="formData.prore_val_luc_cesante" type="number" placeholder="$" :class="hasError('prore_val_luc_cesante') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_val_luc_cesante')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_val_luc_cesante.required">Por favor escriba valor de lucro cesante.
                                         </div>
@@ -678,7 +897,7 @@
                                       <span class='text'>{{formData.prore_val_dano_emergente}}</span>
                                     </div>
                                     <div v-else>
-                                      <b-form-input v-model="formData.prore_val_dano_emergente" type="number" placeholder="$" :class="hasError('prore_val_dano_emergente') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input @keyup="totalPerjuiciosMateriales" v-model="formData.prore_val_dano_emergente" type="number" placeholder="$" :class="hasError('prore_val_dano_emergente') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_val_dano_emergente')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_val_dano_emergente.required">Por favor escriba valor de daño emergente.
                                         </div>
@@ -690,7 +909,7 @@
                                       <span class='text'>{{formData.prore_total_perjuicios_materiales}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_total_perjuicios_materiales == null">
-                                      <b-form-input id="prore_total_perjuicios_materiales" v-model="formData.prore_total_perjuicios_materiales" type="number" placeholder="$" :class="hasError('prore_total_perjuicios_materiales') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input id="prore_total_perjuicios_materiales" v-model="formData.prore_total_perjuicios_materiales" type="number" disabled="disabled" placeholder="$" :class="hasError('prore_total_perjuicios_materiales') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_total_perjuicios_materiales')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_total_perjuicios_materiales.required">Por favor escriba el total de perjuicios materiales.
                                         </div>
@@ -726,7 +945,7 @@
                                       <span class='number'>{{formData.prore_val_dano_moral}}</span>
                                     </div>
                                     <div v-if="proc_id == null || formData.prore_val_dano_moral == null">
-                                      <b-form-input v-model="formData.prore_val_dano_moral" type="number" placeholder="$" :class="hasError('prore_val_dano_moral') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="formData.prore_val_dano_moral" type="number" placeholder="$" :class="hasError('prore_val_dano_moral') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_val_dano_moral')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_val_dano_moral.required">Por favor escriba el valor en daño moral.
                                         </div>
@@ -738,7 +957,7 @@
                                       <span class='number'>{{formData.prore_val_dano_vida}}</span>
                                     </div>
                                     <div v-else>
-                                      <b-form-input v-model="formData.prore_val_dano_vida" type="number" placeholder="$" :class="hasError('prore_val_dano_vida') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="formData.prore_val_dano_vida" type="number" placeholder="$" :class="hasError('prore_val_dano_vida') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_val_dano_vida')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_val_dano_vida.required">Por favor escriba el valor de daño a la vida o perjuicios.
                                         </div>
@@ -750,7 +969,7 @@
                                       <span class='number' @click="enableEditing">{{formData.prore_total_perjuicios_inmateriales}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_total_perjuicios_inmateriales == null">
-                                      <b-form-input v-model="formData.prore_total_perjuicios_inmateriales" type="number" placeholder="$" :class="hasError('prore_total_perjuicios_inmateriales') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input v-model="formData.prore_total_perjuicios_inmateriales" type="number" disabled="disabled" placeholder="$" :class="hasError('prore_total_perjuicios_inmateriales') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_total_perjuicios_inmateriales')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_total_perjuicios_inmateriales.required">Por favor escriba el total de perjuicios inmateriales.
                                         </div>
@@ -794,7 +1013,7 @@
                                       <span class='text' @click="enableEditing">{{formData.prore_cuantia_pretenciones}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_cuantia_pretenciones == null">
-                                      <b-form-input id="prore_cuantia_pretenciones" v-model="formData.prore_cuantia_pretenciones" type="number" placeholder="$" :class="hasError('prore_cuantia_pretenciones') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input id="prore_cuantia_pretenciones" v-model="formData.prore_cuantia_pretenciones" disabled="disabled" type="number" placeholder="$" :class="hasError('prore_cuantia_pretenciones') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_cuantia_pretenciones')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_cuantia_pretenciones.required">Por favor escriba la cuantía de las pretensiones.
                                         </div>
@@ -849,7 +1068,7 @@
                                       <span class='text' @click="enableEditing">{{formData.prore_val_total_asegurado}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_val_total_asegurado == null">
-                                      <b-form-input id="prore_val_total_asegurado" v-model="formData.prore_val_total_asegurado" type="number" placeholder="$"></b-form-input>
+                                      <b-form-input @keyup="totalCoberturaActualPoliza" id="prore_val_total_asegurado" v-model="formData.prore_val_total_asegurado" type="number" placeholder="$"></b-form-input>
                                     </div>
                                     <div v-if="editing && proc_id != null">
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
@@ -861,7 +1080,7 @@
                                       <span class='text' @click="enableEditing">{{formData.prore_val_afectado_poliza}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_val_afectado_poliza == null">
-                                      <b-form-input id="prore_val_afectado_poliza" v-model="formData.prore_val_afectado_poliza" type="number" placeholder="$"></b-form-input>
+                                      <b-form-input @keyup="totalCoberturaActualPoliza" id="prore_val_afectado_poliza" v-model="formData.prore_val_afectado_poliza" type="number" placeholder="$"></b-form-input>
                                     </div>
                                     <div v-if="editing && proc_id != null">
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
@@ -885,7 +1104,7 @@
                                       <span class='text' @click="enableEditing">{{formData.prore_val_cobertura_poliza}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_val_cobertura_poliza == null">
-                                      <b-form-input id="prore_val_cobertura_poliza" v-model="formData.prore_val_cobertura_poliza" type="number" placeholder="$"></b-form-input>
+                                      <b-form-input disabled="disabled" id="prore_val_cobertura_poliza" v-model="formData.prore_val_cobertura_poliza" type="number" placeholder="$"></b-form-input>
                                     </div>
                                     <div v-if="editing && proc_id != null">
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
@@ -1149,6 +1368,8 @@ export default {
   },
   data () {
     return {
+      botonGuardarModal: '',
+      textoGuardarModal: 'Guardar',
       year: null,
       progress_total: 4,
       max: 100,
@@ -1171,6 +1392,7 @@ export default {
         imp_apellidos: '',
         imp_direccion: '',
         imp_edad: '',
+        imp_rango_edad: '',
         imp_genero_id: '',
         imp_telefonos: '',
         imp_emails: '',
@@ -1207,20 +1429,15 @@ export default {
       ],
       validationRules: [
         {
-          prore_num_proceso: { required },
-          prore_fec_ingreso: { required },
+          prore_num_radicado: { required },
+          prore_fec_ingreso_jur: { required },
           prore_defendant_clin: { required },
           prore_year_sinister: { required },
           prore_fec_sinister: { required },
           prore_year_notify: { required },
           prore_process_year: { required },
-          prore_fec_noti_preju: { required },
           prore_fec_audi_conci_preju: { required },
-          prore_fec_sinies_aviso: { required },
           prore_sinies_description: { required },
-          prore_fec_recibo_notify: { required },
-          prore_colaborador_ips: { required },
-          prore_fec_ingreso_jur: { required },
           prore_fec_ingreso_cli: { required },
           prore_city_id: { required },
           prore_litigando_id: { required }
@@ -1338,12 +1555,34 @@ export default {
       },
       generoOptions: [
         {
+          text: 'No aplica',
+          value: null
+        },
+        {
           text: 'Masculino',
           value: 2
         },
         {
           text: 'Femenino',
           value: 1
+        }
+      ],
+      rangoEdadOptions: [
+        {
+          text: '0-18 años',
+          value: '0-18 años'
+        },
+        {
+          text: '19- 60 años',
+          value: '19- 60 años'
+        },
+        {
+          text: '+ 60 años',
+          value: '+ 60 años'
+        },
+        {
+          text: 'No aplica',
+          value: 'No aplica'
         }
       ],
       users: []
@@ -1498,6 +1737,8 @@ export default {
       if (this.nuevo_court.name === '' || this.nuevo_court.name === null || this.nuevo_court.telefono === '' || this.nuevo_court.telefono === null) {
         Vue.swal('Por favor complete los datos.')
       } else {
+        this.botonGuardarModal = 'disabled'
+        this.textoGuardarModal = 'Guardando'
         this.handleSubmit()
       }
     },
@@ -1506,15 +1747,20 @@ export default {
       axios.post('/courts/store', this.nuevo_court, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
         // Hide the modal manually
         this.$nextTick(() => {
-          this.$bvModal.hide('modal-crear-juzaga')
+          this.$bvModal.hide('modal-crear-juzagado')
         })
         if (res.data.status_code === 200) {
+          this.botonGuardarModal = ''
+          this.textoGuardarModal = 'Guardar'
           this.nuevo_court.name = ''
           this.nuevo_court.telefono = ''
           this.nuevo_court.email = ''
+          this.formData.prore_court_id = res.data.court_id
           Vue.swal('Juzgado agregado correctamente')
           this.fetchCourts()
         } else {
+          this.botonGuardarModal = ''
+          this.textoGuardarModal = 'Guardar'
           Vue.swal('Datos no validos')
         }
       })
@@ -1545,15 +1791,21 @@ export default {
         Vue.swal('Por favor escribir los nombres')
         return false
       }
-      if (this.nuevoImplicated.imp_apellidos === '' || this.nuevoImplicated.imp_apellidos === undefined) {
-        Vue.swal('Por favor escribir los apellidos')
-        return false
-      }
       if (this.nuevoImplicated.imp_profile_id === '' || this.nuevoImplicated.imp_profile_id === undefined) {
         Vue.swal('Por favor seleccionar la relación en el proceso')
         return false
       }
-      this.implicated.push({ imp_tipo_identificacion: this.nuevoImplicated.imp_tipo_identificacion, imp_identificacion: this.nuevoImplicated.imp_identificacion, imp_nombres: this.nuevoImplicated.imp_nombres, imp_apellidos: this.nuevoImplicated.imp_apellidos, imp_telefonos: this.nuevoImplicated.imp_telefonos, imp_emails: this.nuevoImplicated.imp_emails, imp_profile_id: this.nuevoImplicated.imp_profile_id, imp_direccion: this.nuevoImplicated.imp_direccion, imp_edad: this.nuevoImplicated.imp_edad, imp_genero_id: this.nuevoImplicated.imp_genero_id })
+      this.implicated.push({ imp_tipo_identificacion: this.nuevoImplicated.imp_tipo_identificacion,
+        imp_identificacion: this.nuevoImplicated.imp_identificacion,
+        imp_nombres: this.nuevoImplicated.imp_nombres,
+        imp_apellidos: this.nuevoImplicated.imp_apellidos,
+        imp_telefonos: this.nuevoImplicated.imp_telefonos,
+        imp_emails: this.nuevoImplicated.imp_emails,
+        imp_profile_id: this.nuevoImplicated.imp_profile_id,
+        imp_direccion: this.nuevoImplicated.imp_direccion,
+        imp_edad: this.nuevoImplicated.imp_edad,
+        imp_rango_edad: this.nuevoImplicated.imp_rango_edad,
+        imp_genero_id: this.nuevoImplicated.imp_genero_id })
       this.limpiarNuevoImplicated()
     },
     deleteImplicated (implicatedId) {
@@ -1568,8 +1820,29 @@ export default {
       this.nuevoImplicated.imp_direccion = ''
       this.nuevoImplicated.imp_genero_id = ''
       this.nuevoImplicated.imp_edad = ''
+      this.nuevoImplicated.imp_rango_edad = ''
       this.nuevoImplicated.imp_emails = ''
       this.nuevoImplicated.imp_profile_id = ''
+    },
+    totalPerjuiciosMateriales () {
+      let valLucCesante = this.formData.prore_val_luc_cesante > 0 ? this.formData.prore_val_luc_cesante : 0
+      let valDanoEmergente = this.formData.prore_val_dano_emergente > 0 ? this.formData.prore_val_dano_emergente : 0
+      this.formData.prore_total_perjuicios_materiales = parseInt(valLucCesante) + parseInt(valDanoEmergente)
+      this.cuantiaPretensiones()
+    },
+    totalPerjuiciosInmateriales () {
+      let valDanoMoral = this.formData.prore_val_dano_moral > 0 ? this.formData.prore_val_dano_moral : 0
+      let valDanoVida = this.formData.prore_val_dano_vida > 0 ? this.formData.prore_val_dano_vida : 0
+      this.formData.prore_total_perjuicios_inmateriales = parseInt(valDanoMoral) + parseInt(valDanoVida)
+      this.cuantiaPretensiones()
+    },
+    cuantiaPretensiones () {
+      this.formData.prore_cuantia_pretenciones = this.formData.prore_total_perjuicios_materiales + this.formData.prore_total_perjuicios_inmateriales
+    },
+    totalCoberturaActualPoliza () {
+      let valTotalAsegurado = this.formData.prore_val_total_asegurado > 0 ? this.formData.prore_val_total_asegurado : 0
+      let valAfectadoPoliza = this.formData.prore_val_afectado_poliza > 0 ? this.formData.prore_val_afectado_poliza : 0
+      this.formData.prore_val_cobertura_poliza = parseInt(valTotalAsegurado) - parseInt(valAfectadoPoliza)
     }
   }
 }

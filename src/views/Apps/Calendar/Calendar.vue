@@ -232,7 +232,6 @@ export default {
         if (this.typeNotificationsOptions[0] !== undefined) {
           this.formData.agen_type_not_id = this.typeNotificationsOptions[0].value
         }
-        console.log(this.formData.agen_type_not_id)
       })
     },
     getTypeEvents () {
@@ -241,7 +240,6 @@ export default {
         if (this.typeEventsOptions[0] !== undefined) {
           this.formData.agen_type_eve_id = this.typeEventsOptions[0].value
         }
-        console.log(this.formData.agen_type_eve_id)
       })
     },
     eliminarEvento (eventoId) {
