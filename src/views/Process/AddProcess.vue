@@ -831,7 +831,7 @@
                                       <span class='text'>{{formData.prore_val_luc_cesante}}</span>
                                     </div>
                                     <div v-else>
-                                      <b-form-input v-model="formData.prore_val_luc_cesante" type="number" placeholder="$" :class="hasError('prore_val_luc_cesante') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input @keyup="totalPerjuiciosMateriales" v-model="formData.prore_val_luc_cesante" type="number" placeholder="$" :class="hasError('prore_val_luc_cesante') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_val_luc_cesante')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_val_luc_cesante.required">Por favor escriba valor de lucro cesante.
                                         </div>
@@ -843,7 +843,7 @@
                                       <span class='text'>{{formData.prore_val_dano_emergente}}</span>
                                     </div>
                                     <div v-else>
-                                      <b-form-input v-model="formData.prore_val_dano_emergente" type="number" placeholder="$" :class="hasError('prore_val_dano_emergente') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input @keyup="totalPerjuiciosMateriales" v-model="formData.prore_val_dano_emergente" type="number" placeholder="$" :class="hasError('prore_val_dano_emergente') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_val_dano_emergente')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_val_dano_emergente.required">Por favor escriba valor de daño emergente.
                                         </div>
@@ -855,7 +855,7 @@
                                       <span class='text'>{{formData.prore_total_perjuicios_materiales}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_total_perjuicios_materiales == null">
-                                      <b-form-input id="prore_total_perjuicios_materiales" v-model="formData.prore_total_perjuicios_materiales" type="number" placeholder="$" :class="hasError('prore_total_perjuicios_materiales') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input id="prore_total_perjuicios_materiales" v-model="formData.prore_total_perjuicios_materiales" type="number" disabled="disabled" placeholder="$" :class="hasError('prore_total_perjuicios_materiales') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_total_perjuicios_materiales')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_total_perjuicios_materiales.required">Por favor escriba el total de perjuicios materiales.
                                         </div>
@@ -891,7 +891,7 @@
                                       <span class='number'>{{formData.prore_val_dano_moral}}</span>
                                     </div>
                                     <div v-if="proc_id == null || formData.prore_val_dano_moral == null">
-                                      <b-form-input v-model="formData.prore_val_dano_moral" type="number" placeholder="$" :class="hasError('prore_val_dano_moral') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="formData.prore_val_dano_moral" type="number" placeholder="$" :class="hasError('prore_val_dano_moral') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_val_dano_moral')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_val_dano_moral.required">Por favor escriba el valor en daño moral.
                                         </div>
@@ -903,7 +903,7 @@
                                       <span class='number'>{{formData.prore_val_dano_vida}}</span>
                                     </div>
                                     <div v-else>
-                                      <b-form-input v-model="formData.prore_val_dano_vida" type="number" placeholder="$" :class="hasError('prore_val_dano_vida') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="formData.prore_val_dano_vida" type="number" placeholder="$" :class="hasError('prore_val_dano_vida') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_val_dano_vida')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_val_dano_vida.required">Por favor escriba el valor de daño a la vida o perjuicios.
                                         </div>
@@ -915,7 +915,7 @@
                                       <span class='number' @click="enableEditing">{{formData.prore_total_perjuicios_inmateriales}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_total_perjuicios_inmateriales == null">
-                                      <b-form-input v-model="formData.prore_total_perjuicios_inmateriales" type="number" placeholder="$" :class="hasError('prore_total_perjuicios_inmateriales') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input v-model="formData.prore_total_perjuicios_inmateriales" type="number" disabled="disabled" placeholder="$" :class="hasError('prore_total_perjuicios_inmateriales') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_total_perjuicios_inmateriales')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_total_perjuicios_inmateriales.required">Por favor escriba el total de perjuicios inmateriales.
                                         </div>
@@ -959,7 +959,7 @@
                                       <span class='text' @click="enableEditing">{{formData.prore_cuantia_pretenciones}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_cuantia_pretenciones == null">
-                                      <b-form-input id="prore_cuantia_pretenciones" v-model="formData.prore_cuantia_pretenciones" type="number" placeholder="$" :class="hasError('prore_cuantia_pretenciones') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input id="prore_cuantia_pretenciones" v-model="formData.prore_cuantia_pretenciones" disabled="disabled" type="number" placeholder="$" :class="hasError('prore_cuantia_pretenciones') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_cuantia_pretenciones')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_cuantia_pretenciones.required">Por favor escriba la cuantía de las pretensiones.
                                         </div>
@@ -1014,7 +1014,7 @@
                                       <span class='text' @click="enableEditing">{{formData.prore_val_total_asegurado}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_val_total_asegurado == null">
-                                      <b-form-input id="prore_val_total_asegurado" v-model="formData.prore_val_total_asegurado" type="number" placeholder="$"></b-form-input>
+                                      <b-form-input @keyup="totalCoberturaActualPoliza" id="prore_val_total_asegurado" v-model="formData.prore_val_total_asegurado" type="number" placeholder="$"></b-form-input>
                                     </div>
                                     <div v-if="editing && proc_id != null">
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
@@ -1026,7 +1026,7 @@
                                       <span class='text' @click="enableEditing">{{formData.prore_val_afectado_poliza}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_val_afectado_poliza == null">
-                                      <b-form-input id="prore_val_afectado_poliza" v-model="formData.prore_val_afectado_poliza" type="number" placeholder="$"></b-form-input>
+                                      <b-form-input @keyup="totalCoberturaActualPoliza" id="prore_val_afectado_poliza" v-model="formData.prore_val_afectado_poliza" type="number" placeholder="$"></b-form-input>
                                     </div>
                                     <div v-if="editing && proc_id != null">
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
@@ -1050,7 +1050,7 @@
                                       <span class='text' @click="enableEditing">{{formData.prore_val_cobertura_poliza}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_val_cobertura_poliza == null">
-                                      <b-form-input id="prore_val_cobertura_poliza" v-model="formData.prore_val_cobertura_poliza" type="number" placeholder="$"></b-form-input>
+                                      <b-form-input disabled="disabled" id="prore_val_cobertura_poliza" v-model="formData.prore_val_cobertura_poliza" type="number" placeholder="$"></b-form-input>
                                     </div>
                                     <div v-if="editing && proc_id != null">
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
@@ -1843,6 +1843,26 @@ export default {
       this.nuevoImplicated.imp_rango_edad = ''
       this.nuevoImplicated.imp_emails = ''
       this.nuevoImplicated.imp_profile_id = ''
+    },
+    totalPerjuiciosMateriales () {
+      let valLucCesante = this.formData.prore_val_luc_cesante > 0 ? this.formData.prore_val_luc_cesante : 0
+      let valDanoEmergente = this.formData.prore_val_dano_emergente > 0 ? this.formData.prore_val_dano_emergente : 0
+      this.formData.prore_total_perjuicios_materiales = parseInt(valLucCesante) + parseInt(valDanoEmergente)
+      this.cuantiaPretensiones()
+    },
+    totalPerjuiciosInmateriales () {
+      let valDanoMoral = this.formData.prore_val_dano_moral > 0 ? this.formData.prore_val_dano_moral : 0
+      let valDanoVida = this.formData.prore_val_dano_vida > 0 ? this.formData.prore_val_dano_vida : 0
+      this.formData.prore_total_perjuicios_inmateriales = parseInt(valDanoMoral) + parseInt(valDanoVida)
+      this.cuantiaPretensiones()
+    },
+    cuantiaPretensiones () {
+      this.formData.prore_cuantia_pretenciones = this.formData.prore_total_perjuicios_materiales + this.formData.prore_total_perjuicios_inmateriales
+    },
+    totalCoberturaActualPoliza () {
+      let valTotalAsegurado = this.formData.prore_val_total_asegurado > 0 ? this.formData.prore_val_total_asegurado : 0
+      let valAfectadoPoliza = this.formData.prore_val_afectado_poliza > 0 ? this.formData.prore_val_afectado_poliza : 0
+      this.formData.prore_val_cobertura_poliza = parseInt(valTotalAsegurado) - parseInt(valAfectadoPoliza)
     }
   }
 }
