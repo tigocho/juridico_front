@@ -188,16 +188,16 @@
                                     <div v-if="hasError('prore_sinies_description')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_sinies_description.required">Por favor deja una descripción del siniestro.</div>
                                     </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Patología" label-for="patologia">
-                                  <div v-if="proc_id != null && formData.prore_pathology != null">
-                                    <span class='text'>{{formData.prore_pathology}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null || formData.prore_pathology == null">
-                                    <b-form-input type="text" v-model="formData.prore_pathology" placeholder="Patología" :class="hasError('prore_pathology') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_pathology')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_pathology.required">Por favor escriba una patología.</div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Fecha de Ingreso*" label-for="prore_fec_ingreso">
+                                    <div v-if="proc_id != null && formData.prore_fec_ingreso != null">
+                                      <span class='text' >{{formData.prore_fec_ingreso}}</span>
+                                    </div>
+                                    <div v-if="proc_id == null || formData.prore_fec_ingreso == null">
+                                      <b-form-input id="prore_fec_ingreso" v-model="formData.prore_fec_ingreso" type="date" :class="hasError('prore_fec_ingreso') ? 'is-invalid' : ''"></b-form-input>
+                                      <div v-if="hasError('prore_fec_ingreso')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_fec_ingreso.required">Por favor elige una fecha.</div>
+                                      </div>
                                     </div>
                                   </div>
                                 </b-form-group>
@@ -232,88 +232,46 @@
                                     <div v-if="hasError('prore_fec_ingreso_cli')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_fec_ingreso_cli.required">Por favor elige una fecha.</div>
                                     </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Ciudad*" label-for="prore_city_id">
-                                  <div v-if="proc_id != null && formData.prore_city_id != null">
-                                    <span class='text'>{{formData.city_name}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null || formData.prore_pac_name_first == null">
-                                    <b-form-select plain v-model="formData.prore_city_id" :options="citiesOptions" id="select_city" :class="hasError('prore_city_id') ? 'is-invalid' : ''">
-                                      <template v-slot:first>
-                                        <b-form-select-option :value="null" disabled>Seleccione una Ciudad</b-form-select-option>
-                                      </template>
-                                    </b-form-select>
-                                    <div v-if="hasError('prore_city_id')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_city_id.required">Por favor elige una ciudad.</div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
+                                    <div v-if="proc_id != null && formData.prore_fec_sinister != null">
+                                      <span class='text'>{{formData.prore_fec_sinister}}</span>
                                     </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Especialidad" label-for="selectuserrole">
-                                  <div v-if="proc_id != null && formData.prore_propse_id != null">
-                                    <span class='text'>{{formData.spe_name}}</span>
-                                  </div>
-                                  <div v-if="proc_id == null || formData.prore_propse_id == null">
-                                    <b-form-select plain v-model="formData.prore_propse_id" :options="especialidadesOptions" id="select_especialidad" :class="hasError('prore_propse_id') ? 'is-invalid' : ''">
-                                      <template v-slot:first>
-                                        <b-form-select-option :value="null" disabled>Seleccione una especialidad</b-form-select-option>
-                                      </template>
-                                    </b-form-select>
-                                    <div v-if="hasError('prore_propse_id')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_propse_id.required">Por favor elige una opción.</div>
+                                    <div v-if="proc_id == null || formData.prore_fec_sinister == null">
+                                      <b-form-input id="prore_fec_sinister" v-model="formData.prore_fec_sinister" type="date" :format="{ year }" :class="hasError('prore_fec_sinister') ? 'is-invalid' : ''"></b-form-input>
+                                      <div v-if="hasError('prore_fec_sinister')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_fec_sinister.required">Por favor seleccione la fecha del siniestro.</div>
+                                      </div>
                                     </div>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Asignar Abogada/o" label-for="prore_pro_id">
-                                  <div v-if="!editing && proc_id != null">
-                                    <span class='text' @click="enableEditing">{{ formData.pro_name_first }} {{ formData.pro_lastname_first }}</span>
-                                  </div>
-                                  <div v-if="editing || proc_id == null || formData.prore_pro_id == null">
-                                    <b-form-select plain v-model="formData.prore_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole" :class="hasError('prore_pro_id') ? 'is-invalid' : ''">
-                                      <template v-slot:first>
-                                        <b-form-select-option :value="null">Seleccione un abogado</b-form-select-option>
-                                      </template>
-                                    </b-form-select>
-                                    <div v-if="hasError('prore_pro_id')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_pro_id.required">Por favor elige una opción.</div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Año de notificación*" label-for="prore_year_notify">
+                                    <div v-if="proc_id != null && formData.prore_year_notify != null">
+                                      <span class='text'>{{formData.prore_year_notify}}</span>
                                     </div>
-                                  </div>
-                                  <div v-if="editing && proc_id != null">
-                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Estado del proceso" label-for="selectuserrole">
-                                  <div v-if="!editing && proc_id != null">
-                                    <span class='text' @click="enableEditing">{{ formData.sta_name }} {{ formData.pro_lastname_first }}</span>
-                                  </div>
-                                  <div v-if="editing || proc_id == null">
-                                    <b-form-select plain v-model="formData.prore_status_process_id" :options="statusProcessOptions" @search="fetchEstadosProceso" id="selectuserrole" :class="hasError('prore_status_process_id') ? 'is-invalid' : ''">
-                                      <template v-slot:first>
-                                        <b-form-select-option :value="null">Seleccione un estado</b-form-select-option>
-                                      </template>
-                                    </b-form-select>
-                                    <div v-if="hasError('prore_status_process_id')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_status_process_id.required">Por favor elige una clinica.</div>
+                                    <div v-if="proc_id == null || formData.prore_year_notify == null">
+                                      <b-form-select plain v-model="formData.prore_year_notify" :options="years" id="selectyearnotify" :class="hasError('prore_year_notify') ? 'is-invalid' : ''">
+                                        <template v-slot:first>
+                                          <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
+                                        </template>
+                                      </b-form-select>
+                                      <div v-if="hasError('prore_year_notify')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_year_notify.required">Por favor seleccione el año de notificación.</div>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div v-if="editing && proc_id != null">
-                                    <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                    <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                  </div>
-                                </b-form-group>
-                                <b-form-group class="col-md-6" label="Riesgo NIIF" label-for="risk_id">
-                                  <div v-if="!editing && proc_id != null">
-                                    <span class='text' @click="enableEditing">{{ formData.risk_name }}</span>
-                                  </div>
-                                  <div v-if="editing || proc_id == null">
-                                    <b-form-select plain v-model="formData.prore_risk_id" :options="risksOptions" @search="fetchRisks" id="risk_id" :class="hasError('prore_risk_id') ? 'is-invalid' : ''">
-                                      <template v-slot:first>
-                                        <b-form-select-option :value="null">Seleccione el riesgo NIIF</b-form-select-option>
-                                      </template>
-                                    </b-form-select>
-                                    <div v-if="hasError('prore_risk_id')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_risk_id.required">Por favor elige una opción.</div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Año del proceso*" label-for="prore_process_year">
+                                    <div v-if="proc_id != null && formData.prore_process_year != null">
+                                      <span class='text'>{{formData.prore_process_year}}</span>
+                                    </div>
+                                    <div v-if="proc_id == null || formData.prore_fec_sinister == null">
+                                      <b-form-select plain v-model="formData.prore_process_year" :options="years" id="selectyearnotify" :class="hasError('prore_process_year') ? 'is-invalid' : ''">
+                                        <template v-slot:first>
+                                          <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
+                                        </template>
+                                      </b-form-select>
+                                      <div v-if="hasError('prore_process_year')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_process_year.required">Por favor seleccione el año del proceso.</div>
+                                      </div>
                                     </div>
                                   </div>
                                   <div v-if="editing && proc_id != null">
@@ -430,66 +388,125 @@
                                       <div class="error" v-if="!$v.formData.prore_defendant_identification_type.required">Por favor elija una opción.</div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Identificación del demandado*" label-for="prore_defendant_identification">
-                                    <b-form-input v-model="formData.prore_defendant_identification" type="text" placeholder="Identificación del demandado" :class="hasError('prore_defendant_identification') ? 'is-invalid' : ''"></b-form-input>
-                                    <div v-if="hasError('prore_defendant_identification')" class="invalid-feedback">
-                                      <div class="error" v-if="!$v.formData.prore_defendant_identification.required">Por favor escriba el número de documento.</div>
+                                  <b-form-group class="col-md-6" label="Fecha aviso del siniestro*" label-for="prore_fec_sinies_aviso">
+                                    <div v-if="proc_id != null && formData.prore_fec_sinies_aviso != null">
+                                      <span class='text'>{{formData.prore_fec_sinies_aviso}}</span>
                                     </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Primer Nombre*" label-for="prore_defendant_name_first">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_defendant_name_first}}</span>
-                                    </div>
-                                    <div v-else>
-                                      <b-form-input v-model="formData.prore_defendant_name_first" type="text" placeholder="Primer Nombre" :class="hasError('prore_defendant_name_first') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_defendant_name_first')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_defendant_name_first.required">Por favor escriba el primer nombre del demandado.</div>
+                                    <div v-if="proc_id == null || formData.prore_fec_sinies_aviso == null">
+                                      <b-form-input id="exampleInputdate" v-model="formData.prore_fec_sinies_aviso" type="date" :class="hasError('prore_fec_sinies_aviso') ? 'is-invalid' : ''"></b-form-input>
+                                      <div v-if="hasError('prore_fec_sinies_aviso')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_fec_sinies_aviso.required">Por favor elige una fecha.</div>
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Nombre" label-for="prore_defendant_name_second">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_defendant_name_second}}</span>
+                                  <b-form-group class="col-md-6" label="Descripción del siniestro*" label-for="prore_sinies_description">
+                                    <div v-if="proc_id != null && formData.prore_sinies_description != null">
+                                      <span class='text'>{{formData.prore_sinies_description}}</span>
                                     </div>
-                                    <div v-else>
-                                      <b-form-input v-model="formData.prore_defendant_name_second" type="text" placeholder="Segundo Nombre" :class="hasError('prore_defendant_name_second') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_defendant_name_second')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_defendant_name_second.required">Por favor escriba el segundo nombre del demandado.</div>
+                                    <div v-if="proc_id == null || formData.prore_sinies_description == null">
+                                      <b-form-textarea v-model="formData.prore_sinies_description" type="text" placeholder="Descripción" :class="hasError('prore_sinies_description') ? 'is-invalid' : ''"></b-form-textarea>
+                                      <div v-if="hasError('prore_sinies_description')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_sinies_description.required">Por favor deja una descripción del siniestro.</div>
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Primer Apellido*" label-for="prore_defendant_lastname_first">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_defendant_lastname_first}}</span>
+                                  <b-form-group class="col-md-6" label="Patología" label-for="patologia">
+                                    <div v-if="proc_id != null && formData.prore_pathology != null">
+                                      <span class='text'>{{formData.prore_pathology}}</span>
                                     </div>
-                                    <div v-else>
-                                      <b-form-input v-model="formData.prore_defendant_lastname_first" type="text" placeholder="Primer Apellido" :class="hasError('prore_defendant_lastname_first') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_defendant_lastname_first')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_defendant_lastname_first.required">Por favor escriba el primer apellido del demandado.</div>
+                                    <div v-if="proc_id == null || formData.prore_pathology == null">
+                                      <b-form-input type="text" v-model="formData.prore_pathology" placeholder="Patología" :class="hasError('prore_pathology') ? 'is-invalid' : ''"></b-form-input>
+                                      <div v-if="hasError('prore_pathology')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_pathology.required">Por favor escriba una patología.</div>
                                       </div>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Apellido" label-for="prore_defendant_lastname_second">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_defendant_lastname_second}}</span>
+                                  <b-form-group class="col-md-6" label="Fecha de recibo de notificación IPS*" label-for="prore_fec_recibo_notify">
+                                    <div v-if="proc_id != null && formData.prore_fec_recibo_notify">
+                                      <span class='text'>{{formData.prore_fec_recibo_notify}}</span>
                                     </div>
-                                    <div v-else>
-                                      <b-form-input v-model="formData.prore_defendant_lastname_second" type="text" placeholder="Segundo Apellido" :class="hasError('prore_defendant_lastname_second') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_defendant_lastname_second')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_defendant_lastname_second.required">Por favor escriba el segundo apellido del demandado.</div>
+                                    <div v-if="proc_id == null || formData.prore_fec_recibo_notify == null">
+                                      <b-form-input id="exampleInputdate" v-model="formData.prore_fec_recibo_notify" type="date" :class="hasError('prore_fec_recibo_notify') ? 'is-invalid' : ''"></b-form-input>
+                                      <div v-if="hasError('prore_fec_recibo_notify')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_fec_recibo_notify.required">Por favor elige una fecha.</div>
                                       </div>
                                     </div>
                                   </b-form-group>
-                                </b-row>
-                                <b-row>
-                                  <b-form-group class="col-md-6" label="Telefono/Celular" label-for="prore_defendant_phone">
+                                  <b-form-group class="col-md-6" label="Colaborador de IPS que recibe notificación*" label-for="prore_fec_recibo_notify">
+                                    <div v-if="proc_id != null && formData.prore_colaborador_ips != null">
+                                      <span class='text'>{{formData.prore_colaborador_ips}}</span>
+                                    </div>
+                                    <div v-if="proc_id == null || formData.prore_colaborador_ips == null">
+                                      <b-form-input type="text" v-model="formData.prore_colaborador_ips" placeholder="Nombre completo colaborador" :class="hasError('prore_colaborador_ips') ? 'is-invalid' : ''"></b-form-input>
+                                      <div v-if="hasError('prore_colaborador_ips')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_colaborador_ips.required">Por favor escriba un nombre.</div>
+                                      </div>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Fecha de Ingreso a Juridico*" label-for="prore_fec_ingreso_jur">
+                                    <div v-if="proc_id != null && formData.prore_fec_ingreso_jur != null">
+                                      <span class='text'>{{formData.prore_fec_ingreso_jur}}</span>
+                                    </div>
+                                    <div v-if="proc_id == null || formData.prore_fec_ingreso_jur == null">
+                                      <b-form-input id="prore_fec_ingreso_jur" v-model="formData.prore_fec_ingreso_jur" type="date" :class="hasError('prore_fec_ingreso_jur') ? 'is-invalid' : ''"></b-form-input>
+                                      <div v-if="hasError('prore_fec_ingreso_jur')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_fec_ingreso_jur.required">Por favor elige una fecha.</div>
+                                      </div>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Fecha de Ingreso a Clínica*" label-for="prore_fec_ingreso_cli">
+                                    <div v-if="proc_id != null && formData.prore_fec_ingreso_cli != null">
+                                      <span class='text'>{{formData.prore_fec_ingreso_cli}}</span>
+                                    </div>
+                                    <div v-if="proc_id == null || formData.prore_fec_ingreso_cli == null">
+                                      <b-form-input id="prore_fec_ingreso_cli" v-model="formData.prore_fec_ingreso_cli" type="date" :class="hasError('prore_fec_ingreso_cli') ? 'is-invalid' : ''"></b-form-input>
+                                      <div v-if="hasError('prore_fec_ingreso_cli')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_fec_ingreso_cli.required">Por favor elige una fecha.</div>
+                                      </div>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Ciudad*" label-for="prore_city_id">
+                                    <div v-if="proc_id != null && formData.prore_city_id != null">
+                                      <span class='text'>{{formData.city_name}}</span>
+                                    </div>
+                                    <div v-if="proc_id == null || formData.prore_city_id == null">
+                                      <b-form-select plain v-model="formData.prore_city_id" :options="citiesOptions" id="select_city" :class="hasError('prore_city_id') ? 'is-invalid' : ''">
+                                        <template v-slot:first>
+                                          <b-form-select-option :value="null" disabled>Seleccione una Ciudad</b-form-select-option>
+                                        </template>
+                                      </b-form-select>
+                                      <div v-if="hasError('prore_city_id')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_city_id.required">Por favor elige una ciudad.</div>
+                                      </div>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Especialidad" label-for="selectuserrole">
+                                    <div v-if="proc_id != null && formData.prore_propse_id != null">
+                                      <span class='text'>{{formData.spe_name}}</span>
+                                    </div>
+                                    <div v-if="proc_id == null || formData.prore_propse_id == null">
+                                      <b-form-select plain v-model="formData.prore_propse_id" :options="especialidadesOptions" id="select_especialidad" :class="hasError('prore_propse_id') ? 'is-invalid' : ''">
+                                        <template v-slot:first>
+                                          <b-form-select-option :value="null" disabled>Seleccione una especialidad</b-form-select-option>
+                                        </template>
+                                      </b-form-select>
+                                      <div v-if="hasError('prore_propse_id')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_propse_id.required">Por favor elige una opción.</div>
+                                      </div>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Asignar Abogada/o" label-for="prore_pro_id">
                                     <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_defendant_phone}}</span>
+                                      <span class='text' @click="enableEditing">{{ formData.pro_name_first }} {{ formData.pro_lastname_first }}</span>
                                     </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_defendant_phone == null">
-                                      <b-form-input v-model="formData.prore_defendant_phone" type="number" placeholder="ej: 3015456561" :class="hasError('prore_defendant_phone') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_defendant_phone')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_defendant_phone.required">Por favor escriba el número de celular del demandado.</div>
+                                    <div v-if="editing || proc_id == null || formData.prore_pro_id == null">
+                                      <b-form-select plain v-model="formData.prore_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole" :class="hasError('prore_pro_id') ? 'is-invalid' : ''">
+                                        <template v-slot:first>
+                                          <b-form-select-option :value="null">Seleccione un abogado</b-form-select-option>
+                                        </template>
+                                      </b-form-select>
+                                      <div v-if="hasError('prore_pro_id')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_pro_id.required">Por favor elige una opción.</div>
                                       </div>
                                     </div>
                                     <div v-if="editing && proc_id != null">
@@ -497,110 +514,147 @@
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
                                     </div>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Correo Electronico" label-for="prore_defendant_email">
+                                  <b-form-group class="col-md-6" label="Estado del proceso" label-for="selectuserrole">
                                     <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_defendant_email}}</span>
+                                      <span class='text' @click="enableEditing">{{ formData.sta_name }} {{ formData.pro_lastname_first }}</span>
                                     </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_defendant_email == null">
-                                      <b-form-input v-model="formData.prore_defendant_email" type="email" placeholder="Correo Electronico" :class="hasError('prore_defendant_email') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_defendant_email')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_defendant_email.required">Por favor escriba el correo electrónico del demandado.</div>
+                                    <div v-if="editing || proc_id == null">
+                                      <b-form-select plain v-model="formData.prore_status_process_id" :options="statusProcessOptions" @search="fetchEstadosProceso" id="selectuserrole" :class="hasError('prore_status_process_id') ? 'is-invalid' : ''">
+                                        <template v-slot:first>
+                                          <b-form-select-option :value="null">Seleccione un estado</b-form-select-option>
+                                        </template>
+                                      </b-form-select>
+                                      <div v-if="hasError('prore_status_process_id')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_status_process_id.required">Por favor elige una clinica.</div>
                                       </div>
                                     </div>
                                     <div v-if="editing && proc_id != null">
                                       <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
                                       <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Riesgo NIIF" label-for="risk_id">
+                                    <div v-if="!editing && proc_id != null">
+                                      <span class='text' @click="enableEditing">{{ formData.risk_name }}</span>
+                                    </div>
+                                    <div v-if="editing || proc_id == null">
+                                      <b-form-select plain v-model="formData.prore_risk_id" :options="risksOptions" @search="fetchRisks" id="risk_id" :class="hasError('prore_risk_id') ? 'is-invalid' : ''">
+                                        <template v-slot:first>
+                                          <b-form-select-option :value="null">Seleccione el riesgo NIIF</b-form-select-option>
+                                        </template>
+                                      </b-form-select>
+                                      <div v-if="hasError('prore_risk_id')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_risk_id.required">Por favor elige una opción.</div>
+                                      </div>
+                                    </div>
+                                    <div v-if="editing && proc_id != null">
+                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
+                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
+                                    </div>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-6" label="Identificador de litigando*" label-for="prore_litigando_id">
+                                    <div v-if="proc_id != null">
+                                      <span class='text' >{{ formData.prore_litigando_id }}</span>
+                                    </div>
+                                    <div v-if="proc_id == null">
+                                      <b-form-input v-model="formData.prore_litigando_id" id="prore_litigando_id" type="number" :class="hasError('prore_litigando_id') ? 'is-invalid' : ''"></b-form-input>
+                                      <div v-if="hasError('prore_litigando_id')" class="invalid-feedback">
+                                        <div class="error" v-if="!$v.formData.prore_litigando_id.required">Por favor escribe el ID de litigando.</div>
+                                      </div>
                                     </div>
                                   </b-form-group>
                                 </b-row>
                               </div>
-                              <h4 class="card-title">LLamado en Garantía:</h4>
+                            </template>
+                          </iq-card>
+                        </b-col>
+                      </b-row>
+                    </form>
+                  </ValidationObserver>
+                </b-col>
+              </b-row>
+            </b-container>
+          </tab-content>
+          <tab-content title="Partes del Proceso">
+            <b-container fluid>
+              <b-row>
+                <b-col md="12">
+                  <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                    <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                      <b-row>
+                        <b-col lg="12">
+                          <iq-card>
+                            <template v-slot:headerTitle>
+                              <h4 class="card-title">Campos marcados con * son obligatorios</h4>
+                            </template>
+                            <template v-slot:body>
+                              <h4 class="card-title">Información de los involucrados:</h4>
                               <div class="new-user-info">
                                 <b-row>
-                                  <b-form-group class="col-md-6" label="Primer Nombre*" label-for="prore_warranty_name_first">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_warranty_name_first}}</span>
-                                    </div>
-                                    <div v-else>
-                                      <b-form-input v-model="formData.prore_warranty_name_first" type="text" placeholder="Primer Nombre" :class="hasError('prore_warranty_name_first') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_warranty_name_first')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_warranty_name_first.required">Por favor escriba el primer nombre del llamado de garantía.</div>
-                                      </div>
-                                    </div>
+                                  <div v-if="implicated !== undefined && implicated !==''" class="col-md-12">
+                                    <b-table
+                                      :items="implicated"
+                                      :fields="fields"
+                                      stacked="md"
+                                      show-empty
+                                      small
+                                    >
+                                      <template #cell(name)="row">
+                                        {{ row.value.first }} {{ row.value.last }}
+                                      </template>
+                                      <template #cell(actions)="row">
+                                        <b-button size="sm" v-b-modal.modal-lg variant="danger" @click="deleteImplicated(row.index)"> Remover </b-button>
+                                      </template>
+                                    </b-table>
+                                    <hr>
+                                  </div>
+                                  <b-form-group class="col-md-3" label="Tipo identificación" label-for="imp_tipo_identificacion">
+                                    <b-form-select plain v-model="nuevoImplicated.imp_tipo_identificacion" :options="ids" id="imp_profile_id">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Nombre" label-for="prore_warranty_name_second">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_warranty_name_second}}</span>
-                                    </div>
-                                    <div v-else>
-                                      <b-form-input v-model="formData.prore_warranty_name_second" type="text" placeholder="Segundo Nombre" :class="hasError('prore_warranty_name_second') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_warranty_name_second')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_warranty_name_second.required">Por favor escriba el primersegundo nombre del llamado de garantía.</div>
-                                      </div>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
+                                  <b-form-group class="col-md-3" label="Identificación" label-for="imp_identificacion">
+                                    <b-form-input v-model="nuevoImplicated.imp_identificacion" type="text" placeholder="Identificación"></b-form-input>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Primer Apellido*" label-for="prore_warranty_lastname_first">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_warranty_lastname_first}}</span>
-                                    </div>
-                                    <div v-else>
-                                      <b-form-input v-model="formData.prore_warranty_lastname_first" type="text" placeholder="Primer Apellido" :class="hasError('prore_warranty_lastname_first') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_warranty_lastname_first')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_warranty_lastname_first.required">Por favor escriba el primer apellido del llamado de garantía.</div>
-                                      </div>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
+                                  <b-form-group class="col-md-3" label="Nombres*" label-for="imp_nombres">
+                                    <b-form-input v-model="nuevoImplicated.imp_nombres" type="text" placeholder="Nombres"></b-form-input>
                                   </b-form-group>
-                                  <b-form-group class="col-md-6" label="Segundo Apellido" label-for="prore_warranty_lastname_second">
-                                    <div v-if="proc_id != null">
-                                      <span class='text'>{{formData.prore_warranty_lastname_second}}</span>
-                                    </div>
-                                    <div v-else>
-                                      <b-form-input v-model="formData.prore_warranty_lastname_second" type="text" placeholder="Segundo Apellido" :class="hasError('prore_warranty_lastname_second') ? 'is-invalid' : ''"></b-form-input>
-                                      <div v-if="hasError('prore_warranty_lastname_second')" class="invalid-feedback">
-                                        <div class="error" v-if="!$v.formData.prore_warranty_lastname_second.required">Por favor escriba el segundo apellido del llamado de garantía.</div>
-                                      </div>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
+                                  <b-form-group class="col-md-3" label="Apellidos*" label-for="imp_apellidos">
+                                    <b-form-input v-model="nuevoImplicated.imp_apellidos" type="text" placeholder="Apellidos"></b-form-input>
                                   </b-form-group>
+                                  <b-form-group class="col-md-3" label="Genero" label-for="imp_genero_id">
+                                    <b-form-select plain v-model="nuevoImplicated.imp_genero_id" :options="generoOptions" id="imp_genero_id">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-3" label="Perfil*" label-for="imp_profile_id">
+                                    <b-form-select plain v-model="nuevoImplicated.imp_profile_id" :options="profilesOptions" id="imp_profile_id">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                  </b-form-group>
+                                    <b-form-group class="col-md-3" label="Edad" label-for="imp_edad">
+                                    <b-form-input v-model="nuevoImplicated.imp_edad" type="number" placeholder="Ej: 18"></b-form-input>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-3" label="Dirección" label-for="imp_direccion">
+                                    <b-form-input v-model="nuevoImplicated.imp_direccion" type="text" placeholder="Ej: calle 36 #101-22"></b-form-input>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-3" label="Teléfonos" label-for="imp_telefonos">
+                                    <b-form-input v-model="nuevoImplicated.imp_telefonos" type="text" placeholder="Ej 3176669800, 3110910092" :class="hasError('imp_telefonos') ? 'is-invalid' : ''"></b-form-input>
+                                  </b-form-group>
+                                  <b-form-group class="col-md-3" label="Correos" label-for="imp_emails">
+                                    <b-form-input v-model="nuevoImplicated.imp_emails" type="text" placeholder="Ej hola@example.com, prueba@example.com" :class="hasError('imp_emails') ? 'is-invalid' : ''"></b-form-input>
+                                  </b-form-group>
+                                  <div class="col-md-1 pt-4">
+                                    <b-button class="mt-3 mr-1" size="sm" variant="primary" @click="agregarImplicated"> Agregar </b-button>
+                                  </div>
                                 </b-row>
-                                <b-row>
-                                  <b-form-group class="col-md-6" label="Telefono/Celular" label-for="prore_warranty_phone">
-                                    <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_warranty_phone}}</span>
-                                    </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_warranty_phone == null">
-                                      <b-form-input v-model="formData.prore_warranty_phone" type="number" placeholder="ej: 3015456561"></b-form-input>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Correo Electronico" label-for="prore_warranty_email">
-                                    <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_warranty_email}}</span>
-                                    </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_warranty_email == null">
-                                      <b-form-input v-model="formData.prore_warranty_email" type="text" placeholder="Correo Electronico"></b-form-input>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
-                                  </b-form-group>
-                                </b-row>
-                              </div>-->
+                              </div>
                             </template>
                           </iq-card>
                         </b-col>
@@ -998,7 +1052,7 @@
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_num_poliza == null">
                                       <b-form-input id="prore_num_poliza" v-model="formData.prore_num_poliza" type="number" placeholder="Número póliza" :class="hasError('prore_num_poliza') ? 'is-invalid' : ''"></b-form-input>
-                                       <div v-if="hasError('prore_num_poliza')" class="invalid-feedback">
+                                        <div v-if="hasError('prore_num_poliza')" class="invalid-feedback">
                                           <div class="error" v-if="!$v.formData.prore_num_poliza.required">
                                             Por favor escriba el número de poliza.
                                           </div>
@@ -1272,29 +1326,6 @@
                                       <span> <a class="pl-2" href="javascript:void(0)" @click="eliminarLink(index)"><i class="ri-close-circle-line text-danger" style="font-size:17px;"></i></a></span>
                                     </div>
                                   </b-form-group>
-                                  <!--<b-form-group class="col-md-6" label="Descripción de la Actuación" label-for="prore_sinies_description">
-                                    <div v-if="!editing && proc_id != null">
-                                      <span class='text' @click="enableEditing">{{formData.prore_sinies_description}}</span>
-                                    </div>
-                                    <div v-if="editing || proc_id == null || formData.prore_sinies_description == null">
-                                      <b-form-textarea v-model="formData.prore_sinies_description" type="text" placeholder="Descripción"></b-form-textarea>
-                                    </div>
-                                    <div v-if="editing && proc_id != null">
-                                      <b-button class="mt-1 mr-1" size="sm" @click="disableEditing"> Cancelar </b-button>
-                                      <b-button class="mt-1 mr-1" size="sm" variant="primary" @click="saveEdit"> Guardar </b-button>
-                                    </div>
-                                  </b-form-group>
-                                  <b-form-group class="col-md-6" label="Seleccione Archivos del Proceso" label-for="prore_sinies_description">
-                                    <div>
-                                      <b-form-file
-                                        v-model="file1"
-                                        :state="Boolean(file1)"
-                                        placeholder="Eliga un archivo"
-                                        drop-placeholder="Drop file here..."
-                                      ></b-form-file>
-                                      <div class="mt-3">Archivo Seleccionado: {{ file1 ? file1.name : '' }}</div>
-                                    </div>
-                                  </b-form-group>-->
                                 </b-row>
                               </div>
                             </template>
@@ -1425,45 +1456,12 @@ export default {
         prore_pro_id: '',
         prore_propse_id: '',
         prore_defendant_clin: '',
-        prore_defendant_identification_type: '',
-        prore_defendant_identification: '',
-        prore_defendant_name_first: '',
-        prore_defendant_name_second: '',
-        prore_defendant_lastname_first: '',
-        prore_defendant_lastname_second: '',
-        prore_defendant_phone: '',
-        prore_defendant_email: '',
-        prore_warranty_name_first: '',
-        prore_warranty_name_second: '',
-        prore_warranty_lastname_first: '',
-        prore_warranty_lastname_second: '',
-        prore_warranty_phone: '',
-        prore_warranty_email: '',
         prore_court_id: '',
         prore_typro_id: '',
         prore_status_process_id: '',
         prore_litigando_id: '',
         prore_ase_id: '',
         prore_city_id: '',
-        prore_pac_name_first: '',
-        prore_pac_name_second: '',
-        prore_pac_lastname_first: '',
-        prore_pac_lastname_second: '',
-        prore_pac_identification_type: '',
-        prore_pac_identification_num: '',
-        prore_pac_age: '',
-        prore_pac_gender: '',
-        prore_pac_day_of_birth: '',
-        prore_pac_email: '',
-        prore_pac_city: '',
-        prore_pac_department: '',
-        prore_pac_city_id: '',
-        prore_pac_department_id: '',
-        prore_pac_neighborhood: '',
-        prore_pac_comuna: '',
-        prore_pac_address: '',
-        prore_pac_cell_phone: '',
-        prore_pac_phone: '',
         prore_objeto_litigio: '',
         prore_proceso_ejecutivo: '',
         prore_ejecutante: '',
@@ -1476,8 +1474,6 @@ export default {
         prore_pago_seguridad_social_sa: '',
         prore_salario_dejados_percibir: '',
         prore_otros_valores: '',
-        prore_pab_name: '',
-        prore_specialty_name: '',
         prore_num_radicado: '',
         prore_pathology: '',
         prore_risk_id: '',
@@ -1512,12 +1508,6 @@ export default {
         prore_costas_procesales_primera_instancia: '',
         prore_costas_procesales_segunda_instancia: '',
         prore_total_costas: '',
-        prore_applicant_name_first: '',
-        prore_applicant_name_secdon: '',
-        prore_applicant_lastname_first: '',
-        prore_applicant_lastname_second: '',
-        prore_applicant_phone: '',
-        prore_applicant_email: '',
         prore_observation: '',
         prore_fec_noti_preju: '',
         prore_fec_audi_conci_preju: '',
@@ -1628,7 +1618,6 @@ export default {
               setTimeout(() => {
                 this.fetchRisks()
                 this.barraCargando()
-                this.obtenerGeneroPaciente()
               }, 500)
             }, 500)
           }, 500)
@@ -1782,15 +1771,6 @@ export default {
         vm.progress_total += 4
         if (vm.progress_total > 99) clearInterval(timer)
       }, 100)
-    },
-    obtenerGeneroPaciente () {
-      if (this.proc_id !== null) {
-        if (this.formData.prore_pac_gender === 1) {
-          this.genderPaciente = 'Femenino'
-        } else {
-          this.genderPaciente = 'Masculino'
-        }
-      }
     },
     agregarLink () {
       if (this.nuevoLink.link_name === '' || this.nuevoLink.link_name === undefined) {

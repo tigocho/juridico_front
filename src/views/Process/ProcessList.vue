@@ -291,22 +291,6 @@
                   <hr>
                   <b>Información del Paciente</b>
                   <b-row class="col-md-12 pt-1">
-                    <b-card-text class="px-2 my-0"><b>Primer Nombre:</b></b-card-text>
-                    <b-card-text class="px-1 my-0">{{ row.item.prore_pac_name_first }}</b-card-text>
-                    <b-card-text class="pl-3 my-0"><b>Segundo Nombre:</b></b-card-text>
-                    <b-card-text class="px-1 my-0">{{ row.item.prore_pac_name_secdon }}</b-card-text>
-                    <b-card-text class="pl-3 my-0"><b>Primer Apellido:</b></b-card-text>
-                    <b-card-text class="px-1 my-0">{{ row.item.prore_pac_lastname_first }}</b-card-text>
-                    <b-card-text class="pl-3 my-0"><b>Segundo Apellido:</b></b-card-text>
-                    <b-card-text class="px-1 my-0">{{ row.item.prore_pac_lastname_second }}</b-card-text>
-                  </b-row>
-                  <b-row class="col-md-12 pt-1">
-                    <b-card-text class="px-2 my-0"><b>Genero: </b>{{ formatearGenero(row.item.prore_pac_gender) }}</b-card-text>
-                    <b-card-text class="pl-3 my-0"><b>Edad: </b>{{ row.item.prore_pac_age }}</b-card-text>
-                    <b-card-text class="pl-3 my-0"><b>Telefono/Celular: </b>{{ row.item.prore_applicant_phone }}</b-card-text>
-                    <b-card-text class="pl-3 my-0"><b>Correo Electrónico: </b>{{ row.item.prore_applicant_email }}</b-card-text>
-                  </b-row>
-                  <b-row class="col-md-12 pt-1">
                     <b-card-text class="px-1 my-0" v-if="row.item.especialidad != null"><b>Especialidad:</b> {{ row.item.especialidad.spa_name }}</b-card-text>
                   </b-row>
                   <hr>
@@ -325,7 +309,6 @@
                       <b-card-text class="px-2 my-0"><b>Teléfonos: </b>{{ implicate.imp_telefonos }}</b-card-text>
                       <b-card-text class="pl-3 my-0"><b>Emails: </b>{{ implicate.imp_emails }}</b-card-text>
                       <b-card-text class="pl-3 my-0"><b>ID Proceso: </b>{{ implicate.imp_process_request_id }}</b-card-text>
-                      <b-card-text class="px-1 my-0" v-if="row.item.editable!=0">{{ row.item.prore_applicant_name_secdon }}</b-card-text>
                     </b-row>
                   </div>
                   <b-row class="col-md-12 pt-1" v-if="row.item.tipo_proceso != null && row.item.juzgado != null && row.item.prore_num_radicado != null">
