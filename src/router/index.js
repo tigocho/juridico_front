@@ -86,6 +86,7 @@ import EditProcess from '../views/Process/EditProcess'
 import ShowProcess from '../views/Process/ShowProcess'
 import ImportProcess from '../views/Process/ImportProcess'
 import ProcessList from '../views/Process/ProcessList'
+import ProcesosArchivados from '../views/Process/ProcessArchived'
 /* Todo */
 import Callback from '../views/AuthPages/Default/Callback'
 /* Plugins Views */
@@ -562,6 +563,12 @@ const processChildRoute = (prop, mode = false) => [
     name: prop + '.list',
     meta: { dark: mode, auth: true, name: 'Porcess List' },
     component: ProcessList
+  },
+  {
+    path: 'process-archived',
+    name: prop + '.archived',
+    meta: { dark: mode, auth: true, name: 'Porcess Archived' },
+    component: ProcesosArchivados
   }
 ]
 

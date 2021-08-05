@@ -60,7 +60,18 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-folder-add-line"
-      }
+      },
+      {
+        "title": "Process Archived",
+        "name": "sidebar.ProcesosArchivados",
+        "is_active": false,
+        "link": {
+          "name" : "process.archived"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-book-mark-line"
+      }      
     ]
   },
   {

@@ -225,10 +225,6 @@
               <template #cell(actions)="row">
                 <b-dropdown variant="primary" text="Acciones">
                   <b-dropdown-item @click="verDetalle(row.item.prore_id)">Abrir</b-dropdown-item>
-                  <b-dropdown-item @click="edit(row.item.prore_id)">Editar</b-dropdown-item>
-                  <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
-                  ">+ Actuación</b-dropdown-item>
-                  <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
                 </b-dropdown>
               </template>
             </b-table>
@@ -398,7 +394,7 @@ export default {
     getProcess () {
       var user = JSON.parse(auth.getUserLogged())
       this.user_id = user.usr_id
-      axios.get('/process').then(response => {
+      axios.get('/process/processArchived').then(response => {
         this.process = response.data.process
         // Set the initial number of items
         this.totalRows = this.process.length
@@ -477,7 +473,7 @@ export default {
       this.botonDescargarInforme = 'Descargando informe...'
       this.estadoBotonDescargarInforme = 'disabled'
       axios({
-        url: '/process/exportReport',
+        url: '/process/exportReportArchived',
         method: 'GET',
         responseType: 'blob'
       }).then((response) => {
