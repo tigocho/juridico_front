@@ -1049,10 +1049,12 @@ export default {
         this.textoEditarProceso = 'Editar Proceso'
         this.estadoBotonActualizarProceso = ''
         if (res.data.status_code === 200) {
-          this.process = res.data.process[0]
-          this.textoEditarProceso = 'Editar Proceso'
-          this.editando = false
-          Vue.swal('Proceso actualizado correctamente')
+          setTimeout(() => {
+            this.process = res.data.process[0]
+            this.textoEditarProceso = 'Editar Proceso'
+            this.editando = false
+            Vue.swal('Proceso actualizado correctamente')
+          }, 1000)
         } else {
           this.textoEditarProceso = 'Guardar Proceso'
           Vue.swal('Error tratando de actualizar proceso. ' + res.data.message)
@@ -1071,11 +1073,13 @@ export default {
     getProcess () {
       if (this.prore_id != null) {
         axios.get('/process/' + this.prore_id).then(res => {
-          this.process = res.data.process[0]
-          this.implicateds = this.process.implicateds
-          this.links = this.process.links
-          this.proceedings = this.process.proceedings
-          this.tableLinkKey++
+          setTimeout(() => {
+            this.process = res.data.process[0]
+            this.implicateds = this.process.implicateds
+            this.links = this.process.links
+            this.proceedings = this.process.proceedings
+            this.tableLinkKey++
+          }, 1000)
         })
           .catch(this.errored = true)
           .finally(setTimeout(() => {
