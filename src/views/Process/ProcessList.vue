@@ -259,6 +259,7 @@ import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
+import moment from 'moment'
 const FileDownload = require('js-file-download')
 
 export default {
@@ -305,7 +306,7 @@ export default {
         { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left' },
         { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left' },
         { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
-        { key: 'status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
+        { key: 'proceedings.0.status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
         { key: 'actions', label: 'Acciones', class: 'text-center' }
       ],
       nuevoLinkProceeding: {
@@ -483,7 +484,8 @@ export default {
       }).then((response) => {
         this.botonDescargarInforme = 'Descargar informe'
         this.estadoBotonDescargarInforme = ''
-        FileDownload(response.data, 'report-process.xlsx')
+        var fechaHora = moment().format('YYYY-MM-DD hh:mm:ss')
+        FileDownload(response.data, 'report-process-activos-' + fechaHora + '.xlsx')
       })
         .catch((err) => {
           this.botonDescargarInforme = 'Descargar informe'

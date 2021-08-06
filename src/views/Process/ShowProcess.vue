@@ -228,8 +228,8 @@
                     <template v-slot:body>
                       <div v-if="!editando">
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.proceedings[0] != null">{{ process.proceedings[0].status_process.sta_name }}</span></b-card-text>
-                          <b-card-text class="my-0 pr-3" v-if="process.proceedings[0] != null && process.proceedings[0].status_process.sta_id ===  15"><b>Fecha terminación: </b><span >{{ process.proceedings[0].proce_fecha_ingreso }}</span></b-card-text>
+                          <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.proceedings != null && process.proceedings[0] != null">{{ process.proceedings[0].status_process.sta_name }}</span></b-card-text>
+                          <b-card-text class="my-0 pr-3" v-if="process.proceedings != null && process.proceedings[0] != null && process.proceedings[0].status_process.sta_id ===  15"><b>Fecha terminación: </b><span >{{ process.proceedings[0].proce_fecha_ingreso }}</span></b-card-text>
 
                           <b-card-text class="pr-3 my-0"><b>ID Litigando: </b><span v-if="process.prore_litigando_id != null">{{ process.prore_litigando_id }} </span><span class="text-danger" v-if="process.prore_litigando_id == null">Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3"><b>Número de Radicado:</b> <span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -816,6 +816,7 @@ export default {
         { text: 'RC.', value: 3 },
         { text: 'NIT', value: 4 }
       ],
+      links: [],
       nuevoImplicated: {
         imp_tipo_identificacion: '',
         imp_identificacion: '',
@@ -987,7 +988,7 @@ export default {
     getTypeNotifications () {
       axios.get('/type_notifications/fetchTypeNotifications').then(response => {
         this.typeNotificationsOptions = response.data.type_notifications
-        if (this.typeNotificationsOptions[0] !== undefined) {
+        if (this.typeNotificationsOptions != null && this.typeNotificationsOptions[0] !== undefined) {
           this.intentos = 0
           this.agenda.agen_type_not_id = this.typeNotificationsOptions[0].value
           this.errores = {}
@@ -1050,10 +1051,15 @@ export default {
         this.estadoBotonActualizarProceso = ''
         if (res.data.status_code === 200) {
           setTimeout(() => {
-            this.process = res.data.process[0]
-            this.textoEditarProceso = 'Editar Proceso'
-            this.editando = false
-            Vue.swal('Proceso actualizado correctamente')
+            if (res.data.process != null) {
+              this.process = res.data.process[0]
+              this.textoEditarProceso = 'Editar Proceso'
+              this.editando = false
+              Vue.swal('Proceso actualizado correctamente')
+            } else {
+              this.editando = false
+              Vue.swal('Ocurrió un errro tratando de obtener el proceso')
+            }
           }, 1000)
         } else {
           this.textoEditarProceso = 'Guardar Proceso'
@@ -1074,11 +1080,15 @@ export default {
       if (this.prore_id != null) {
         axios.get('/process/' + this.prore_id).then(res => {
           setTimeout(() => {
-            this.process = res.data.process[0]
-            this.implicateds = this.process.implicateds
-            this.links = this.process.links
-            this.proceedings = this.process.proceedings
-            this.tableLinkKey++
+            if (res.data.process != null) {
+              this.process = res.data.process[0]
+              this.implicateds = this.process.implicateds
+              this.links = this.process.links
+              this.proceedings = this.process.proceedings
+              this.tableLinkKey++
+            } else {
+              Vue.swal('Ocurrió un error tratando de obtener los datos del proceso')
+            }
           }, 1000)
         })
           .catch(this.errored = true)
