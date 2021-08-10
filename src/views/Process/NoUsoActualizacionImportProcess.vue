@@ -4,13 +4,10 @@
       <b-col lg="12">
         <iq-card>
           <template v-slot:headerTitle>
-            <h4 class="card-title">Crear/Actulizar procesos con Excel </h4>
+            <h4 class="card-title">Importar nuevos procesos</h4>
           </template>
           <template v-slot:body>
             <b-row>
-              <b-col sm="12" md="12" class="my-1">
-                <b-card-text>Si es una actualización, el número de proceso debe de coincidir con la primera columna del Excel</b-card-text>
-              </b-col>
               <b-col sm="6" md="6" class="my-1">
                 <b-form-group ref="addProcess" label-for="exampleFormControlFile1" label="Subir archivo de Excel">
                   <b-form-file id="input-file-import" :class="{ ' is-invalid' : error.message }"
@@ -77,6 +74,43 @@
             </b-row>
           </template>
         </iq-card>
+        <iq-card>
+          <template v-slot:headerTitle>
+            <h4 class="card-title">Actualizar procesos</h4>
+          </template>
+          <template v-slot:body>
+            <b-row>
+              <b-col sm="6" md="6" class="my-1">
+                <b-form-group ref="actProcess" label-for="exampleFormControlFile1" label="Subir archivo de Excel">
+                  <b-form-file id="input-file-import-act" :class="{ ' is-invalid' : error.message }"
+                  name="act_import_file" ref="act_import_file" @change="onFileChangeActualizarProcess"></b-form-file>
+                </b-form-group>
+                <div v-if="errorActProcess.message" class="invalid-feedback">
+                </div>
+                <b-button variant="primary" @click="importarArchivoActualizacionProcesos" :class="estadoBotonImportar" >{{ botonEjecutarImportacion }}</b-button>
+              </b-col>
+            </b-row>
+            <b-row v-if="errorActProcess.errores != null" :key="keyErroresActualizacionProcess">
+              <b-col sm="12" md="12" class="my-1">
+                <p>Se encontraron los siguientes erorres. <b>Nota: Los proceso que no tuvieron error, fueron importados exitosamente.</b></p>
+                 <b-table :items="errorActProcess.errores" :fields="columnasErorres" stacked="md" small>
+                  <template v-slot:cell(attribute)="data">
+                    <span>{{ nombreColumnaProcesos(data.item.attribute) }}</span>
+                  </template>
+                  <template v-slot:cell(row)="data">
+                    <span>{{ data.item.row }}</span>
+                  </template>
+                  <template v-slot:cell(errors)="data">
+                    <span v-for="(error_proceso, index) in data.item.errors" :key="index">{{ error_proceso }}</span>
+                  </template>
+                  <template v-slot:cell(values)="data">
+                    <span>{{ data.item.values[data.item.attribute] }}</span>
+                  </template>
+                </b-table>
+              </b-col>
+            </b-row>
+          </template>
+        </iq-card>
       </b-col>
     </b-row>
   </b-container>
@@ -107,9 +141,12 @@ export default {
       botonEjecutarImportacionImplicated: 'Ejecutar Importación',
       import_file: null,
       implicated_file: null,
+      act_import_file: null,
       error: {},
       errorImplicated: {},
+      errorActProcess: {},
       keyErrores: 1,
+      keyErroresActualizacionProcess: 1,
       columnasErorres: [
         { key: 'attribute', label: 'Columna', class: 'text-left' },
         { key: 'row', label: 'Fila', class: 'text-left' },
@@ -124,6 +161,9 @@ export default {
     },
     onFileChangeImplicated (e) {
       this.implicated_file = e.target.files[0]
+    },
+    onFileChangeActualizarProcess (e) {
+      this.act_import_file = e.target.files[0]
     },
     importarArchivo () {
       if (this.import_file != null) {
@@ -216,6 +256,51 @@ export default {
             this.botonEjecutarImportacionImplicated = 'Ejecutar Importación'
             this.uploading = false
             this.errorImplicated = error.response.data
+          })
+      } else {
+        Vue.swal('Por favor elige un archivo')
+      }
+    },
+    importarArchivoActualizacionProcesos () {
+      if (this.act_import_file != null) {
+        this.estadoBotonImportar = 'disabled'
+        this.botonEjecutarImportacion = 'Importando...'
+        let formData = new FormData()
+        formData.append('act_import_file', this.act_import_file)
+        var user = JSON.parse(auth.getUserLogged())
+        this.user_id = user.usr_id
+        const token = localStorage.getItem('access_token')
+        axios.post('/process/actualizar-procesos', formData, {
+          headers: { 'Authorization': token }
+        })
+          .then(response => {
+            this.errorActProcess = {}
+            if (response.data.status_code === 200) {
+              this.estadoBotonImportar = ''
+              this.botonEjecutarImportacion = 'Ejecutar Importación'
+              Vue.swal('Archivo importado exitosamente.')
+            } else {
+              // estatus code != 200 code here when an upload is not valid
+              this.estadoBotonImportar = ''
+              this.botonEjecutarImportacion = 'Ejecutar Importación'
+              this.uploading = false
+              this.errorActProcess = response.data
+            }
+            this.$refs.act_import_file.reset()
+            this.$refs.act_import_file.value = null
+            this.act_import_file = null
+            this.keyErroresActualizacionProcess++
+          })
+          .catch(error => {
+            // code here when an upload is not valid
+            this.$refs.act_import_file.reset()
+            this.$refs.act_import_file.value = null
+            this.act_import_file = null
+            this.keyErroresActualizacionProcess++
+            this.estadoBotonImportar = ''
+            this.botonEjecutarImportacion = 'Ejecutar Importación'
+            this.uploading = false
+            this.errorActProcess = error.response.data
           })
       } else {
         Vue.swal('Por favor elige un archivo')

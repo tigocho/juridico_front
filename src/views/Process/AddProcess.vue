@@ -36,7 +36,7 @@
                                     <span class='text' >{{formData.prore_num_radicado}}</span>
                                   </div>
                                   <div v-if="proc_id == null || formData.prore_num_radicado == null">
-                                    <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="text" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
+                                    <b-form-input id="prore_num_radicado" v-model="formData.prore_num_radicado" type="number" :class="hasError('prore_num_radicado') ? 'is-invalid' : ''"></b-form-input>
                                     <div v-if="hasError('prore_num_radicado')" class="invalid-feedback">
                                       <div class="error" v-if="!$v.formData.prore_num_radicado.required">Por favor escribe el número de radicado.</div>
                                     </div>
