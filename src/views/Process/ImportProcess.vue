@@ -4,7 +4,7 @@
       <b-col lg="12">
         <iq-card>
           <template v-slot:headerTitle>
-            <h4 class="card-title">Crear/Actulizar procesos con Excel </h4>
+            <h4 class="card-title">Crear/Actualizar procesos con Excel </h4>
           </template>
           <template v-slot:body>
             <b-row>
