@@ -733,7 +733,7 @@ export default {
         })
     },
     agregarProceso () {
-      console.info('YA')
+      this.intentos = 1
     },
     transformarBoolean (edicion) {
       if (edicion === 'true') {
