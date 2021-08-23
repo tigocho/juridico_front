@@ -1,5 +1,23 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+/* User View */
+import Profile from '../views/User/Profile'
+import ProfileEdit from '../views/User/ProfileEdit'
+import AddUser from '../views/User/AddUser'
+import UserList from '../views/User/UserList'
+import ChangePassword from '../views/User/ChangePassword'
+/* Process View */
+import AddProcess from '../views/Process/AddProcess'
+import EditProcess from '../views/Process/EditProcess'
+import ShowProcess from '../views/Process/ShowProcess'
+import ImportProcess from '../views/Process/ImportProcess'
+import ProcessList from '../views/Process/ProcessList'
+import ProcesosArchivados from '../views/Process/ProcessArchived'
+/* Policies View */
+import PoliciesList from '../views/Policies/PoliciesList'
+import AddPolicy from '../views/Policies/AddPolicy'
+import ShowPolicy from '../views/Policies/ShowPolicy'
+import PoliciesArchived from '../views/Policies/PoliciesArchived'
 /* Layouts */
 import Layout1 from '../layouts/Layout1'
 import Default from '../layouts/BlankLayout'
@@ -74,19 +92,6 @@ import FormValidates from '../views/Forms/FormValidates'
 import FormSwitches from '../views/Forms/FormSwitches'
 import FormRadios from '../views/Forms/FormRadios'
 import FormCheckboxes from '../views/Forms/FormCheckboxes'
-/* User View */
-import Profile from '../views/User/Profile'
-import ProfileEdit from '../views/User/ProfileEdit'
-import AddUser from '../views/User/AddUser'
-import UserList from '../views/User/UserList'
-import ChangePassword from '../views/User/ChangePassword'
-/* Process View */
-import AddProcess from '../views/Process/AddProcess'
-import EditProcess from '../views/Process/EditProcess'
-import ShowProcess from '../views/Process/ShowProcess'
-import ImportProcess from '../views/Process/ImportProcess'
-import ProcessList from '../views/Process/ProcessList'
-import ProcesosArchivados from '../views/Process/ProcessArchived'
 /* Todo */
 import Callback from '../views/AuthPages/Default/Callback'
 /* Plugins Views */
@@ -572,6 +577,33 @@ const processChildRoute = (prop, mode = false) => [
   }
 ]
 
+const policiesChildRoute = (prop, mode = false) => [
+  {
+    path: 'policy-add',
+    name: prop + '.add',
+    meta: { dark: mode, auth: true, name: 'Add Policy' },
+    component: AddPolicy
+  },
+  {
+    path: 'policy-show/:pol_id/:editar',
+    name: prop + '.show',
+    meta: { dark: mode, auth: true, name: 'Ver detalle' },
+    component: ShowPolicy
+  },
+  {
+    path: 'policies-list/',
+    name: prop + '.list',
+    meta: { dark: mode, auth: true, name: 'Policies List' },
+    component: PoliciesList
+  },
+  {
+    path: 'policies-archived/',
+    name: prop + '.archived',
+    meta: { dark: mode, auth: true, name: 'Policies Archived' },
+    component: PoliciesArchived
+  }
+]
+
 const pluginsChildRoute = (prop, mode = false) => [
   {
     path: 'datepicker',
@@ -676,6 +708,13 @@ const routes = [
     component: Layout1,
     meta: { auth: true },
     children: processChildRoute('process')
+  },
+  {
+    path: '/policies',
+    name: 'policies',
+    component: Layout1,
+    meta: { auth: true },
+    children: policiesChildRoute('policies')
   },
   {
     path: '/map',

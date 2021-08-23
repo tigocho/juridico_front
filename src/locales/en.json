@@ -26,6 +26,11 @@
     "processAdd": "Agregar Proceso juridico",
     "doctorList": "Todos los Usuarios",
     "processList": "Lista de Procesos",
+
+    "policies": "Polizas",
+    "policiesList": "Lista de pólizas",
+    "policyAdd": "Agregar Poliza",
+
     "components": "Components",
     "uiElements": "UI Elements",
     "color": "Color",

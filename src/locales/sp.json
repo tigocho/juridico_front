@@ -23,6 +23,12 @@
     "agregarProceso": "Agregar Proceso juridico",
     "ListaProcesos": "Lista de Procesos",
     "ProcesosArchivados": "Procesos archivados",
+
+    "polizas": "Polizas",
+    "listaPolizas": "Lista de pólizas",
+    "agregarPoliza": "Agregar Poliza",
+    "polizasArchivadas": "Polizas Archivadas",
+
     "doctor": "Usuarios",
     "doctorProfile": "Médico De Perfil",
     "doctorEdit": "Editar Médico",
