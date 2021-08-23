@@ -671,7 +671,7 @@
                                       <span class='text'>{{formData.prore_total_perjuicios_materiales}}</span>
                                     </div>
                                     <div v-if="editing || proc_id == null || formData.prore_total_perjuicios_materiales == null">
-                                      <b-form-input id="prore_total_perjuicios_materiales" v-model="formData.prore_total_perjuicios_materiales" type="number" disabled="disabled" placeholder="$" :class="hasError('prore_total_perjuicios_materiales') ? 'is-invalid' : ''"></b-form-input>
+                                      <b-form-input id="prore_total_perjuicios_materiales" v-model="formData.prore_total_perjuicios_materiales" type="number" placeholder="$" :class="hasError('prore_total_perjuicios_materiales') ? 'is-invalid' : ''"></b-form-input>
                                       <div v-if="hasError('prore_total_perjuicios_materiales')" class="invalid-feedback">
                                         <div class="error" v-if="!$v.formData.prore_total_perjuicios_materiales.required">Por favor escriba el total de perjuicios materiales.
                                         </div>
