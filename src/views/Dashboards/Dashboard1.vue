@@ -62,8 +62,30 @@
           <template v-slot:headerTitle>
             <h4 class="card-title">Bienvenidos a Juridico App</h4>
           </template>
-          <template v-slot:body>
-          </template>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Información por clínica</h4>
+                </template>
+                <template v-slot:body>
+                  <MorrisChart :element="procesosClinicas.type+1" :type="procesosClinicas.type" :xKeys="procesosClinicas.xKeys" :data="procesosClinicas.bodyData" :colors="procesosClinicas.colors" :yKeys="procesosClinicas.yKeys" :labels="procesosClinicas.labels"/>
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="6">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Ingreso de procesos en los últimos 12 meses</h4>
+                </template>
+                <template v-slot:body>
+                  <MorrisChart :element="ingresoProcesos.type+0" :type="ingresoProcesos.type" :xKeys="ingresoProcesos.xKeys" :data="ingresoProcesos.bodyData" :colors="ingresoProcesos.colors" :yKeys="ingresoProcesos.yKeys" :labels="ingresoProcesos.labels"/>
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
         </iq-card>
       </b-col>
     </b-row>
@@ -71,25 +93,46 @@
 </template>
 <script>
 import { xray } from '../../config/pluginInit'
-import IqCard from '../../components/xray/cards/iq-card'
 import axios from 'axios'
+import Vue from 'vue'
 
 export default {
   name: 'Dashboard1',
-  components: { IqCard },
   mounted () {
     xray.index()
     this.obtenerNumeroUsuarios()
     this.obtenerCantidadProcesosAbiertos()
     this.obtenerCantidadProcesosCerrados()
     this.obtenerCantidadAudienciasPendientes()
+    setTimeout(() => {
+      this.obtenerDatosGraficaProcesosMensual()
+      this.obtenerDatosProcesosPorClinicas()
+    }, 500)
   },
   data () {
     return {
       cantidadUsuarios: '',
       procesosAbiertos: '',
       procesosCerrados: '',
-      audienciasPendientes: ''
+      audienciasPendientes: '',
+      ingresoProcesos: {
+        type: 'bar',
+        bodyData: [],
+        xKeys: 'mes',
+        yKeys: ['total'],
+        colors: [ '#36A2EB' ],
+        labels: [ 'Procesos' ]
+      },
+      procesosClinicas: {
+        type: 'bar',
+        bodyData: [],
+        xKeys: 'clinica',
+        yKeys: ['total'],
+        colors: [ '#36A2EB' ],
+        labels: [ 'Cant. Procesos' ]
+      },
+      intentos: 0,
+      errores: {}
     }
   },
   methods: {
@@ -128,6 +171,62 @@ export default {
           alert('Datos no validos')
         }
       })
+    },
+    obtenerDatosGraficaProcesosMensual () {
+      axios.get('/process/obtener-datos-grafica-procesos-mensual').then(res => {
+        if (res.data.status_code === 200) {
+          this.intentos = 0
+          this.errores = {}
+          let procesosMensual = res.data.process
+          this.ingresoProcesos.bodyData = procesosMensual
+        } else {
+          Vue.swal('Ocurrió un error tratando de obtener los datos')
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.obtenerDatosGraficaProcesosMensual()
+            this.intentos++
+          }
+        })
+    },
+    obtenerDatosProcesosPorClinicas () {
+      axios.get('/process/obtener-datos-procesos-por-clinicas').then(res => {
+        if (res.data.status_code === 200) {
+          this.intentos = 0
+          this.errores = {}
+          let procesosPorClinica = res.data.process
+          this.procesosClinicas.bodyData = procesosPorClinica
+        } else {
+          Vue.swal('Ocurrió un error tratando de obtener los datos')
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.obtenerDatosGraficaProcesosMensual()
+            this.intentos++
+          }
+        })
+    },
+    generateChartData () {
+      let chartData = []
+      let firstDate = new Date()
+      firstDate.setDate(firstDate.getDate() - 1000)
+      let visits = 1200
+      for (let i = 0; i < 500; i++) {
+        let newDate = new Date(firstDate)
+        newDate.setDate(newDate.getDate() + i)
+
+        visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10)
+
+        chartData.push({
+          date: newDate,
+          visits: visits
+        })
+      }
+      return chartData
     }
   }
 }
