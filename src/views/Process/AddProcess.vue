@@ -31,6 +31,16 @@
                             <template v-slot:body>
                               <div class="new-process">
                               <b-row>
+                                <b-form-group class="col-md-6" label="Actuación en el proceso*" label-for="prore_profile_id">
+                                  <b-form-select plain v-model="formData.prore_profile_id" :options="profileProcessOptions" @search="profileProcessOptions" id="prore_profile_id" :class="hasError('prore_profile_id') ? 'is-invalid' : ''">
+                                    <template v-slot:first>
+                                      <b-form-select-option :value="null" disabled>Seleccione un perfil</b-form-select-option>
+                                    </template>
+                                  </b-form-select>
+                                  <div v-if="hasError('prore_profile_id')" class="invalid-feedback">
+                                    <div class="error" v-if="!$v.formData.prore_profile_id.required">Por favor elige una opción.</div>
+                                  </div>
+                                </b-form-group>
                                 <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
                                   <div v-if="proc_id != null && formData.prore_num_radicado != null">
                                     <span class='text' >{{formData.prore_num_radicado}}</span>
@@ -1213,6 +1223,7 @@ export default {
       ],
       validationRules: [
         {
+          prore_profile_id: { required },
           prore_num_radicado: { required },
           prore_fec_ingreso_jur: { required },
           prore_defendant_clin: { required },
@@ -1228,6 +1239,7 @@ export default {
         }
       ],
       formData: {
+        prore_profile_id: '',
         prore_fec_ingreso: '',
         prore_responsable: '',
         prore_colaborador_ips: '',
@@ -1389,7 +1401,10 @@ export default {
           value: 'No aplica'
         }
       ],
-      users: []
+      users: [],
+      profileProcessOptions: [],
+      intentos: 0,
+      errores: ''
     }
   },
   computed: {
@@ -1407,6 +1422,7 @@ export default {
   methods: {
     ejecutarConsultas () {
       setTimeout(() => {
+        this.fetchProfileProcessOptions()
         this.fetchOptionsClinicas()
         this.fetchOptionsAbogados()
         setTimeout(() => {
@@ -1428,6 +1444,19 @@ export default {
           }, 500)
         }, 500)
       }, 500)
+    },
+    fetchProfileProcessOptions () {
+      axios.get('/profiles/fetch-profiles-process-requests').then(response => {
+        this.profileProcessOptions = response.data.profiles
+        this.intentos = 0
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos !== 2) {
+            this.fetchProfileProcessOptions()
+          }
+          this.intentos++
+        })
     },
     fetchEstadosProceso () {
       axios.get('/statusProcess/fetch').then(response => {
