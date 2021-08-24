@@ -219,18 +219,23 @@
                 <tab-content-item :active="true" id="personal-information" >
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title">Información del proceso</h4>
+                      <h4 class="card-title">Información del proceso
+                        <span v-if="process.profile != null">
+                          <span v-if="process.prore_profile_id == 7" class='text-success'>({{ process.profile.prof_name }})</span>
+                          <span v-else-if="process.prore_profile_id == 8" class='text-danger'>({{ process.profile.prof_name }})</span>
+                          <span v-else class='text-warning'>({{ process.profile.prof_name }})</span>
+                        </span>
+                      </h4>
                     </template>
                     <template v-slot:headerAction>
                       <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
-                      <b-button variant="primary" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
+                      <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
                     </template>
                     <template v-slot:body>
                       <div v-if="!editando">
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.proceedings != null && process.proceedings[0] != null">{{ process.proceedings[0].status_process.sta_name }}</span></b-card-text>
+                          <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.proceedings != null && process.proceedings[0] != null">{{ process.proceedings[0].status_process.estado_proceso }}</span></b-card-text>
                           <b-card-text class="my-0 pr-3" v-if="process.proceedings != null && process.proceedings[0] != null && process.proceedings[0].status_process.sta_id ===  16"><b>Fecha terminación: </b><span >{{ process.proceedings[0].proce_fecha_ingreso }}</span></b-card-text>
-
                           <b-card-text class="pr-3 my-0"><b>ID Litigando: </b><span v-if="process.prore_litigando_id != null">{{ process.prore_litigando_id }} </span><span class="text-danger" v-if="process.prore_litigando_id == null">Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3"><b>Número de Radicado:</b> <span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-row>
@@ -287,6 +292,13 @@
                       </div>
                       <div v-else>
                         <b-row>
+                          <b-form-group class="col-md-6" label="Actuación en el proceso*" label-for="prore_profile_id">
+                            <b-form-select plain v-model="process.prore_profile_id" :options="profileProcessOptions" @search="profileProcessOptions" id="prore_profile_id">
+                              <template v-slot:first>
+                                <b-form-select-option :value="null" disabled>Seleccione un perfil</b-form-select-option>
+                              </template>
+                            </b-form-select>
+                          </b-form-group>
                           <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
                             <div>
                               <b-form-input id="prore_num_radicado" v-model="process.prore_num_radicado" type="text"></b-form-input>
@@ -875,7 +887,8 @@ export default {
         telefono: '',
         email: ''
       },
-      errores: {}
+      errores: {},
+      profileProcessOptions: []
     }
   },
   methods: {
@@ -886,6 +899,19 @@ export default {
         vm.progress_total += 4
         if (vm.progress_total > 99) clearInterval(timer)
       }, 100)
+    },
+    fetchProfileProcessOptions () {
+      axios.get('/profiles/fetch-profiles-process-requests').then(response => {
+        this.profileProcessOptions = response.data.profiles
+        this.intentos = 0
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos !== 2) {
+            this.fetchProfileProcessOptions()
+          }
+          this.intentos++
+        })
     },
     fetchCity () {
       axios.get('/cities/fetch').then(response => {
@@ -1037,6 +1063,9 @@ export default {
         this.estadoBotonActualizarProceso = 'disabled'
         this.textoEditarProceso = 'Actualizando Proceso...'
       } else {
+        if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
+          this.fetchProfileProcessOptions()
+        }
         this.textoEditarProceso = 'Actualizar Proceso'
         this.editando = true
       }
@@ -1614,6 +1643,7 @@ export default {
     },
     transformarBoolean (edicion) {
       if (edicion === 'true') {
+        this.fetchProfileProcessOptions()
         this.editando = true
       } else {
         this.editando = false
