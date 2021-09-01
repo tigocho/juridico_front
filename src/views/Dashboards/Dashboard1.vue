@@ -63,18 +63,6 @@
             <h4 class="card-title">Bienvenidos a Juridico App</h4>
           </template>
           <b-row>
-            <b-col lg="12">
-              <iq-card>
-                <template v-slot:headerTitle>
-                  <h4>Información por clínica</h4>
-                </template>
-                <template v-slot:body>
-                  <MorrisChart :element="procesosClinicas.type+1" :type="procesosClinicas.type" :xKeys="procesosClinicas.xKeys" :data="procesosClinicas.bodyData" :colors="procesosClinicas.colors" :yKeys="procesosClinicas.yKeys" :labels="procesosClinicas.labels"/>
-                </template>
-              </iq-card>
-            </b-col>
-          </b-row>
-          <b-row>
             <b-col lg="6">
               <iq-card>
                 <template v-slot:headerTitle>
@@ -82,6 +70,61 @@
                 </template>
                 <template v-slot:body>
                   <MorrisChart :element="ingresoProcesos.type+0" :type="ingresoProcesos.type" :xKeys="ingresoProcesos.xKeys" :data="ingresoProcesos.bodyData" :colors="ingresoProcesos.colors" :yKeys="ingresoProcesos.yKeys" :labels="ingresoProcesos.labels"/>
+                </template>
+              </iq-card>
+            </b-col>
+            <b-col lg="6">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Procesos activos por clínica</h4>
+                </template>
+                <template v-slot:body>
+                  <GraficaProcesosPorClinica ref='chartClinicas' element="patient"/>
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Nivel de éxito</h4>
+                </template>
+                <template v-slot:body>
+                  <b-table
+                    :items="procesosNivelExito"
+                    :fields="fields"
+                    stacked="md"
+                    show-empty
+                    small
+                    style='overflow: auto'
+                  >
+                    <template #cell(name)="row">
+                      {{ row.value.first }} {{ row.value.last }}
+                    </template>
+                  </b-table>
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="6">
+              <iq-card :key="nivelExitoPretensionesKey">
+                <template v-slot:headerTitle>
+                  <h4>Nivel de éxito (sobre pretensiones)</h4>
+                </template>
+                <template v-slot:body v-if="procesosNivelExito.length > 0">
+                  <AmChart element='exito-pretensiones' :height="heightGraficas" :type="GraficaExitoPretensiones.type" :option="GraficaExitoPretensiones.bodyData"/>
+                </template>
+              </iq-card>
+            </b-col>
+            <b-col lg="6">
+              <iq-card :key="nivelExitoEstimacionesKey">
+                <template v-slot:headerTitle>
+                  <h4>Nivel de éxito (sobre estimaciones)</h4>
+                </template>
+                <template v-slot:body v-if="procesosNivelExito.length > 0">
+                  <AmChart element='exito-estimaciones' :height="heightGraficas" :type="GraficaExitoEstimaciones.type" :option="GraficaExitoEstimaciones.bodyData"/>
                 </template>
               </iq-card>
             </b-col>
@@ -100,21 +143,25 @@ export default {
   name: 'Dashboard1',
   mounted () {
     xray.index()
+    this.obtenerDatosGraficaProcesosMensual()
     this.obtenerNumeroUsuarios()
-    this.obtenerCantidadProcesosAbiertos()
-    this.obtenerCantidadProcesosCerrados()
-    this.obtenerCantidadAudienciasPendientes()
     setTimeout(() => {
-      this.obtenerDatosGraficaProcesosMensual()
-      this.obtenerDatosProcesosPorClinicas()
+      this.obtenerDatosNivelExito()
+      this.obtenerCantidadProcesosAbiertos()
+      this.obtenerCantidadProcesosCerrados()
+      this.obtenerCantidadAudienciasPendientes()
     }, 500)
   },
-  data () {
+  data: function () {
     return {
       cantidadUsuarios: '',
       procesosAbiertos: '',
       procesosCerrados: '',
       audienciasPendientes: '',
+      clinicasInforme: [],
+      totalesInformePorClinicas: [],
+      categoriasClinicas: [],
+      heightGraficas: 250,
       ingresoProcesos: {
         type: 'bar',
         bodyData: [],
@@ -123,16 +170,109 @@ export default {
         colors: [ '#36A2EB' ],
         labels: [ 'Procesos' ]
       },
-      procesosClinicas: {
-        type: 'bar',
-        bodyData: [],
-        xKeys: 'clinica',
-        yKeys: ['total'],
-        colors: [ '#36A2EB' ],
-        labels: [ 'Cant. Procesos' ]
-      },
       intentos: 0,
-      errores: {}
+      errores: {},
+      nivelExitoPretensionesKey: 0,
+      nivelExitoEstimacionesKey: 0,
+      procesosNivelExito: [],
+      fields: [
+        { key: 'prore_sentencia_final', label: 'Etiqueta', class: 'text-center' },
+        {
+          key: 'total_pagado_clinica',
+          label: 'Total pagado clínica',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        { key: 'afectacion_total', label: 'Total pagado aseguradora(s)', class: 'text-left' },
+        {
+          key: 'total_pagado_tercero',
+          label: 'Total pagado por tecero',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'total_sentencia',
+          label: 'Total sentencia',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'cuantia_pretensiones',
+          label: 'Cuantía de las pretensiones',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'estimacion_pago_perju_materiales',
+          label: 'Suma de estimación perjuicios Mat.',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'estimacion_pago_perju_inmateriales',
+          label: 'Suma de estimación perjuicios Inmat.',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'total_estimaciones',
+          label: 'Total estimaciones',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        }
+      ],
+      GraficaExitoPretensiones: {
+        title: 'Nivel de éxito sobre pretensiones',
+        type: 'pie',
+        bodyData: {
+          colors: ['#47A9A1', '#e64141'],
+          value: ['porcentajes'],
+          category: ['resultado'],
+          data: [
+            {
+              resultado: 'A Favor',
+              porcentajes: 0
+            },
+            {
+              resultado: 'En Contra',
+              porcentajes: 0
+            }
+          ]
+        }
+      },
+      GraficaExitoEstimaciones: {
+        title: 'Nivel de éxito sobre estimaciones',
+        type: 'pie',
+        bodyData: {
+          colors: ['#47A9A1', '#e64141'],
+          value: ['porcentajes'],
+          category: ['resultado'],
+          data: [
+            {
+              resultado: 'A Favor',
+              porcentajes: 0
+            },
+            {
+              resultado: 'En Contra',
+              porcentajes: 0
+            }
+          ]
+        }
+      }
     }
   },
   methods: {
@@ -191,13 +331,18 @@ export default {
           }
         })
     },
-    obtenerDatosProcesosPorClinicas () {
-      axios.get('/process/obtener-datos-procesos-por-clinicas').then(res => {
+    obtenerDatosNivelExito () {
+      axios.get('/process/obtener-datos-nivel-exito').then(res => {
         if (res.data.status_code === 200) {
           this.intentos = 0
           this.errores = {}
-          let procesosPorClinica = res.data.process
-          this.procesosClinicas.bodyData = procesosPorClinica
+          this.procesosNivelExito = res.data.process
+          this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesAFavor()
+          this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = this.nivelExitoformulaPretensionesEnContra()
+          this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesAFavor()
+          this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
+          this.nivelExitoPretensionesKey++
+          this.nivelExitoEstimacionesKey++
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
         }
@@ -205,28 +350,38 @@ export default {
         .catch((err) => {
           this.errores = err
           if (this.intentos < 2) {
-            this.obtenerDatosGraficaProcesosMensual()
+            this.obtenerDatosNivelExito()
             this.intentos++
           }
         })
     },
-    generateChartData () {
-      let chartData = []
-      let firstDate = new Date()
-      firstDate.setDate(firstDate.getDate() - 1000)
-      let visits = 1200
-      for (let i = 0; i < 500; i++) {
-        let newDate = new Date(firstDate)
-        newDate.setDate(newDate.getDate() + i)
-
-        visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10)
-
-        chartData.push({
-          date: newDate,
-          visits: visits
-        })
+    formatPrice (value) {
+      let val = (value / 1).toFixed(0).replace('.', ',')
+      return '$' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+    },
+    nivelExitoformulaPretensionesAFavor () {
+      if (this.procesosNivelExito != null) {
+        let cuantiaPretensionesTotales = this.procesosNivelExito[2].cuantia_pretensiones
+        let totalPagadoClinica = this.procesosNivelExito[1].total_pagado_clinica
+        return (parseInt(cuantiaPretensionesTotales - totalPagadoClinica) / parseInt(cuantiaPretensionesTotales) * 100).toFixed(1)
+      } else {
+        return 0
       }
-      return chartData
+    },
+    nivelExitoformulaPretensionesEnContra () {
+      return parseFloat(100 - this.nivelExitoformulaPretensionesAFavor()).toFixed(1)
+    },
+    nivelExitoformulaEstimacionesAFavor () {
+      if (this.procesosNivelExito != null) {
+        let totalEstimaciones = this.procesosNivelExito[2].total_estimaciones
+        let totalPagadoClinica = this.procesosNivelExito[1].total_pagado_clinica
+        return (parseInt(totalEstimaciones - totalPagadoClinica) / parseInt(totalEstimaciones) * 100).toFixed(1)
+      } else {
+        return 0
+      }
+    },
+    nivelExitoformulaEstimacionesEnContra () {
+      return parseFloat(100 - this.nivelExitoformulaEstimacionesAFavor()).toFixed(1)
     }
   }
 }

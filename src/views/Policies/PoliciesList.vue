@@ -268,6 +268,7 @@ export default {
       axios.get('/policy/obtener-polizas').then(response => {
         this.policies = response.data.policies
         if (this.policies[0] !== undefined) {
+          this.totalRows = this.policies.length
           this.intentos = 0
           this.errores = {}
         }
