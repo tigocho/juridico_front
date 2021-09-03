@@ -773,21 +773,75 @@
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="poliza">
-                  <iq-card>
+                  <iq-card :key="polizasKey">
                     <template v-slot:headerTitle>
                       <h4 class="card-title">Datos de la poliza</h4>
                     </template>
+                    <template v-slot:headerAction>
+                      <b-button variant="primary" :disabled="process.prore_estado == 1" @click="asociarPoliza">Asociar Poliza</b-button>
+                    </template>
                     <template v-slot:body>
                       <b-row class="col-md-12 pt-1">
-                        <b-card-text class="my-0"><b>Aseguradora :</b><span v-if="process.aseguradora != null">{{ process.aseguradora.ase_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Monto Total Asegurado: </b> <span v-if="process.prore_val_total_asegurado != null">{{ process.prore_val_total_asegurado }} </span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3"><b>Si La Poliza Fue Afectada Por Que Valor:</b> <span v-if="process.prore_val_afectado_poliza != null">{{ process.prore_val_afectado_poliza }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                      </b-row>
-                      <b-row class="col-md-12 pt-1">
-                        <b-card-text class="my-0"><b>Deducible :</b><span v-if="process.prore_deducible != null">{{ process.prore_deducible }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3 my-0"><b>Cobertura Actual Poliza: </b> <span v-if="process.prore_val_cobertura_poliza != null">{{ process.prore_val_cobertura_poliza }} </span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3"><b>Provisiones Constituidas:</b> <span v-if="process.prore_val_provisiones_constituidas != null">{{ process.prore_val_provisiones_constituidas }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                        <b-card-text class="pl-3"><b>Prescritas:</b> <span v-if="process.prore_prescritas != 1">No</span><span v-else>Si</span></b-card-text>
+                        <b-modal
+                          id="modal-asociar-poliza"
+                          ref="modal"
+                          title="Asociar Poliza"
+                          hide-footer
+                        >
+                          <form ref="form">
+                            <b-form-group
+                              label="Aseguradora"
+                              label-for="aseguradora"
+                            >
+                              <v-select
+                                @input="buscarPolizas($event)"
+                                :options="aseguradorasOptions"
+                                :reduce="label => label.code"
+                                label="label" id="aseguradora_relacionar"
+                              >
+                                <span slot="no-options">No hay aseguradoras.</span>
+                              </v-select>
+                            </b-form-group>
+                            <b-form-group
+                              label="Poliza"
+                              label-for="poliza_relacion"
+                            >
+                              <v-select
+                                v-model="poliza_relacion"
+                                :options="polizasOptions"
+                                :reduce="label => label.code"
+                                label="label" id="poliza_relacion"
+                              >
+                                <span slot="no-options">No hay polizas.</span>
+                              </v-select>
+                            </b-form-group>
+                            <div class="text-right pt-1">
+                              <b-button class="sm-3 mr-1" variant="secondary" @click="$bvModal.hide('modal-asociar-poliza')">Cancelar</b-button>
+                              <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="relacionarPoliza">{{ textoGuardarModal }}</b-button>
+                            </div>
+                          </form>
+                        </b-modal>
+                        <ul class="iq-timeline">
+                          <li class="col-md-12" v-for="(poliza, index) in polizas" :key="index">
+                            <div class="timeline-dots border-primary border-primary"></div>
+                            <h6 class="float-left mb-1 font-weight-bolder">{{ poliza.pol_numero }} - {{ poliza.aseguradora.ase_name }}<button class="btn btn-link pt-0 disabled" @click="editPolizaAsociada(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deletePolizaAsociada(poliza.pol_id)" class="btn btn-link pt-0 px-0 text-danger disabled"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
+                            <b-row class="col-md-12 pt-1">
+                              <b-card-text class="pr-3 my-0"><b>Tomador: </b>{{ poliza.clinica.cli_name }}</b-card-text>
+                              <b-card-text class="pr-3 my-0"><b>Fecha inicio vigencia: </b><span v-if="poliza.pol_fecha_inicio != null">{{ poliza.pol_fecha_inicio }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                              <b-card-text class="pr-3 my-0"><b>Fecha fin vigencia: </b><span v-if="poliza.pol_fecha_fin != null">{{ poliza.pol_fecha_fin }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            </b-row>
+                            <b-row class="col-md-12 pt-1">
+                              <b-card-text class="pr-3 my-0"><b>Total asegurado: </b><span v-if="poliza.pol_total_asegurado != null">{{ formatPrice(poliza.pol_total_asegurado) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                              <b-card-text class="pr-3 my-0"><b>Cobertura actual: </b><span v-if="poliza.pol_cobertura_actual != null">{{ formatPrice(poliza.pol_cobertura_actual) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            </b-row>
+                            <b-row class="col-md-12 pt-1">
+                              <b-card-text class="my-0 pr-3"><b>Deducible: </b><span v-if="poliza.pol_deducible != null">{{ poliza.pol_deducible }}%</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                              <b-card-text class="my-0 pr-3"><b>Deducible Mínimo: </b><span v-if="poliza.pol_deducible_minimo != null">{{ formatPrice(poliza.pol_deducible_minimo) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                              <b-card-text class="pr-3 my-0"><b>Provisiones Constituidas:</b> <span v-if="poliza.pol_provisiones != null">{{ formatPrice(poliza.pol_provisiones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                              <b-card-text class="pr-3 my-0"><b>Estado:</b> <span v-if="poliza.pol_estado">Poliza Activa</span><span class="text-danger" v-else>Poliza Inactiva</span></b-card-text>
+                            </b-row>
+                          </li>
+                        </ul>
                       </b-row>
                     </template>
                   </iq-card>
@@ -1048,6 +1102,14 @@ export default {
         'code': 0,
         'label': 'No hay ningún dato'
       }],
+      aseguradorasOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }],
+      polizasOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }],
       nuevo_court: {
         name: '',
         telefono: '',
@@ -1057,7 +1119,10 @@ export default {
       profileProcessOptions: [{
         'code': 0,
         'label': 'No hay ningún dato'
-      }]
+      }],
+      polizasKey: 0,
+      poliza_relacion: '',
+      polizas: []
     }
   },
   methods: {
@@ -1167,7 +1232,7 @@ export default {
         })
     },
     fetchAseguradoras () {
-      axios.get('/aseguradoras/fetch').then(response => {
+      axios.get('/aseguradoras/fetch-aseguradoras').then(response => {
         this.aseguradorasOptions = response.data.aseguradoras
         this.intentos = 0
         this.errores = {}
@@ -1288,6 +1353,7 @@ export default {
               this.links = this.process.links
               this.proceedings = this.process.proceedings
               this.tableLinkKey++
+              this.polizas = this.process.polizas
             } else {
               Vue.swal('Ocurrió un error tratando de obtener los datos del proceso')
             }
@@ -1805,6 +1871,74 @@ export default {
           Vue.swal('Datos no validos')
         }
       })
+    },
+    buscarPolizas (aseguradoraId) {
+      axios.get('/policy/obtener-polizas-aseguradora/' + aseguradoraId).then(response => {
+        this.polizasOptions = response.data.polizas
+        this.intentos = 0
+        this.errores = {}
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos !== 2) {
+            this.buscarPolizas(aseguradoraId)
+          }
+          this.intentos++
+        })
+    },
+    asociarPoliza () {
+      if (this.aseguradorasOptions.length < 2) {
+        this.fetchAseguradoras()
+      }
+      this.$bvModal.show('modal-asociar-poliza')
+    },
+    relacionarPoliza () {
+      if (this.poliza_relacion === '' || this.poliza_relacion === null) {
+        Vue.swal('Por favor complete los datos.')
+      } else {
+        this.botonGuardarModal = 'disabled'
+        this.textoGuardarModal = 'Guardando'
+        this.guardarAsociacionPoliza()
+      }
+    },
+    guardarAsociacionPoliza () {
+      const toke = localStorage.getItem('access_token')
+      axios.post('/process/asociar-poliza/' + this.prore_id + '/' + this.poliza_relacion + '/' + this.obtenerIdUsuario(), { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+        // Hide the modal manually
+        if (res.data.status_code === 200) {
+          this.$bvModal.hide('modal-asociar-poliza')
+          this.botonGuardarModal = ''
+          this.textoGuardarModal = 'Guardar'
+          this.poliza_relacion = ''
+          Vue.swal(res.data.message)
+          this.obtenerPolizas()
+        } else {
+          this.botonGuardarModal = ''
+          this.textoGuardarModal = 'Guardar'
+          Vue.swal(res.data.message)
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          this.botonGuardarModal = ''
+          this.textoGuardarModal = 'Guardar'
+          Vue.swal('Ups, sucedió un error')
+        })
+    },
+    obtenerPolizas () {
+      axios.get('/process/obtener-polizas/' + this.prore_id).then(response => {
+        this.polizas = response.data.polizas
+        this.intentos = 0
+        this.errores = {}
+        this.polizasKey++
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos !== 2) {
+            this.obtenerPolizas(this.prore_i)
+          }
+          this.intentos++
+        })
     },
     transformarBoolean (edicion) {
       if (edicion === 'true') {
