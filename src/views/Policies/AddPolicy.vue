@@ -122,7 +122,6 @@
       </b-col>
     </b-row>
   </b-container>
-
 </template>
 <script>
 import { xray } from '../../config/pluginInit'

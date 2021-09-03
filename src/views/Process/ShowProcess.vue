@@ -22,20 +22,36 @@
               <b-row>
                 <b-col md="4">
                   <b-form-group label="Asignar Abogada/o*" label-for="agen_pro_id">
-                    <b-form-select plain v-model="proceeding.proce_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
+                    <!-- <b-form-select plain v-model="proceeding.proce_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
                       <template v-slot:first>
                         <b-form-select-option :value="null" disabled>Seleccione abogado</b-form-select-option>
                       </template>
-                    </b-form-select>
+                    </b-form-select> -->
+                    <v-select
+                      v-model="proceeding.proce_pro_id"
+                     :options="abogadoOptions"
+                     :reduce="label => label.code"
+                     label="label" id="proce_pro_id"
+                     >
+                      <span slot="no-options">No hay abogados.</span>
+                    </v-select>
                   </b-form-group>
                 </b-col>
                 <b-col md="4">
                   <b-form-group label="Tipo de actuación*" label-for="proce_sta_id">
-                    <b-form-select plain v-model="proceeding.proce_sta_id" :options="statusProcessOptions" id="proce_sta_id">
+                    <!-- <b-form-select plain v-model="proceeding.proce_sta_id" :options="statusProcessOptions" id="proce_sta_id">
                       <template v-slot:first>
                         <b-form-select-option :value="null" disabled>Seleccione un estado</b-form-select-option>
                       </template>
-                    </b-form-select>
+                    </b-form-select> -->
+                    <v-select
+                      v-model="proceeding.proce_sta_id"
+                     :options="statusProcessOptions"
+                     :reduce="label => label.code"
+                     label="label" id="proce_sta_id"
+                     >
+                      <span slot="no-options">No hay estados.</span>
+                    </v-select>
                   </b-form-group>
                 </b-col>
                 <b-col md="4">
@@ -45,11 +61,6 @@
                 </b-col>
               </b-row>
               <b-row>
-                <b-col md="4">
-                  <b-form-group label="Fecha de actualización*" label-for="proce_fecha_actualizacion">
-                    <b-form-input id="proce_fecha_actualizacion" v-model="proceeding.proce_fecha_actualizacion" type="date"></b-form-input>
-                  </b-form-group>
-                </b-col>
                 <b-col md="4">
                   <b-form-group label="Fecha de siguiente audiencia" label-for="proce_fecha_siguiente_audiencia">
                     <b-form-input id="proce_fecha_siguiente_audiencia" v-model="proceeding.proce_fecha_siguiente_audiencia" type="date"></b-form-input>
@@ -168,11 +179,14 @@
                 </b-col>
                 <b-col md="4">
                   <b-form-group label="Perfil*" label-for="imp_profile_id">
-                    <b-form-select plain v-model="nuevoImplicated.imp_profile_id" :options="profilesOptions" id="imp_profile_id">
+                    <!-- <b-form-select plain v-model="nuevoImplicated.imp_profile_id" :options="profilesOptions" id="imp_profile_id">
                       <template v-slot:first>
                         <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
                       </template>
-                    </b-form-select>
+                    </b-form-select> -->
+                    <v-select v-model="nuevoImplicated.imp_profile_id" :options="profilesOptions" :reduce="label => label.code" label="label" id="imp_profile_id">
+                      <span slot="no-options">No hay perfiles.</span>
+                    </v-select>
                   </b-form-group>
                 </b-col>
                 <b-col md="3">
@@ -238,6 +252,7 @@
                           <b-card-text class="my-0 pr-3" v-if="process.proceedings != null && process.proceedings[0] != null && process.proceedings[0].status_process.sta_id ===  16"><b>Fecha terminación: </b><span >{{ process.proceedings[0].proce_fecha_ingreso }}</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>ID Litigando: </b><span v-if="process.prore_litigando_id != null">{{ process.prore_litigando_id }} </span><span class="text-danger" v-if="process.prore_litigando_id == null">Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3"><b>Número de Radicado:</b> <span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3"><b>Riesgo NIIF:</b> <span v-if="process.prore_risk_id != null">{{ process.riesgo.risk_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-row>
                         <b>Abogado Líder:</b>
                         <b-row class="col-md-12 pt-1" v-if="process.professional != null">
@@ -279,245 +294,300 @@
                         <hr>
                         <b style="text-decoration:underline;">Conclusiones:</b>
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ process.prore_sentencia_final }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ process.prore_val_sentencia_final }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Discriminar Valor De La Condena:</b> <span v-if="process.prore_discriminar_val_condena != null">{{ process.prore_discriminar_val_condena }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ formatPrice(process.prore_sentencia_final) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ formatPrice(process.prore_val_sentencia_final) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Discriminar Valor De La Condena:</b> <span v-if="process.prore_discriminar_val_condena != null">{{ formatPrice(process.prore_discriminar_val_condena) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="pr-3 my-0"><b>Costas De La Sentencia: </b><span v-if="process.prore_costas_sentencia != null">{{ process.prore_costas_sentencia }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Costas Procesales Primera Instancia: </b><span v-if="process.prore_costas_procesales_primera_instancia != null">{{ process.prore_costas_procesales_primera_instancia }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Costas Procesales Segunda Instancia:</b> <span v-if="process.prore_costas_procesales_segunda_instancia != null">{{ process.prore_costas_procesales_segunda_instancia }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Total Costas: </b><span v-if="process.prore_total_costas != null">{{ process.prore_total_costas }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Costas De La Sentencia: </b><span v-if="process.prore_costas_sentencia != null">{{ formatPrice(process.prore_costas_sentencia) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Costas Procesales Primera Instancia: </b><span v-if="process.prore_costas_procesales_primera_instancia != null">{{ formatPrice(process.prore_costas_procesales_primera_instancia) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Costas Procesales Segunda Instancia:</b> <span v-if="process.prore_costas_procesales_segunda_instancia != null">{{ formatPrice(process.prore_costas_procesales_segunda_instancia) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Total Costas: </b><span v-if="process.prore_total_costas != null">{{ formatPrice(process.prore_total_costas) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-row>
                       </div>
                       <div v-else>
-                        <b-row>
-                          <b-form-group class="col-md-6" label="Actuación en el proceso*" label-for="prore_profile_id">
-                            <b-form-select plain v-model="process.prore_profile_id" :options="profileProcessOptions" @search="profileProcessOptions" id="prore_profile_id">
-                              <template v-slot:first>
-                                <b-form-select-option :value="null" disabled>Seleccione un perfil</b-form-select-option>
-                              </template>
-                            </b-form-select>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
-                            <div>
-                              <b-form-input id="prore_num_radicado" v-model="process.prore_num_radicado" type="text"></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Identificador de litigando*" label-for="prore_litigando_id">
-                            <div>
-                              <b-form-input v-model="process.prore_litigando_id" id="prore_litigando_id" type="number"></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Fecha de Ingreso a Juridico*" label-for="prore_fec_ingreso_jur">
-                            <div>
-                              <b-form-input id="prore_fec_ingreso_jur" v-model="process.prore_fec_ingreso_jur" type="date"></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Fecha Traslado Decreto 806" label-for="prore_fec_ingreso">
-                            <div>
-                              <b-form-input id="prore_fec_ingreso" v-model="process.prore_fec_ingreso" type="date" ></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Clinica/IPS*" label-for="prore_defendant_clin">
-                            <div>
-                              <b-form-select plain v-model="process.prore_defendant_clin" :options="clinicaOptions" @search="fetchOptionsClinicas" id="prore_defendant_clin" >
+                        <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                          <form class="mt-4" novalidate @submit.prevent="handleSubmit(onSubmit)">
+                          <b-row>
+                            <b-form-group v-if="profileProcessOptions != null" class="col-md-6" label="Actuación en el proceso*" label-for="prore_profile_id">
+                              <ValidationProvider name="Actuación en el proceso" rules="required" v-slot="{ errors }">
+                                <v-select v-model="process.prore_profile_id" :options="profileProcessOptions" :reduce="label => label.code" label="label" id="prore_profile_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay perfiles.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
+                              <ValidationProvider name="Número de radicado" rules="required" v-slot="{ errors }">
+                                <b-form-input v-model="process.prore_num_radicado" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Identificador de litigando*" label-for="prore_litigando_id">
+                              <ValidationProvider name="Identificador de litigando" rules="required" v-slot="{ errors }">
+                                <b-form-input v-model="process.prore_litigando_id" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Fecha de Ingreso a Juridico*" label-for="prore_fec_ingreso_jur">
+                              <ValidationProvider name="Fecha de Ingreso a Juridico" rules="required" v-slot="{ errors }">
+                                <b-form-input v-model="process.prore_fec_ingreso_jur" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Fecha Traslado Decreto 806" label-for="prore_fec_ingreso">
+                              <ValidationProvider name="Fecha Traslado Decreto 806">
+                                <b-form-input v-model="process.prore_fec_ingreso" type="date"></b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="clinicaOptions != null" class="col-md-6" label="Clinica/IPS*" label-for="prore_defendant_clin">
+                              <ValidationProvider name="Clinica/IPS" rules="required" v-slot="{ errors }">
+                                <v-select v-model="process.prore_defendant_clin" :options="clinicaOptions" :reduce="label => label.code" label="label" id="prore_profile_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay clinicas.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
+                              <ValidationProvider name="Fecha del Siniestro" rules="required" v-slot="{ errors }">
+                                <b-form-input v-model="process.prore_fec_sinister" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                </b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="years != null" class="col-md-6" label="Año de notificación*" label-for="prore_year_notify">
+                              <ValidationProvider name="Year de notificación" rules="required" v-slot="{ errors }">
+                                <v-select v-model="process.prore_year_notify" :options="years" :reduce="label => label.code" label="label" id="prore_year_notify" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay años.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="years != null" class="col-md-6" label="Año del proceso*" label-for="prore_process_year">
+                              <ValidationProvider name="Year del proceso" rules="required" v-slot="{ errors }">
+                                <v-select v-model="process.prore_process_year" :options="years" :reduce="label => label.code" label="label" id="prore_process_year" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay años.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Fecha de notificación prejudicial" label-for="prore_fec_noti_preju">
+                              <ValidationProvider name="Fecha de notificación prejudicial">
+                                <b-form-input v-model="process.prore_fec_noti_preju" type="date"></b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial*" label-for="prore_fec_audi_conci_preju">
+                              <ValidationProvider name="Fecha de la audiencia de conciliación prejudicial" rules="required" v-slot="{ errors }">
+                                <b-form-input v-model="process.prore_fec_audi_conci_preju" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                </b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Fecha aviso del siniestro" label-for="prore_fec_sinies_aviso">
+                              <ValidationProvider name="Fecha de notificación prejudicial">
+                                <b-form-input v-model="process.prore_fec_sinies_aviso" type="date"></b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Descripción del siniestro*" label-for="prore_sinies_description">
+                              <ValidationProvider name="Descripción del siniestro" rules="required" v-slot="{ errors }">
+                                <b-form-textarea v-model="process.prore_sinies_description" type="text" placeholder="Descripción" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-textarea>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Patología" label-for="prore_pathology">
+                              <ValidationProvider name="Patología" v-slot="{ errors }">
+                                <b-form-input v-model="process.prore_pathology" type="text" placeholder="Patología..." :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Fecha de recibo de notificación IPS" label-for="prore_fec_recibo_notify">
+                              <ValidationProvider name="Fecha de notificación prejudicial">
+                                <b-form-input v-model="process.prore_fec_recibo_notify" type="date"></b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Colaborador de IPS que recibe notificación" label-for="prore_responsable">
+                              <ValidationProvider name="Colaborador de IPS que recibe notificación" v-slot="{ errors }">
+                                <b-form-input v-model="process.prore_responsable" type="text" placeholder="Nombre completo colaborador" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Fecha de Ingreso a Clínica*" label-for="prore_fec_ingreso_cli">
+                              <ValidationProvider name="Fecha de Ingreso a Clínica" rules="required" v-slot="{ errors }">
+                                <b-form-input v-model="process.prore_fec_ingreso_cli" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                </b-form-input>
+                                <div class="invalid-feedback">
+                                  <span>Por favor verifique la información</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="citiesOptions != null" class="col-md-6" label="Ciudad*" label-for="prore_city_id">
+                              <ValidationProvider name="Ciudad" rules="required" v-slot="{ errors }">
+                                <v-select v-model="process.prore_city_id" :options="citiesOptions" :reduce="label => label.code" label="label" id="prore_city_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay ciudades.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="especialidadesOptions != null" class="col-md-6" label="Especialidad" label-for="prore_propse_id">
+                              <ValidationProvider name="Especialidad" v-slot="{ errors }">
+                                <v-select v-model="process.prore_propse_id" :options="especialidadesOptions" :reduce="label => label.code" label="label" id="prore_city_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay ciudades.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="statusProcessOptions != null" class="col-md-6" label="Estado del proceso*" label-for="prore_status_process_id">
+                              <ValidationProvider name="Estado del proceso" rules="required" v-slot="{ errors }">
+                                <v-select v-model="process.prore_status_process_id" :options="statusProcessOptions" :reduce="label => label.code" label="label" id="prore_status_process_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay estados.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="risksOptions != null" class="col-md-6" label="Riesgo NIIF" label-for="prore_risk_id">
+                              <ValidationProvider name="Riesgo NIIF" v-slot="{ errors }">
+                                <v-select v-model="process.prore_risk_id" :options="risksOptions" :reduce="label => label.code" label="label" id="prore_risk_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay riesgos.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="typeProcessOptions != null" class="col-md-6" label="Tipo de Proceso" label-for="prore_typro_id">
+                              <ValidationProvider name="Tipo de Proceso" v-slot="{ errors }">
+                                <v-select v-model="process.prore_typro_id" :options="typeProcessOptions" :reduce="label => label.code" label="label" id="prore_typro_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay tipos de procesos.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="typeProcessOptions != null" class="col-md-6" label="Juzgado" label-for="prore_court_id">
+                              <ValidationProvider name="Juzgado" v-slot="{ errors }">
+                                <v-select v-model="process.prore_court_id" :options="courtsOptions" :reduce="label => label.code" label="label" id="prore_court_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay juzgados.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
+                              <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-juzagado>Crear juzgado</b-card-text>
+                            </b-form-group>
+                            <b-modal
+                              id="modal-crear-juzagado"
+                              ref="modal"
+                              title="Agregar juzgado"
+                              hide-footer
+                            >
+                              <form ref="form">
+                                <b-form-group
+                                  label="Nombre del juzgado"
+                                  label-for="name-input"
+                                >
+                                  <b-form-input
+                                    id="name-input"
+                                    v-model="nuevo_court.name"
+                                  ></b-form-input>
+                                </b-form-group>
+                                <b-form-group label="Teléfono del juzgado">
+                                  <b-form-input v-model="nuevo_court.telefono" type="text" placeholder="ej: 3015456561"></b-form-input>
+                                </b-form-group>
+                                <b-form-group label="Correo del juzgado">
+                                  <b-form-input v-model="nuevo_court.email" type="email" placeholder="info@example.com"></b-form-input>
+                                </b-form-group>
+                                <div class="text-right pt-1">
+                                  <b-button class="sm-3 mr-1" variant="secondary" @click="$bvModal.hide('modal-crear-juzagado')">Cancelar</b-button>
+                                  <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="guardarJuzgado">{{ textoGuardarModal }}</b-button>
+                                </div>
+                              </form>
+                            </b-modal>
+                            <b-form-group class="col-md-6" label="Proceso Ejecutivo" label-for="prore_proceso_ejecutivo">
+                              <b-form-input v-model="process.prore_proceso_ejecutivo" type="text" placeholder="Proceso Ejecutivo"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Ejecutante" label-for="prore_ejecutante">
+                              <b-form-input v-model="process.prore_ejecutante" type="text" placeholder="Ejecutante"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Sentencia Final" label-for="prore_sentencia_final">
+                              <b-form-select plain v-model="process.prore_sentencia_final" id="prore_sentencia_final">
                                 <template v-slot:first>
-                                  <b-form-select-option :value="null" disabled>Seleccione una clinica</b-form-select-option>
+                                  <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
+                                  <b-form-select-option :value="'Ninguna'">Ninguna</b-form-select-option>
+                                  <b-form-select-option :value="'A Favor'" >A Favor</b-form-select-option>
+                                  <b-form-select-option :value="'En Contra'">En Contra</b-form-select-option>
                                 </template>
                               </b-form-select>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Tipo de Proceso" label-for="prore_typro_id">
-                            <div>
-                              <b-form-select plain v-model="process.prore_typro_id" :options="typeProcessOptions" id="prore_typro_id" >
-                                <template v-slot:first>
-                                  <b-form-select-option :value="null">Seleccione un tipo de Proceso</b-form-select-option>
-                                </template>
-                              </b-form-select>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Año del Siniestro*" label-for="prore_year_sinister">
-                            <div>
-                              <b-form-select plain v-model="process.prore_year_sinister" :options="years" id="prore_year_sinister">
-                                <template v-slot:first>
-                                  <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
-                                </template>
-                              </b-form-select>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
-                            <div>
-                              <b-form-input id="prore_fec_sinister" v-model="process.prore_fec_sinister" type="date" :format="{ year }" ></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Año de notificación*" label-for="prore_year_notify">
-                            <div>
-                              <b-form-select plain v-model="process.prore_year_notify" :options="years" id="selectyearnotify">
-                                <template v-slot:first>
-                                  <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
-                                </template>
-                              </b-form-select>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Año del proceso*" label-for="prore_process_year">
-                            <div>
-                              <b-form-select plain v-model="process.prore_process_year" :options="years" id="selectyearnotify">
-                                <template v-slot:first>
-                                  <b-form-select-option :value="null" disabled>Seleccione una fecha</b-form-select-option>
-                                </template>
-                              </b-form-select>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Fecha de notificación prejudicial" label-for="prore_fec_noti_preju">
-                            <div>
-                              <b-form-input id="exampleInputdate" v-model="process.prore_fec_noti_preju" type="date"></b-form-input>
-                              </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial*" label-for="prore_fec_audi_conci_preju">
-                            <div>
-                              <b-form-input id="exampleInputdate" v-model="process.prore_fec_audi_conci_preju" type="date"></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Fecha aviso del siniestro" label-for="prore_fec_sinies_aviso">
-                            <div>
-                              <b-form-input id="exampleInputdate" v-model="process.prore_fec_sinies_aviso" type="date"></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Juzgado" label-for="prore_court_id">
-                            <div>
-                              <b-form-select plain v-model="process.prore_court_id" :options="courtsOptions" id="selectuserrole" >
-                                <template v-slot:first>
-                                  <b-form-select-option :value="null">Seleccione un juzgado</b-form-select-option>
-                                </template>
-                              </b-form-select>
-                            </div>
-                            <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-juzagado>Crear juzgado</b-card-text>
-                          </b-form-group>
-                          <b-modal
-                            id="modal-crear-juzagado"
-                            ref="modal"
-                            title="Agregar juzgado"
-                            hide-footer
-                          >
-                            <form ref="form">
-                              <b-form-group
-                                label="Nombre del juzgado"
-                                label-for="name-input"
-                              >
-                                <b-form-input
-                                  id="name-input"
-                                  v-model="nuevo_court.name"
-                                ></b-form-input>
-                              </b-form-group>
-                              <b-form-group label="Teléfono del juzgado">
-                                <b-form-input v-model="nuevo_court.telefono" type="text" placeholder="ej: 3015456561"></b-form-input>
-                              </b-form-group>
-                              <b-form-group label="Correo del juzgado">
-                                <b-form-input v-model="nuevo_court.email" type="email" placeholder="info@example.com"></b-form-input>
-                              </b-form-group>
-                              <div class="text-right pt-1">
-                                <b-button class="sm-3 mr-1" variant="secondary" @click="$bvModal.hide('modal-crear-juzagado')">Cancelar</b-button>
-                                <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="guardarJuzgado">{{ textoGuardarModal }}</b-button>
-                              </div>
-                            </form>
-                          </b-modal>
-                          <b-form-group class="col-md-6" label="Descripción del siniestro*" label-for="prore_sinies_description">
-                            <div>
-                              <b-form-textarea v-model="process.prore_sinies_description" type="text" placeholder="Descripción"></b-form-textarea>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Patología" label-for="patologia">
-                            <div>
-                              <b-form-input type="text" v-model="process.prore_pathology" placeholder="Patología"></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Proceso Ejecutivo" label-for="prore_proceso_ejecutivo">
-                            <b-form-input v-model="process.prore_proceso_ejecutivo" type="text" placeholder="Proceso Ejecutivo"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Ejecutante" label-for="prore_ejecutante">
-                            <b-form-input v-model="process.prore_ejecutante" type="text" placeholder="Ejecutante"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Fecha de recibo de notificación IPS" label-for="prore_fec_recibo_notify">
-                            <div>
-                              <b-form-input id="exampleInputdate" v-model="process.prore_fec_recibo_notify" type="date"></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Colaborador de IPS que recibe notificación" label-for="prore_colaborador_ips">
-                            <div>
-                              <b-form-input type="text" v-model="process.prore_colaborador_ips" placeholder="Nombre completo colaborador"></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Fecha de Ingreso a Clínica*" label-for="prore_fec_ingreso_cli">
-                            <div>
-                              <b-form-input id="prore_fec_ingreso_cli" v-model="process.prore_fec_ingreso_cli" type="date"></b-form-input>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Ciudad*" label-for="prore_city_id">
-                            <div>
-                              <b-form-select plain v-model="process.prore_city_id" :options="citiesOptions" id="select_city">
-                                <template v-slot:first>
-                                  <b-form-select-option :value="null" disabled>Seleccione una Ciudad</b-form-select-option>
-                                </template>
-                              </b-form-select>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Especialidad" label-for="selectuserrole">
-                            <div>
-                              <b-form-select plain v-model="process.prore_propse_id" :options="especialidadesOptions" id="select_especialidad">
-                                <template v-slot:first>
-                                  <b-form-select-option :value="null" disabled>Seleccione una especialidad</b-form-select-option>
-                                </template>
-                              </b-form-select>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Asignar Abogada/o" label-for="prore_pro_id">
-                            <div>
-                              <b-form-select plain v-model="process.prore_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
-                                <template v-slot:first>
-                                  <b-form-select-option :value="null">Seleccione un abogado</b-form-select-option>
-                                </template>
-                              </b-form-select>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Riesgo NIIF" label-for="risk_id">
-                            <div>
-                              <b-form-select plain v-model="process.prore_risk_id" :options="risksOptions" @search="fetchRisks" id="risk_id">
-                                <template v-slot:first>
-                                  <b-form-select-option :value="null">Seleccione el riesgo NIIF</b-form-select-option>
-                                </template>
-                              </b-form-select>
-                            </div>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Sentencia Final" label-for="prore_sentencia_final">
-                            <b-form-select plain v-model="process.prore_sentencia_final" id="prore_sentencia_final">
-                              <template v-slot:first>
-                                <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
-                                <b-form-select-option :value="'Ninguna'">Ninguna</b-form-select-option>
-                                <b-form-select-option :value="'A Favor'" >A Favor</b-form-select-option>
-                                <b-form-select-option :value="'En Contra'">En Contra</b-form-select-option>
-                              </template>
-                            </b-form-select>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Valor De La Sentencia Final" label-for="prore_val_sentencia_final">
-                            <b-form-input id="prore_val_sentencia_final" v-model="process.prore_val_sentencia_final" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Discriminar Valor De La Condena" label-for="prore_discriminar_val_condena">
-                            <b-form-input id="prore_discriminar_val_condena" v-model="process.prore_discriminar_val_condena" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Costas De La Sentencia" label-for="prore_costas_sentencia">
-                            <b-form-input id="prore_costas_sentencia" v-model="process.prore_costas_sentencia" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Costas Procesales Primera Instancia" label-for="prore_costas_procesales_primera_instancia">
-                            <b-form-input id="prore_costas_procesales_primera_instancia" v-model="process.prore_costas_procesales_primera_instancia" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Costas Procesales Segunda Instancia" label-for="prore_costas_procesales_segunda_instancia">
-                              <b-form-input id="prore_costas_procesales_segunda_instancia" v-model="process.prore_costas_procesales_segunda_instancia" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Total Costas" label-for="prore_total_costas">
-                            <b-form-input id="prore_total_costas" v-model="process.prore_total_costas" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                        </b-row>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Valor De La Sentencia Final" label-for="prore_val_sentencia_final">
+                              <b-form-input id="prore_val_sentencia_final" v-model="process.prore_val_sentencia_final" type="number" placeholder="$"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Discriminar Valor De La Condena" label-for="prore_discriminar_val_condena">
+                              <b-form-input id="prore_discriminar_val_condena" v-model="process.prore_discriminar_val_condena" type="number" placeholder="$"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Costas De La Sentencia" label-for="prore_costas_sentencia">
+                              <b-form-input id="prore_costas_sentencia" v-model="process.prore_costas_sentencia" type="number" placeholder="$"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Costas Procesales Primera Instancia" label-for="prore_costas_procesales_primera_instancia">
+                              <b-form-input id="prore_costas_procesales_primera_instancia" v-model="process.prore_costas_procesales_primera_instancia" type="number" placeholder="$"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Costas Procesales Segunda Instancia" label-for="prore_costas_procesales_segunda_instancia">
+                                <b-form-input id="prore_costas_procesales_segunda_instancia" v-model="process.prore_costas_procesales_segunda_instancia" type="number" placeholder="$"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Costas" label-for="prore_total_costas">
+                              <b-form-input id="prore_total_costas" v-model="process.prore_total_costas" type="number" placeholder="$"></b-form-input>
+                            </b-form-group>
+                          </b-row>
+                          </form>
+                        </ValidationObserver>
+                      </div>
+                    </template>
+                    <template v-slot:footer>
+                      <div class="text-right">
+                        <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
+                        <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
                       </div>
                     </template>
                   </iq-card>
@@ -568,7 +638,7 @@
                         <li class="col-md-12" v-for="(proceeding, index) in proceedings" :key="index">
                           <div class="timeline-dots border-primary" v-if="index == 0" :class="'border-primary'"></div>
                           <div class="timeline-dots border-primary" v-else :class="'border-warning'"></div>
-                          <h6 class="float-left mb-1 font-weight-bolder">{{ proceeding.status_process.sta_name }}<button class="btn btn-link pt-0" @click="editProceeding(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteProceeding(proceeding.proce_id)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
+                          <h6 class="float-left mb-1 font-weight-bolder">{{ proceeding.status_process.estado_proceso }}<button class="btn btn-link pt-0" @click="editProceeding(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteProceeding(proceeding.proce_id)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
                           <!--<b-row class="col-md-12 pl-0 pt-1">
                             <h6><b class="text-black" style="text-decoration:underline;">{{ proceeding.status_process.sta_name }}</b> <button class="btn btn-link" @click="editProceeding(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button class="btn btn-link px-0 text-danger"><i class="ri-edit-2-fill"></i>Eliminar</button></h6>
                           </b-row>-->
@@ -597,34 +667,108 @@
                     <template v-slot:headerTitle>
                       <h4 class="card-title">Costos y cuantías</h4>
                     </template>
+                    <template v-slot:headerAction>
+                      <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
+                      <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarCuantias" @click="editarProceso">{{ textoEditarCuantias }}</b-button>
+                    </template>
                     <template v-slot:body>
-                      <b-row>
-                        <b-col md="6">
-                          <b-card-text><b>Pretensiones/Capital/Interes/Honorarios:</b> <span v-if="process.prore_pretenciones_cap_int_hon != null">{{ process.prore_pretenciones_cap_int_hon }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pretensiones Laborales:</b> <span v-if="process.prore_pretenciones_laborales != null">{{ process.prore_pretenciones_laborales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pretensiones Sociales:</b> <span v-if="process.prore_prestaciones_sociales != null">{{ process.prore_prestaciones_sociales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pretensiones por Vacaciones:</b> <span v-if="process.prore_pretenciones_vacaciones != null">{{ process.prore_pretenciones_vacaciones }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pretensiones por Indemnización:</b> <span v-if="process.prore_pretenciones_indemnizacion != null">{{ process.prore_pretenciones_indemnizacion }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Pago de Seguridad Social en Salud:</b> <span v-if="process.prore_pago_seguridad_social_sa != null">{{ process.prore_pago_seguridad_social_sa }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Salarios dejados de Percibir:</b> <span v-if="process.prore_salario_dejados_percibir != null">{{ process.prore_salario_dejados_percibir }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Otros:</b> <span v-if="process.prore_otros_valores != null">{{ process.prore_otros_valores }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor Lucro Cesante:</b> <span v-if="process.prore_val_luc_cesante != null">{{ process.prore_val_luc_cesante }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor Daño Emergente:</b> <span v-if="process.prore_val_dano_emergente != null">{{ process.prore_val_dano_emergente }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                        </b-col>
-                        <b-col md="6">
-                          <b-card-text><b>Total Perjuicios Materiales:</b> <span v-if="process.prore_total_perjuicios_materiales != null">{{ process.prore_total_perjuicios_materiales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Estimado a Pagar Por Perjuicios Mat.:</b> <span v-if="process.prore_estimacion_pago_perju_materiales != null">{{ process.prore_estimacion_pago_perju_materiales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor Que Cubre La Poliza Por Perjuicios Mat.:</b> <span v-if="process.prore_val_cubre_poliza_perjuicios_mat != null">{{ process.prore_val_cubre_poliza_perjuicios_mat }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor Daño Moral:</b> <span v-if="process.prore_val_dano_moral != null">{{ process.prore_val_dano_moral }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Daño a la Vida ó Prejuicios Fisiologicos y Otros:</b> <span v-if="process.prore_val_dano_vida != null">{{ process.prore_val_dano_vida }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Total Perjuicios Inmateriales:</b> <span v-if="process.prore_total_perjuicios_inmateriales != null">{{ process.prore_total_perjuicios_inmateriales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Estimado a Pagar Por Perjuicios Inmat.:</b> <span v-if="process.prore_estimacion_pago_perju_inmateriales != null">{{ process.prore_estimacion_pago_perju_inmateriales }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor que Cube la Poliza Prejuicios Inmat.:</b> <span v-if="process.prore_val_cubre_poliza_perjuicios_inmat != null">{{ process.prore_val_cubre_poliza_perjuicios_inmat }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Cuantía de las Pretensiones:</b> <span v-if="process.prore_cuantia_pretenciones != null">{{ process.prore_cuantia_pretenciones }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text><b>Valor a Provisionar:</b> <span v-if="process.prore_valor_provisionar != null">{{ process.prore_valor_provisionar }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                        </b-col>
-                      </b-row>
-                      <hr>
+                      <div v-if="!editando">
+                        <b-row>
+                          <b-col md="6">
+                            <b-card-text><b>Pretensiones/Capital/Interes/Honorarios:</b> <span v-if="process.prore_pretenciones_cap_int_hon != null">{{ formatPrice(process.prore_pretenciones_cap_int_hon) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Valor Daño Emergente:</b> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Pretensiones Laborales:</b> <span v-if="process.prore_pretenciones_laborales != null">{{ formatPrice(process.prore_pretenciones_laborales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Prestaciones Sociales:</b> <span v-if="process.prore_prestaciones_sociales != null">{{ formatPrice(process.prore_prestaciones_sociales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Pretensiones por Vacaciones:</b> <span v-if="process.prore_pretenciones_vacaciones != null">{{ formatPrice(process.prore_pretenciones_vacaciones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Pretensiones por Indemnización:</b> <span v-if="process.prore_pretenciones_indemnizacion != null">{{ formatPrice(process.prore_pretenciones_indemnizacion) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Pago de Seguridad Social en Salud:</b> <span v-if="process.prore_pago_seguridad_social_sa != null">{{ formatPrice(process.prore_pago_seguridad_social_sa) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Salarios dejados de Percibir:</b> <span v-if="process.prore_salario_dejados_percibir != null">{{ formatPrice(process.prore_salario_dejados_percibir) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Otros:</b> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          </b-col>
+                          <b-col md="6">
+                            <b-card-text><b>Valor Lucro Cesante:</b> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Total Perjuicios Materiales:</b> <span v-if="process.prore_total_perjuicios_materiales != null">{{ formatPrice(process.prore_total_perjuicios_materiales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Estimado a Pagar Por Perjuicios Mat.:</b> <span v-if="process.prore_estimacion_pago_perju_materiales != null">{{ formatPrice(process.prore_estimacion_pago_perju_materiales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Daño a la Vida ó Prejuicios Fisiologicos y Otros:</b> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Valor Daño Moral:</b> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Total Perjuicios Inmateriales:</b> <span v-if="process.prore_total_perjuicios_inmateriales != null">{{ formatPrice(process.prore_total_perjuicios_inmateriales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Estimado a Pagar Por Perjuicios Inmat.:</b> <span v-if="process.prore_estimacion_pago_perju_inmateriales != null">{{ formatPrice(process.prore_estimacion_pago_perju_inmateriales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Valor que Cube la Poliza Prejuicios Inmat.:</b> <span v-if="process.prore_val_cubre_poliza_perjuicios_inmat != null">{{ formatPrice(process.prore_val_cubre_poliza_perjuicios_inmat) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Cuantía de las Pretensiones:</b> <span v-if="process.prore_cuantia_pretenciones != null">{{ formatPrice(process.prore_cuantia_pretenciones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                            <b-card-text><b>Valor a Provisionar:</b> <span v-if="process.prore_valor_provisionar != null">{{ formatPrice(process.prore_valor_provisionar) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          </b-col>
+                        </b-row>
+                      </div>
+                      <div v-else>
+                        <b-row>
+                          <b-form-group class="col-md-6" label="Pretensiones/Capital/Interes/Honorarios" label-for="prore_pretenciones_cap_int_hon">
+                            <b-form-input v-model="process.prore_pretenciones_cap_int_hon" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Pretensiones Laborales" label-for="prore_pretenciones_laborales">
+                            <b-form-input v-model="process.prore_pretenciones_laborales" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Estimado a Pagar Por Perjuicios Mat." label-for="prore_estimacion_pago_perju_materiales">
+                            <b-form-input v-model="process.prore_estimacion_pago_perju_materiales" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Prestaciones Sociales" label-for="prore_prestaciones_sociales">
+                            <b-form-input v-model="process.prore_prestaciones_sociales" type="number" placeholder="$"></b-form-input>
+                            </b-form-group>
+                          <b-form-group class="col-md-6" label="Pretensiones por Vacaciones" label-for="prore_pretenciones_vacaciones">
+                            <b-form-input id="prore_pretenciones_vacaciones" v-model="process.prore_pretenciones_vacaciones" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Pretensiones por Indemnización" label-for="prore_pretenciones_indemnizacion">
+                            <b-form-input v-model="process.prore_pretenciones_indemnizacion" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Pago de Seguridad Social en Salud" label-for="prore_pago_seguridad_social_sa">
+                            <b-form-input v-model="process.prore_pago_seguridad_social_sa" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Salarios dejados de Percibir" label-for="prore_salario_dejados_percibir">
+                            <b-form-input id="prore_salario_dejados_percibir" v-model="process.prore_salario_dejados_percibir" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
+                            <b-form-input v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="prore_val_luc_cesante">
+                            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_luc_cesante" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="prore_val_dano_emergente">
+                            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_dano_emergente" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Total Perjuicios Materiales" label-for="prore_total_perjuicios_materiales">
+                            <b-form-input id="prore_total_perjuicios_materiales" v-model="process.prore_total_perjuicios_materiales" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Estimado a Pagar Por Perjuicios Materiales" label-for="prore_estimacion_pago_perju">
+                            <b-form-input id="prore_estimacion_pago_perju_materiales" v-model="process.prore_estimacion_pago_perju_materiales" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="prore_val_dano_moral">
+                            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_moral" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos y Otros" label-for="prore_val_dano_vida">
+                            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_vida" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Total Perjuicios Inmateriales" label-for="prore_total_perjuicios_inmateriales">
+                            <b-form-input v-model="process.prore_total_perjuicios_inmateriales" type="number" disabled="disabled" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Inmateriales" label-for="prore_estimacion_pago_perju_inmateriales">
+                            <b-form-input id="prore_estimacion_pago_perju_inmateriales" v-model="process.prore_estimacion_pago_perju_inmateriales" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <!-- <b-form-group class="col-md-6" label="Valor que Cubre la Poliza Prejuicios Inmateriales" label-for="prore_val_cubre_poliza_perjuicios_inmat">
+                            <b-form-input id="prore_val_cubre_poliza_perjuicios_inmat" v-model="process.prore_val_cubre_poliza_perjuicios_inmat" type="number" placeholder="$"></b-form-input>
+                          </b-form-group> -->
+                          <b-form-group class="col-md-6" label="Cuantía de las Pretensiones" label-for="prore_cuantia_pretenciones">
+                            <b-form-input id="prore_cuantia_pretenciones" v-model="process.prore_cuantia_pretenciones" disabled="disabled" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                          <b-form-group class="col-md-6" label="Valor a Provisionar" label-for="prore_valor_provisionar">
+                            <b-form-input id="prore_valor_provisionar" v-model="process.prore_valor_provisionar" type="number" placeholder="$"></b-form-input>
+                          </b-form-group>
+                        </b-row>
+                      </div>
+                    </template>
+                    <template v-slot:footer>
+                      <div class="text-right">
+                        <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
+                        <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarCuantias" @click="editarProceso">{{ textoEditarCuantias }}</b-button>
+                      </div>
                     </template>
                   </iq-card>
                 </tab-content-item>
@@ -743,6 +887,8 @@ export default {
   },
   data () {
     return {
+      estadoBotonActualizarCuantias: '',
+      textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarProceso: '',
       textoEditarProceso: 'Editar Proceso',
       user_id: null,
@@ -780,7 +926,6 @@ export default {
         proce_pro_id: null,
         proce_sta_id: null,
         proce_fecha_ingreso: null,
-        proce_fecha_actualizacion: null,
         proce_descripcion: null,
         proce_fecha_siguiente_audiencia: null,
         proce_hora_siguiente_audiencia: null
@@ -875,20 +1020,44 @@ export default {
         }
       ],
       year: null,
-      clinicaOptions: [],
-      citiesOptions: [],
-      especialidadesOptions: {},
-      typeProcessOptions: {},
-      courtsOptions: {},
-      risksOptions: {},
-      profilesOptions: {},
+      clinicaOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }],
+      especialidadesOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }],
+      typeProcessOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }],
+      courtsOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }],
+      risksOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }],
+      citiesOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }],
+      profilesOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }],
       nuevo_court: {
         name: '',
         telefono: '',
         email: ''
       },
       errores: {},
-      profileProcessOptions: []
+      profileProcessOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }]
     }
   },
   methods: {
@@ -1062,6 +1231,8 @@ export default {
         this.guardarProceso()
         this.estadoBotonActualizarProceso = 'disabled'
         this.textoEditarProceso = 'Actualizando Proceso...'
+        this.estadoBotonActualizarCuantias = 'disabled'
+        this.textoEditarCuantias = 'Actualizando...'
       } else {
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
           this.fetchProfileProcessOptions()
@@ -1078,6 +1249,8 @@ export default {
       axios.post('/process/updateInfoProceso/' + this.prore_id, this.process, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
         this.textoEditarProceso = 'Editar Proceso'
         this.estadoBotonActualizarProceso = ''
+        this.estadoBotonActualizarCuantias = ''
+        this.textoEditarCuantias = 'Editar Costos/Cuantías'
         if (res.data.status_code === 200) {
           setTimeout(() => {
             if (res.data.process != null) {
@@ -1194,7 +1367,7 @@ export default {
         })
     },
     checkFormActuacion () {
-      if (this.proceeding.proce_pro_id && this.proceeding.proce_sta_id && this.proceeding.proce_fecha_ingreso && this.proceeding.proce_fecha_actualizacion && this.proceeding.proce_descripcion) {
+      if (this.proceeding.proce_pro_id && this.proceeding.proce_sta_id && this.proceeding.proce_fecha_ingreso && this.proceeding.proce_descripcion) {
         this.errors = []
         return true
       }
@@ -1207,9 +1380,6 @@ export default {
       }
       if (!this.proceeding.proce_fecha_ingreso) {
         this.errors.push('La fecha de ingreso es obligatoria.')
-      }
-      if (!this.proceeding.proce_fecha_actualizacion) {
-        this.errors.push('La fecha de actualización es obligatoria.')
       }
       if (!this.proceeding.proce_descripcion) {
         this.errors.push('La descripción es obligatoria.')
@@ -1228,7 +1398,6 @@ export default {
       this.proceeding.proce_pro_id = null
       this.proceeding.proce_sta_id = null
       this.proceeding.proce_fecha_ingreso = null
-      this.proceeding.proce_fecha_actualizacion = null
       this.proceeding.proce_descripcion = null
       this.proceeding.proce_fecha_siguiente_audiencia = null
       this.proceeding.proce_hora_siguiente_audiencia = null
@@ -1266,7 +1435,6 @@ export default {
       this.proceeding.proce_pro_id = this.proceedings[llave].proce_pro_id
       this.proceeding.proce_sta_id = this.proceedings[llave].proce_sta_id
       this.proceeding.proce_fecha_ingreso = this.proceedings[llave].proce_fecha_ingreso
-      this.proceeding.proce_fecha_actualizacion = this.proceedings[llave].proce_fecha_actualizacion
       this.proceeding.proce_descripcion = this.proceedings[llave].proce_descripcion
       this.proceeding.proce_fecha_siguiente_audiencia = this.proceedings[llave].proce_fecha_siguiente_audiencia
       this.proceeding.proce_hora_siguiente_audiencia = this.proceedings[llave].proce_hora_siguiente_audiencia
@@ -1509,14 +1677,11 @@ export default {
         return true
       }
       this.errors = []
-      if (!this.proceeding.proce_pro_id) {
+      if (!this.nuevoImplicated.imp_nombres) {
         this.errors.push('El nombre es obligatorio.')
       }
-      if (!this.proceeding.proce_sta_id) {
-        this.errors.push('El apellido es obligatori.')
-      }
-      if (!this.proceeding.proce_fecha_ingreso) {
-        this.errors.push('El perfil es obligatori.')
+      if (!this.nuevoImplicated.imp_profile_id) {
+        this.errors.push('El perfil es obligatorio.')
       }
     },
     checkFormLink (linkFor) {
@@ -1659,6 +1824,30 @@ export default {
       } else if (tipoIdentificacionId === 4) {
         return 'NIT '
       }
+    },
+    formatPrice (value) {
+      let val = (value / 1).toFixed(0).replace('.', ',')
+      return '$' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+    },
+    totalPerjuiciosMateriales () {
+      let valLucCesante = this.process.prore_val_luc_cesante > 0 ? this.process.prore_val_luc_cesante : 0
+      let valDanoEmergente = this.process.prore_val_dano_emergente > 0 ? this.process.prore_val_dano_emergente : 0
+      this.process.prore_total_perjuicios_materiales = parseInt(valLucCesante) + parseInt(valDanoEmergente)
+      this.cuantiaPretensiones()
+    },
+    totalPerjuiciosInmateriales () {
+      let valDanoMoral = this.process.prore_val_dano_moral > 0 ? this.process.prore_val_dano_moral : 0
+      let valDanoVida = this.process.prore_val_dano_vida > 0 ? this.process.prore_val_dano_vida : 0
+      this.process.prore_total_perjuicios_inmateriales = parseInt(valDanoMoral) + parseInt(valDanoVida)
+      this.cuantiaPretensiones()
+    },
+    cuantiaPretensiones () {
+      this.process.prore_cuantia_pretenciones = this.process.prore_total_perjuicios_materiales + this.process.prore_total_perjuicios_inmateriales
+    },
+    totalCoberturaActualPoliza () {
+      let valTotalAsegurado = this.process.prore_val_total_asegurado > 0 ? this.process.prore_val_total_asegurado : 0
+      let valAfectadoPoliza = this.process.prore_val_afectado_poliza > 0 ? this.process.prore_val_afectado_poliza : 0
+      this.process.prore_val_cobertura_poliza = parseInt(valTotalAsegurado) - parseInt(valAfectadoPoliza)
     }
   }
 }
