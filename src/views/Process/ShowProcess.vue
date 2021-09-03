@@ -783,6 +783,7 @@
                     <template v-slot:body>
                       <b-row class="col-md-12 pt-1">
                         <b-modal
+                          :no-close-on-backdrop="nocloseonbackdrop"
                           id="modal-asociar-poliza"
                           ref="modal"
                           title="Asociar Poliza"
@@ -941,6 +942,7 @@ export default {
   },
   data () {
     return {
+      nocloseonbackdrop: true,
       estadoBotonActualizarCuantias: '',
       textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarProceso: '',
