@@ -30,6 +30,6 @@ import Css
   color: #ffffff!important;
 }
 
-.pagina-detalle-proceso b, .pagina-detalle-proceso p{
+.pagina-detalle-proceso b, .pagina-detalle-proceso p, .pagina-detalle-poliza b, .pagina-detalle-poliza p {
   color: #343a40!important;
 }

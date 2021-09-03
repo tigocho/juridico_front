@@ -10,6 +10,10 @@
             <b-row>
               <b-col sm="12" md="12" class="my-1">
                 <b-card-text>Si es una actualización, el número de proceso debe de coincidir con la primera columna del Excel</b-card-text>
+                <b-card-text class="pr-3 my-0"><b>Plantilla de imporación: </b>
+                  <span style="text-decoration:underline;cursor:pointer" @click="descargarPlantillaProcesos">Descargar Archivo
+                  </span>
+                </b-card-text>
               </b-col>
               <b-col sm="6" md="6" class="my-1">
                 <b-form-group ref="addProcess" label-for="exampleFormControlFile1" label="Subir archivo de Excel">
@@ -48,6 +52,13 @@
           </template>
           <template v-slot:body>
             <b-row>
+              <b-col sm="12" md="12" class="my-1">
+                <b-card-text class="pr-3 my-0"><b>Plantilla de imporación: </b>
+                  <span style="text-decoration:underline;cursor:pointer" @click="descargarPlantillaInvolucrados">
+                    Descargar Archivo
+                  </span>
+                </b-card-text>
+              </b-col>
               <b-col sm="6" md="6" class="my-1">
                 <b-form-group label-for="importar-involucrados" label="Subir archivo de involucrados">
                   <b-form-file id="importar-involucrados"
@@ -86,6 +97,7 @@ import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
 import auth from '@/logic/auth'
+import fileDownload from 'js-file-download'
 import iqCard from '../../components/xray/cards/iq-card.vue'
 
 export default {
@@ -119,6 +131,38 @@ export default {
     }
   },
   methods: {
+    descargarPlantillaProcesos () {
+      axios({
+        url: '/process/descargar-plantilla-procesos',
+        method: 'GET',
+        responseType: 'blob'
+      }).then((response) => {
+        if (response.data != null) {
+          fileDownload(response.data, 'Plantilla para Importar Procesos.xlsx')
+        } else {
+          Vue.swal('No se encontró archivo')
+        }
+      })
+        .catch((err) => {
+          Vue.swal('Ups, ocurrió un error ' + err)
+        })
+    },
+    descargarPlantillaInvolucrados () {
+      axios({
+        url: '/implicateds/descargar-plantilla-implicateds',
+        method: 'GET',
+        responseType: 'blob'
+      }).then((response) => {
+        if (response.data != null) {
+          fileDownload(response.data, 'Plantilla para Importar Involucrados.xlsx')
+        } else {
+          Vue.swal('No se encontró archivo')
+        }
+      })
+        .catch((err) => {
+          Vue.swal('Ups, ocurrió un error ' + err)
+        })
+    },
     onFileChange (e) {
       this.import_file = e.target.files[0]
     },

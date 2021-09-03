@@ -75,6 +75,51 @@
     ]
   },
   {
+    "title": "policies",
+    "name": "sidebar.polizas",
+    "is_heading": false,
+    "is_active": false,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-shield-flash-fill",
+    "children": [
+      {
+        "title": "Policies List",
+        "name": "sidebar.listaPolizas",
+        "is_active": false,
+        "link": {
+          "name" : "policies.list"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-shield-fill"
+      },
+      {
+        "title": "Add Policy",
+        "name": "sidebar.agregarPoliza",
+        "is_active": false,
+        "link": {
+          "name" : "policies.add"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-shield-cross-fill"
+      },
+      {
+        "title": "Policies Archived",
+        "name": "sidebar.polizasArchivadas",
+        "is_active": false,
+        "link": {
+          "name" : "policies.archived"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-shield-flash-fill"
+      }      
+    ]
+  },
+  {
     "title": "Calendar",
     "name": "sidebar.calendar",
     "is_heading": false,

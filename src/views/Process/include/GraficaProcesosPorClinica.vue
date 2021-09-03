@@ -19,7 +19,8 @@ export default {
             max: 90
           })
           chart.updateSeries([{
-            data: _this.data
+            data: _this.data,
+            categories: _this.categories
           }])
         }, 1000)
       }
@@ -30,7 +31,7 @@ export default {
       lastDate: 0,
       data: [],
       TICKINTERVAL: 86400000,
-      XAXISRANGE: 777600001
+      XAXISRANGE: 777600000
     }
   },
   methods: {
