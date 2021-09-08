@@ -825,7 +825,7 @@
                         <ul class="iq-timeline">
                           <li class="col-md-12" v-for="(poliza, index) in polizas" :key="index">
                             <div class="timeline-dots border-primary border-primary"></div>
-                            <h6 class="float-left mb-1 font-weight-bolder">{{ poliza.pol_numero }} - {{ poliza.aseguradora.ase_name }}<button class="btn btn-link pt-0 disabled" @click="editPolizaAsociada(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deletePolizaAsociada(poliza.pol_id)" class="btn btn-link pt-0 px-0 text-danger disabled"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
+                            <h6 class="float-left mb-1 font-weight-bolder text-primary" @click="irPoliza(poliza.pol_id)" style="text-decoration:underline;cursor:pointer">{{ poliza.pol_numero }} - {{ poliza.aseguradora.ase_name }}<button class="btn btn-link pt-0 disabled" @click="editPolizaAsociada(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deletePolizaAsociada(poliza.pol_id)" class="btn btn-link pt-0 px-0 text-danger disabled"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
                             <b-row class="col-md-12 pt-1">
                               <b-card-text class="pr-3 my-0"><b>Tomador: </b>{{ poliza.clinica.cli_name }}</b-card-text>
                               <b-card-text class="pr-3 my-0"><b>Fecha inicio vigencia: </b><span v-if="poliza.pol_fecha_inicio != null">{{ poliza.pol_fecha_inicio }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -1941,6 +1941,10 @@ export default {
           }
           this.intentos++
         })
+    },
+    irPoliza (polizaId) {
+      let editar = false
+      this.$router.push({ path: `/policies/policy-show/${polizaId}/${editar}` })
     },
     transformarBoolean (edicion) {
       if (edicion === 'true') {
