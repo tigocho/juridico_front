@@ -67,7 +67,9 @@ export default {
       usr_password: ''
     },
     texto: 'Iniciar Sesión',
-    estado: ''
+    estado: '',
+    intentos: '',
+    errores: []
   }),
   mounted () {
     this.user.usr_email = this.$props.email
@@ -108,6 +110,12 @@ export default {
           Vue.swal('Credenciales no validas')
         }
       })
+        .catch((err) => {
+          this.texto = 'Iniciar Sesión'
+          this.estado = ''
+          this.errores = err
+          Vue.swal('Ups, ocurrió un error, intente más tarde')
+        })
     },
     recuperarPassword () {
       this.$router.push({ name: 'auth.password-reset1' })

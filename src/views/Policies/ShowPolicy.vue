@@ -271,12 +271,15 @@
                       <button class="btn btn-primary disabled" v-if="poliza.pol_estado == 1" @click="agregarProceso"><i class="ri-add-line mr-2" ></i>Agregar Proceso</button>
                     </template>
                     <template v-slot:body>
-                      <div v-if="poliza.process_requests != null && poliza.process_requests.length > 0">
-                        <div v-for="(proceso, index) in poliza.process_requests" :key="index">
-                          <b-collapse id="collapse-2">
+                      <div v-if="process != null && process.length > 0">
+                        <div v-for="(proceso, index) in process" :key="index" class="pt-2">
+                          <!-- <b-card-text v-b-toggle="'collapse-' +  index" variant="primary" style="text-decoration:underline;cursor:pointer">Proceso {{ proceso.prore_num_radicado }}</b-card-text> -->
+                          <button class="btn btn-primary" v-b-toggle="'collapse-' +  index"><i class="ri-arrow-right-s-line"></i>Ver proceso {{ proceso.prore_num_radicado }} </button>
+                          <b-collapse :id="'collapse-' + index" >
                             <b-row class="col-md-12 pt-1">
-                              <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="proceso.proceedings != null && proceso.proceedings[0] != null">{{ proceso.proceedings[0].status_process.estado_proceso }}</span> <span v-else> Sin Asignar </span></b-card-text>
-                              <b-card-text class="my-0 pr-3" v-if="proceso.proceedings != null && proceso.proceedings[0] != null && proceso.proceedings[0].status_process.sta_id ===  16"><b>Fecha terminación: </b><span >{{ proceso.proceedings[0].proce_fecha_ingreso }}</span></b-card-text>
+                              <!-- <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="proceso.proceedings != null && proceso.proceedings[0] != null">{{ proceso.proceedings[0].status_process.estado_proceso }}</span> <span v-else> Sin Asignar </span></b-card-text>
+                              <b-card-text class="my-0 pr-3" v-if="proceso.proceedings != null && proceso.proceedings[0] != null && proceso.proceedings[0].status_process.sta_id ===  16"><b>Fecha terminación: </b><span >{{ proceso.proceedings[0].proce_fecha_ingreso }}</span></b-card-text> -->
+                              <a @click="irProceso(proceso.prore_id)" class="text-primary pr-3" style="text-decoration:underline;cursor:pointer">Ir al proceso</a>
                               <b-card-text class="pr-3 my-0"><b>ID Litigando: </b><span v-if="proceso.prore_litigando_id != null">{{ proceso.prore_litigando_id }} </span><span class="text-danger" v-if="proceso.prore_litigando_id == null">Sin asignar</span></b-card-text>
                               <b-card-text class="pr-3"><b>Número de Radicado:</b> <span v-if="proceso.prore_num_radicado != null">{{ proceso.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                             </b-row>
@@ -286,7 +289,6 @@
                               <b-card-text class="pr-3 my-0"><b>Juzgado: </b><span v-if="proceso.juzgado != null">{{ proceso.juzgado.court_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                             </b-row>
                             <b-row class="col-md-12 pt-1">
-                              <b-card-text class="my-0 pr-3"><b>Número radicado: </b><span v-if="proceso.prore_num_radicado != null">{{ proceso.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                               <b-card-text class="pr-3 my-0"><b>Proceso Ejecutivo:</b> <span v-if="proceso.prore_proceso_ejecutivo != null">{{ proceso.prore_proceso_ejecutivo }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                               <b-card-text class="pr-3 my-0"><b>Ejecutante:</b> <span v-if="proceso.prore_ejecutante != null">{{ proceso.prore_ejecutante }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                               <b-card-text><b>Medida Cautelar:</b> <span v-if="proceso.prore_medida_cautelar != null">{{ proceso.prore_medida_cautelar }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -562,7 +564,7 @@ export default {
                 this.poliza.pol_estado = 0
               }
               if (this.poliza.process_requests != null && this.poliza.process_requests !== '') {
-                this.process = this.poliza.process_requests[0]
+                this.process = this.poliza.process_requests
               }
             } else {
               Vue.swal('Ocurrió un error tratando de obtener los datos de la poliza')
@@ -734,6 +736,10 @@ export default {
     },
     agregarProceso () {
       this.intentos = 1
+    },
+    irProceso (proreId) {
+      let editar = false
+      this.$router.push({ path: `/process/process-show/${proreId}/${editar}` })
     },
     transformarBoolean (edicion) {
       if (edicion === 'true') {

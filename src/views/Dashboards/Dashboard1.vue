@@ -66,7 +66,7 @@
             <b-col lg="6">
               <iq-card>
                 <template v-slot:headerTitle>
-                  <h4>Ingreso de procesos en los últimos 12 meses</h4>
+                  <h4>Ingreso de procesos (activos) en los últimos años 6 años</h4>
                 </template>
                 <template v-slot:body>
                   <MorrisChart :element="ingresoProcesos.type+0" :type="ingresoProcesos.type" :xKeys="ingresoProcesos.xKeys" :data="ingresoProcesos.bodyData" :colors="ingresoProcesos.colors" :yKeys="ingresoProcesos.yKeys" :labels="ingresoProcesos.labels"/>
@@ -143,7 +143,7 @@ export default {
   name: 'Dashboard1',
   mounted () {
     xray.index()
-    this.obtenerDatosGraficaProcesosMensual()
+    this.obtenerDatosGraficaProcesoAnual()
     this.obtenerNumeroUsuarios()
     setTimeout(() => {
       this.obtenerDatosNivelExito()
@@ -165,7 +165,7 @@ export default {
       ingresoProcesos: {
         type: 'bar',
         bodyData: [],
-        xKeys: 'mes',
+        xKeys: 'año',
         yKeys: ['total'],
         colors: [ '#36A2EB' ],
         labels: [ 'Procesos' ]
@@ -312,13 +312,13 @@ export default {
         }
       })
     },
-    obtenerDatosGraficaProcesosMensual () {
-      axios.get('/process/obtener-datos-grafica-procesos-mensual').then(res => {
+    obtenerDatosGraficaProcesoAnual () {
+      axios.get('/process/obtener-datos-grafica-procesos-anual').then(res => {
         if (res.data.status_code === 200) {
           this.intentos = 0
           this.errores = {}
-          let procesosMensual = res.data.process
-          this.ingresoProcesos.bodyData = procesosMensual
+          let procesosAnual = res.data.process
+          this.ingresoProcesos.bodyData = procesosAnual
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
         }
@@ -326,7 +326,7 @@ export default {
         .catch((err) => {
           this.errores = err
           if (this.intentos < 2) {
-            this.obtenerDatosGraficaProcesosMensual()
+            this.obtenerDatosGraficaProcesoAnual()
             this.intentos++
           }
         })
