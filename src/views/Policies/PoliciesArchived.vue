@@ -205,20 +205,24 @@ export default {
   },
   methods: {
     fetchPolicies () {
-      axios.get('/policy/obtener-polizas-archivadas').then(response => {
-        this.policies_archived = response.data.policies_archived
-        if (this.policies_archived[0] !== undefined) {
-          this.intentos = 0
-          this.errores = {}
-        }
-      })
-        .catch((err) => {
-          this.errores = err
-          if (this.intentos < 2) {
-            this.fetchPolicies()
-            this.intentos++
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/policy/obtener-polizas-archivadas/' + this.userLogged.usr_id).then(response => {
+          this.policies_archived = response.data.policies_archived
+          if (this.policies_archived[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
           }
         })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchPolicies()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     verDetalle (polId) {
       var editar = false
