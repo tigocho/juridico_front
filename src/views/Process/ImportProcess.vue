@@ -213,6 +213,7 @@ export default {
             this.botonEjecutarImportacion = 'Ejecutar Importación'
             this.uploading = false
             this.error = error.response.data
+            Vue.swal('Ups, ocurrió un error, por favor contacte al administrador')
           })
       } else {
         Vue.swal('Por favor elige un archivo')
