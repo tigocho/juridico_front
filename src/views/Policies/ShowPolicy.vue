@@ -422,20 +422,24 @@ export default {
       this.import_file = e.target.files[0]
     },
     fetchProcessOptions () {
-      axios.get('/process/obtenerProcesosParaLista').then(response => {
-        this.processOptions = response.data.process
-        if (this.processOptions[0] !== undefined) {
-          this.intentos = 0
-          this.errores = {}
-        }
-      })
-        .catch((err) => {
-          this.errores = err
-          if (this.intentos < 2) {
-            this.fetchProcessOptions()
-            this.intentos++
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtenerProcesosParaLista/' + this.userLogged.usr_id).then(response => {
+          this.processOptions = response.data.process
+          if (this.processOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
           }
         })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchProcessOptions()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     fetchClinicaOptions () {
       axios.get('/clinicas/obtener-clinicas').then(response => {

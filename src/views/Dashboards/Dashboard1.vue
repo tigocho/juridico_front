@@ -138,6 +138,7 @@
 import { xray } from '../../config/pluginInit'
 import axios from 'axios'
 import Vue from 'vue'
+import auth from '@/logic/auth'
 
 export default {
   name: 'Dashboard1',
@@ -151,6 +152,11 @@ export default {
       this.obtenerCantidadProcesosCerrados()
       this.obtenerCantidadAudienciasPendientes()
     }, 500)
+  },
+  computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    }
   },
   data: function () {
     return {
@@ -286,74 +292,94 @@ export default {
       })
     },
     obtenerCantidadProcesosAbiertos: function () {
-      axios.get('/process/obtenerCantidadProcesosAbiertos').then(res => {
-        if (res.data.status_code === 200) {
-          this.procesosAbiertos = res.data.cantidad_procesos_abiertos
-        } else {
-          alert('Datos no validos')
-        }
-      })
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtenerCantidadProcesosAbiertos/' + this.userLogged.usr_id).then(res => {
+          if (res.data.status_code === 200) {
+            this.procesosAbiertos = res.data.cantidad_procesos_abiertos
+          } else {
+            alert('Datos no validos')
+          }
+        })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     obtenerCantidadProcesosCerrados: function () {
-      axios.get('/process/obtenerCantidadProcesosCerrados').then(res => {
-        if (res.data.status_code === 200) {
-          this.procesosCerrados = res.data.cantidad_procesos_cerrados
-        } else {
-          alert('Datos no validos')
-        }
-      })
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtenerCantidadProcesosCerrados/' + this.userLogged.usr_id).then(res => {
+          if (res.data.status_code === 200) {
+            this.procesosCerrados = res.data.cantidad_procesos_cerrados
+          } else {
+            alert('Datos no validos')
+          }
+        })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     obtenerCantidadAudienciasPendientes: function () {
-      axios.get('/agenda/obtenerCantidadAudienciasPendientes').then(res => {
-        if (res.data.status_code === 200) {
-          this.audienciasPendientes = res.data.cantidad_audiencias_pendientes
-        } else {
-          alert('Datos no validos')
-        }
-      })
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/agenda/obtenerCantidadAudienciasPendientes').then(res => {
+          if (res.data.status_code === 200) {
+            this.audienciasPendientes = res.data.cantidad_audiencias_pendientes
+          } else {
+            alert('Datos no validos')
+          }
+        })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     obtenerDatosGraficaProcesoAnual () {
-      axios.get('/process/obtener-datos-grafica-procesos-anual').then(res => {
-        if (res.data.status_code === 200) {
-          this.intentos = 0
-          this.errores = {}
-          let procesosAnual = res.data.process
-          this.ingresoProcesos.bodyData = procesosAnual
-        } else {
-          Vue.swal('Ocurrió un error tratando de obtener los datos')
-        }
-      })
-        .catch((err) => {
-          this.errores = err
-          if (this.intentos < 2) {
-            this.obtenerDatosGraficaProcesoAnual()
-            this.intentos++
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtener-datos-grafica-procesos-anual/' + this.userLogged.usr_id).then(res => {
+          if (res.data.status_code === 200) {
+            this.intentos = 0
+            this.errores = {}
+            let procesosAnual = res.data.process
+            this.ingresoProcesos.bodyData = procesosAnual
+          } else {
+            Vue.swal('Ocurrió un error tratando de obtener los datos')
           }
         })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.obtenerDatosGraficaProcesoAnual()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     obtenerDatosNivelExito () {
-      axios.get('/process/obtener-datos-nivel-exito').then(res => {
-        if (res.data.status_code === 200) {
-          this.intentos = 0
-          this.errores = {}
-          this.procesosNivelExito = res.data.process
-          this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesAFavor()
-          this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = this.nivelExitoformulaPretensionesEnContra()
-          this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesAFavor()
-          this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
-          this.nivelExitoPretensionesKey++
-          this.nivelExitoEstimacionesKey++
-        } else {
-          Vue.swal('Ocurrió un error tratando de obtener los datos')
-        }
-      })
-        .catch((err) => {
-          this.errores = err
-          if (this.intentos < 2) {
-            this.obtenerDatosNivelExito()
-            this.intentos++
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtener-datos-nivel-exito/' + this.userLogged.usr_id).then(res => {
+          if (res.data.status_code === 200) {
+            this.intentos = 0
+            this.errores = {}
+            this.procesosNivelExito = res.data.process
+            this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesAFavor()
+            this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = this.nivelExitoformulaPretensionesEnContra()
+            this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesAFavor()
+            this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
+            this.nivelExitoPretensionesKey++
+            this.nivelExitoEstimacionesKey++
+          } else {
+            Vue.swal('Ocurrió un error tratando de obtener los datos')
           }
         })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.obtenerDatosNivelExito()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     formatPrice (value) {
       let val = (value / 1).toFixed(0).replace('.', ',')

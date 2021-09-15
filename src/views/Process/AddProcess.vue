@@ -571,20 +571,24 @@ export default {
       })
     },
     fetchOptionsClinicas () {
-      axios.get('/clinicas').then(response => {
-        this.clinicaOptions = response.data.clinicas
-        if (this.clinicaOptions[0] !== undefined) {
-          this.intentos = 0
-          this.errores = {}
-        }
-      })
-        .catch((err) => {
-          this.errores = err
-          if (this.intentos < 2) {
-            this.fetchOptionsClinicas()
-            this.intentos++
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/clinicas/' + this.userLogged.usr_id).then(response => {
+          this.clinicaOptions = response.data.clinicas
+          if (this.clinicaOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
           }
         })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchOptionsClinicas()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     handleOk (bvModalEvt) {
       // Prevent modal from closing
