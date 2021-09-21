@@ -416,7 +416,7 @@ export default {
       }
     },
     fetchOptionsAbogados () {
-      axios.get('/professionals/fetch').then(response => {
+      axios.get('/professionals/fetchOld').then(response => {
         this.abogadoOptions = response.data.professionals
       })
     },
