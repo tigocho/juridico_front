@@ -103,7 +103,7 @@ export default {
           localStorage.setItem('access_token', token)
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
           auth.setUserLogged(res.data.user)
-          this.$router.push({ name: 'dashboard.home-1' })
+          this.$router.push({ name: 'process.list' })
         } else {
           this.texto = 'Iniciar Sesión'
           this.estado = ''

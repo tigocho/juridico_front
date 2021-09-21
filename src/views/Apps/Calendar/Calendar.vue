@@ -152,6 +152,7 @@ import DayGridPlugin from '@fullcalendar/daygrid'
 import TimeGridPlugin from '@fullcalendar/timegrid'
 import InteractionPlugin from '@fullcalendar/interaction'
 import ListPlugin from '@fullcalendar/list'
+import auth from '@/logic/auth'
 
 import { xray } from '../../../config/pluginInit'
 import axios from 'axios'
@@ -209,6 +210,9 @@ export default {
   },
   components: { Fullcalendar },
   computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    }
   },
   methods: {
     getAgendas () {
@@ -405,12 +409,14 @@ export default {
       this.$bvModal.show('modal-audience')
     },
     fetchProcessOpened () {
-      axios.get('/process/fetchProcessOpened').then(response => {
-        this.processOpenedOptions = response.data.process
-      })
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/fetchProcessOpened/' + this.userLogged.usr_id).then(response => {
+          this.processOpenedOptions = response.data.process
+        })
+      }
     },
     fetchOptionsAbogados () {
-      axios.get('/professionals/fetch').then(response => {
+      axios.get('/professionals/fetchOld').then(response => {
         this.abogadoOptions = response.data.professionals
       })
     },

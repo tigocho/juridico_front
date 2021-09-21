@@ -1178,18 +1178,22 @@ export default {
         })
     },
     fetchOptionsClinicas () {
-      axios.get('/clinicas').then(response => {
-        this.clinicaOptions = response.data.clinicas
-        this.intentos = 0
-        this.errores = {}
-      })
-        .catch((err) => {
-          this.errores = err
-          if (this.intentos !== 2) {
-            this.fetchOptionsClinicas()
-          }
-          this.intentos++
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/clinicas/' + this.userLogged.usr_id).then(response => {
+          this.clinicaOptions = response.data.clinicas
+          this.intentos = 0
+          this.errores = {}
         })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos !== 2) {
+              this.fetchOptionsClinicas()
+            }
+            this.intentos++
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     fetchCourts () {
       axios.get('/courts/fetch').then(response => {
@@ -1335,6 +1339,17 @@ export default {
           Vue.swal('Error tratando de actualizar proceso. ' + res.data.message)
         }
       })
+        .catch(error => {
+          this.errores = error
+          if (this.intentos < 2) {
+            this.guardarProceso()
+            this.intentos++
+          } else {
+            Vue.swal('Error tratando de actualizar proceso. ' + error)
+            this.textoEditarProceso = 'Editar Proceso'
+            this.estadoBotonActualizarProceso = ''
+          }
+        })
     },
     agregarLinkProceeding () {
       if (this.nuevoLinkProceeding.link_name === null || this.nuevoLinkProceeding.link_url === null) {
@@ -1347,7 +1362,7 @@ export default {
     },
     getProcess () {
       if (this.prore_id != null) {
-        axios.get('/process/' + this.prore_id).then(res => {
+        axios.get('/process/show/' + this.prore_id).then(res => {
           setTimeout(() => {
             if (res.data.process != null) {
               this.process = res.data.process[0]

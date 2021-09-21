@@ -393,22 +393,26 @@ export default {
         })
     },
     getProcess () {
-      var user = JSON.parse(auth.getUserLogged())
-      this.user_id = user.usr_id
-      axios.get('/process/processArchived').then(response => {
-        this.process = response.data.process
-        // Set the initial number of items
-        this.totalRows = this.process.length
-        this.intentos = 0
-        this.errores = {}
-      })
-        .catch(error => {
-          this.errores = error
-          if (this.intentos < 2) {
-            this.getProcess()
-            this.intentos++
-          }
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        var user = JSON.parse(auth.getUserLogged())
+        this.user_id = user.usr_id
+        axios.get('/process/processArchived/' + this.userLogged.usr_id).then(response => {
+          this.process = response.data.process
+          // Set the initial number of items
+          this.totalRows = this.process.length
+          this.intentos = 0
+          this.errores = {}
         })
+          .catch(error => {
+            this.errores = error
+            if (this.intentos < 2) {
+              this.getProcess()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado y/o inactivo')
+      }
     },
     edit (item) {
       var editar = true
@@ -471,23 +475,27 @@ export default {
       }
     },
     descargarInforme () {
-      this.botonDescargarInforme = 'Descargando informe...'
-      this.estadoBotonDescargarInforme = 'disabled'
-      axios({
-        url: '/process/exportReportArchived',
-        method: 'GET',
-        responseType: 'blob'
-      }).then((response) => {
-        this.botonDescargarInforme = 'Descargar informe'
-        this.estadoBotonDescargarInforme = ''
-        var fechaHora = moment().format('YYYY-MM-DD hh:mm:ss')
-        FileDownload(response.data, 'report-process-archivados-' + fechaHora + '.xlsx')
-      })
-        .catch((err) => {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        this.botonDescargarInforme = 'Descargando informe...'
+        this.estadoBotonDescargarInforme = 'disabled'
+        axios({
+          url: '/process/exportReportArchived/' + this.userLogged.usr_id,
+          method: 'GET',
+          responseType: 'blob'
+        }).then((response) => {
           this.botonDescargarInforme = 'Descargar informe'
           this.estadoBotonDescargarInforme = ''
-          Vue.swal('Ups, ocurrió un error ' + err)
+          var fechaHora = moment().format('YYYY-MM-DD hh:mm:ss')
+          FileDownload(response.data, 'report-process-archivados-' + fechaHora + '.xlsx')
         })
+          .catch((err) => {
+            this.botonDescargarInforme = 'Descargar informe'
+            this.estadoBotonDescargarInforme = ''
+            Vue.swal('Ups, ocurrió un error ' + err)
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     tipoIdentificacion (tipoIdentificacionId) {
       if (tipoIdentificacionId === 1) {

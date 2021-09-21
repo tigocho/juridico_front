@@ -187,20 +187,24 @@ export default {
       this.import_file = e.target.files[0]
     },
     fetchClinicaOptions () {
-      axios.get('/clinicas/obtener-clinicas').then(response => {
-        this.clinicaOptions = response.data.clinicas
-        if (this.clinicaOptions[0] !== undefined) {
-          this.intentos = 0
-          this.errores = {}
-        }
-      })
-        .catch((err) => {
-          this.errores = err
-          if (this.intentos < 2) {
-            this.fetchClinicaOptions()
-            this.intentos++
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/clinicas/obtener-clinicas/' + this.userLogged.usr_id).then(response => {
+          this.clinicaOptions = response.data.clinicas
+          if (this.clinicaOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
           }
         })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchClinicaOptions()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     fetchAseguradoraOptions () {
       axios.get('/aseguradoras/fetch-aseguradoras').then(response => {

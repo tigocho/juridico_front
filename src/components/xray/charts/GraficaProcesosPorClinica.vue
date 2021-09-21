@@ -5,12 +5,18 @@
 import ApexCharts from 'apexcharts'
 import axios from 'axios'
 import Vue from 'vue'
+import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaProcesosPorClinica',
   props: ['element', 'isLive'],
   mounted () {
     this.obtenerDatosProcesosPorClinicas()
+  },
+  computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    }
   },
   data () {
     return {
@@ -77,36 +83,40 @@ export default {
   },
   methods: {
     obtenerDatosProcesosPorClinicas () {
-      axios.get('/process/obtener-datos-procesos-por-clinicas').then(res => {
-        if (res.data.status_code === 200) {
-          let _this = this
-          let selector = '#' + _this.element
-          this.intentos = 0
-          this.errores = {}
-          let procesosPorClinica = res.data.process
-          var datos = []
-          var clinicas = []
-          for (let index = 0; index < procesosPorClinica.length; index++) {
-            datos.push(procesosPorClinica[index].total)
-            clinicas.push(procesosPorClinica[index].clinica)
-          }
-          this.chartOptions.xaxis.categories = clinicas
-          this.chartOptions.series[0].data = datos
-          let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)
-          setTimeout(function () {
-            chart.render()
-          }, 500)
-        } else {
-          Vue.swal('Ocurrió un error tratando de obtener los datos')
-        }
-      })
-        .catch((err) => {
-          this.errores = err
-          if (this.intentos < 2) {
-            // this.obtenerDatosProcesosPorClinicas()
-            this.intentos++
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtener-datos-procesos-por-clinicas/' + this.userLogged.usr_id).then(res => {
+          if (res.data.status_code === 200) {
+            let _this = this
+            let selector = '#' + _this.element
+            this.intentos = 0
+            this.errores = {}
+            let procesosPorClinica = res.data.process
+            var datos = []
+            var clinicas = []
+            for (let index = 0; index < procesosPorClinica.length; index++) {
+              datos.push(procesosPorClinica[index].total)
+              clinicas.push(procesosPorClinica[index].clinica)
+            }
+            this.chartOptions.xaxis.categories = clinicas
+            this.chartOptions.series[0].data = datos
+            let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)
+            setTimeout(function () {
+              chart.render()
+            }, 500)
+          } else {
+            Vue.swal('Ocurrió un error tratando de obtener los datos')
           }
         })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              // this.obtenerDatosProcesosPorClinicas()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Algo salio mal')
+      }
     }
   }
 }
