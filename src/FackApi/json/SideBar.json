@@ -75,6 +75,29 @@
     ]
   },
   {
+    "title": "procesosLaborales",
+    "name": "sidebar.procesosLaborales",
+    "is_heading": false,
+    "is_active": false,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-file-list-fill",
+    "children": [
+      {
+        "title": "Process List Laborales",
+        "name": "sidebar.ListaProcesosLaboralesOrdinarios",
+        "is_active": false,
+        "link": {
+          "name" : "process-laborales-ordinario.list"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-book-mark-line"
+      }
+    ]
+  },
+  {
     "title": "policies",
     "name": "sidebar.polizas",
     "is_heading": false,
