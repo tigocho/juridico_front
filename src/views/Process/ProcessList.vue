@@ -69,11 +69,14 @@
             </b-col>
             <b-col md="4">
               <b-form-group label="Tipo de actuación*" label-for="proce_sta_id">
-                <b-form-select plain v-model="proceeding.proce_sta_id" :options="statusProcessOptions" id="proce_sta_id">
-                  <template v-slot:first>
-                    <b-form-select-option :value="null" disabled>Seleccione un estado</b-form-select-option>
-                  </template>
-                </b-form-select>
+                <v-select
+                  v-model="proceeding.proce_sta_id"
+                  :options="statusProcessOptions"
+                  :reduce="label => label.code"
+                  label="label" id="proce_pro_id"
+                  >
+                  <span slot="no-options">No hay actuaciones.</span>
+                </v-select>
               </b-form-group>
             </b-col>
             <b-col md="4">
