@@ -479,7 +479,7 @@ export default {
         this.botonDescargarInforme = 'Descargando informe...'
         this.estadoBotonDescargarInforme = 'disabled'
         axios({
-          url: '/process/exportReportArchived/' + this.userLogged.usr_id,
+          url: '/process/export-report-laborales-ordinarios-archived/' + this.userLogged.usr_id,
           method: 'GET',
           responseType: 'blob'
         }).then((response) => {
