@@ -157,7 +157,7 @@
           </template>
           <template v-slot:body>
             <b-row>
-              <b-col sm="3" md="2" class="my-1">
+              <b-col sm="3" md="3" class="my-1">
                 <b-form-group
                   label="Por página"
                   label-for="per-page-select"
@@ -209,7 +209,7 @@
                 </b-form-group>
               </b-col>
 
-              <b-col sm="5" md="6" class="my-1">
+              <b-col sm="5" md="5" class="my-1">
                 <b-form-group
                   label="Buscar"
                   label-for="filter-input"
