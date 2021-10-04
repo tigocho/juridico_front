@@ -186,7 +186,7 @@
             <li class="list-inline-item"><a href="#">Términos y condiciones</a></li>
           </template>
           <template v-slot:right>
-            Copyright 2021 <a href="#">Juridico App V 1.0</a> Todos los derechos reservados.
+            Copyright 2021 <a href="#">Juridico App V 1.0.1</a> Todos los derechos reservados.
           </template>
         </FooterStyle1>
       </div>

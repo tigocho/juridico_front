@@ -69,14 +69,11 @@
             </b-col>
             <b-col md="4">
               <b-form-group label="Tipo de actuación*" label-for="proce_sta_id">
-                <v-select
-                  v-model="proceeding.proce_sta_id"
-                  :options="statusProcessOptions"
-                  :reduce="label => label.code"
-                  label="label" id="proce_pro_id"
-                  >
-                  <span slot="no-options">No hay actuaciones.</span>
-                </v-select>
+                <b-form-select plain v-model="proceeding.proce_sta_id" :options="statusProcessOptions" id="proce_sta_id">
+                  <template v-slot:first>
+                    <b-form-select-option :value="null" disabled>Seleccione un estado</b-form-select-option>
+                  </template>
+                </b-form-select>
               </b-form-group>
             </b-col>
             <b-col md="4">
@@ -152,7 +149,7 @@
       <b-col lg="12">
         <iq-card>
           <template v-slot:headerTitle>
-            <h4 class="card-title">Litigios/Solicitudes</h4>
+            <h4 class="card-title">Litigios de proceso laborales</h4>
           </template>
           <template v-slot:headerAction>
             <b-button variant="primary" class="mr-2" @click="importarArchivo" >Importar procesos</b-button>
@@ -191,13 +188,6 @@
                   label-size="sm"
                   class="mb-0"
                 >
-                  <!-- <b-form-select
-                    id="per-page-select"
-                    v-model="clinicaId"
-                    :options="clinicaOptions"
-                    size="sm"
-                    class="w-50"
-                  ></b-form-select> -->
                   <v-select
                     v-model="clinicaId"
                     :options="clinicaOptions"
@@ -207,7 +197,7 @@
                     id="clinica_id"
                     :class="(errors.length > 0 ? ' is-invalid' : '')"
                     >
-                    <span slot="no-options">No hay perfiles.</span>
+                    <span slot="no-options">No hay clinicas.</span>
                   </v-select>
                 </b-form-group>
               </b-col>
@@ -461,7 +451,7 @@ export default {
     getProcess () {
       var user = JSON.parse(auth.getUserLogged())
       this.user_id = user.usr_id
-      axios.get('/process/' + this.user_id).then(response => {
+      axios.get('process/process-laborales-ordinarios/' + this.user_id).then(response => {
         this.process = response.data.process
         // Set the initial number of items
         this.totalRows = this.process.length
@@ -541,14 +531,14 @@ export default {
         this.botonDescargarInforme = 'Descargando informe...'
         this.estadoBotonDescargarInforme = 'disabled'
         axios({
-          url: '/process/exportReport/' + this.userLogged.usr_id,
+          url: '/process/export-report-laborales-ordinarios/' + this.userLogged.usr_id,
           method: 'GET',
           responseType: 'blob'
         }).then((response) => {
           this.botonDescargarInforme = 'Descargar informe'
           this.estadoBotonDescargarInforme = ''
           var fechaHora = moment().format('YYYY-MM-DD hh:mm:ss')
-          FileDownload(response.data, 'report-process-activos-' + fechaHora + '.xlsx')
+          FileDownload(response.data, 'report-process-laborales-ordinarios-activos-' + fechaHora + '.xlsx')
         })
           .catch((err) => {
             this.botonDescargarInforme = 'Descargar informe'
@@ -663,7 +653,7 @@ export default {
     },
     cambioClinica (clinicaId) {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('process/obtener-procesos-activos-clinica/' + clinicaId + '/' + this.userLogged.usr_id).then(response => {
+        axios.get('process/obtener-procesos-laborales-ordinario-activos-clinica/' + clinicaId + '/' + this.userLogged.usr_id).then(response => {
           this.process = response.data.process
           // Set the initial number of items
           this.totalRows = this.process.length

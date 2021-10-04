@@ -70,8 +70,42 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-book-mark-line"
+        "icon": "ri-inbox-archive-fill"
       }      
+    ]
+  },
+  {
+    "title": "procesosLaborales",
+    "name": "sidebar.procesosLaborales",
+    "is_heading": false,
+    "is_active": false,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-government-fill",
+    "children": [
+      {
+        "title": "Process List Laborales",
+        "name": "sidebar.ListaProcesosLaboralesOrdinarios",
+        "is_active": false,
+        "link": {
+          "name" : "process-laborales-ordinario.list"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-book-mark-line"
+      },
+      {
+        "title": "Process Archived Laborales",
+        "name": "sidebar.ProcesosArchivadosLaboralesOrdinarios",
+        "is_active": false,
+        "link": {
+          "name" : "process-laborales-ordinario.archivados"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill"
+      }
     ]
   },
   {

@@ -1920,21 +1920,22 @@ export default {
     },
     guardarAsociacionPoliza () {
       const toke = localStorage.getItem('access_token')
-      axios.post('/process/asociar-poliza/' + this.prore_id + '/' + this.poliza_relacion + '/' + this.obtenerIdUsuario(), { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
-        // Hide the modal manually
-        if (res.data.status_code === 200) {
-          this.$bvModal.hide('modal-asociar-poliza')
-          this.botonGuardarModal = ''
-          this.textoGuardarModal = 'Guardar'
-          this.poliza_relacion = ''
-          Vue.swal(res.data.message)
-          this.obtenerPolizas()
-        } else {
-          this.botonGuardarModal = ''
-          this.textoGuardarModal = 'Guardar'
-          Vue.swal(res.data.message)
-        }
-      })
+      axios.post('/process/asociar-poliza/' + this.prore_id + '/' + this.poliza_relacion + '/' + this.obtenerIdUsuario(), { headers: { 'Authorization': `Bearer ${toke}` } })
+        .then(res => {
+          // Hide the modal manually
+          if (res.data.status_code === 200) {
+            this.$bvModal.hide('modal-asociar-poliza')
+            this.botonGuardarModal = ''
+            this.textoGuardarModal = 'Guardar'
+            this.poliza_relacion = ''
+            Vue.swal(res.data.message)
+            this.obtenerPolizas()
+          } else {
+            this.botonGuardarModal = ''
+            this.textoGuardarModal = 'Guardar'
+            Vue.swal(res.data.message)
+          }
+        })
         .catch((err) => {
           this.errores = err
           this.botonGuardarModal = ''

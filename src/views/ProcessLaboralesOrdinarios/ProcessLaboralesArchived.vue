@@ -69,14 +69,11 @@
             </b-col>
             <b-col md="4">
               <b-form-group label="Tipo de actuación*" label-for="proce_sta_id">
-                <v-select
-                  v-model="proceeding.proce_sta_id"
-                  :options="statusProcessOptions"
-                  :reduce="label => label.code"
-                  label="label" id="proce_pro_id"
-                  >
-                  <span slot="no-options">No hay actuaciones.</span>
-                </v-select>
+                <b-form-select plain v-model="proceeding.proce_sta_id" :options="statusProcessOptions" id="proce_sta_id">
+                  <template v-slot:first>
+                    <b-form-select-option :value="null" disabled>Seleccione un estado</b-form-select-option>
+                  </template>
+                </b-form-select>
               </b-form-group>
             </b-col>
             <b-col md="4">
@@ -160,7 +157,7 @@
           </template>
           <template v-slot:body>
             <b-row>
-              <b-col sm="3" md="3" class="my-1">
+              <b-col sm="4" md="3" class="my-1">
                 <b-form-group
                   label="Por página"
                   label-for="per-page-select"
@@ -181,38 +178,7 @@
                 </b-form-group>
               </b-col>
 
-              <b-col sm="4" md="4" class="my-1">
-                <b-form-group
-                  label="Clinica"
-                  label-cols-sm="2"
-                  label-cols-md="2"
-                  label-cols-lg="3"
-                  label-align-sm="left"
-                  label-size="sm"
-                  class="mb-0"
-                >
-                  <!-- <b-form-select
-                    id="per-page-select"
-                    v-model="clinicaId"
-                    :options="clinicaOptions"
-                    size="sm"
-                    class="w-50"
-                  ></b-form-select> -->
-                  <v-select
-                    v-model="clinicaId"
-                    :options="clinicaOptions"
-                    @input="cambioClinica($event)"
-                    :reduce="label => label.code"
-                    label="label"
-                    id="clinica_id"
-                    :class="(errors.length > 0 ? ' is-invalid' : '')"
-                    >
-                    <span slot="no-options">No hay perfiles.</span>
-                  </v-select>
-                </b-form-group>
-              </b-col>
-
-              <b-col sm="5" md="5" class="my-1">
+              <b-col sm="8" md="9" class="my-1">
                 <b-form-group
                   label="Buscar"
                   label-for="filter-input"
@@ -259,10 +225,6 @@
               <template #cell(actions)="row">
                 <b-dropdown variant="primary" text="Acciones">
                   <b-dropdown-item @click="verDetalle(row.item.prore_id)">Abrir</b-dropdown-item>
-                  <b-dropdown-item @click="edit(row.item.prore_id)">Editar</b-dropdown-item>
-                  <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
-                  ">+ Actuación</b-dropdown-item>
-                  <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
                 </b-dropdown>
               </template>
             </b-table>
@@ -368,8 +330,6 @@ export default {
         title: '',
         content: ''
       },
-      clinicaId: null,
-      clinicaOptions: [],
       links: {},
       intentos: 0,
       errores: {}
@@ -395,37 +355,11 @@ export default {
     this.getTypeNotifications()
     setTimeout(() => {
       this.getEstadosProceso()
-      this.fetchClinicaOptions()
     }, 500)
   },
   methods: {
     importarArchivo () {
       this.$router.push({ path: `/process/process-import` })
-    },
-    fetchClinicaOptions () {
-      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/clinicas/obtener-clinicas/' + this.userLogged.usr_id).then(response => {
-          this.clinicaOptions = response.data.clinicas
-          if (this.clinicaOptions[0] !== undefined) {
-            this.intentos = 0
-            this.errores = {}
-            if (this.clinicaOptions.length === 1) {
-              this.clinicaId = this.clinicaOptions[0].code
-            } else {
-              this.clinicaOptions.push({ code: 0, label: 'Todos' })
-            }
-          }
-        })
-          .catch((err) => {
-            this.errores = err
-            if (this.intentos < 2) {
-              this.fetchClinicaOptions()
-              this.intentos++
-            }
-          })
-      } else {
-        Vue.swal('Usuario no logueado o inactivo')
-      }
     },
     getTypeNotifications () {
       axios.get('/type_notifications/fetchTypeNotifications').then(response => {
@@ -459,22 +393,26 @@ export default {
         })
     },
     getProcess () {
-      var user = JSON.parse(auth.getUserLogged())
-      this.user_id = user.usr_id
-      axios.get('/process/' + this.user_id).then(response => {
-        this.process = response.data.process
-        // Set the initial number of items
-        this.totalRows = this.process.length
-        this.intentos = 0
-        this.errores = {}
-      })
-        .catch(error => {
-          this.errores = error
-          if (this.intentos < 2) {
-            this.getProcess()
-            this.intentos++
-          }
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        var user = JSON.parse(auth.getUserLogged())
+        this.user_id = user.usr_id
+        axios.get('/process/procesos-laborales-ordinarios-archived/' + this.userLogged.usr_id).then(response => {
+          this.process = response.data.process
+          // Set the initial number of items
+          this.totalRows = this.process.length
+          this.intentos = 0
+          this.errores = {}
         })
+          .catch(error => {
+            this.errores = error
+            if (this.intentos < 2) {
+              this.getProcess()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado y/o inactivo')
+      }
     },
     edit (item) {
       var editar = true
@@ -507,7 +445,7 @@ export default {
       })
     },
     fetchOptionsAbogados () {
-      axios.get('/professionals/fetchOld').then(response => {
+      axios.get('/professionals/fetch').then(response => {
         this.abogadoOptions = response.data.professionals
       })
     },
@@ -541,14 +479,14 @@ export default {
         this.botonDescargarInforme = 'Descargando informe...'
         this.estadoBotonDescargarInforme = 'disabled'
         axios({
-          url: '/process/exportReport/' + this.userLogged.usr_id,
+          url: '/process/exportReportArchived/' + this.userLogged.usr_id,
           method: 'GET',
           responseType: 'blob'
         }).then((response) => {
           this.botonDescargarInforme = 'Descargar informe'
           this.estadoBotonDescargarInforme = ''
           var fechaHora = moment().format('YYYY-MM-DD hh:mm:ss')
-          FileDownload(response.data, 'report-process-activos-' + fechaHora + '.xlsx')
+          FileDownload(response.data, 'report-process-laborales-ordinarios-archivados-' + fechaHora + '.xlsx')
         })
           .catch((err) => {
             this.botonDescargarInforme = 'Descargar informe'
@@ -660,26 +598,6 @@ export default {
           this.estadoBotonEliminarLinkProceeding = ''
           Vue.swal(err)
         })
-    },
-    cambioClinica (clinicaId) {
-      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('process/obtener-procesos-activos-clinica/' + clinicaId + '/' + this.userLogged.usr_id).then(response => {
-          this.process = response.data.process
-          // Set the initial number of items
-          this.totalRows = this.process.length
-          this.intentos = 0
-          this.errores = {}
-        })
-          .catch(error => {
-            this.errores = error
-            if (this.intentos < 2) {
-              this.getProcess()
-              this.intentos++
-            }
-          })
-      } else {
-        Vue.swal('Usuario no logueado o inactivo')
-      }
     },
     agregarLinkProceeding () {
       if (this.nuevoLinkProceeding.link_name === null || this.nuevoLinkProceeding.link_url === null) {
