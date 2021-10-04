@@ -157,7 +157,7 @@
           </template>
           <template v-slot:body>
             <b-row>
-              <b-col sm="3" md="2" class="my-1">
+              <b-col sm="3" md="3" class="my-1">
                 <b-form-group
                   label="Por página"
                   label-for="per-page-select"
@@ -202,7 +202,7 @@
                 </b-form-group>
               </b-col>
 
-              <b-col sm="5" md="6" class="my-1">
+              <b-col sm="5" md="5" class="my-1">
                 <b-form-group
                   label="Buscar"
                   label-for="filter-input"
@@ -291,7 +291,7 @@ export default {
     return {
       estadoBotonEliminarLinkProceeding: '',
       botonDescargarInforme: 'Descargar Informe',
-      estadoBotonDescargarInforme: 'disabled',
+      estadoBotonDescargarInforme: '',
       botonGuardarModal: '',
       textoGuardarActuacion: 'Guardar',
       botonEliminarModal: '',
@@ -451,7 +451,7 @@ export default {
     getProcess () {
       var user = JSON.parse(auth.getUserLogged())
       this.user_id = user.usr_id
-      axios.get('/process-laborales-ordinarios/' + this.user_id).then(response => {
+      axios.get('process/process-laborales-ordinarios/' + this.user_id).then(response => {
         this.process = response.data.process
         // Set the initial number of items
         this.totalRows = this.process.length
@@ -531,14 +531,14 @@ export default {
         this.botonDescargarInforme = 'Descargando informe...'
         this.estadoBotonDescargarInforme = 'disabled'
         axios({
-          url: '/process/exportReport/' + this.userLogged.usr_id,
+          url: '/process/export-report-laborales-ordinarios/' + this.userLogged.usr_id,
           method: 'GET',
           responseType: 'blob'
         }).then((response) => {
           this.botonDescargarInforme = 'Descargar informe'
           this.estadoBotonDescargarInforme = ''
           var fechaHora = moment().format('YYYY-MM-DD hh:mm:ss')
-          FileDownload(response.data, 'report-process-activos-' + fechaHora + '.xlsx')
+          FileDownload(response.data, 'report-process-laborales-ordinarios-activos-' + fechaHora + '.xlsx')
         })
           .catch((err) => {
             this.botonDescargarInforme = 'Descargar informe'

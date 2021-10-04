@@ -15,7 +15,7 @@ import ProcessList from '../views/Process/ProcessList'
 import ProcesosArchivados from '../views/Process/ProcessArchived'
 /* Process Laborales Ordinarios */
 import ProcessLaboralesList from '../views/ProcessLaboralesOrdinarios/ProcessLaboralesList'
-// import ProcessLaboralesArchived from '../views/ProcessLaboralesOrdinarios/ProcessLaboralesArchived'
+import ProcessLaboralesArchived from '../views/ProcessLaboralesOrdinarios/ProcessLaboralesArchived'
 /* Policies View */
 import PoliciesList from '../views/Policies/PoliciesList'
 import AddPolicy from '../views/Policies/AddPolicy'
@@ -586,6 +586,12 @@ const processLaboralOrdinarioChildRoute = (prop, mode = false) => [
     name: prop + '.list',
     meta: { dark: mode, auth: true, name: 'Process List' },
     component: ProcessLaboralesList
+  },
+  {
+    path: 'process-laborales-ordinario-archivados',
+    name: prop + '.archivados',
+    meta: { dark: mode, auth: true, name: 'Process Laborales Archivados' },
+    component: ProcessLaboralesArchived
   }
 ]
 
