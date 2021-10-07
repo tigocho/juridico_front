@@ -96,7 +96,7 @@
         </b-form-group>
         <b-row>
           <b-col md="12">
-            <b-form-group  class="sm-6" label="ID del Proceso" label-for="agen_prore_id">
+            <b-form-group  class="sm-6" label="Radicado del Proceso" label-for="agen_prore_id">
               <b-form-select v-model="formData.agen_prore_id" :options="processOpenedOptions" id="selectuserrole" >
                 <template v-slot:first>
                   <b-form-select-option :value="null" disabled>Seleccione un proceso</b-form-select-option>
@@ -355,6 +355,7 @@ export default {
       this.formData.agen_pro_id = ''
       this.formData.agen_start_date = ''
       this.formData.agen_end_date = ''
+      this.formData.duracion = ''
       this.formData.sch_start_hour = ''
       this.formData.sch_id = ''
       this.formData.sch_end_hour = ''
