@@ -96,7 +96,7 @@
         </b-form-group>
         <b-row>
           <b-col md="12">
-            <b-form-group  class="sm-6" label="ID del Proceso" label-for="agen_prore_id">
+            <b-form-group  class="sm-6" label="Radicado del Proceso" label-for="agen_prore_id">
               <b-form-select v-model="formData.agen_prore_id" :options="processOpenedOptions" id="selectuserrole" >
                 <template v-slot:first>
                   <b-form-select-option :value="null" disabled>Seleccione un proceso</b-form-select-option>
@@ -117,7 +117,10 @@
           </b-col>
         </b-row>
         <b-form-group label="Fecha de Inicio" label-for="agen_start_date">
-          <b-form-input id="exampleInputdate" v-model="formData.agen_start_date" type="date"></b-form-input>
+          <b-form-input id="exampleInputdate" @change="calcularFechaFinal" v-model="formData.agen_start_date" type="date"></b-form-input>
+        </b-form-group>
+        <b-form-group label="Duración del evento (días)" label-for="duracion">
+          <b-form-input id="duracion" @keyup="calcularFechaFinal" v-model="formData.duracion" type="number"></b-form-input>
         </b-form-group>
         <b-form-group label="Fecha Final" label-for="agen_end_date">
           <b-form-input id="exampleInputdate" v-model="formData.agen_end_date" type="date"></b-form-input>
@@ -193,7 +196,8 @@ export default {
       sch_start_hour: '',
       sch_end_hour: '',
       agen_type_eve_id: '',
-      agen_type_not_id: ''
+      agen_type_not_id: '',
+      duracion: ''
     },
     usuarios: []
   }),
@@ -351,6 +355,7 @@ export default {
       this.formData.agen_pro_id = ''
       this.formData.agen_start_date = ''
       this.formData.agen_end_date = ''
+      this.formData.duracion = ''
       this.formData.sch_start_hour = ''
       this.formData.sch_id = ''
       this.formData.sch_end_hour = ''
@@ -453,6 +458,22 @@ export default {
         i = '0' + i
       }
       return i
+    },
+    calcularFechaFinal () {
+      const token = localStorage.getItem('access_token')
+      let duracion = this.formData.duracion
+      let fechaInicial = this.formData.agen_start_date
+      if (duracion !== '' && fechaInicial !== '') {
+        axios.get('/agenda/obtener-fecha-final/' + fechaInicial + '/' + duracion, { headers: { 'Authorization': token } })
+          .then((res) => {
+            if (res.data.status_code === 200) {
+              this.formData.agen_end_date = res.data.fecha_final
+            }
+          })
+          .catch((err) => {
+            Vue.swal('Ups, ocurrió un error ' + err)
+          })
+      }
     }
   }
 }
