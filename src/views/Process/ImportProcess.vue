@@ -177,10 +177,7 @@ export default {
         formData.append('import_file', this.import_file)
         var user = JSON.parse(auth.getUserLogged())
         this.user_id = user.usr_id
-        const token = localStorage.getItem('access_token')
-        axios.post('/process/importar-nuevos-procesos', formData, {
-          headers: { 'Authorization': token }
-        })
+        axios.post('/process/importar-nuevos-procesos', formData)
           .then(response => {
             this.$refs.import_file.reset()
             this.$refs.import_file.value = null
@@ -227,10 +224,7 @@ export default {
         formData.append('implicated_file', this.implicated_file)
         var user = JSON.parse(auth.getUserLogged())
         this.user_id = user.usr_id
-        const token = localStorage.getItem('access_token')
-        axios.post('/implicateds/importar-nuevos-implicateds', formData, {
-          headers: { 'Authorization': token }
-        })
+        axios.post('/implicateds/importar-nuevos-implicateds', formData)
           .then(response => {
             this.$refs.implicated_file.reset()
             this.$refs.implicated_file.value = null

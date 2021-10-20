@@ -362,17 +362,17 @@ export default {
       if (this.checkFormAfectacion()) {
         this.botonGuardarModal = 'disabled'
         this.textoGuardarAfectacion = 'Guardando afectación...'
-        const token = localStorage.getItem('access_token')
         if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
           this.afectacionPoliza.pol_affe_user_id = this.userLogged.usr_id
         }
-        axios.post('/policyAffectation/registrar-afectacion', this.afectacionPoliza, { headers: { 'Authorization': token } }).then(res => {
+        axios.post('/policyAffectation/registrar-afectacion', this.afectacionPoliza).then(res => {
           this.textoGuardarAfectacion = 'Guardar'
           this.botonGuardarModal = ''
           if (res.data.status_code === 200) {
             Vue.swal(res.data.message)
             this.$bvModal.hide('modal-nueva-afectacion')
             this.limpiarModalAfectacion()
+            this.fetchPolicies()
           } else {
             Vue.swal(res.data.message)
           }

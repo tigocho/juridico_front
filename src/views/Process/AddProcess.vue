@@ -557,8 +557,7 @@ export default {
       }
       this.textoBoton = 'Guardando...'
       this.estadoBoton = 'disabled'
-      const toke = localStorage.getItem('access_token')
-      axios.post('/process/store', { formulario: this.formData }, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+      axios.post('/process/store', { formulario: this.formData }).then(res => {
         this.textoBoton = 'Guardar'
         this.estadoBoton = ''
         if (res.data.status_code === 200) {
@@ -605,8 +604,7 @@ export default {
       }
     },
     handleSubmit () {
-      const toke = localStorage.getItem('access_token')
-      axios.post('/courts/store', this.nuevo_court, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+      axios.post('/courts/store', this.nuevo_court).then(res => {
         // Hide the modal manually
         this.$nextTick(() => {
           this.$bvModal.hide('modal-crear-juzagado')

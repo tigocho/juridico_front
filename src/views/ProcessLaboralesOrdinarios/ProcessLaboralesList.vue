@@ -485,12 +485,10 @@ export default {
       }
     },
     handleSubmit () {
-      const token = localStorage.getItem('access_token')
-      axios.post('/agenda/guardarAudiencia', this.agenda, { headers: { 'Authorization': token } }).then(res => {
+      axios.post('/agenda/guardarAudiencia', this.agenda).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal('Audiencia agendada al proceso correctamente')
           this.$bvModal.hide('modal-lg')
-          this.$router.push({ name: 'process.list' })
         } else {
           Vue.swal('Datos no validos')
         }
@@ -568,11 +566,10 @@ export default {
       if (this.checkFormActuacion()) {
         this.botonGuardarModal = 'disabled'
         this.textoGuardarActuacion = 'Guardando actuación...'
-        const token = localStorage.getItem('access_token')
         if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
           this.proceeding.proce_user_id = this.userLogged.usr_id
         }
-        axios.post('/proceedings/store', { formulario_proceeding: this.proceeding, links: this.linksProceeding }, { headers: { 'Authorization': token } }).then(res => {
+        axios.post('/proceedings/store', { formulario_proceeding: this.proceeding, links: this.linksProceeding }).then(res => {
           this.textoGuardarActuacion = 'Guardar'
           this.botonGuardarModal = ''
           if (res.data.status_code === 200) {

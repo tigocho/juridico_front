@@ -442,7 +442,7 @@ export default {
       }
     },
     fetchClinicaOptions () {
-      axios.get('/clinicas/obtener-clinicas').then(response => {
+      axios.get('/clinicas/obtener-clinicas/' + this.userLogged.usr_id).then(response => {
         this.clinicaOptions = response.data.clinicas
         if (this.clinicaOptions[0] !== undefined) {
           this.intentos = 0
@@ -515,7 +515,6 @@ export default {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         this.poliza.pol_user_id = this.userLogged.usr_id
       }
-      const toke = localStorage.getItem('access_token')
       let formData = new FormData()
       formData.append('import_file', this.import_file)
       formData.append('pol_ase_id', this.poliza.pol_ase_id)
@@ -530,7 +529,7 @@ export default {
       formData.append('pol_provisiones', this.poliza.pol_provisiones)
       formData.append('pol_estado', this.poliza.pol_estado)
       formData.append('pol_user_id', this.poliza.pol_user_id)
-      axios.post('/policy/actualizar-poliza/' + this.poliza.pol_id, formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+      axios.post('/policy/actualizar-poliza/' + this.poliza.pol_id, formData).then(res => {
         this.textoEditarPoliza = 'Editar Poliza'
         this.estadoBotonActualizarPoliza = ''
         if (res.data.status_code === 200) {
@@ -587,12 +586,11 @@ export default {
       if (this.checkFormAfectacion()) {
         this.botonGuardarModal = 'disabled'
         this.textoGuardarModal = 'Guardando...'
-        const token = localStorage.getItem('access_token')
         if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
           this.afectacionPoliza.pol_affe_user_id = this.userLogged.usr_id
         }
         if (this.afectacionPoliza.pol_affe_id != null) {
-          axios.post('/policyAffectation/actualizar-afectacion/' + this.afectacionPoliza.pol_affe_id, this.afectacionPoliza, { headers: { 'Authorization': token } }).then(res => {
+          axios.post('/policyAffectation/actualizar-afectacion/' + this.afectacionPoliza.pol_affe_id, this.afectacionPoliza).then(res => {
             this.textoGuardarModal = 'Guardar'
             this.botonGuardarModal = ''
             if (res.data.status_code === 200) {
@@ -610,7 +608,7 @@ export default {
               Vue.swal('Ups, ocurrió un error ' + err)
             })
         } else {
-          axios.post('/policyAffectation/registrar-afectacion', this.afectacionPoliza, { headers: { 'Authorization': token } }).then(res => {
+          axios.post('/policyAffectation/registrar-afectacion', this.afectacionPoliza).then(res => {
             this.textoGuardarModal = 'Guardar'
             this.botonGuardarModal = ''
             if (res.data.status_code === 200) {
@@ -633,8 +631,7 @@ export default {
       }
     },
     getAfectaciones () {
-      const token = localStorage.getItem('access_token')
-      axios.get('/policyAffectation/obtener-afectaciones/' + this.pol_id, { headers: { 'Authorization': token } }).then(response => {
+      axios.get('/policyAffectation/obtener-afectaciones/' + this.pol_id).then(response => {
         this.afectacionesKey++
         this.intentos = 0
         this.afectacionesPoliza = response.data.afectaciones
@@ -722,11 +719,10 @@ export default {
         })
     },
     confirmDeleteAfectacion (afectacionId) {
-      const token = localStorage.getItem('access_token')
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         this.user_id = this.userLogged.usr_id
       }
-      axios.post('/policyAffectation/delete/' + afectacionId + '/' + this.user_id, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.post('/policyAffectation/delete/' + afectacionId + '/' + this.user_id).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal(res.data.message)
           this.getPolicy()
