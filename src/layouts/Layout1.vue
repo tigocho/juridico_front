@@ -310,9 +310,8 @@ export default {
       }
     },
     cambiarPassword () {
-      const token = localStorage.getItem('access_token')
       if (this.userLogged.usr_id !== undefined) {
-        axios.post('/users/update/' + this.userLogged.usr_id, { 'newPassword': this.newPassword }, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+        axios.post('/users/update/' + this.userLogged.usr_id, { 'newPassword': this.newPassword }).then(res => {
           this.$nextTick(() => {
             this.$bvModal.hide('modal-prevent-closing')
           })
