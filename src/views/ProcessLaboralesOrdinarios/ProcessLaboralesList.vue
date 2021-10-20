@@ -485,7 +485,6 @@ export default {
       }
     },
     handleSubmit () {
-      // const token = localStorage.getItem('access_token')
       axios.post('/agenda/guardarAudiencia', this.agenda).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal('Audiencia agendada al proceso correctamente')
