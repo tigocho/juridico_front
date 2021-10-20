@@ -1514,8 +1514,7 @@ export default {
         if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
           this.formData.prore_user_id = this.userLogged.usr_id
         }
-        const toke = localStorage.getItem('access_token')
-        axios.post('/process/update/' + this.proc_id, { formulario: this.formData, links: this.links, implicated: this.implicated }, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+        axios.post('/process/update/' + this.proc_id, { formulario: this.formData, links: this.links, implicated: this.implicated }).then(res => {
           this.botonActualizarProceso = 'Actualizar involucrados'
           this.estadoBotonActualizarProceso = ''
           if (res.data.status_code === 200) {
@@ -1580,8 +1579,7 @@ export default {
       }
     },
     handleSubmit () {
-      const toke = localStorage.getItem('access_token')
-      axios.post('/courts/store', this.nuevo_court, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+      axios.post('/courts/store', this.nuevo_court).then(res => {
         // Hide the modal manually
         this.$nextTick(() => {
           this.$bvModal.hide('modal-crear-juzgado')
@@ -1615,8 +1613,7 @@ export default {
       }
       this.links.push({ link_id: 1, link_name: this.nuevoLink.link_name, link_url: this.nuevoLink.link_url })
       this.nuevoLink.link_user_id = this.userLogged.usr_id
-      const token = localStorage.getItem('access_token')
-      axios.post('/links/store', this.nuevoLink, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.post('/links/store', this.nuevoLink).then(res => {
         if (res.data.status_code === 200) {
           this.nuevoLink.link_name = ''
           this.nuevoLink.link_url = ''
@@ -1655,8 +1652,7 @@ export default {
         })
     },
     ejecutarEliminacionLink (linkId) {
-      const token = localStorage.getItem('access_token')
-      axios.post('/links/delete/' + linkId, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.post('/links/delete/' + linkId).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal(res.data.message)
           this.getLinksProcess(this.proc_id)

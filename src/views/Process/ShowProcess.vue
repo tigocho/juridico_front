@@ -1316,8 +1316,7 @@ export default {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         this.process.prore_user_id = this.userLogged.usr_id
       }
-      const toke = localStorage.getItem('access_token')
-      axios.post('/process/updateInfoProceso/' + this.prore_id, this.process, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+      axios.post('/process/updateInfoProceso/' + this.prore_id, this.process).then(res => {
         this.textoEditarProceso = 'Editar Proceso'
         this.estadoBotonActualizarProceso = ''
         this.estadoBotonActualizarCuantias = ''
@@ -1388,12 +1387,11 @@ export default {
         this.proceeding.proce_prore_id = this.prore_id
         this.botonGuardarModal = 'disabled'
         this.textoGuardarModal = 'Guardando...'
-        const token = localStorage.getItem('access_token')
         if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
           this.proceeding.proce_user_id = this.userLogged.usr_id
         }
         if (this.proceeding.proce_id != null) {
-          axios.post('/proceedings/update/' + this.proceeding.proce_id, { formulario_proceeding: this.proceeding, links: this.linksProceeding }, { headers: { 'Authorization': token } }).then(res => {
+          axios.post('/proceedings/update/' + this.proceeding.proce_id, { formulario_proceeding: this.proceeding, links: this.linksProceeding }).then(res => {
             this.textoGuardarModal = 'Guardar'
             this.botonGuardarModal = ''
             if (res.data.status_code === 200) {
@@ -1411,7 +1409,7 @@ export default {
               Vue.swal('Ups, ocurrió un error ' + err)
             })
         } else {
-          axios.post('/proceedings/store', { formulario_proceeding: this.proceeding, links: this.linksProceeding }, { headers: { 'Authorization': token } }).then(res => {
+          axios.post('/proceedings/store', { formulario_proceeding: this.proceeding, links: this.linksProceeding }).then(res => {
             this.textoGuardarModal = 'Guardar'
             this.botonGuardarModal = ''
             if (res.data.status_code === 200) {
@@ -1434,8 +1432,7 @@ export default {
       }
     },
     getProceedings () {
-      const token = localStorage.getItem('access_token')
-      axios.get('/proceedings/getProceedingsProcessRequest/' + this.prore_id, { headers: { 'Authorization': token } }).then(response => {
+      axios.get('/proceedings/getProceedingsProcessRequest/' + this.prore_id).then(response => {
         this.proceedingKey++
         this.intentos = 0
         this.proceedings = response.data.proceedings
@@ -1546,11 +1543,10 @@ export default {
         })
     },
     confirmDeleteProceeding (proceId) {
-      const token = localStorage.getItem('access_token')
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         this.user_id = this.userLogged.usr_id
       }
-      axios.post('/proceedings/delete/' + proceId + '/' + this.user_id, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.post('/proceedings/delete/' + proceId + '/' + this.user_id).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal(res.data.message)
           this.getProceedings()
@@ -1591,12 +1587,11 @@ export default {
     submitLink (linkFor) {
       if (this.checkFormLink(linkFor)) {
         linkFor.editable = false
-        const token = localStorage.getItem('access_token')
         if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
           this.user_id = this.userLogged.usr_id
         }
         if (linkFor.link_id != null) {
-          axios.post('/links/update/' + linkFor.link_id + '/' + this.user_id, linkFor, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+          axios.post('/links/update/' + linkFor.link_id + '/' + this.user_id, linkFor).then(res => {
             if (res.data.status_code === 200) {
               Vue.swal(res.data.message)
             } else {
@@ -1607,7 +1602,7 @@ export default {
               Vue.swal('Algo salio mal ' + err)
             })
         } else {
-          axios.post('/links/store', linkFor, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+          axios.post('/links/store', linkFor).then(res => {
             if (res.data.status_code === 200) {
               Vue.swal(res.data.message)
               var linkIndex = this.links.indexOf(linkFor)
@@ -1648,12 +1643,11 @@ export default {
         })
     },
     confirmacionEliminacionLink (linkFor) {
-      const token = localStorage.getItem('access_token')
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         this.user_id = this.userLogged.usr_id
       }
       if (linkFor.link_id != null) {
-        axios.post('/links/delete/' + linkFor.link_id + '/' + this.user_id, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+        axios.post('/links/delete/' + linkFor.link_id + '/' + this.user_id).then(res => {
           if (res.data.status_code === 200) {
             var linkIndex = this.links.indexOf(linkFor)
             this.links.splice(linkIndex, 1)
@@ -1671,8 +1665,7 @@ export default {
       }
     },
     getImplicateds () {
-      const token = localStorage.getItem('access_token')
-      axios.get('/implicateds/get-implicateds-process/' + this.prore_id, { headers: { 'Authorization': token } }).then(response => {
+      axios.get('/implicateds/get-implicateds-process/' + this.prore_id).then(response => {
         this.implicatedKey++
         this.intentos = 0
         this.implicateds = response.data.implicateds
@@ -1715,8 +1708,7 @@ export default {
       }
     },
     ejecutarCreacionImplicated () {
-      const token = localStorage.getItem('access_token')
-      axios.post('/implicateds/store', this.nuevoImplicated, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.post('/implicateds/store', this.nuevoImplicated).then(res => {
         if (res.data.status_code === 200) {
           this.botonGuardarModal = ''
           this.textoGuardarModal = 'Guardar'
@@ -1735,8 +1727,7 @@ export default {
         })
     },
     ejecutarActualizacionImplicated () {
-      const token = localStorage.getItem('access_token')
-      axios.post('/implicateds/update/' + this.nuevoImplicated.imp_id + '/' + this.obtenerIdUsuario(), this.nuevoImplicated, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.post('/implicateds/update/' + this.nuevoImplicated.imp_id + '/' + this.obtenerIdUsuario(), this.nuevoImplicated).then(res => {
         if (res.data.status_code === 200) {
           this.botonGuardarModal = ''
           this.textoGuardarModal = 'Guardar'
@@ -1826,8 +1817,7 @@ export default {
         })
     },
     confirmacionEliminacionImplicated (implicated) {
-      const token = localStorage.getItem('access_token')
-      axios.post('/implicateds/delete/' + implicated.imp_id + '/' + this.obtenerIdUsuario(), { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.post('/implicateds/delete/' + implicated.imp_id + '/' + this.obtenerIdUsuario()).then(res => {
         if (res.data.status_code === 200) {
           this.getImplicateds()
           Vue.swal(res.data.message)
@@ -1867,8 +1857,7 @@ export default {
       }
     },
     handleSubmit () {
-      const toke = localStorage.getItem('access_token')
-      axios.post('/courts/store', this.nuevo_court, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+      axios.post('/courts/store', this.nuevo_court).then(res => {
         // Hide the modal manually
         this.$nextTick(() => {
           this.$bvModal.hide('modal-crear-juzagado')
@@ -1919,8 +1908,7 @@ export default {
       }
     },
     guardarAsociacionPoliza () {
-      const toke = localStorage.getItem('access_token')
-      axios.post('/process/asociar-poliza/' + this.prore_id + '/' + this.poliza_relacion + '/' + this.obtenerIdUsuario(), { headers: { 'Authorization': `Bearer ${toke}` } })
+      axios.post('/process/asociar-poliza/' + this.prore_id + '/' + this.poliza_relacion + '/' + this.obtenerIdUsuario())
         .then(res => {
           // Hide the modal manually
           if (res.data.status_code === 200) {

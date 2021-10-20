@@ -279,8 +279,7 @@ export default {
         })
     },
     confirmarEliminacion (eventoId) {
-      const toke = localStorage.getItem('access_token')
-      axios.post('/agenda/deleteSchedule/' + eventoId, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+      axios.post('/agenda/deleteSchedule/' + eventoId).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal(res.data.message)
           this.getAgendas()
@@ -312,9 +311,8 @@ export default {
       }
     },
     handleSubmit () {
-      const toke = localStorage.getItem('access_token')
       if (this.formData.sch_id > 0) {
-        axios.post('/agenda/updateSchedule/' + this.formData.sch_id, this.formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+        axios.post('/agenda/updateSchedule/' + this.formData.sch_id, this.formData).then(res => {
           // Hide the modal manually
           this.$nextTick(() => {
             this.$bvModal.hide('modal-audience')
@@ -329,7 +327,7 @@ export default {
           this.botonGuardarModal = ''
         })
       } else {
-        axios.post('/agenda/store', this.formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+        axios.post('/agenda/store', this.formData).then(res => {
           // Hide the modal manually
           this.$nextTick(() => {
             this.$bvModal.hide('modal-audience')
@@ -460,11 +458,10 @@ export default {
       return i
     },
     calcularFechaFinal () {
-      const token = localStorage.getItem('access_token')
       let duracion = this.formData.duracion
       let fechaInicial = this.formData.agen_start_date
       if (duracion !== '' && fechaInicial !== '') {
-        axios.get('/agenda/obtener-fecha-final/' + fechaInicial + '/' + duracion, { headers: { 'Authorization': token } })
+        axios.get('/agenda/obtener-fecha-final/' + fechaInicial + '/' + duracion)
           .then((res) => {
             if (res.data.status_code === 200) {
               this.formData.agen_end_date = res.data.fecha_final

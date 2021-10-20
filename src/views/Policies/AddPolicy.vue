@@ -229,7 +229,6 @@ export default {
     addPoliza () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         this.poliza.pol_user_id = this.userLogged.usr_id
-        const toke = localStorage.getItem('access_token')
         let formData = new FormData()
         formData.append('import_file', this.import_file)
         formData.append('pol_ase_id', this.poliza.pol_ase_id)
@@ -245,7 +244,7 @@ export default {
         formData.append('pol_estado', this.poliza.pol_estado)
         formData.append('pol_user_id', this.poliza.pol_user_id)
         this.textoBoton = 'Creando Poliza...'
-        axios.post('/policy/registrar-poliza', formData, { headers: { 'Authorization': `Bearer ${toke}` } }).then(res => {
+        axios.post('/policy/registrar-poliza', formData).then(res => {
           this.textoBoton = 'Crear Poliza'
           this.estadoBoton = ''
           if (res.data.status_code === 200) {

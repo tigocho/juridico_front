@@ -332,8 +332,7 @@ export default {
   },
   methods: {
     getUser () {
-      const token = localStorage.getItem('access_token')
-      axios.get('/users/edit/' + this.user_id, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.get('/users/edit/' + this.user_id).then(res => {
         if (res.data.status_code === 200) {
           this.user = res.data.user
         } else {
@@ -354,8 +353,7 @@ export default {
       }
     },
     guardarInformacionPersonal: function () {
-      const token = localStorage.getItem('access_token')
-      axios.post('/users/update/' + this.user_id, this.user, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.post('/users/update/' + this.user_id, this.user).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal(res.data.message)
           this.getUser()
@@ -365,8 +363,7 @@ export default {
       })
     },
     cambiarPassword: function () {
-      const token = localStorage.getItem('access_token')
-      axios.post('/users/update/' + this.user_id, { 'newPassword': this.newPassword }, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => {
+      axios.post('/users/update/' + this.user_id, { 'newPassword': this.newPassword }).then(res => {
         if (res.data.status_code === 200) {
           this.newPassword = ''
           this.newPassword2 = ''
