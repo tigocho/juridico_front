@@ -20,7 +20,6 @@ import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaInformacionPorRiesgo',
-  props: ['element'],
   mounted () {
     this.obtenerDatosGraficaInformacionPorRiesgo()
   },

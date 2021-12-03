@@ -15,26 +15,71 @@
           <b-col md="6" lg="4">
             <iq-card
               class-name="iq-card-block iq-card-stretch iq-card-height"
-              body-class="iq-bg-primary rounded"
+              body-class="bg-primary rounded"
             >
               <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
-                  <div class="rounded-circle iq-card-icon bg-primary">
+                  <div class="rounded-circle iq-card-icon iq-bg-primary">
                     <i class="ri-book-2-fill"></i>
                   </div>
                   <div class="text-right">
                     <h2 class="mb-0">
-                      <span class="counter">{{
+                      <span class="counter text-white">{{
                         procesosAbiertos + procesosCerrados
                       }}</span>
                     </h2>
-                    <h5 class="">Total procesos</h5>
+                    <h5 class="text-white">Total procesos</h5>
                   </div>
                 </div>
               </template>
             </iq-card>
           </b-col>
           <b-col md="6" lg="4">
+            <iq-card
+              class-name="iq-card-block iq-card-stretch iq-card-height"
+              style="background-color: #47A9A1"
+              body-class="rounded"
+            >
+              <template v-slot:body>
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="rounded-circle iq-card-icon" style="background-color:#fff">
+                    <i class="ri-check-fill" style="color: #47A9A1"></i>
+                  </div>
+                  <div class="text-right">
+                    <h2 class="mb-0">
+                      <span class="counter text-white">{{
+                        procesosAbiertos }}</span>
+                    </h2>
+                    <h5 class="text-white">Procesos Abiertos</h5>
+                  </div>
+                </div>
+              </template>
+            </iq-card>
+          </b-col>
+          <b-col md="6" lg="4">
+            <iq-card
+              class-name="iq-card-block iq-card-stretch iq-card-height"
+              body-class="bg-danger rounded"
+            >
+              <template v-slot:body>
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="rounded-circle iq-card-icon iq-bg-danger">
+                    <i class="ri-book-2-fill"></i>
+                  </div>
+                  <div class="text-right">
+                    <h2 class="mb-0">
+                      <span class="counter text-white">{{
+                        procesosCerrados }}</span>
+                    </h2>
+                    <h5 class="text-white">Procesos cerrados</h5>
+                  </div>
+                </div>
+              </template>
+            </iq-card>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col md="6" lg="6">
             <iq-card
               class-name="iq-card-block iq-card-stretch iq-card-height"
               body-class="iq-bg-warning rounded"
@@ -56,14 +101,14 @@
               </template>
             </iq-card>
           </b-col>
-          <b-col md="6" lg="4">
+          <b-col md="6" lg="6">
             <iq-card
               class-name="iq-card-block iq-card-stretch iq-card-height"
-              body-class="iq-bg-success rounded"
+              body-class="iq-bg-info rounded"
             >
               <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
-                  <div class="rounded-circle iq-card-icon bg-success">
+                  <div class="rounded-circle iq-card-icon bg-info">
                     <i class="ri-checkbox-circle-line"></i>
                   </div>
                   <div class="text-right">
@@ -102,24 +147,10 @@
           </b-row>
           <b-row>
             <b-col lg="6">
-              <iq-card :key="nivelExitoPretensionesKey">
-                <template v-slot:headerTitle>
-                  <h4>Nivel de éxito (sobre pretensiones)</h4>
-                </template>
-                <template v-slot:body v-if="procesosNivelExito.length > 0">
-                  <AmChart element='exito-pretensiones' :height="heightGraficas" :type="GraficaExitoPretensiones.type" :option="GraficaExitoPretensiones.bodyData"/>
-                </template>
-              </iq-card>
+              <GraficaExitoPretensiones/>
             </b-col>
             <b-col lg="6">
-              <iq-card :key="nivelExitoEstimacionesKey">
-                <template v-slot:headerTitle>
-                  <h4>Nivel de éxito (sobre estimaciones)</h4>
-                </template>
-                <template v-slot:body v-if="procesosNivelExito.length > 0">
-                  <AmChart element='exito-estimaciones' :height="heightGraficas" :type="GraficaExitoEstimaciones.type" :option="GraficaExitoEstimaciones.bodyData"/>
-                </template>
-              </iq-card>
+              <GraficaExitoEstimaciones/>
             </b-col>
           </b-row>
         </iq-card>
@@ -141,7 +172,6 @@ export default {
     this.obtenerTotalEstimacionesPretensiones()
     this.obtenerTotalPretensiones()
     setTimeout(() => {
-      this.obtenerDatosNivelExito()
       this.obtenerCantidadProcesosAbiertos()
       this.obtenerCantidadProcesosCerrados()
       this.obtenerCantidadAudienciasPendientes()
@@ -303,34 +333,6 @@ export default {
             alert('Datos no validos')
           }
         })
-      } else {
-        Vue.swal('Usuario no logueado o inactivo')
-      }
-    },
-    obtenerDatosNivelExito () {
-      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtener-datos-nivel-exito/' + this.userLogged.usr_id).then(res => {
-          if (res.data.status_code === 200) {
-            this.intentos = 0
-            this.errores = {}
-            this.procesosNivelExito = res.data.process
-            this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesAFavor()
-            this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = this.nivelExitoformulaPretensionesEnContra()
-            this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesAFavor()
-            this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
-            this.nivelExitoPretensionesKey++
-            this.nivelExitoEstimacionesKey++
-          } else {
-            Vue.swal('Ocurrió un error tratando de obtener los datos')
-          }
-        })
-          .catch((err) => {
-            this.errores = err
-            if (this.intentos < 2) {
-              this.obtenerDatosNivelExito()
-              this.intentos++
-            }
-          })
       } else {
         Vue.swal('Usuario no logueado o inactivo')
       }
