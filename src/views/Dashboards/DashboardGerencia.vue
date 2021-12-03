@@ -1,15 +1,33 @@
 <template>
   <b-container fluid>
-    <b-row>
+    <b-row v-if="loading">
+      <b-col class="py-5" lg="12">
+        <b-progress :max="max" height="2rem">
+          <b-progress-bar :progress_total="progress_total" variant="success" :style="{width: progress_total + '%'}">
+            <span><b>{{ progress_total }}%</b></span>
+          </b-progress-bar>
+        </b-progress>
+      </b-col>
+    </b-row>
+    <b-row v-else>
       <b-col lg="12">
         <b-row>
           <b-col md="6" lg="4">
-            <iq-card class-name="iq-card-block iq-card-stretch iq-card-height" body-class="iq-bg-primary rounded">
+            <iq-card
+              class-name="iq-card-block iq-card-stretch iq-card-height"
+              body-class="iq-bg-primary rounded"
+            >
               <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
-                  <div class="rounded-circle iq-card-icon bg-primary"><i class="ri-book-2-fill"></i></div>
+                  <div class="rounded-circle iq-card-icon bg-primary">
+                    <i class="ri-book-2-fill"></i>
+                  </div>
                   <div class="text-right">
-                    <h2 class="mb-0"><span class="counter">{{ procesosAbiertos+procesosCerrados }}</span></h2>
+                    <h2 class="mb-0">
+                      <span class="counter">{{
+                        procesosAbiertos + procesosCerrados
+                      }}</span>
+                    </h2>
                     <h5 class="">Total procesos</h5>
                   </div>
                 </div>
@@ -17,12 +35,21 @@
             </iq-card>
           </b-col>
           <b-col md="6" lg="4">
-            <iq-card class-name="iq-card-block iq-card-stretch iq-card-height" body-class="iq-bg-warning rounded">
-              <template v-slot:body >
+            <iq-card
+              class-name="iq-card-block iq-card-stretch iq-card-height"
+              body-class="iq-bg-warning rounded"
+            >
+              <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
-                  <div class="rounded-circle iq-card-icon bg-warning"><i class="ri-time-line"></i></div>
+                  <div class="rounded-circle iq-card-icon bg-warning">
+                    <i class="ri-time-line"></i>
+                  </div>
                   <div class="text-right">
-                    <h2 class="mb-0"><span class="counter">{{ formatPrice(totalPretensiones) }}</span></h2>
+                    <h2 class="mb-0">
+                      <span class="counter">{{
+                        formatPrice(totalPretensiones)
+                      }}</span>
+                    </h2>
                     <h5 class="">Total pretensiones</h5>
                   </div>
                 </div>
@@ -30,12 +57,21 @@
             </iq-card>
           </b-col>
           <b-col md="6" lg="4">
-            <iq-card class-name="iq-card-block iq-card-stretch iq-card-height" body-class="iq-bg-success rounded">
-              <template v-slot:body >
+            <iq-card
+              class-name="iq-card-block iq-card-stretch iq-card-height"
+              body-class="iq-bg-success rounded"
+            >
+              <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
-                  <div class="rounded-circle iq-card-icon bg-success"><i class="ri-checkbox-circle-line"></i></div>
+                  <div class="rounded-circle iq-card-icon bg-success">
+                    <i class="ri-checkbox-circle-line"></i>
+                  </div>
                   <div class="text-right">
-                    <h2 class="mb-0"><span class="counter">{{ formatPrice(totalEstimacionesPretensiones) }}</span></h2>
+                    <h2 class="mb-0">
+                      <span class="counter">{{
+                        formatPrice(totalEstimacionesPretensiones)
+                      }}</span>
+                    </h2>
                     <h5 class="">Total estimación pretensiones</h5>
                   </div>
                 </div>
@@ -51,60 +87,20 @@
           </template>
           <b-row>
             <b-col lg="6">
-              <iq-card>
-                <template v-slot:headerTitle>
-                  <h4>Ingreso de procesos (activos) en los últimos años 6 años</h4>
-                </template>
-                <template v-slot:body>
-                  <MorrisChart :element="ingresoProcesos.type+0" :type="ingresoProcesos.type" :xKeys="ingresoProcesos.xKeys" :data="ingresoProcesos.bodyData" :colors="ingresoProcesos.colors" :yKeys="ingresoProcesos.yKeys" :labels="ingresoProcesos.labels"/>
-                </template>
-              </iq-card>
+                <iq-card>
+                  <template v-slot:headerTitle>
+                    <h4>Procesos activos por clínica</h4>
+                  </template>
+                  <template v-slot:body>
+                    <GraficaProcesosPorClinica ref='chartClinicas' element="patient"/>
+                  </template>
+                </iq-card>
             </b-col>
             <b-col lg="6">
-              <iq-card>
-                <template v-slot:headerTitle>
-                  <h4>Procesos activos por clínica</h4>
-                </template>
-                <template v-slot:body>
-                  <GraficaProcesosPorClinica ref='chartClinicas' element="patient"/>
-                </template>
-              </iq-card>
+              <GraficaInformacionPorRiesgo element="patient"/>
             </b-col>
           </b-row>
           <b-row>
-            <b-col lg="12">
-              <iq-card>
-                <template v-slot:headerTitle>
-                  <h4>Nivel de éxito</h4>
-                </template>
-                <template v-slot:body>
-                  <b-table
-                    :items="procesosNivelExito"
-                    :fields="fields"
-                    stacked="md"
-                    show-empty
-                    small
-                    style='overflow: auto'
-                  >
-                    <template #cell(name)="row">
-                      {{ row.value.first }} {{ row.value.last }}
-                    </template>
-                  </b-table>
-                </template>
-              </iq-card>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col lg="6">
-              <iq-card :key="informacionPorRiesgoKey">
-                <template v-slot:headerTitle>
-                  <h4>Informacion por riesgo</h4>
-                </template>
-                <template v-slot:body v-if="procesosPorRiesgo.length > 0">
-                  <AmChart element='informacion-por-riesgo' :height="heightGraficas" :type="GraficaInformacionPorRiesgo.type" :option="GraficaInformacionPorRiesgo.bodyData"/>
-                </template>
-              </iq-card>
-            </b-col>
             <b-col lg="6">
               <iq-card :key="nivelExitoPretensionesKey">
                 <template v-slot:headerTitle>
@@ -141,12 +137,10 @@ export default {
   name: 'DashboardGerencia',
   mounted () {
     xray.index()
-    this.obtenerDatosGraficaProcesoAnual()
-    this.obtenerDatosGraficaInformacionPorRiesgo()
-    this.obtenerNumeroUsuarios()
+    this.barraCargando()
+    this.obtenerTotalEstimacionesPretensiones()
+    this.obtenerTotalPretensiones()
     setTimeout(() => {
-      this.obtenerTotalEstimacionesPretensiones()
-      this.obtenerTotalPretensiones()
       this.obtenerDatosNivelExito()
       this.obtenerCantidadProcesosAbiertos()
       this.obtenerCantidadProcesosCerrados()
@@ -168,19 +162,13 @@ export default {
       totalPretensiones: '',
       procesosPosibles: '',
       procesosProbables: '',
+      progress_total: 4,
+      max: 100,
+      loading: true,
       procesosRemostos: '',
       clinicasInforme: [],
       totalesInformePorClinicas: [],
       categoriasClinicas: [],
-      heightGraficas: 250,
-      ingresoProcesos: {
-        type: 'bar',
-        bodyData: [],
-        xKeys: 'año',
-        yKeys: ['total'],
-        colors: [ '#36A2EB' ],
-        labels: [ 'Procesos' ]
-      },
       intentos: 0,
       errores: {},
       informacionPorRiesgoKey: 0,
@@ -188,89 +176,7 @@ export default {
       nivelExitoEstimacionesKey: 0,
       procesosPorRiesgo: [],
       procesosNivelExito: [],
-      fields: [
-        { key: 'prore_sentencia_final', label: 'Etiqueta', class: 'text-center' },
-        {
-          key: 'total_pagado_clinica',
-          label: 'Total pagado clínica',
-          formatter: (value, key, item) => {
-            return this.formatPrice(value, key, item)
-          },
-          class: 'text-center'
-        },
-        { key: 'afectacion_total', label: 'Total pagado aseguradora(s)', class: 'text-left' },
-        {
-          key: 'total_pagado_tercero',
-          label: 'Total pagado por tecero',
-          formatter: (value, key, item) => {
-            return this.formatPrice(value, key, item)
-          },
-          class: 'text-center'
-        },
-        {
-          key: 'total_sentencia',
-          label: 'Total sentencia',
-          formatter: (value, key, item) => {
-            return this.formatPrice(value, key, item)
-          },
-          class: 'text-center'
-        },
-        {
-          key: 'cuantia_pretensiones',
-          label: 'Cuantía de las pretensiones',
-          formatter: (value, key, item) => {
-            return this.formatPrice(value, key, item)
-          },
-          class: 'text-center'
-        },
-        {
-          key: 'estimacion_pago_perju_materiales',
-          label: 'Suma de estimación perjuicios Mat.',
-          formatter: (value, key, item) => {
-            return this.formatPrice(value, key, item)
-          },
-          class: 'text-center'
-        },
-        {
-          key: 'estimacion_pago_perju_inmateriales',
-          label: 'Suma de estimación perjuicios Inmat.',
-          formatter: (value, key, item) => {
-            return this.formatPrice(value, key, item)
-          },
-          class: 'text-center'
-        },
-        {
-          key: 'total_estimaciones',
-          label: 'Total estimaciones',
-          formatter: (value, key, item) => {
-            return this.formatPrice(value, key, item)
-          },
-          class: 'text-center'
-        }
-      ],
-      GraficaInformacionPorRiesgo: {
-        title: 'Informacion por riesgo',
-        type: 'pie',
-        bodyData: {
-          colors: ['#47A9A1', '#e64141', '#ffffff'],
-          value: ['porcentajes'],
-          category: ['resultado'],
-          data: [
-            {
-              resultado: 'Posible',
-              porcentajes: 0
-            },
-            {
-              resultado: 'Probables',
-              porcentajes: 0
-            },
-            {
-              resultado: 'Remotos',
-              porcentajes: 0
-            }
-          ]
-        }
-      },
+      heightGraficas: 250,
       GraficaExitoPretensiones: {
         title: 'Nivel de éxito sobre pretensiones',
         type: 'pie',
@@ -312,14 +218,12 @@ export default {
     }
   },
   methods: {
-    obtenerNumeroUsuarios: function () {
-      axios.get('/users/obtenerCantidadUsuarios').then(res => {
-        if (res.data.status_code === 200) {
-          this.cantidadUsuarios = res.data.cantidad_usuarios
-        } else {
-          alert('Datos no validos')
-        }
-      })
+    barraCargando () {
+      let vm = this
+      let timer = setInterval(function () {
+        vm.progress_total += 4
+        if (vm.progress_total > 99) clearInterval(timer)
+      }, 100)
     },
     obtenerTotalEstimacionesPretensiones: function () {
       axios.get('/process/obtenerTotalEstimacionesPretensiones/' + this.userLogged.usr_id).then(res => {
@@ -340,16 +244,28 @@ export default {
       })
     },
     obtenerDatosGraficaInformacionPorRiesgo: function () {
-      axios.get('/process/obtenerProcesosPorRiesgo/' + this.userLogged.usr_id).then(res => {
-        if (res.data.status_code === 200) {
-          this.procesosPorRiesgo = res.data.procesos
-          this.GraficaInformacionPorRiesgo.bodyData.data[0].porcentajes = res.data.procesos[0].toFixed(1)
-          this.GraficaInformacionPorRiesgo.bodyData.data[1].porcentajes = res.data.procesos[1].toFixed(1)
-          this.GraficaInformacionPorRiesgo.bodyData.data[2].porcentajes = res.data.procesos[2].toFixed(1)
-        } else {
-          alert('Datos no validos')
-        }
-      })
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtenerProcesosPorRiesgo/' + this.userLogged.usr_id).then(res => {
+          if (res.data.status_code === 200) {
+            this.procesosPorRiesgo = res.data.procesos
+            this.GraficaInformacionPorRiesgo.bodyData.data[0].porcentajes = res.data.procesos[0].toFixed(1)
+            this.GraficaInformacionPorRiesgo.bodyData.data[1].porcentajes = res.data.procesos[1].toFixed(1)
+            this.GraficaInformacionPorRiesgo.bodyData.data[2].porcentajes = res.data.procesos[2].toFixed(1)
+            this.informacionPorRiesgoKey++
+          } else {
+            Vue.swal('Ocurrió un error tratando de obtener los datos')
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.obtenerDatosGraficaInformacionPorRiesgo()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
     },
     obtenerCantidadProcesosAbiertos: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
@@ -382,33 +298,11 @@ export default {
         axios.get('/agenda/obtenerCantidadAudienciasPendientes').then(res => {
           if (res.data.status_code === 200) {
             this.audienciasPendientes = res.data.cantidad_audiencias_pendientes
+            this.loading = false
           } else {
             alert('Datos no validos')
           }
         })
-      } else {
-        Vue.swal('Usuario no logueado o inactivo')
-      }
-    },
-    obtenerDatosGraficaProcesoAnual () {
-      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtener-datos-grafica-procesos-anual/' + this.userLogged.usr_id).then(res => {
-          if (res.data.status_code === 200) {
-            this.intentos = 0
-            this.errores = {}
-            let procesosAnual = res.data.process
-            this.ingresoProcesos.bodyData = procesosAnual
-          } else {
-            Vue.swal('Ocurrió un error tratando de obtener los datos')
-          }
-        })
-          .catch((err) => {
-            this.errores = err
-            if (this.intentos < 2) {
-              this.obtenerDatosGraficaProcesoAnual()
-              this.intentos++
-            }
-          })
       } else {
         Vue.swal('Usuario no logueado o inactivo')
       }
@@ -474,7 +368,7 @@ export default {
 </script>
 
 <style>
-.iq-card-body{
+.iq-card-body {
   flex: unset;
 }
 </style>
