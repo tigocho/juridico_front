@@ -26,8 +26,7 @@ import Layout1 from '../layouts/Layout1'
 import Default from '../layouts/BlankLayout'
 import AuthLayout1 from '../layouts/AuthLayouts/AuthLayout1'
 /* Dashboards View */
-import Dashboard2 from '../views/Dashboards/Dashboard2.vue'
-// import Dashboard1 from '../views/Dashboards/Dashboard1.vue'
+import Dashboard1 from '../views/Dashboards/Dashboard1.vue'
 import DashboardGerencia from '../views/Dashboards/DashboardGerencia.vue'
 import Dashboard3 from '../views/Dashboards/Dashboard3'
 import Dashboard4 from '../views/Dashboards/Dashboard4'
@@ -112,13 +111,13 @@ const childRoutes = (prop, mode) => [
     path: 'home-1',
     name: prop + '.home-1',
     meta: { dark: mode, auth: true, name: 'Home 1' },
-    component: DashboardGerencia
+    component: Dashboard1
   },
   {
     path: 'home-2',
     name: prop + '.home-2',
     meta: { dark: mode, auth: true, name: 'Home 2' },
-    component: Dashboard2
+    component: DashboardGerencia
   },
   {
     path: 'home-3',

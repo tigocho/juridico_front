@@ -9,6 +9,18 @@
     "icon": ""
   },
   {
+    "title": "Dashboard Gerencial",
+    "name": "Panel Gerencial",
+    "is_heading": false,
+    "is_active": false,
+    "link": {
+      "name": "dashboard.home-2"
+    },
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-user-star-line"
+  },
+  {
     "title": "Doctor Dashboard",
     "name": "sidebar.dashboard1",
     "is_heading": false,

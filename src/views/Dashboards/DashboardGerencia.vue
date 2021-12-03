@@ -3,53 +3,40 @@
     <b-row>
       <b-col lg="12">
         <b-row>
-          <b-col md="6" lg="3">
+          <b-col md="6" lg="4">
             <iq-card class-name="iq-card-block iq-card-stretch iq-card-height" body-class="iq-bg-primary rounded">
               <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
-                  <div class="rounded-circle iq-card-icon bg-primary"><i class="ri-user-fill"></i></div>
+                  <div class="rounded-circle iq-card-icon bg-primary"><i class="ri-book-2-fill"></i></div>
                   <div class="text-right">
-                    <h2 class="mb-0"><span class="counter">{{ cantidadUsuarios }}</span></h2>
-                    <h5 class="">Usuarios</h5>
+                    <h2 class="mb-0"><span class="counter">{{ procesosAbiertos+procesosCerrados }}</span></h2>
+                    <h5 class="">Total procesos</h5>
                   </div>
                 </div>
               </template>
             </iq-card>
           </b-col>
-          <b-col md="6" lg="3">
+          <b-col md="6" lg="4">
             <iq-card class-name="iq-card-block iq-card-stretch iq-card-height" body-class="iq-bg-warning rounded">
               <template v-slot:body >
                 <div class="d-flex align-items-center justify-content-between">
                   <div class="rounded-circle iq-card-icon bg-warning"><i class="ri-time-line"></i></div>
                   <div class="text-right">
-                    <h2 class="mb-0"><span class="counter">{{ procesosAbiertos }}</span></h2>
-                    <h5 class="">Proc. abiertos</h5>
+                    <h2 class="mb-0"><span class="counter">{{ formatPrice(totalPretensiones) }}</span></h2>
+                    <h5 class="">Total pretensiones</h5>
                   </div>
                 </div>
               </template>
             </iq-card>
           </b-col>
-          <b-col md="6" lg="3">
+          <b-col md="6" lg="4">
             <iq-card class-name="iq-card-block iq-card-stretch iq-card-height" body-class="iq-bg-success rounded">
               <template v-slot:body >
                 <div class="d-flex align-items-center justify-content-between">
                   <div class="rounded-circle iq-card-icon bg-success"><i class="ri-checkbox-circle-line"></i></div>
                   <div class="text-right">
-                    <h2 class="mb-0"><span class="counter">{{ procesosCerrados }}</span></h2>
-                    <h5 class="">Proc. cerrados</h5>
-                  </div>
-                </div>
-              </template>
-            </iq-card>
-          </b-col>
-          <b-col md="6" lg="3">
-            <iq-card class-name="iq-card-block iq-card-stretch iq-card-height" body-class="iq-bg-info rounded">
-              <template v-slot:body >
-                <div class="d-flex align-items-center justify-content-between">
-                  <div class="rounded-circle iq-card-icon bg-info"><i class="ri-government-line"></i></div>
-                  <div class="text-right">
-                    <h2 class="mb-0"><span class="counter">{{ audienciasPendientes }}</span></h2>
-                    <h5 class="">Audiencias</h5>
+                    <h2 class="mb-0"><span class="counter">{{ formatPrice(totalEstimacionesPretensiones) }}</span></h2>
+                    <h5 class="">Total estimación pretensiones</h5>
                   </div>
                 </div>
               </template>
@@ -109,6 +96,16 @@
           </b-row>
           <b-row>
             <b-col lg="6">
+              <iq-card :key="informacionPorRiesgoKey">
+                <template v-slot:headerTitle>
+                  <h4>Informacion por riesgo</h4>
+                </template>
+                <template v-slot:body v-if="procesosPorRiesgo.length > 0">
+                  <AmChart element='informacion-por-riesgo' :height="heightGraficas" :type="GraficaInformacionPorRiesgo.type" :option="GraficaInformacionPorRiesgo.bodyData"/>
+                </template>
+              </iq-card>
+            </b-col>
+            <b-col lg="6">
               <iq-card :key="nivelExitoPretensionesKey">
                 <template v-slot:headerTitle>
                   <h4>Nivel de éxito (sobre pretensiones)</h4>
@@ -145,8 +142,11 @@ export default {
   mounted () {
     xray.index()
     this.obtenerDatosGraficaProcesoAnual()
+    this.obtenerDatosGraficaInformacionPorRiesgo()
     this.obtenerNumeroUsuarios()
     setTimeout(() => {
+      this.obtenerTotalEstimacionesPretensiones()
+      this.obtenerTotalPretensiones()
       this.obtenerDatosNivelExito()
       this.obtenerCantidadProcesosAbiertos()
       this.obtenerCantidadProcesosCerrados()
@@ -164,6 +164,11 @@ export default {
       procesosAbiertos: '',
       procesosCerrados: '',
       audienciasPendientes: '',
+      totalEstimacionesPretensiones: '',
+      totalPretensiones: '',
+      procesosPosibles: '',
+      procesosProbables: '',
+      procesosRemostos: '',
       clinicasInforme: [],
       totalesInformePorClinicas: [],
       categoriasClinicas: [],
@@ -178,8 +183,10 @@ export default {
       },
       intentos: 0,
       errores: {},
+      informacionPorRiesgoKey: 0,
       nivelExitoPretensionesKey: 0,
       nivelExitoEstimacionesKey: 0,
+      procesosPorRiesgo: [],
       procesosNivelExito: [],
       fields: [
         { key: 'prore_sentencia_final', label: 'Etiqueta', class: 'text-center' },
@@ -241,6 +248,29 @@ export default {
           class: 'text-center'
         }
       ],
+      GraficaInformacionPorRiesgo: {
+        title: 'Informacion por riesgo',
+        type: 'pie',
+        bodyData: {
+          colors: ['#47A9A1', '#e64141', '#ffffff'],
+          value: ['porcentajes'],
+          category: ['resultado'],
+          data: [
+            {
+              resultado: 'Posible',
+              porcentajes: 0
+            },
+            {
+              resultado: 'Probables',
+              porcentajes: 0
+            },
+            {
+              resultado: 'Remotos',
+              porcentajes: 0
+            }
+          ]
+        }
+      },
       GraficaExitoPretensiones: {
         title: 'Nivel de éxito sobre pretensiones',
         type: 'pie',
@@ -286,6 +316,36 @@ export default {
       axios.get('/users/obtenerCantidadUsuarios').then(res => {
         if (res.data.status_code === 200) {
           this.cantidadUsuarios = res.data.cantidad_usuarios
+        } else {
+          alert('Datos no validos')
+        }
+      })
+    },
+    obtenerTotalEstimacionesPretensiones: function () {
+      axios.get('/process/obtenerTotalEstimacionesPretensiones/' + this.userLogged.usr_id).then(res => {
+        if (res.data.status_code === 200) {
+          this.totalEstimacionesPretensiones = res.data.estimaciones_pretensiones
+        } else {
+          alert('Datos no validos')
+        }
+      })
+    },
+    obtenerTotalPretensiones: function () {
+      axios.get('/process/obtenerTotalPretensiones/' + this.userLogged.usr_id).then(res => {
+        if (res.data.status_code === 200) {
+          this.totalPretensiones = res.data.pretensiones
+        } else {
+          alert('Datos no validos')
+        }
+      })
+    },
+    obtenerDatosGraficaInformacionPorRiesgo: function () {
+      axios.get('/process/obtenerProcesosPorRiesgo/' + this.userLogged.usr_id).then(res => {
+        if (res.data.status_code === 200) {
+          this.procesosPorRiesgo = res.data.procesos
+          this.GraficaInformacionPorRiesgo.bodyData.data[0].porcentajes = res.data.procesos[0].toFixed(1)
+          this.GraficaInformacionPorRiesgo.bodyData.data[1].porcentajes = res.data.procesos[1].toFixed(1)
+          this.GraficaInformacionPorRiesgo.bodyData.data[2].porcentajes = res.data.procesos[2].toFixed(1)
         } else {
           alert('Datos no validos')
         }
