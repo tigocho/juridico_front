@@ -174,7 +174,6 @@ export default {
     setTimeout(() => {
       this.obtenerCantidadProcesosAbiertos()
       this.obtenerCantidadProcesosCerrados()
-      this.obtenerCantidadAudienciasPendientes()
     }, 800)
   },
   computed: {
@@ -184,67 +183,15 @@ export default {
   },
   data: function () {
     return {
-      cantidadUsuarios: '',
       procesosAbiertos: '',
       procesosCerrados: '',
-      audienciasPendientes: '',
       totalEstimacionesPretensiones: '',
       totalPretensiones: '',
-      procesosPosibles: '',
-      procesosProbables: '',
       progress_total: 4,
       max: 100,
       loading: true,
-      procesosRemostos: '',
-      clinicasInforme: [],
-      totalesInformePorClinicas: [],
-      categoriasClinicas: [],
       intentos: 0,
-      errores: {},
-      informacionPorRiesgoKey: 0,
-      nivelExitoPretensionesKey: 0,
-      nivelExitoEstimacionesKey: 0,
-      procesosPorRiesgo: [],
-      procesosNivelExito: [],
-      heightGraficas: 250,
-      GraficaExitoPretensiones: {
-        title: 'Nivel de éxito sobre pretensiones',
-        type: 'pie',
-        bodyData: {
-          colors: ['#47A9A1', '#e64141'],
-          value: ['porcentajes'],
-          category: ['resultado'],
-          data: [
-            {
-              resultado: 'A Favor',
-              porcentajes: 0
-            },
-            {
-              resultado: 'En Contra',
-              porcentajes: 0
-            }
-          ]
-        }
-      },
-      GraficaExitoEstimaciones: {
-        title: 'Nivel de éxito sobre estimaciones',
-        type: 'pie',
-        bodyData: {
-          colors: ['#47A9A1', '#e64141'],
-          value: ['porcentajes'],
-          category: ['resultado'],
-          data: [
-            {
-              resultado: 'A Favor',
-              porcentajes: 0
-            },
-            {
-              resultado: 'En Contra',
-              porcentajes: 0
-            }
-          ]
-        }
-      }
+      errores: {}
     }
   },
   methods: {
@@ -273,30 +220,6 @@ export default {
         }
       })
     },
-    obtenerDatosGraficaInformacionPorRiesgo: function () {
-      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtenerProcesosPorRiesgo/' + this.userLogged.usr_id).then(res => {
-          if (res.data.status_code === 200) {
-            this.procesosPorRiesgo = res.data.procesos
-            this.GraficaInformacionPorRiesgo.bodyData.data[0].porcentajes = res.data.procesos[0].toFixed(1)
-            this.GraficaInformacionPorRiesgo.bodyData.data[1].porcentajes = res.data.procesos[1].toFixed(1)
-            this.GraficaInformacionPorRiesgo.bodyData.data[2].porcentajes = res.data.procesos[2].toFixed(1)
-            this.informacionPorRiesgoKey++
-          } else {
-            Vue.swal('Ocurrió un error tratando de obtener los datos')
-          }
-        })
-          .catch((err) => {
-            this.errores = err
-            if (this.intentos < 2) {
-              this.obtenerDatosGraficaInformacionPorRiesgo()
-              this.intentos++
-            }
-          })
-      } else {
-        Vue.swal('Usuario no logueado o inactivo')
-      }
-    },
     obtenerCantidadProcesosAbiertos: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         axios.get('/process/obtenerCantidadProcesosAbiertos/' + this.userLogged.usr_id).then(res => {
@@ -315,19 +238,6 @@ export default {
         axios.get('/process/obtenerCantidadProcesosCerrados/' + this.userLogged.usr_id).then(res => {
           if (res.data.status_code === 200) {
             this.procesosCerrados = res.data.cantidad_procesos_cerrados
-          } else {
-            alert('Datos no validos')
-          }
-        })
-      } else {
-        Vue.swal('Usuario no logueado o inactivo')
-      }
-    },
-    obtenerCantidadAudienciasPendientes: function () {
-      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/agenda/obtenerCantidadAudienciasPendientes').then(res => {
-          if (res.data.status_code === 200) {
-            this.audienciasPendientes = res.data.cantidad_audiencias_pendientes
             this.loading = false
           } else {
             alert('Datos no validos')
@@ -340,30 +250,6 @@ export default {
     formatPrice (value) {
       let val = (value / 1).toFixed(0).replace('.', ',')
       return '$' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-    },
-    nivelExitoformulaPretensionesAFavor () {
-      if (this.procesosNivelExito != null) {
-        let cuantiaPretensionesTotales = this.procesosNivelExito[2].cuantia_pretensiones
-        let totalPagadoClinica = this.procesosNivelExito[1].total_pagado_clinica
-        return (parseInt(cuantiaPretensionesTotales - totalPagadoClinica) / parseInt(cuantiaPretensionesTotales) * 100).toFixed(1)
-      } else {
-        return 0
-      }
-    },
-    nivelExitoformulaPretensionesEnContra () {
-      return parseFloat(100 - this.nivelExitoformulaPretensionesAFavor()).toFixed(1)
-    },
-    nivelExitoformulaEstimacionesAFavor () {
-      if (this.procesosNivelExito != null) {
-        let totalEstimaciones = this.procesosNivelExito[2].total_estimaciones
-        let totalPagadoClinica = this.procesosNivelExito[1].total_pagado_clinica
-        return (parseInt(totalEstimaciones - totalPagadoClinica) / parseInt(totalEstimaciones) * 100).toFixed(1)
-      } else {
-        return 0
-      }
-    },
-    nivelExitoformulaEstimacionesEnContra () {
-      return parseFloat(100 - this.nivelExitoformulaEstimacionesAFavor()).toFixed(1)
     }
   }
 }
