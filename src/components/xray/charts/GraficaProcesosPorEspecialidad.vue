@@ -8,10 +8,10 @@ import Vue from 'vue'
 import auth from '@/logic/auth'
 
 export default {
-  name: 'GraficaProcesosPorClinica',
-  props: ['element', 'isLive', 'clinicasIds'],
+  name: 'GraficaProcesosPorEspecialidad',
+  props: ['element'],
   mounted () {
-    this.obtenerDatosProcesosPorClinicas()
+    this.obtenerDatosProcesosPorEspecialidad()
   },
   computed: {
     userLogged () {
@@ -28,18 +28,26 @@ export default {
           data: []
         }],
         chart: {
-          height: 350,
+          height: 500,
           type: 'bar'
         },
         colors: ['#089bab'],
         plotOptions: {
           bar: {
-            columnWidth: '75%',
+            dataLabels: {
+              position: 'top'
+            },
+            columnWidth: '80%',
             endingShape: 'rounded'
           }
         },
         dataLabels: {
-          enabled: false
+          enabled: true,
+          position: 'top',
+          style: {
+            colors: ['#089bab']
+          },
+          offsetY: -20
         },
         stroke: {
           width: 2
@@ -52,10 +60,10 @@ export default {
         xaxis: {
           type: 'category',
           labels: {
-            rotate: -90,
+            rotate: -60,
             rotateAlways: true,
             minHeight: 150,
-            maxHeight: 245
+            maxHeight: 500
           },
           categories: [],
           tickPlacement: 'on'
@@ -82,24 +90,23 @@ export default {
     }
   },
   methods: {
-    obtenerDatosProcesosPorClinicas () {
+    obtenerDatosProcesosPorEspecialidad () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtener-datos-procesos-por-clinicas/' + this.userLogged.usr_id).then(res => {
+        axios.get('/process/obtener-datos-procesos-por-especialidad/' + this.userLogged.usr_id).then(res => {
           if (res.data.status_code === 200) {
             let _this = this
             let selector = '#' + _this.element
-            console.log('oe' + _this.clinicasIds)
             this.intentos = 0
             this.errores = {}
-            let procesosPorClinica = res.data.process
-            var datos = []
-            var clinicas = []
-            for (let index = 0; index < procesosPorClinica.length; index++) {
-              datos.push(procesosPorClinica[index].total)
-              clinicas.push(procesosPorClinica[index].clinica)
+            var cantidad = []
+            var especialidad = []
+            let procesosPorEspecialidad = res.data.data
+            for (let i = 0; i < procesosPorEspecialidad.length; i++) {
+              cantidad.push(procesosPorEspecialidad[i].cantidad)
+              especialidad.push(procesosPorEspecialidad[i].especialidad)
             }
-            this.chartOptions.xaxis.categories = clinicas
-            this.chartOptions.series[0].data = datos
+            this.chartOptions.xaxis.categories = especialidad
+            this.chartOptions.series[0].data = cantidad
             let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)
             setTimeout(function () {
               chart.render()
@@ -111,7 +118,6 @@ export default {
           .catch((err) => {
             this.errores = err
             if (this.intentos < 2) {
-              // this.obtenerDatosProcesosPorClinicas()
               this.intentos++
             }
           })

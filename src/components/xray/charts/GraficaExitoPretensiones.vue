@@ -20,7 +20,6 @@ import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaExitoPretensiones',
-  props: ['element'],
   mounted () {
     this.obtenerDatosNivelExito()
   },
