@@ -125,7 +125,7 @@
           </b-col>
         </b-row>
       </b-col>
-      <b-col lg="12">
+      <b-col lg="12" :key="graficaProcesosPorClinicaKey">
         <iq-card class-name="iq-card-block iq-card-stretch iq-card-height">
           <template v-slot:headerTitle>
             <h4 class="card-title">Bienvenidos a Juridico App</h4>
@@ -146,7 +146,7 @@
                     multiple
                     v-model="clinicasIds"
                     :options="clinicaOptions"
-                    @input="cambioClinica($event)"
+                    @input="cambioClinica()"
                     :reduce="label => label.code"
                     label="label"
                     id="clinica_id"
@@ -160,25 +160,25 @@
           </b-row>
           <b-row>
             <b-col lg="6">
-                <iq-card :key="graficaProcesosPorClinicaKey">
-                  <template v-slot:headerTitle>
-                    <h4>Procesos activos por clínica</h4>
-                  </template>
-                  <template v-slot:body>
-                    <GraficaProcesosPorClinica ref='chartClinicas' :clinicasIds="clinicasIds" element="patient"/>
-                  </template>
-                </iq-card>
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Procesos activos por clínica</h4>
+                </template>
+                <template v-slot:body>
+                  <GraficaProcesosPorClinica ref='chartClinicas' :clinicasIds="clinicasIds" element="patient"/>
+                </template>
+              </iq-card>
             </b-col>
             <b-col lg="6">
-              <GraficaInformacionPorRiesgo element="riesgo"/>
+              <GraficaInformacionPorRiesgo element="riesgo" :clinicasIds="clinicasIds"/>
             </b-col>
           </b-row>
           <b-row>
             <b-col lg="6">
-              <GraficaExitoPretensiones/>
+              <GraficaExitoPretensiones :clinicasIds="clinicasIds"/>
             </b-col>
             <b-col lg="6">
-              <GraficaExitoEstimaciones/>
+              <GraficaExitoEstimaciones :clinicasIds="clinicasIds"/>
             </b-col>
           </b-row>
         </iq-card>
@@ -191,7 +191,7 @@
             <h4>Procesos activos por especialidad</h4>
           </template>
           <template v-slot:body>
-            <GraficaProcesosPorEspecialidad ref='chartClinicas' element="especialidad"/>
+            <GraficaProcesosPorEspecialidad ref='chartClinicas' element="especialidad" :clinicasIds="clinicasIds"/>
           </template>
         </iq-card>
       </b-col>
@@ -265,7 +265,12 @@ export default {
         Vue.swal('Usuario no logueado o inactivo')
       }
     },
-    cambioClinica (clinicasIds) {
+    cambioClinica () {
+      console.log(this.clinicasIds)
+      if (this.clinicasIds.length === 0) {
+        this.clinicasIds = 0
+      }
+      console.log('oeeeee')
       this.graficaProcesosPorClinicaKey++
     },
     barraCargando () {

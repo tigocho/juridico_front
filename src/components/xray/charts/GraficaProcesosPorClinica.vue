@@ -84,11 +84,14 @@ export default {
   methods: {
     obtenerDatosProcesosPorClinicas () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtener-datos-procesos-por-clinicas/' + this.userLogged.usr_id).then(res => {
+        let _this = this
+        let clinicasConsulta = null
+        if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
+          clinicasConsulta = _this.clinicasIds
+        }
+        axios.get('/process/obtener-datos-procesos-por-clinicas/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
           if (res.data.status_code === 200) {
-            let _this = this
             let selector = '#' + _this.element
-            console.log('oe' + _this.clinicasIds)
             this.intentos = 0
             this.errores = {}
             let procesosPorClinica = res.data.process

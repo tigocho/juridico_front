@@ -20,6 +20,7 @@ import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaInformacionPorRiesgo',
+  props: ['clinicasIds'],
   mounted () {
     this.obtenerDatosGraficaInformacionPorRiesgo()
   },
@@ -61,8 +62,13 @@ export default {
   methods: {
     obtenerDatosGraficaInformacionPorRiesgo () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        let _this = this
+        let clinicasConsulta = null
+        if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
+          clinicasConsulta = _this.clinicasIds
+        }
         axios
-          .get('/process/obtenerProcesosPorRiesgo/' + this.userLogged.usr_id)
+          .get('/process/obtenerProcesosPorRiesgo/' + this.userLogged.usr_id + '/' + clinicasConsulta)
           .then(res => {
             if (res.data.status_code === 200) {
               this.intentos = 0

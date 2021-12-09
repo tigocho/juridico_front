@@ -14,8 +14,8 @@ import Vue from 'vue'
 import auth from '@/logic/auth'
 
 export default {
-  name: 'GraficaExitoPretensiones',
-  props: ['element'],
+  name: 'GraficaExitoEstimaciones',
+  props: ['element', 'clinicasIds'],
   mounted () {
     this.obtenerDatosNivelExito()
   },
@@ -55,7 +55,12 @@ export default {
   methods: {
     obtenerDatosNivelExito () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtener-datos-nivel-exito/' + this.userLogged.usr_id).then(res => {
+        let _this = this
+        let clinicasConsulta = null
+        if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
+          clinicasConsulta = _this.clinicasIds
+        }
+        axios.get('/process/obtener-datos-nivel-exito/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
           if (res.data.status_code === 200) {
             this.intentos = 0
             this.errores = {}
