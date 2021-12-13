@@ -132,9 +132,9 @@
           </template>
           <b-row>
             <b-col lg="6">
-              <b-col sm="4" md="4" class="my-1">
+              <b-col sm="4" md="6" class="ml-3 p-2 my-1">
                 <b-form-group
-                  label="Clinica"
+                  label="Clínica"
                   label-cols-sm="2"
                   label-cols-md="2"
                   label-cols-lg="3"
@@ -150,7 +150,7 @@
                     :reduce="label => label.code"
                     label="label"
                     id="clinica_id"
-                    :class="(errors.length > 0 ? ' is-invalid' : '')"
+                    :class="(errors.length > 0 ? ' is-invalid' : '') + 'ml-1' "
                     >
                     <span slot="no-options">No hay clínicas.</span>
                   </v-select>
@@ -181,18 +181,18 @@
               <GraficaExitoEstimaciones :clinicasIds="clinicasIds"/>
             </b-col>
           </b-row>
-        </iq-card>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col lg="12">
-        <iq-card>
-          <template v-slot:headerTitle>
-            <h4>Procesos activos por especialidad</h4>
-          </template>
-          <template v-slot:body>
-            <GraficaProcesosPorEspecialidad ref='chartClinicas' element="especialidad" :clinicasIds="clinicasIds"/>
-          </template>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Procesos activos por especialidad</h4>
+                </template>
+                <template v-slot:body>
+                  <GraficaProcesosPorEspecialidad ref='chartEspecialidad' element="especialidad" :clinicasIds="clinicasIds"/>
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
         </iq-card>
       </b-col>
     </b-row>
@@ -266,12 +266,16 @@ export default {
       }
     },
     cambioClinica () {
-      console.log(this.clinicasIds)
       if (this.clinicasIds.length === 0) {
         this.clinicasIds = 0
       }
-      console.log('oeeeee')
-      this.graficaProcesosPorClinicaKey++
+      this.obtenerCantidadProcesosAbiertos()
+      this.obtenerCantidadProcesosCerrados()
+      setTimeout(() => {
+        this.obtenerTotalEstimacionesPretensiones()
+        this.obtenerTotalPretensiones()
+        this.graficaProcesosPorClinicaKey++
+      }, 300)
     },
     barraCargando () {
       let vm = this
@@ -281,7 +285,7 @@ export default {
       }, 100)
     },
     obtenerTotalEstimacionesPretensiones: function () {
-      axios.get('/process/obtenerTotalEstimacionesPretensiones/' + this.userLogged.usr_id).then(res => {
+      axios.get('/process/obtenerTotalEstimacionesPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
         if (res.data.status_code === 200) {
           this.totalEstimacionesPretensiones = res.data.estimaciones_pretensiones
         } else {
@@ -290,7 +294,7 @@ export default {
       })
     },
     obtenerTotalPretensiones: function () {
-      axios.get('/process/obtenerTotalPretensiones/' + this.userLogged.usr_id).then(res => {
+      axios.get('/process/obtenerTotalPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
         if (res.data.status_code === 200) {
           this.totalPretensiones = res.data.pretensiones
         } else {
@@ -300,7 +304,7 @@ export default {
     },
     obtenerCantidadProcesosAbiertos: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtenerCantidadProcesosAbiertos/' + this.userLogged.usr_id).then(res => {
+        axios.get('/process/obtenerCantidadProcesosAbiertos/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
           if (res.data.status_code === 200) {
             this.procesosAbiertos = res.data.cantidad_procesos_abiertos
           } else {
@@ -313,7 +317,7 @@ export default {
     },
     obtenerCantidadProcesosCerrados: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtenerCantidadProcesosCerrados/' + this.userLogged.usr_id).then(res => {
+        axios.get('/process/obtenerCantidadProcesosCerrados/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
           if (res.data.status_code === 200) {
             this.procesosCerrados = res.data.cantidad_procesos_cerrados
             this.loading = false

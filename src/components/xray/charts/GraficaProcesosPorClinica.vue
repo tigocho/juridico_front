@@ -28,18 +28,26 @@ export default {
           data: []
         }],
         chart: {
-          height: 350,
+          height: 400,
           type: 'bar'
         },
         colors: ['#089bab'],
         plotOptions: {
           bar: {
-            columnWidth: '75%',
+            dataLabels: {
+              position: 'top'
+            },
+            columnWidth: '80%',
             endingShape: 'rounded'
           }
         },
         dataLabels: {
-          enabled: false
+          enabled: true,
+          position: 'top',
+          style: {
+            colors: ['#089bab']
+          },
+          offsetY: -25
         },
         stroke: {
           width: 2
@@ -52,10 +60,10 @@ export default {
         xaxis: {
           type: 'category',
           labels: {
-            rotate: -90,
+            rotate: -60,
             rotateAlways: true,
             minHeight: 150,
-            maxHeight: 245
+            maxHeight: 500
           },
           categories: [],
           tickPlacement: 'on'
@@ -101,6 +109,7 @@ export default {
               datos.push(procesosPorClinica[index].total)
               clinicas.push(procesosPorClinica[index].clinica)
             }
+            this.chartOptions.yaxis.max = datos[0] + 5
             this.chartOptions.xaxis.categories = clinicas
             this.chartOptions.series[0].data = datos
             let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)

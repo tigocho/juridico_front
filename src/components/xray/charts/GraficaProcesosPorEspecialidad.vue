@@ -9,7 +9,7 @@ import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaProcesosPorEspecialidad',
-  props: ['element'],
+  props: ['element', 'clinicasIds'],
   mounted () {
     this.obtenerDatosProcesosPorEspecialidad()
   },
@@ -20,6 +20,7 @@ export default {
   },
   data () {
     return {
+      max: 0,
       errores: [],
       intentos: 0,
       chartOptions: {
@@ -28,7 +29,7 @@ export default {
           data: []
         }],
         chart: {
-          height: 500,
+          height: 400,
           type: 'bar'
         },
         colors: ['#089bab'],
@@ -47,7 +48,7 @@ export default {
           style: {
             colors: ['#089bab']
           },
-          offsetY: -20
+          offsetY: -25
         },
         stroke: {
           width: 2
@@ -92,7 +93,12 @@ export default {
   methods: {
     obtenerDatosProcesosPorEspecialidad () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtener-datos-procesos-por-especialidad/' + this.userLogged.usr_id).then(res => {
+        let _this = this
+        let clinicasConsulta = null
+        if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
+          clinicasConsulta = _this.clinicasIds
+        }
+        axios.get('/process/obtener-datos-procesos-por-especialidad/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
           if (res.data.status_code === 200) {
             let _this = this
             let selector = '#' + _this.element
@@ -105,6 +111,7 @@ export default {
               cantidad.push(procesosPorEspecialidad[i].cantidad)
               especialidad.push(procesosPorEspecialidad[i].especialidad)
             }
+            this.chartOptions.yaxis.max = procesosPorEspecialidad[0].cantidad + 5
             this.chartOptions.xaxis.categories = especialidad
             this.chartOptions.series[0].data = cantidad
             let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)
