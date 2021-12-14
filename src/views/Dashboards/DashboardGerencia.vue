@@ -92,7 +92,7 @@
                   <div class="text-right">
                     <h2 class="mb-0">
                       <span class="counter">{{
-                        formatPrice(totalPretensiones)
+                        formatoEnMillones(formatPrice(totalPretensiones))
                       }}</span>
                     </h2>
                     <h5 class="">Total pretensiones</h5>
@@ -115,7 +115,7 @@
                   <div class="text-right">
                     <h2 class="mb-0">
                       <span class="counter">{{
-                        formatPrice(totalEstimacionesPretensiones)
+                        formatoEnMillones(formatPrice(totalEstimacionesPretensiones))
                       }}</span>
                     </h2>
                     <h5 class="">Total estimación pretensiones</h5>
@@ -289,7 +289,7 @@ export default {
     obtenerTotalEstimacionesPretensiones: function () {
       axios.get('/process/obtenerTotalEstimacionesPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
         if (res.data.status_code === 200) {
-          this.totalEstimacionesPretensiones = res.data.estimaciones_pretensiones.toString().slice(0, 9)
+          this.totalEstimacionesPretensiones = res.data.estimaciones_pretensiones
         } else {
           alert('Datos no validos')
         }
@@ -298,7 +298,7 @@ export default {
     obtenerTotalPretensiones: function () {
       axios.get('/process/obtenerTotalPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
         if (res.data.status_code === 200) {
-          this.totalPretensiones = res.data.pretensiones.toString().slice(0, 9)
+          this.totalPretensiones = res.data.pretensiones
         } else {
           alert('Datos no validos')
         }
@@ -334,6 +334,12 @@ export default {
     formatPrice (value) {
       let val = (value / 1).toFixed(0).replace('.', ',')
       return '$' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+    },
+    formatoEnMillones (value) {
+      let val = value.toString()
+      val = val.slice(0, -4)
+      console.log(val)
+      return val
     }
   }
 }
