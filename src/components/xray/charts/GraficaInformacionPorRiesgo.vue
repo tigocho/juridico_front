@@ -2,14 +2,13 @@
   <iq-card :key="informacionPorRiesgoKey">
     <b-row class="text-center">
       <b-col class="col-4">
-        <i class='fa fa-circle' style='color: #47A9A1;'></i><p>Posibles: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[3])) }} .mill
-        </p>
+        <i class='fa fa-circle' style='color: #47A9A1;'></i><p>Posibles: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[3])) }}</p>
       </b-col>
       <b-col class="col-4">
-        <i class='fa fa-circle' style='color: #B8B8B7;'></i><p>Probables: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[4])) }} .mill</p>
+        <i class='fa fa-circle' style='color: #B8B8B7;'></i><p>Probables: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[4])) }}</p>
       </b-col>
       <b-col class="col-4">
-        <i class='fa fa-circle' style='color: #FFE633;'></i><p>Remotos: <br>  {{ formatoEnMillones(formatPrice(procesosPorRiesgo[5])) }} .mill</p>
+        <i class='fa fa-circle' style='color: #FFE633;'></i><p>Remotos: <br>  {{ formatoEnMillones(formatPrice(procesosPorRiesgo[5])) }}</p>
       </b-col>
     </b-row>
     <template v-slot:headerTitle>
@@ -116,8 +115,7 @@ export default {
     },
     formatoEnMillones (value) {
       let val = value.toString()
-      val = val.slice(0, -4)
-      console.log(val)
+      val = val.slice(0, -4) + ' mill.'
       return val
     }
   }
