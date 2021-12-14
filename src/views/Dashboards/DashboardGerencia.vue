@@ -253,6 +253,7 @@ export default {
               this.clinicaId = this.clinicaOptions[0].code
             } else {
               this.clinicaOptions.push({ code: 0, label: 'Todos' })
+              this.clinicasIds = 0
             }
           }
         })
