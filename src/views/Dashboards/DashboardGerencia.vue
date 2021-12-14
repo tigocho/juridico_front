@@ -338,7 +338,6 @@ export default {
     formatoEnMillones (value) {
       let val = value.toString()
       val = val.slice(0, -4)
-      console.log(val)
       return val
     }
   }
