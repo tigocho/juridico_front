@@ -245,9 +245,7 @@ export default {
     fetchClinicaOptions: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         axios.get('/clinicas/obtener-clinicas/' + this.userLogged.usr_id).then(response => {
-          console.log(response.data.clinicas)
           this.clinicaOptions = response.data.clinicas
-          console.log(this.clinicaOptions)
           if (this.clinicaOptions[0] !== undefined) {
             this.intentos = 0
             this.errores = {}
