@@ -1,5 +1,17 @@
 <template>
   <iq-card :key="informacionPorRiesgoKey">
+    <b-row class="text-center">
+      <b-col class="col-4">
+        <i class='fa fa-circle' style='color: #47A9A1;'></i><p>Posibles: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[3])) }} .mill
+        </p>
+      </b-col>
+      <b-col class="col-4">
+        <i class='fa fa-circle' style='color: #B8B8B7;'></i><p>Probables: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[4])) }} .mill</p>
+      </b-col>
+      <b-col class="col-4">
+        <i class='fa fa-circle' style='color: #FFE633;'></i><p>Remotos: <br>  {{ formatoEnMillones(formatPrice(procesosPorRiesgo[5])) }} .mill</p>
+      </b-col>
+    </b-row>
     <template v-slot:headerTitle>
       <h4>Informacion por riesgo</h4>
     </template>
@@ -73,13 +85,13 @@ export default {
             if (res.data.status_code === 200) {
               this.intentos = 0
               this.procesosPorRiesgo = res.data.procesos
-              this.GraficaInformacionPorRiesgo.bodyData.data[0].porcentajes = res.data.procesos[0].toFixed(
+              this.GraficaInformacionPorRiesgo.bodyData.data[0].porcentajes = this.procesosPorRiesgo[0].toFixed(
                 1
               )
-              this.GraficaInformacionPorRiesgo.bodyData.data[1].porcentajes = res.data.procesos[1].toFixed(
+              this.GraficaInformacionPorRiesgo.bodyData.data[1].porcentajes = this.procesosPorRiesgo[1].toFixed(
                 1
               )
-              this.GraficaInformacionPorRiesgo.bodyData.data[2].porcentajes = res.data.procesos[2].toFixed(
+              this.GraficaInformacionPorRiesgo.bodyData.data[2].porcentajes = this.procesosPorRiesgo[2].toFixed(
                 1
               )
               this.informacionPorRiesgoKey++
@@ -97,6 +109,16 @@ export default {
       } else {
         Vue.swal('Usuario no logueado o inactivo')
       }
+    },
+    formatPrice (value) {
+      let val = (value / 1).toFixed(0).replace('.', ',')
+      return '$' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+    },
+    formatoEnMillones (value) {
+      let val = value.toString()
+      val = val.slice(0, -4)
+      console.log(val)
+      return val
     }
   }
 }
