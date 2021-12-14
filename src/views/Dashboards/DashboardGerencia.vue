@@ -96,6 +96,7 @@
                       }}</span>
                     </h2>
                     <h5 class="">Total pretensiones</h5>
+                    <small>en millones</small>
                   </div>
                 </div>
               </template>
@@ -118,6 +119,7 @@
                       }}</span>
                     </h2>
                     <h5 class="">Total estimación pretensiones</h5>
+                    <small>en millones</small>
                   </div>
                 </div>
               </template>
@@ -287,7 +289,7 @@ export default {
     obtenerTotalEstimacionesPretensiones: function () {
       axios.get('/process/obtenerTotalEstimacionesPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
         if (res.data.status_code === 200) {
-          this.totalEstimacionesPretensiones = res.data.estimaciones_pretensiones
+          this.totalEstimacionesPretensiones = res.data.estimaciones_pretensiones.toString().slice(0, 9)
         } else {
           alert('Datos no validos')
         }
@@ -296,7 +298,7 @@ export default {
     obtenerTotalPretensiones: function () {
       axios.get('/process/obtenerTotalPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
         if (res.data.status_code === 200) {
-          this.totalPretensiones = res.data.pretensiones
+          this.totalPretensiones = res.data.pretensiones.toString().slice(0, 9)
         } else {
           alert('Datos no validos')
         }
