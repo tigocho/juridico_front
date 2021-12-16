@@ -20,7 +20,7 @@
               <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
                   <div class="rounded-circle iq-card-icon iq-bg-primary">
-                    <i class="ri-book-2-fill"></i>
+                    <i class="fas fa-gavel"></i>
                   </div>
                   <div class="text-right">
                     <h2 class="mb-0">
@@ -43,7 +43,7 @@
               <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
                   <div class="rounded-circle iq-card-icon" style="background-color:#fff">
-                    <i class="ri-check-fill" style="color: #47A9A1"></i>
+                    <i class="fas fa-folder-open" style="color: #47A9A1"></i>
                   </div>
                   <div class="text-right">
                     <h2 class="mb-0">
@@ -87,7 +87,7 @@
               <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
                   <div class="rounded-circle iq-card-icon bg-warning">
-                    <i class="ri-time-line"></i>
+                    <i class="fas fa-coins"></i>
                   </div>
                   <div class="text-right">
                     <h2 class="mb-0">
@@ -110,7 +110,7 @@
               <template v-slot:body>
                 <div class="d-flex align-items-center justify-content-between">
                   <div class="rounded-circle iq-card-icon bg-info">
-                    <i class="ri-checkbox-circle-line"></i>
+                    <i class="fas fa-chart-bar"></i>
                   </div>
                   <div class="text-right">
                     <h2 class="mb-0">
@@ -184,13 +184,23 @@
             </b-col>
           </b-row>
           <b-row>
-            <b-col lg="12">
+            <b-col lg="6">
               <iq-card>
                 <template v-slot:headerTitle>
                   <h4>Procesos activos por especialidad</h4>
                 </template>
                 <template v-slot:body>
                   <GraficaProcesosPorEspecialidad ref='chartEspecialidad' element="especialidad" :clinicasIds="clinicasIds"/>
+                </template>
+              </iq-card>
+            </b-col>
+            <b-col lg="6">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Procesos por estados</h4>
+                </template>
+                <template>
+                  <GraficaProcesosPorEstados ref='chartEstados' element="estados" :clinicasIds="clinicasIds"/>
                 </template>
               </iq-card>
             </b-col>

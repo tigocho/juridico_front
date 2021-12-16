@@ -8,10 +8,10 @@ import Vue from 'vue'
 import auth from '@/logic/auth'
 
 export default {
-  name: 'GraficaProcesosPorEspecialidad',
+  name: 'GraficaProcesosPorEstados',
   props: ['element', 'clinicasIds'],
   mounted () {
-    this.obtenerDatosProcesosPorEspecialidad()
+    this.obtenerDatosProcesosPorEstados()
   },
   computed: {
     userLogged () {
@@ -64,14 +64,7 @@ export default {
             rotate: -60,
             rotateAlways: true,
             minHeight: 150,
-            maxHeight: 500,
-            style: {
-              colors: [],
-              fontSize: '9px',
-              fontFamily: 'Helvetica, Arial, sans-serif',
-              fontWeight: 400,
-              cssClass: 'apexcharts-xaxis-label'
-            }
+            maxHeight: 400
           },
           categories: [],
           tickPlacement: 'on'
@@ -98,28 +91,28 @@ export default {
     }
   },
   methods: {
-    obtenerDatosProcesosPorEspecialidad () {
+    obtenerDatosProcesosPorEstados () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         let _this = this
         let clinicasConsulta = null
         if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
           clinicasConsulta = _this.clinicasIds
         }
-        axios.get('/process/obtener-datos-procesos-por-especialidad/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
+        axios.get('/process/obtener-datos-procesos-por-estados/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
           if (res.data.status_code === 200) {
             let _this = this
             let selector = '#' + _this.element
             this.intentos = 0
             this.errores = {}
             var cantidad = []
-            var especialidad = []
-            let procesosPorEspecialidad = res.data.data
-            for (let i = 0; i < procesosPorEspecialidad.length; i++) {
-              cantidad.push(procesosPorEspecialidad[i].cantidad)
-              especialidad.push(procesosPorEspecialidad[i].especialidad)
+            var estados = []
+            let procesosPorEstados = res.data.data
+            for (let i = 0; i < procesosPorEstados.length; i++) {
+              cantidad.push(procesosPorEstados[i].cantidad)
+              estados.push(procesosPorEstados[i].estado)
             }
-            this.chartOptions.yaxis.max = procesosPorEspecialidad[0].cantidad + 5
-            this.chartOptions.xaxis.categories = especialidad
+            this.chartOptions.yaxis.max = procesosPorEstados[0].cantidad + 5
+            this.chartOptions.xaxis.categories = estados
             this.chartOptions.series[0].data = cantidad
             let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)
             setTimeout(function () {
