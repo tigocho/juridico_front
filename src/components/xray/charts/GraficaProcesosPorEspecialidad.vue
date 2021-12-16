@@ -8,10 +8,10 @@ import Vue from 'vue'
 import auth from '@/logic/auth'
 
 export default {
-  name: 'GraficaProcesosPorClinica',
-  props: ['element', 'isLive', 'clinicasIds'],
+  name: 'GraficaProcesosPorEspecialidad',
+  props: ['element', 'clinicasIds'],
   mounted () {
-    this.obtenerDatosProcesosPorClinicas()
+    this.obtenerDatosProcesosPorEspecialidad()
   },
   computed: {
     userLogged () {
@@ -20,6 +20,7 @@ export default {
   },
   data () {
     return {
+      max: 0,
       errores: [],
       intentos: 0,
       chartOptions: {
@@ -90,28 +91,29 @@ export default {
     }
   },
   methods: {
-    obtenerDatosProcesosPorClinicas () {
+    obtenerDatosProcesosPorEspecialidad () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         let _this = this
         let clinicasConsulta = null
         if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
           clinicasConsulta = _this.clinicasIds
         }
-        axios.get('/process/obtener-datos-procesos-por-clinicas/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
+        axios.get('/process/obtener-datos-procesos-por-especialidad/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
           if (res.data.status_code === 200) {
+            let _this = this
             let selector = '#' + _this.element
             this.intentos = 0
             this.errores = {}
-            let procesosPorClinica = res.data.process
-            var datos = []
-            var clinicas = []
-            for (let index = 0; index < procesosPorClinica.length; index++) {
-              datos.push(procesosPorClinica[index].total)
-              clinicas.push(procesosPorClinica[index].clinica)
+            var cantidad = []
+            var especialidad = []
+            let procesosPorEspecialidad = res.data.data
+            for (let i = 0; i < procesosPorEspecialidad.length; i++) {
+              cantidad.push(procesosPorEspecialidad[i].cantidad)
+              especialidad.push(procesosPorEspecialidad[i].especialidad)
             }
-            this.chartOptions.yaxis.max = datos[0] + 5
-            this.chartOptions.xaxis.categories = clinicas
-            this.chartOptions.series[0].data = datos
+            this.chartOptions.yaxis.max = procesosPorEspecialidad[0].cantidad + 5
+            this.chartOptions.xaxis.categories = especialidad
+            this.chartOptions.series[0].data = cantidad
             let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)
             setTimeout(function () {
               chart.render()
@@ -123,7 +125,6 @@ export default {
           .catch((err) => {
             this.errores = err
             if (this.intentos < 2) {
-              // this.obtenerDatosProcesosPorClinicas()
               this.intentos++
             }
           })

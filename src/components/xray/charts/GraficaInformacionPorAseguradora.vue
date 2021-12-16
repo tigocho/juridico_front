@@ -9,7 +9,7 @@ import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaProcesosPorClinica',
-  props: ['element', 'isLive', 'clinicasIds'],
+  props: ['element', 'isLive'],
   mounted () {
     this.obtenerDatosProcesosPorClinicas()
   },
@@ -28,26 +28,18 @@ export default {
           data: []
         }],
         chart: {
-          height: 400,
+          height: 350,
           type: 'bar'
         },
         colors: ['#089bab'],
         plotOptions: {
           bar: {
-            dataLabels: {
-              position: 'top'
-            },
-            columnWidth: '80%',
+            columnWidth: '75%',
             endingShape: 'rounded'
           }
         },
         dataLabels: {
-          enabled: true,
-          position: 'top',
-          style: {
-            colors: ['#089bab']
-          },
-          offsetY: -25
+          enabled: false
         },
         stroke: {
           width: 2
@@ -60,10 +52,10 @@ export default {
         xaxis: {
           type: 'category',
           labels: {
-            rotate: -60,
+            rotate: -90,
             rotateAlways: true,
             minHeight: 150,
-            maxHeight: 500
+            maxHeight: 245
           },
           categories: [],
           tickPlacement: 'on'
@@ -92,13 +84,9 @@ export default {
   methods: {
     obtenerDatosProcesosPorClinicas () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        let _this = this
-        let clinicasConsulta = null
-        if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
-          clinicasConsulta = _this.clinicasIds
-        }
-        axios.get('/process/obtener-datos-procesos-por-clinicas/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
+        axios.get('/process/obtener-datos-procesos-por-clinicas/' + this.userLogged.usr_id).then(res => {
           if (res.data.status_code === 200) {
+            let _this = this
             let selector = '#' + _this.element
             this.intentos = 0
             this.errores = {}
@@ -109,7 +97,6 @@ export default {
               datos.push(procesosPorClinica[index].total)
               clinicas.push(procesosPorClinica[index].clinica)
             }
-            this.chartOptions.yaxis.max = datos[0] + 5
             this.chartOptions.xaxis.categories = clinicas
             this.chartOptions.series[0].data = datos
             let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)
