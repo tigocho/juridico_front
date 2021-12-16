@@ -242,7 +242,7 @@ export default {
     }
   },
   methods: {
-    fetchClinicaOptions () {
+    fetchClinicaOptions: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         axios.get('/clinicas/obtener-clinicas/' + this.userLogged.usr_id).then(response => {
           this.clinicaOptions = response.data.clinicas
@@ -253,6 +253,7 @@ export default {
               this.clinicaId = this.clinicaOptions[0].code
             } else {
               this.clinicaOptions.push({ code: 0, label: 'Todos' })
+              this.clinicasIds = 0
             }
           }
         })
@@ -271,13 +272,16 @@ export default {
       if (this.clinicasIds.length === 0) {
         this.clinicasIds = 0
       }
+      if (this.clinicasIds[0] === 0) {
+        this.clinicasIds.shift()
+      }
       this.obtenerCantidadProcesosAbiertos()
       this.obtenerCantidadProcesosCerrados()
       setTimeout(() => {
         this.obtenerTotalEstimacionesPretensiones()
         this.obtenerTotalPretensiones()
         this.graficaProcesosPorClinicaKey++
-      }, 300)
+      }, 800)
     },
     barraCargando () {
       let vm = this
