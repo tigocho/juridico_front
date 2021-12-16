@@ -92,10 +92,11 @@
                   <div class="text-right">
                     <h2 class="mb-0">
                       <span class="counter">{{
-                        formatPrice(totalPretensiones)
+                        formatoEnMillones(formatPrice(totalPretensiones))
                       }}</span>
                     </h2>
                     <h5 class="">Total pretensiones</h5>
+                    <small>en millones</small>
                   </div>
                 </div>
               </template>
@@ -114,10 +115,11 @@
                   <div class="text-right">
                     <h2 class="mb-0">
                       <span class="counter">{{
-                        formatPrice(totalEstimacionesPretensiones)
+                        formatoEnMillones(formatPrice(totalEstimacionesPretensiones))
                       }}</span>
                     </h2>
                     <h5 class="">Total estimación pretensiones</h5>
+                    <small>en millones</small>
                   </div>
                 </div>
               </template>
@@ -332,6 +334,11 @@ export default {
     formatPrice (value) {
       let val = (value / 1).toFixed(0).replace('.', ',')
       return '$' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+    },
+    formatoEnMillones (value) {
+      let val = value.toString()
+      val = val.slice(0, -4)
+      return val
     }
   }
 }
