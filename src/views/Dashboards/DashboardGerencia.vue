@@ -205,6 +205,18 @@
               </iq-card>
             </b-col>
           </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Procesos por aseguradora</h4>
+                </template>
+                <template v-slot:body>
+                  <GraficaProcesosPorAseguradora ref='chartAseguradora' element="aseguradoraa" :clinicasIds="clinicasIds"/>
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
         </iq-card>
       </b-col>
     </b-row>
