@@ -3,7 +3,7 @@
     <div class="iq-sidebar-logo d-flex justify-content-between">
       <router-link :to="homeURL" style="display: flex;align-items: center;">
         <img :src="logo" class="img-fluid" alt="logo">
-        <h4 class="text-white">Juridico App</h4>
+        <h4 class="text-white">Jurídico App</h4>
       </router-link>
       <div class="iq-menu-bt-sidebar" v-if="toggleButton">
         <div class="iq-menu-bt align-self-center">
