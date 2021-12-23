@@ -335,10 +335,10 @@ export default {
       },
       abogadoOptions: [],
       fields: [
-        // { key: 'name', label: 'Person full name', sortable: true, sortDirection: 'desc' },
-        // { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
         { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left' },
         { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left' },
+        // { key: 'implicateds.0.imp_nombres', label: 'Nombre implicado', sortable: false, class: 'text-left' },
+        // { key: 'implicateds.0.imp_apellidos', label: 'Apellidos implicado', sortable: false, class: 'text-left' },
         { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
         { key: 'proceedings.0.status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
         { key: 'actions', label: 'Acciones', class: 'text-center' }
