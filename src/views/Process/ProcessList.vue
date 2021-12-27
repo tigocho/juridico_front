@@ -335,13 +335,34 @@ export default {
       },
       abogadoOptions: [],
       fields: [
-        { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left' },
-        { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left' },
-        // { key: 'implicateds.0.imp_nombres', label: 'Nombre implicado', sortable: false, class: 'text-left' },
-        // { key: 'implicateds.0.imp_apellidos', label: 'Apellidos implicado', sortable: false, class: 'text-left' },
-        { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
-        { key: 'proceedings.0.status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
-        { key: 'actions', label: 'Acciones', class: 'text-center' }
+        { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left text-uppercase' },
+        { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left text-uppercase' },
+        {
+          key: 'implicateds',
+          label: 'Demandante/Demandado',
+          formatter: (value, key, item) => {
+            let abogadoDemandante = null
+            let demandante = null
+            for (var i = 0; i < value.length; i++) {
+              if (value[i].imp_profile_id === 7) {
+                demandante = value[i].imp_nombres + ' ' + value[i].imp_apellidos
+              } else if (value[i].imp_profile_id === 6) {
+                abogadoDemandante = value[i].imp_nombres + ' ' + value[i].imp_apellidos
+              }
+              if ((i + 1) === value.length) {
+                if (demandante !== null && demandante !== '') {
+                  return demandante
+                } else {
+                  return abogadoDemandante
+                }
+              }
+            }
+          },
+          class: 'text-left text-uppercase'
+        },
+        { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center text-uppercase' },
+        { key: 'proceedings.0.status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left text-uppercase' },
+        { key: 'actions', label: 'Acciones', class: 'text-center text-uppercase' }
       ],
       nuevoLinkProceeding: {
         link_name: null,

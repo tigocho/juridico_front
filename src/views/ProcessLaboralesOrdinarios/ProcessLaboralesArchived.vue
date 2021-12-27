@@ -301,6 +301,18 @@ export default {
         // { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
         { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left' },
         { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left' },
+        {
+          key: 'implicateds',
+          label: 'Demandante/Demandado',
+          formatter: (value, key, item) => {
+            for (var i = 0; i < value.length; i++) {
+              if (value[i].imp_profile_id === 6 || value[i].imp_profile_id === 7) {
+                return value[i].imp_nombres + ' ' + value[i].imp_apellidos
+              }
+            }
+          },
+          class: 'text-left text-uppercase'
+        },
         { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
         { key: 'proceedings.0.status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
         { key: 'actions', label: 'Acciones', class: 'text-center' }
