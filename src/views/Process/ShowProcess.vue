@@ -221,7 +221,7 @@
                     <tab-nav-items class="col-auto p-0" :active="false" href="#poliza" title="Poliza" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#comentarios" title="Comentarios" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#notas" title="Notas" />
-                    <tab-nav-items class="col-auto p-0" :active="false" href="#links" title="Links" />
+                    <tab-nav-items class="col-auto p-0" :active="false" href="#links" title="Documentos del proceso" />
                   </tab-nav>
                 </div>
               </template>
@@ -868,10 +868,10 @@
                 <tab-content-item :active="false" id="links">
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title">Links</h4>
+                      <h4 class="card-title">Documentos del proceso</h4>
                     </template>
                     <template v-slot:headerAction>
-                      <b-button variant="primary" @click="agregarLink"><i class="ri-add-line mr-2" ></i>Agregar link</b-button>
+                      <b-button variant="primary" @click="agregarLink"><i class="fas fa-plus-circle"></i>Agregar</b-button>
                     </template>
                     <template v-slot:body>
                       <b-table bordered hover foot-clone :items="links" :fields="columnasLinks" :key="tableLinkKey" stacked="md" small >
