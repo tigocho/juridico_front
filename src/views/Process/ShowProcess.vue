@@ -235,9 +235,9 @@
                     <template v-slot:headerTitle>
                       <h4 class="card-title">Información del proceso
                         <span v-if="process.profile != null">
-                          <span v-if="process.prore_profile_id == 7" class='text-success'>({{ process.profile.prof_name }})</span>
-                          <span v-else-if="process.prore_profile_id == 8" class='text-danger'>({{ process.profile.prof_name }})</span>
-                          <span v-else class='text-warning'>({{ process.profile.prof_name }})</span>
+                          <span v-if="process.prore_profile_id == 7" class='text-success'>(ROL DE CLÍNICA - {{ process.profile.prof_name }})</span>
+                          <span v-else-if="process.prore_profile_id == 8" class='text-danger'>(ROL DE CLÍNICA: {{ process.profile.prof_name }})</span>
+                          <span v-else class='text-warning'>(ROL DE CLÍNICA - {{ process.profile.prof_name }})</span>
                         </span>
                       </h4>
                     </template>
@@ -246,6 +246,31 @@
                       <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
                     </template>
                     <template v-slot:body>
+                      <div v-if="implicateds != null">
+                        <b-row class="col-md-12 pt-2">
+                          <h4 class="card-title">
+                            <span v-if="process.prore_profile_id == 7"><strong>Demandado(s):</strong></span>
+                            <span v-else-if="process.prore_profile_id == 8"><strong>Demandante(s):</strong></span>
+                            <span v-else><strong>Demandante(s):</strong></span>
+                          </h4>
+                          <b-row class="col-md-12 pt-2">
+                            <span v-for="(implicate, index) in implicateds" :key="index">
+                              <b-col class="col-md-12">
+                                <span v-if="process.prore_profile_id == 7">
+                                  <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 8"><i class="fas fa-user"></i> {{implicate.imp_nombres + " " + implicate.imp_apellidos}}</b-card-text>
+                                </span>
+                                <span v-else-if="process.prore_profile_id == 8">
+                                  <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 7 | implicate.imp_profile_id == 6"><i class="fas fa-user"></i> {{implicate.imp_nombres + " " + implicate.imp_apellidos}}</b-card-text>
+                                </span>
+                                <span v-else>
+                                  <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 7 | implicate.imp_profile_id == 6"><i class="fas fa-user"></i> {{implicate.imp_nombres + " " + implicate.imp_apellidos}}</b-card-text>
+                                </span>
+                              </b-col>
+                            </span>
+                          </b-row>
+                        </b-row>
+                      </div>
+                      <hr>
                       <div v-if="!editando">
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.proceedings != null && process.proceedings[0] != null">{{ process.proceedings[0].status_process.estado_proceso }}</span></b-card-text>
@@ -288,6 +313,7 @@
                           <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial: </b>{{ process.prore_fec_noti_preju }}</b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial:</b> {{ process.prore_fec_audi_conci_preju }}</b-card-text>
                         </b-row>
+                        <hr>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text><b>Descripción del siniestro: </b>{{ process.prore_sinies_description }}</b-card-text>
                         </b-row>
@@ -909,8 +935,10 @@ import { required } from 'vuelidate/lib/validators'
 import Vue from 'vue'
 import axios from 'axios'
 import auth from '@/logic/auth'
+import iqCard from '../../components/xray/cards/iq-card.vue'
 
 export default {
+  components: { iqCard },
   name: 'ProfileEdit',
   mounted () {
     xray.index()
