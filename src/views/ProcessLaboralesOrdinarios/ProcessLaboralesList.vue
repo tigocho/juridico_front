@@ -465,7 +465,6 @@ export default {
       this.user_id = user.usr_id
       axios.get('process/process-laborales-ordinarios/' + this.user_id).then(response => {
         this.process = response.data.process
-        console.log(this.process)
         // Set the initial number of items
         this.totalRows = this.process.length
         this.intentos = 0
