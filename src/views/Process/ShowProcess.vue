@@ -255,7 +255,7 @@
                           </h4>
                           <b-row class="col-md-12 pt-2">
                             <span v-for="(implicate, index) in implicateds" :key="index">
-                              <b-col class="col-md-12">
+                              <p class="pr-3">
                                 <span v-if="process.prore_profile_id == 7">
                                   <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 8"><i class="fas fa-user"></i> {{implicate.imp_nombres + " " + implicate.imp_apellidos}}</b-card-text>
                                 </span>
@@ -265,7 +265,7 @@
                                 <span v-else>
                                   <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 7 | implicate.imp_profile_id == 6"><i class="fas fa-user"></i> {{implicate.imp_nombres + " " + implicate.imp_apellidos}}</b-card-text>
                                 </span>
-                              </b-col>
+                              </p>
                             </span>
                           </b-row>
                         </b-row>
