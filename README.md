@@ -4,16 +4,7 @@
 El front de jurídico es la parte visual el usuario para poder realizar la creación de nuevos procesos/litigios con los involucrados, actuaciones, links, costos/cuantías, polizas, eventos en el calendario, exportar procesos, etc.
 
 
-## Installation
-
-Para instalar el front de Jurídico se debe de correr los siguientes comandos
-
-```bash
-  npm install my-project
-  cd my-project
-```
-    
-## Prerequisitos
+## Instalación
 
 A continuación, se listan las tecnologías necesarias para ejecutar la parte front de Jurídico.
 
