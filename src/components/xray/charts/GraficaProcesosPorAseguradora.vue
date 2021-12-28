@@ -107,7 +107,6 @@ export default {
             var cantidad = []
             var aseguradoras = []
             let procesosPorAseguradora = res.data.procesos_por_aseguradora
-            console.log(procesosPorAseguradora)
             for (let i = 0; i < procesosPorAseguradora.length; i++) {
               cantidad.push(procesosPorAseguradora[i].cantidad)
               aseguradoras.push(procesosPorAseguradora[i].aseguradora)
