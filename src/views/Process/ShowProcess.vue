@@ -202,10 +202,7 @@
               </b-row>
               <b-row>
                 <div class="form-check col-12 m-3">
-                  <input class="form-check-input" type="checkbox" v-model="nuevoImplicated.imp_principal" id="flexCheckChecked">
-                    <label class="form-check-label" for="flexCheckChecked">
-                      Involucrado principal
-                    </label>
+                  <b-form-checkbox class="form-check-input" type="checkbox" v-model="nuevoImplicated.imp_principal" id="flexCheckChecked">Involucrado principal</b-form-checkbox>
                 </div>
               </b-row>
               <div class="text-right pt-1">
