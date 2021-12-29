@@ -173,7 +173,7 @@
                   </b-form-group>
                 </b-col>
                 <b-col md="4">
-                  <b-form-group label="Dirección residencia" label-for="imp_direccion">
+                  <b-form-group label="Dirección de residencia" label-for="imp_direccion">
                     <b-form-input id="imp_direccion" v-model="nuevoImplicated.imp_direccion" type="text"></b-form-input>
                   </b-form-group>
                 </b-col>
@@ -199,6 +199,11 @@
                     <b-form-input v-model="nuevoImplicated.imp_emails" type="text" placeholder="Ej hola@example.com, prueba@example.com" ></b-form-input>
                   </b-form-group>
                 </b-col>
+              </b-row>
+              <b-row>
+                <div class="form-check col-12 m-3">
+                  <b-form-checkbox class="form-check-input" type="checkbox" v-model="nuevoImplicated.imp_principal" id="flexCheckChecked">Involucrado principal</b-form-checkbox>
+                </div>
               </b-row>
               <div class="text-right pt-1">
                 <b-button class="sm-3 mr-1" variant="secondary" @click="$bvModal.hide('modal-nuevo-implicated')">Cancelar</b-button>
@@ -257,13 +262,40 @@
                             <span v-for="(implicate, index) in implicateds" :key="index">
                               <p class="pr-3">
                                 <span v-if="process.prore_profile_id == 7">
-                                  <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 8"><i class="fas fa-user"></i> {{implicate.imp_nombres + " " + implicate.imp_apellidos}}</b-card-text>
+                                  <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 8">
+                                    <span v-b-tooltip.hover title="Principal" class="bg-danger p-1" style="background-color: #089bab; color: white; border-radius:4px" v-if="implicate.imp_principal">
+                                      <i class="fas fa-user" style="color:red"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                    <span v-else>
+                                      <i class="fas fa-user"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                  </b-card-text>
                                 </span>
                                 <span v-else-if="process.prore_profile_id == 8">
-                                  <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 7 | implicate.imp_profile_id == 6"><i class="fas fa-user"></i> {{implicate.imp_nombres + " " + implicate.imp_apellidos}}</b-card-text>
+                                  <b-card-text class="my-0 pt-1 text-uppercase" v-if="implicate.imp_profile_id == 7 || implicate.imp_profile_id == 6">
+                                    <span v-b-tooltip.hover title="Principal" class="p-1" style="background-color: #089bab; color: white; border-radius:4px" v-if="implicate.imp_principal">
+                                      <i class="fas fa-user" style="color:white"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                    <span v-else>
+                                      <i class="fas fa-user"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                  </b-card-text>
                                 </span>
                                 <span v-else>
-                                  <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 7 | implicate.imp_profile_id == 6"><i class="fas fa-user"></i> {{implicate.imp_nombres + " " + implicate.imp_apellidos}}</b-card-text>
+                                  <b-card-text class="my-0 pt-1 text-uppercase" v-if="implicate.imp_profile_id == 7 || implicate.imp_profile_id == 6">
+                                    <span v-b-tooltip.hover title="Principal" class="p-1" style="background-color: #089bab; color: white; border-radius:4px" v-if="implicate.imp_principal">
+                                      <i class="fas fa-user" style="color:white"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                    <span v-else>
+                                      <i class="fas fa-user"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                  </b-card-text>
                                 </span>
                               </p>
                             </span>
@@ -629,7 +661,7 @@
                     <template v-slot:body>
                       <b-row class="col-md-12" v-for="(implicate, index) in implicateds" :key="index">
                         <b-row class="col-md-12 pt-1">
-                          <h6><b class="text-black" style="text-decoration:underline;">{{ implicate.profile.prof_name }}</b><button class="btn btn-link pt-0" @click="editImplicated(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteImplicated(implicate)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
+                          <h6><b class="text-black" style="text-decoration:underline;">{{ implicate.profile.prof_name }}</b><button class="btn btn-link pt-0" @click="editImplicated(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteImplicated(implicate)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6><span v-if="implicate.imp_principal" class="mx-2 px-2" style="color: white; background-color: #089bab; border-radius: 3px; max-height:25px">PRINCIPAL</span>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="px-2 my-0"><b>Tipo identificación: </b>{{ tipoIdentificacion(implicate.imp_tipo_identificacion) }}</b-card-text>
@@ -1069,6 +1101,7 @@ export default {
         imp_emails: '',
         imp_profile_id: '',
         imp_genero_id: '',
+        imp_principal: false,
         imp_process_request_id: this.$route.params.prore_id
       },
       generoOptions: [
@@ -1721,6 +1754,7 @@ export default {
       this.nuevoImplicated.imp_telefonos = ''
       this.nuevoImplicated.imp_emails = ''
       this.nuevoImplicated.imp_profile_id = ''
+      this.nuevoImplicated.imp_principal = false
     },
     guardarImplicated () {
       if (this.checkFormImplicated()) {
@@ -1820,6 +1854,7 @@ export default {
       this.nuevoImplicated.imp_profile_id = this.implicateds[implicatedIndex].imp_profile_id
       this.nuevoImplicated.imp_rango_edad = this.implicateds[implicatedIndex].imp_rango_edad
       this.nuevoImplicated.imp_genero_id = this.implicateds[implicatedIndex].imp_genero_id
+      this.nuevoImplicated.imp_principal = this.implicateds[implicatedIndex].imp_principal
       this.$bvModal.show('modal-nuevo-implicated')
     },
     deleteImplicated (implicated) {
