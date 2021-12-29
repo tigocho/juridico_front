@@ -1,5 +1,10 @@
 <template>
-  <div :id="element"></div>
+  <div>
+      <div :id="element"></div>
+    <div v-if="!hasData">
+      <h4 class="col-12 text-center">No hay procesos de esta clínica asignados a una Poliza/Aseguradora</h4>
+    </div>
+  </div>
 </template>
 <script>
 import ApexCharts from 'apexcharts'
@@ -22,6 +27,7 @@ export default {
     return {
       max: 0,
       errores: [],
+      hasData: false,
       intentos: 0,
       chartOptions: {
         series: [{
@@ -29,7 +35,7 @@ export default {
           data: []
         }],
         chart: {
-          height: 400,
+          height: 500,
           type: 'bar'
         },
         colors: ['#089bab'],
@@ -61,10 +67,10 @@ export default {
         xaxis: {
           type: 'category',
           labels: {
-            rotate: -60,
             rotateAlways: true,
             minHeight: 150,
-            maxHeight: 1000
+            maxHeight: 1000,
+            trim: true
           },
           categories: [],
           tickPlacement: 'on'
@@ -107,12 +113,15 @@ export default {
             var cantidad = []
             var aseguradoras = []
             let procesosPorAseguradora = res.data.procesos_por_aseguradora
+            if (procesosPorAseguradora.length > 0) {
+              this.hasData = true
+            }
             for (let i = 0; i < procesosPorAseguradora.length; i++) {
               cantidad.push(procesosPorAseguradora[i].cantidad)
               aseguradoras.push(procesosPorAseguradora[i].aseguradora)
             }
-            this.chartOptions.yaxis.max = procesosPorAseguradora[0].cantidad + 5
-            this.chartOptions.yaxis.tickAmount = procesosPorAseguradora[0].cantidad + 5
+            this.chartOptions.yaxis.max = procesosPorAseguradora[0].cantidad + 3
+            this.chartOptions.yaxis.tickAmount = procesosPorAseguradora[0].cantidad + 3
             this.chartOptions.xaxis.categories = aseguradoras
             this.chartOptions.series[0].data = cantidad
             let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)
