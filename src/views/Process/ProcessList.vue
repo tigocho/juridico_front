@@ -344,18 +344,21 @@ export default {
             let abogadoDemandante = null
             let demandante = null
             for (var i = 0; i < value.length; i++) {
-              if (value[i].imp_profile_id === 7) {
-                demandante = value[i].imp_nombres + ' ' + value[i].imp_apellidos
-              } else if (value[i].imp_profile_id === 6) {
-                abogadoDemandante = value[i].imp_nombres + ' ' + value[i].imp_apellidos
-              }
-              if ((i + 1) === value.length) {
-                if (demandante !== null && demandante !== '') {
-                  return demandante
-                } else {
-                  return abogadoDemandante
+              if (value[i].imp_principal) {
+                demandante = value[i].imp_apellidos !== null ? value[i].imp_nombres + ' ' + value[i].imp_apellidos : value[i].imp_nombres
+                break
+              } else {
+                if (value[i].imp_profile_id === 7) {
+                  demandante = value[i].imp_apellidos !== null ? value[i].imp_nombres + ' ' + value[i].imp_apellidos : value[i].imp_nombres
+                } else if (value[i].imp_profile_id === 6) {
+                  abogadoDemandante = value[i].imp_apellidos !== null ? value[i].imp_nombres + ' ' + value[i].imp_apellidos : value[i].imp_nombres
                 }
               }
+            }
+            if (demandante !== null && demandante !== '') {
+              return demandante
+            } else {
+              return abogadoDemandante
             }
           },
           class: 'text-left text-uppercase'
