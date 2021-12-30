@@ -12,7 +12,7 @@
       </b-col>
     </b-row>
     <template v-slot:headerTitle>
-      <h4>Informacion por riesgo</h4>
+      <h4>Información por riesgo</h4>
     </template>
     <template v-slot:body v-if="procesosPorRiesgo.length > 0">
       <AmChart
