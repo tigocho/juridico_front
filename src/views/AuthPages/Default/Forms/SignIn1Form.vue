@@ -71,8 +71,8 @@ export default {
     errores: []
   }),
   mounted () {
-    const email = this.getCookie('email')
-    const password = this.getCookie('password')
+    const email = this.getCookie('email-jur')
+    const password = this.getCookie('pass-jur')
     if (email && password) {
       this.user.usr_email = email
       this.user.usr_password = Base64.decode(password)
@@ -125,12 +125,12 @@ export default {
         if (res.data.status_code === 200) {
           const token = res.data.token
           if (this.recordarme) {
-            this.setCookie('email', this.user.usr_email)
+            this.setCookie('email-jur', this.user.usr_email)
             const password = Base64.encode(this.user.usr_password)
-            this.setCookie('password', password)
+            this.setCookie('pass-jur', password)
           } else {
-            this.setCookie('email', '')
-            this.setCookie('password', '')
+            this.setCookie('email-jur', '')
+            this.setCookie('pass-jur', '')
           }
           localStorage.setItem('access_token', token)
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
