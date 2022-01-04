@@ -224,13 +224,12 @@
                   <b-input-group size="sm">
                     <b-form-input
                       id="filter-input"
-                      v-model="filter"
+                      v-model="rawInput"
                       type="search"
                       placeholder="Escribe para buscar"
                     ></b-form-input>
-
                     <b-input-group-append>
-                      <b-button :disabled="!filter" @click="filter = ''">Limpiar</b-button>
+                      <b-button :disabled="!rawInput" @click="rawInput = ''">{{ accionText }}</b-button>
                     </b-input-group-append>
                   </b-input-group>
                 </b-form-group>
@@ -242,7 +241,7 @@
               :fields="fields"
               :current-page="currentPage"
               :per-page="perPage"
-              :filter="filter"
+              :filter="criteria"
               :filter-included-fields="filterOn"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
@@ -305,6 +304,7 @@ export default {
       botonGuardarModal: '',
       textoGuardarActuacion: 'Guardar',
       botonEliminarModal: '',
+      accionText: 'Limpiar',
       user_id: '',
       process: [],
       typeNotificationsOptions: [],
@@ -385,7 +385,8 @@ export default {
       sortDesc: false,
       estado_elegido: 'todos',
       sortDirection: 'asc',
-      filter: null,
+      rawInput: '',
+      criteria: '',
       filterOn: [],
       infoModal: {
         id: 'info-modal',
@@ -397,6 +398,24 @@ export default {
       links: {},
       intentos: 0,
       errores: {}
+    }
+  },
+  created () {
+    this.$_timeout = null
+  },
+  beforeDestroy () {
+    clearTimeout(this.$_timeout)
+  },
+  watch: {
+    rawInput (newVal) {
+      this.accionText = 'Buscando...'
+      clearTimeout(this.$_timeout)
+      this.$_timeout = setTimeout(() => {
+        this.criteria = newVal
+        setTimeout(() => {
+          this.accionText = 'Limpiar'
+        }, 100)
+      }, 1000)
     }
   },
   computed: {
