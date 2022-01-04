@@ -379,7 +379,7 @@ export default {
         setTimeout(() => {
           this.accionText = 'Limpiar'
         }, 100)
-      }, 800)
+      }, 1000)
     }
   },
   computed: {
