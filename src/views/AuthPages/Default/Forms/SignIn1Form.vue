@@ -15,10 +15,6 @@
       <ValidationProvider vid="password" name="Password" rules="required" v-slot="{ errors }">
         <div class="form-group">
           <label for="passwordInput">Contraseña</label>
-          <router-link to="/auth/password-reset1" class="float-right">
-            ¿Olvidaste tu contraseña?
-          </router-link>
-          <!--<a href="#" @click="recuperarPassword" class="float-right">¿Olvidaste tu contraseña?</a>-->
           <input type="password"  :class="'form-control mb-0' +(errors.length > 0 ? ' is-invalid' : '')"
                  id="passwordInput"
                  v-model="user.usr_password" placeholder="Contraseña" required>
@@ -27,9 +23,14 @@
           </div>
         </div>
       </ValidationProvider>
-      <div class="cd-inline-blok ml-4 ">
-        <b-form-checkbox class="form-check-input" type="checkbox" v-model="recordarme" id="flexCheckChecked">Recordarme</b-form-checkbox>
-        <button type="submit" class="btn btn-primary float-right" :class="estado">{{ texto }}</button>
+      <div class="d-flex justify-content-between ml-4">
+        <b-form-checkbox class="form-check-input col-6" type="checkbox" v-model="recordarme" id="flexCheckChecked">Recordarme</b-form-checkbox>
+        <router-link to="/auth/password-reset1" class="pt-1">
+            ¿Olvidaste tu contraseña?
+        </router-link>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary mt-3" :class="estado">{{ texto }}</button>
       </div>
       <!--<div class="sign-info">
           <span class="dark-color d-inline-block line-height-2">
@@ -148,9 +149,6 @@ export default {
           this.errores = err
           Vue.swal('Ups, ocurrió un error, intente más tarde')
         })
-    },
-    recuperarPassword () {
-      this.$router.push({ name: 'auth.password-reset1' })
     }
   }
 }
