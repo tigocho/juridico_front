@@ -21,7 +21,6 @@
           </div>
         </ValidationProvider>
         <div class="d-inline-block w-100">
-          <!--<a @click="recuperarPassword" class="btn btn-primary float-right">{{ texto }}</a>-->
           <button type="submit" class="btn btn-primary float-right">{{ texto }}</button>
           <b-button @click="cancelar" class="float-right iq-bg-danger mr-3" variant="none" size="lg" >Cancelar</b-button>
         </div>
