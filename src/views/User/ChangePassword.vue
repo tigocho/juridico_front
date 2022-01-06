@@ -2,8 +2,8 @@
   <b-container fluid>
     <h2 class="mb-0">Cambiar contraseña</h2>
     <p>Ingrese una nueva contraseña para que sea actualizada.</p>
-    <div class='notificacion' v-if="estado">
-        <i class='float-right fas fa-times cerrar' v-on:click="estado=false"></i>
+    <div class='notificacion' v-if="passwordCambiada">
+        <i class='float-right fas fa-times cerrar' v-on:click="passwordCambiada=false"></i>
         <p>¡Se ha cambiado la contraseña correctamente!</p>
     </div>
     <ValidationObserver ref="form" v-slot="{ handleSubmit }">
@@ -25,7 +25,7 @@
           </b-form-group>
         </ValidationProvider>
         <div class="d-inline-block w-100">
-          <button type="submit" class="btn btn-primary float-right">{{ texto }}</button>
+          <button type="submit" class="btn btn-primary float-right" :class="estado">{{ texto }}</button>
           <b-button @click="cancelar" class="float-right iq-bg-danger mr-3" variant="none" size="lg" >Cancelar</b-button>
         </div>
       </form>
@@ -46,7 +46,8 @@ export default {
     token: '',
     email: '',
     texto: 'Guardar',
-    estado: false,
+    estado: '',
+    passwordCambiada: false,
     newPassword: '',
     newPassword2: ''
   }),
@@ -68,12 +69,14 @@ export default {
     },
     onSubmit () {
       this.texto = 'Guardando...'
+      this.estado = 'disabled'
       if (this.newPassword !== '' && this.newPassword2 !== '' && (this.newPassword === this.newPassword2)) {
         axios.post('/cambiarPassword/' + this.email, { 'newPassword': this.newPassword }).then(res => {
           if (res.data.status_code === 200) {
             this.newPassword = ''
+            this.estado = ''
             this.newPassword2 = ''
-            this.estado = true
+            this.passwordCambiada = true
             this.texto = 'Guardar'
             Vue.swal(res.data.message)
             this.setCookie('pass-jur', '')
@@ -81,6 +84,8 @@ export default {
               this.$router.push({ path: `/auth/sign-in1` })
             }, 3000)
           } else {
+            this.estado = ''
+            this.texto = 'Guardar'
             Vue.swal(res.data.message)
           }
         })

@@ -21,7 +21,7 @@
           </div>
         </ValidationProvider>
         <div class="d-inline-block w-100">
-          <button type="submit" class="btn btn-primary float-right">{{ texto }}</button>
+          <button type="submit" class="btn btn-primary float-right" :class="estado">{{ texto }}</button>
           <b-button @click="cancelar" class="float-right iq-bg-danger mr-3" variant="none" size="lg" >Cancelar</b-button>
         </div>
       </form>
@@ -43,13 +43,16 @@ export default {
   methods: {
     onSubmit () {
       this.texto = 'Enviando correo...'
+      this.estado = 'disabled'
       axios.post('/recuperarPassword', { 'email': this.email }).then(res => {
         if (res.data.status_code === 200) {
+          this.estado = ''
           this.texto = 'Restablecer Contraseña'
           Vue.swal(res.data.message)
           this.correoEnviado = true
         } else {
           this.texto = 'Restablecer Contraseña'
+          this.estado = ''
           Vue.swal(res.data.message)
         }
       })
