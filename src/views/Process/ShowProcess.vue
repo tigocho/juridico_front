@@ -224,8 +224,8 @@
                     <tab-nav-items class="col-auto p-0" :active="false" href="#actuaciones" title="Actuaciones" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#costos-cuantias" title="Costos/Cuantías" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#poliza" title="Poliza" />
-                    <tab-nav-items class="col-auto p-0" :active="false" href="#comentarios" title="Comentarios" />
-                    <tab-nav-items class="col-auto p-0" :active="false" href="#notas" title="Notas" />
+                    <!-- <tab-nav-items class="col-auto p-0" :active="false" href="#comentarios" title="Comentarios" />
+                    <tab-nav-items class="col-auto p-0" :active="false" href="#notas" title="Notas" /> -->
                     <tab-nav-items class="col-auto p-0" :active="false" href="#links" title="Documentos del proceso" />
                   </tab-nav>
                 </div>
@@ -905,7 +905,7 @@
                     </template>
                   </iq-card>
                 </tab-content-item>
-                <tab-content-item :active="false" id="comentarios">
+                <!-- <tab-content-item :active="false" id="comentarios">
                   <iq-card>
                     <template v-slot:headerTitle>
                       <h4 class="card-title">Comentarios</h4>
@@ -922,7 +922,7 @@
                     <template v-slot:body>
                     </template>
                   </iq-card>
-                </tab-content-item>
+                </tab-content-item> -->
                 <tab-content-item :active="false" id="links">
                   <iq-card>
                     <template v-slot:headerTitle>
