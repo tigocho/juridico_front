@@ -429,9 +429,14 @@ const authChildRoutes = (prop, mode = false) => [
   },
   {
     path: 'password-reset1',
-    name: prop + 'password-reset1',
+    name: prop + '.password-reset1',
     meta: { auth: false },
     component: RecoverPassword1
+  },
+  {
+    path: 'change-password/:token',
+    name: prop + '.change-password',
+    component: ChangePassword
   }
 ]
 
@@ -533,11 +538,6 @@ const userChildRoute = (prop, mode = false) => [
     name: prop + '.list',
     meta: { dark: mode, auth: true, name: 'User List' },
     component: UserList
-  },
-  {
-    path: 'change-password/:token',
-    name: prop + 'change-password',
-    component: ChangePassword
   }
 ]
 
@@ -689,7 +689,7 @@ const routes = [
     path: '/auth',
     name: 'auth1',
     component: AuthLayout1,
-    meta: { auth: true },
+    meta: { auth: false },
     children: authChildRoutes('auth1')
   },
   {
