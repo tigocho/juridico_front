@@ -13,19 +13,19 @@
           <b-col md="6">
             <b-card-title class="text-center">Perjuicios Inmateriales</b-card-title>
             <hr>
-            <b-card-text><b>Daños Morales:</b> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Daños Emergentes:</b> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Daño a la Vida ó Prejuicios Fisiologicos:</b> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Otros:</b> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>TOTAL:</b> <span v-if="process.prore_val_dano_vida == null && process.prore_val_dano_emergente != null && process.prore_val_dano_moral != null"> 0 </span><span v-else>{{ formatPrice(process.prore_val_dano_moral+process.prore_val_dano_vida+process.prore_val_dano_emergente) }}</span></b-card-text>
+            <b-card-text><strong>Daños Morales:</strong> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Daños Emergentes:</strong> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Daño a la Vida ó Prejuicios Fisiologicos:</strong> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>TOTAL:</strong> <span v-if="process.prore_val_dano_vida == null && process.prore_val_dano_emergente != null && process.prore_val_dano_moral != null"> 0 </span><span v-else>{{ formatPrice(process.prore_val_dano_moral+process.prore_val_dano_vida+process.prore_val_dano_emergente) }}</span></b-card-text>
           </b-col>
           <b-col md="6">
             <b-card-title class="text-center">Perjuicios Materiales</b-card-title>
             <hr>
-            <b-card-text><b>Lucro Cesante:</b> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Daños Emergentes:</b> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Otros:</b> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>TOTAL:</b> <span v-if="process.prore_val_luc_cesante == null && process.prore_val_dano_emergente != null && process.prore_otros_valores != null"> 0 </span><span v-else>{{ formatPrice(process.prore_val_luc_cesante+process.prore_val_dano_emergente+process.prore_otros_valores) }}</span></b-card-text>
+            <b-card-text><strong>Lucro Cesante:</strong> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Daños Emergentes:</strong> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>TOTAL:</strong> <span v-if="process.prore_val_luc_cesante == null && process.prore_val_dano_emergente != null && process.prore_otros_valores != null"> 0 </span><span v-else>{{ formatPrice(process.prore_val_luc_cesante+process.prore_val_dano_emergente+process.prore_otros_valores) }}</span></b-card-text>
           </b-col>
         </b-row>
       </div>
@@ -128,11 +128,6 @@ export default {
           setTimeout(() => {
             if (res.data.process != null) {
               this.process = res.data.process[0]
-              // this.implicateds = this.process.implicateds
-              // this.links = this.process.links
-              // this.proceedings = this.process.proceedings
-              // this.tableLinkKey++
-              // this.polizas = this.process.polizas
             } else {
               Vue.swal('Ocurrió un error tratando de obtener los datos del proceso')
             }
