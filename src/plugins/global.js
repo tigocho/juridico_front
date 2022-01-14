@@ -1,9 +1,7 @@
-import _ from 'lodash'
+
 import Vue from 'vue'
 
-const components = require.context('../components/xray')
-_.forEach(components.keys(), (fileName) => {
-  const componentConfig = components(fileName)
-  const componentName = fileName.split('/').pop().split('.')[0]
-  Vue.component(componentName, componentConfig.default || componentConfig)
+const files = require.context('../components', true, /\.vue$/i)
+files.keys().map(key => {
+  Vue.component(files(key).default.name ?? key.split('/').pop().split('.')[0], files(key).default)
 })
