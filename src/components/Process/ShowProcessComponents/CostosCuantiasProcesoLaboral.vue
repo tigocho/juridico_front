@@ -13,14 +13,14 @@
           <b-col md="12">
             <b-card-title class="text-center">Pretensiones económicas</b-card-title>
             <hr>
-            <b-card-text><b>Prestaciones Sociales:</b> <span v-if="process.prore_prestaciones_sociales != null">{{ formatPrice(process.prore_prestaciones_sociales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Pretensiones por Vacaciones:</b> <span v-if="process.prore_pretenciones_vacaciones != null">{{ formatPrice(process.prore_pretenciones_vacaciones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Indemnización por despido sin justa causa:</b> <span v-if="process.prore_pretenciones_indemnizacion != null">{{ formatPrice(process.prore_pretenciones_indemnizacion) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Pago de Seguridad Social en Salud:</b> <span v-if="process.prore_pago_seguridad_social_sa != null">{{ formatPrice(process.prore_pago_seguridad_social_sa) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Sanción por pago tardío de prestaciones sociales:</b> <span v-if="process.prore_prestaciones_sociales != null">{{ formatPrice(process.prore_prestaciones_sociales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Salarios dejados de Percibir:</b> <span v-if="process.prore_salario_dejados_percibir != null">{{ formatPrice(process.prore_salario_dejados_percibir) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>Otros:</b> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>TOTAL:</b> <span v-if="process.prore_prestaciones_sociales == null && process.prore_pretenciones_vacaciones != null && process.prore_pretenciones_indemnizacion != null && process.prore_pago_seguridad_social_sa != null && process.prore_prestaciones_sociales != null && process.prore_salario_dejados_percibir != null && process.prore_otros_valores != null"> 0 </span><span v-else>{{ formatPrice(process.prore_prestaciones_sociales + process.prore_pretenciones_vacaciones + process.prore_pago_seguridad_social_sa + process.prore_salario_dejados_percibir + process.prore_otros_valores) }}</span></b-card-text>
+            <b-card-text><strong>Prestaciones Sociales:</strong> <span v-if="process.prore_prestaciones_sociales != null">{{ formatPrice(process.prore_prestaciones_sociales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Pretensiones por Vacaciones:</strong> <span v-if="process.prore_pretenciones_vacaciones != null">{{ formatPrice(process.prore_pretenciones_vacaciones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Indemnización por despido sin justa causa:</strong> <span v-if="process.prore_pretenciones_indemnizacion != null">{{ formatPrice(process.prore_pretenciones_indemnizacion) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Pago de Seguridad Social en Salud:</strong> <span v-if="process.prore_pago_seguridad_social_sa != null">{{ formatPrice(process.prore_pago_seguridad_social_sa) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Sanción por pago tardío de prestaciones sociales:</strong> <span v-if="process.prore_prestaciones_sociales != null">{{ formatPrice(process.prore_prestaciones_sociales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Salarios dejados de Percibir:</strong> <span v-if="process.prore_salario_dejados_percibir != null">{{ formatPrice(process.prore_salario_dejados_percibir) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>TOTAL:</strong> <span v-if="process.prore_prestaciones_sociales == null && process.prore_pretenciones_vacaciones != null && process.prore_pretenciones_indemnizacion != null && process.prore_pago_seguridad_social_sa != null && process.prore_prestaciones_sociales != null && process.prore_salario_dejados_percibir != null && process.prore_otros_valores != null"> 0 </span><span v-else>{{ formatPrice(process.prore_prestaciones_sociales + process.prore_pretenciones_vacaciones + process.prore_pago_seguridad_social_sa + process.prore_salario_dejados_percibir + process.prore_otros_valores) }}</span></b-card-text>
           </b-col>
         </b-row>
       </div>
@@ -123,11 +123,6 @@ export default {
           setTimeout(() => {
             if (res.data.process != null) {
               this.process = res.data.process[0]
-              // this.implicateds = this.process.implicateds
-              // this.links = this.process.links
-              // this.proceedings = this.process.proceedings
-              // this.tableLinkKey++
-              // this.polizas = this.process.polizas
             } else {
               Vue.swal('Ocurrió un error tratando de obtener los datos del proceso')
             }

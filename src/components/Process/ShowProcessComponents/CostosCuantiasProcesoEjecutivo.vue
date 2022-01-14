@@ -13,8 +13,8 @@
           <b-col md="12">
             <b-card-title class="text-center">Pretensiones económicas - Proceso Ejecutivo</b-card-title>
             <hr>
-            <b-card-text><b>Otros:</b> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-            <b-card-text><b>TOTAL:</b> <span v-if="process.prore_otros_valores != null"> 0 </span><span v-else>{{ formatPrice(process.prore_otros_valores) }}</span></b-card-text>
+            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+            <b-card-text><strong>TOTAL:</strong> <span v-if="process.prore_otros_valores != null"> 0 </span><span v-else>{{ formatPrice(process.prore_otros_valores) }}</span></b-card-text>
           </b-col>
         </b-row>
       </div>
@@ -117,11 +117,6 @@ export default {
           setTimeout(() => {
             if (res.data.process != null) {
               this.process = res.data.process[0]
-              // this.implicateds = this.process.implicateds
-              // this.links = this.process.links
-              // this.proceedings = this.process.proceedings
-              // this.tableLinkKey++
-              // this.polizas = this.process.polizas
             } else {
               Vue.swal('Ocurrió un error tratando de obtener los datos del proceso')
             }
