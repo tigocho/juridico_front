@@ -107,7 +107,7 @@ import axios from 'axios'
 
 export default {
   name: 'CostosCuantiasProcesoMedico',
-  props: ['prore_id', 'editando'],
+  props: ['prore_id', 'usr_id'],
   mounted () {
     xray.index()
     this.getProcess()
@@ -118,7 +118,11 @@ export default {
       textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarCuantias: '',
       estadoBotonActualizarProceso: '',
-      textoEditarProceso: 'Editar Proceso'
+      editando: false,
+      profileProcessOptions: [{
+        'code': 0,
+        'label': 'No hay ningún dato'
+      }]
     }
   },
   methods: {
@@ -140,9 +144,7 @@ export default {
       }
     },
     editarProceso () {
-      // this.$router.push({ path: `/process/process-edit/` + this.prore_id })
       if (this.editando) {
-        console.log('EDITANDOOOOO')
         this.guardarProceso()
         this.estadoBotonActualizarProceso = 'disabled'
         this.textoEditarProceso = 'Actualizando Proceso...'
@@ -152,9 +154,75 @@ export default {
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
           this.fetchProfileProcessOptions()
         }
-        this.textoEditarProceso = 'Actualizar Proceso'
+        this.textoEditarCuantias = 'Actualizar Proceso'
         this.editando = true
       }
+    },
+    fetchProfileProcessOptions () {
+      axios.get('/profiles/fetch-profiles-process-requests').then(response => {
+        this.profileProcessOptions = response.data.profiles
+        this.intentos = 0
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos !== 2) {
+            this.fetchProfileProcessOptions()
+          }
+          this.intentos++
+        })
+    },
+    guardarProceso () {
+      if (this.usr_id != null && this.usr_id !== '') {
+        this.process.prore_user_id = this.usr_id
+      }
+      axios.post('/process/updateInfoProceso/' + this.prore_id, this.process).then(res => {
+        this.textoEditarProceso = 'Editar Proceso'
+        this.estadoBotonActualizarProceso = ''
+        this.estadoBotonActualizarCuantias = ''
+        this.textoEditarCuantias = 'Editar Costos/Cuantías'
+        if (res.data.status_code === 200) {
+          setTimeout(() => {
+            if (res.data.process != null) {
+              this.process = res.data.process[0]
+              this.textoEditarProceso = 'Editar Proceso'
+              this.editando = false
+              Vue.swal('Proceso actualizado correctamente')
+            } else {
+              this.editando = false
+              Vue.swal('Ocurrió un errro tratando de obtener el proceso')
+            }
+          }, 1000)
+        } else {
+          this.textoEditarProceso = 'Guardar Proceso'
+          Vue.swal('Error tratando de actualizar proceso. ' + res.data.message)
+        }
+      })
+        .catch(error => {
+          this.errores = error
+          if (this.intentos < 2) {
+            this.guardarProceso()
+            this.intentos++
+          } else {
+            Vue.swal('Error tratando de actualizar proceso. ' + error)
+            this.textoEditarProceso = 'Editar Proceso'
+            this.estadoBotonActualizarProceso = ''
+          }
+        })
+    },
+    totalPerjuiciosMateriales () {
+      let valLucCesante = this.process.prore_val_luc_cesante > 0 ? this.process.prore_val_luc_cesante : 0
+      let valDanoEmergente = this.process.prore_val_dano_emergente > 0 ? this.process.prore_val_dano_emergente : 0
+      this.process.prore_total_perjuicios_materiales = parseInt(valLucCesante) + parseInt(valDanoEmergente)
+      this.cuantiaPretensiones()
+    },
+    totalPerjuiciosInmateriales () {
+      let valDanoMoral = this.process.prore_val_dano_moral > 0 ? this.process.prore_val_dano_moral : 0
+      let valDanoVida = this.process.prore_val_dano_vida > 0 ? this.process.prore_val_dano_vida : 0
+      this.process.prore_total_perjuicios_inmateriales = parseInt(valDanoMoral) + parseInt(valDanoVida)
+      this.cuantiaPretensiones()
+    },
+    cuantiaPretensiones () {
+      this.process.prore_cuantia_pretenciones = this.process.prore_total_perjuicios_materiales + this.process.prore_total_perjuicios_inmateriales
     },
     cancelarEdicionProceso () {
       this.textoEditarProceso = 'Editar Proceso'

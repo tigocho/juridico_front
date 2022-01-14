@@ -722,13 +722,13 @@
                 </tab-content-item>
                 <tab-content-item :active="false" id="costos-cuantias">
                   <iq-card v-if="process.prore_typro_id != 11 && process.prore_typro_id != 8 && process.prore_typro_id != 10">
-                    <CostosCuantiasProcesoMedico :prore_id="prore_id" :editando="editando"/>
+                    <CostosCuantiasProcesoMedico :prore_id="prore_id" :usr_ud="userLogged.usr_id"/>
                   </iq-card>
                   <iq-card v-else-if="process.prore_typro_id == 11">
-                    <CostosCuantiasProcesoLaboral :prore_id="prore_id" :editando="editando"/>
+                    <CostosCuantiasProcesoLaboral :prore_id="prore_id" :editando="editando" :usr_ud="userLogged.usr_id"/>
                   </iq-card>
                   <iq-card v-else>
-                    <CostosCuantiasProcesoEjecutivo :prore_id="prore_id" :editando="editando"/>
+                    <CostosCuantiasProcesoEjecutivo :prore_id="prore_id" :editando="editando" :usr_ud="userLogged.usr_id"/>
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="poliza">
