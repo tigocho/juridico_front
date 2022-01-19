@@ -1,7 +1,7 @@
 <template>
   <iq-card class="p-2">
     <template v-slot:headerTitle>
-      <h4 class="card-title">Proceso Ejecutivo</h4>
+      <h4 class="card-title">Responsabilidad Médica</h4>
     </template>
     <template v-slot:headerAction>
       <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
@@ -10,22 +10,45 @@
     <template v-slot:body>
       <div v-if="!editando">
         <b-row>
-          <b-col md="12">
-            <b-card-title class="text-center">Pretensiones económicas</b-card-title>
+          <b-col md="6">
+            <b-card-title class="text-center">Perjuicios Inmateriales</b-card-title>
             <hr>
-              <b-card-text><strong>Obligación:</strong> <span v-if="process.prore_cuantia_pretenciones != null">{{ formatPrice(process.prore_cuantia_pretenciones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-              <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-              <b-card-text class="text-center"><h3><strong>TOTAL:</strong> <span v-if="process.prore_otros_valores == null && process.prore_cuantia_pretenciones == null"> 0 </span><span v-else>{{ formatPrice(process.prore_otros_valores + process.prore_cuantia_pretenciones) }}</span></h3></b-card-text>
+            <b-card-text><strong>Daños Morales:</strong> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daño a la Vida ó Prejuicios Fisiologicos:</strong> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
+            <b-row>
+              <b-card-text class="mr-4 mt-4 pt-3 text-center w-100"><h4><strong>TOTAL:</strong><span v-if="process.prore_val_dano_vida == null && process.prore_val_dano_moral == null && process.prore_otros_valores == null"> $ 0 </span><span v-else>{{ formatPrice(process.prore_val_dano_moral + process.prore_val_dano_vida + process.prore_otros_valores) }}</span></h4></b-card-text>
+            </b-row>
+          </b-col>
+          <b-col md="6">
+            <b-card-title class="text-center">Perjuicios Materiales</b-card-title>
+            <hr>
+            <b-card-text><strong>Lucro Cesante:</strong> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daños Emergentes:</strong> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
+            <b-row>
+              <b-card-text class="mr-4 mt-4 pt-3 text-center w-100"><h4><strong>TOTAL:</strong> <span v-if="process.prore_val_luc_cesante == null && process.prore_val_dano_emergente == null && process.prore_otros_valores == null"> $ 0 </span><span v-else>{{ formatPrice(process.prore_val_luc_cesante+process.prore_val_dano_emergente+process.prore_otros_valores) }}</span></h4></b-card-text>
+            </b-row>
           </b-col>
         </b-row>
       </div>
       <div v-else>
         <b-row>
-          <b-form-group class="col-md-6" label="Obligación" label-for="prore_cuantia_pretenciones">
-            <b-form-input v-model="process.prore_cuantia_pretenciones" type="number" placeholder="$"></b-form-input>
+          <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="prore_val_dano_moral">
+            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_moral" type="number" placeholder="$"></b-form-input>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="prore_val_dano_emergente">
+            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_dano_emergente" type="number" placeholder="$"></b-form-input>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos" label-for="prore_val_dano_vida">
+            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_vida" type="number" placeholder="$"></b-form-input>
           </b-form-group>
           <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
             <b-form-input v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
+          </b-form-group>
+          <!-- materiales -->
+          <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="prore_val_luc_cesante">
+            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_luc_cesante" type="number" placeholder="$"></b-form-input>
           </b-form-group>
         </b-row>
       </div>
@@ -40,14 +63,12 @@
 </template>
 
 <script>
-import { xray } from '../../../config/pluginInit'
+import { xray } from '../../../../config/pluginInit.js'
 import Vue from 'vue'
 import axios from 'axios'
-import iqCard from '../../xray/cards/iq-card.vue'
 
 export default {
-  components: { iqCard },
-  name: 'CostosCuantiasProcesoEjecutivo',
+  name: 'CostosCuantiasProcesoMedico',
   props: ['prore_id', 'usr_id'],
   mounted () {
     xray.index()
