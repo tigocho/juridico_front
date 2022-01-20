@@ -144,6 +144,7 @@
       </b-modal>
     </div>
     <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
+    <ModalTerminarProceso :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
     <!-- User Interface controls -->
     <b-row>
       <b-col lg="12">
@@ -252,6 +253,7 @@
                   <b-dropdown-item @click="edit(row.item.prore_id)">Editar</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
                   ">+ Actuación</b-dropdown-item>
+                  <b-dropdown-item v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(row.item.prore_id, row.item)">Terminar</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
                 </b-dropdown>
               </template>
@@ -291,6 +293,8 @@ export default {
     return {
       estadoBotonEliminarLinkProceeding: '',
       botonDescargarInforme: 'Descargar Informe',
+      mostrarModalTerminarProceso: false,
+      numRadicadoProcesoTerminar: '',
       estadoBotonDescargarInforme: '',
       botonGuardarModal: '',
       textoGuardarActuacion: 'Guardar',
@@ -635,6 +639,11 @@ export default {
       } else {
         return false
       }
+    },
+    verModalTerminarProceso (proreId, items) {
+      this.numRadicadoProcesoTerminar = items.prore_num_radicado
+      this.proceeding.proce_prore_id = proreId
+      this.mostrarModalTerminarProceso = true
     },
     checkFormActuacion () {
       if (this.proceeding.proce_pro_id && this.proceeding.proce_sta_id && this.proceeding.proce_fecha_ingreso && this.proceeding.proce_fecha_actualizacion && this.proceeding.proce_descripcion) {

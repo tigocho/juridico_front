@@ -117,6 +117,7 @@
           </b-modal>
         </div>
         <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
+        <ModalTerminarProceso :num_radicado="process.prore_num_radicado" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
         <!-- INICIO DE MODAL DE AGREGAR IMPLICADO -->
         <div>
           <b-modal id="modal-nuevo-implicated" size="lg" title="Agregar/Editar involucrado" hide-footer>
@@ -249,6 +250,7 @@
                     <template v-slot:headerAction>
                       <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
                       <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
+                      <b-button variant="danger" :class="estadoBotonTerminarProceso" class="ml-3" v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(prore_id)">Terminar Proceso</b-button>
                     </template>
                     <template v-slot:body>
                       <div v-if="implicateds != null">
@@ -722,13 +724,13 @@
                 </tab-content-item>
                 <tab-content-item :active="false" id="costos-cuantias">
                   <iq-card v-if="process.prore_typro_id != 11 && process.prore_typro_id != 8 && process.prore_typro_id != 10">
-                    <CostosCuantiasProcesoMedico :prore_id="prore_id" :usr_ud="userLogged.usr_id"/>
+                    <CostosCuantiasProcesoMedico :prore_id="prore_id" :usr_id="userLogged.usr_id"/>
                   </iq-card>
                   <iq-card v-else-if="process.prore_typro_id == 11">
-                    <CostosCuantiasProcesoLaboral :prore_id="prore_id" :editando="editando" :usr_ud="userLogged.usr_id"/>
+                    <CostosCuantiasProcesoLaboral :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id"/>
                   </iq-card>
                   <iq-card v-else>
-                    <CostosCuantiasProcesoEjecutivo :prore_id="prore_id" :editando="editando" :usr_ud="userLogged.usr_id"/>
+                    <CostosCuantiasProcesoEjecutivo :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id"/>
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="poliza">
@@ -911,6 +913,8 @@ export default {
       intentos: 0,
       prore_id: this.$route.params.prore_id,
       editando: false,
+      estadoBotonTerminarProceso: '',
+      mostrarModalTerminarProceso: false,
       implicateds: [],
       process: [],
       loading: true,
@@ -1424,6 +1428,11 @@ export default {
       if (!this.proceeding.proce_descripcion) {
         this.errors.push('La descripción es obligatoria.')
       }
+    },
+    verModalTerminarProceso (proreId, numRadicado) {
+      this.proceeding.proce_prore_id = proreId
+      this.$bvModal.show('modal-terminar-proceso')
+      this.mostrarModalTerminarProceso = true
     },
     agregarActuacion () {
       this.limpiarModalActuacion()
