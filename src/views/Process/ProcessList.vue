@@ -147,6 +147,8 @@
       </b-modal>
     </div>
     <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
+    <!-- MODAL PARA TERMINAR UN PROCESO -->
+    <ModalTerminarProceso :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
     <!-- User Interface controls -->
     <b-row>
       <b-col lg="12">
@@ -261,6 +263,7 @@
                   <b-dropdown-item @click="edit(row.item.prore_id)">Editar</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
                   ">+ Actuación</b-dropdown-item>
+                  <b-dropdown-item v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(row.item.prore_id, row.item)">Terminar</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
                 </b-dropdown>
               </template>
@@ -299,6 +302,8 @@ export default {
   data () {
     return {
       estadoBotonEliminarLinkProceeding: '',
+      mostrarModalTerminarProceso: false,
+      numRadicadoProcesoTerminar: '',
       botonDescargarInforme: 'Descargar Informe',
       estadoBotonDescargarInforme: '',
       botonGuardarModal: '',
@@ -614,6 +619,11 @@ export default {
     },
     agregarActuacion (proreId) {
       this.proceeding.proce_prore_id = proreId
+    },
+    verModalTerminarProceso (proreId, items) {
+      this.numRadicadoProcesoTerminar = items.prore_num_radicado
+      this.proceeding.proce_prore_id = proreId
+      this.mostrarModalTerminarProceso = true
     },
     guardarActuacion (bvModalEvt) {
       bvModalEvt.preventDefault()
