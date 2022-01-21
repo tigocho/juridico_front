@@ -26,7 +26,19 @@
       <div v-else>
         <b-row>
           <b-form-group class="col-md-6" label="Prestaciones Sociales" label-for="prore_prestaciones_sociales">
-            <b-form-input v-model="process.prore_prestaciones_sociales" type="number" placeholder="$"></b-form-input>
+            <!-- <b-form-input v-model="process.prore_prestaciones_sociales" type="number" placeholder="$"></b-form-input> -->
+            <vue-autonumeric class="form-control"
+              v-model="process.prore_prestaciones_sociales"
+              :options="{
+                  digitGroupSeparator: ',',
+                  decimalCharacter: '.',
+                  decimalCharacterAlternative: '.',
+                  currencySymbol: '\u00a0$',
+                  currencySymbolPlacement: 'p',
+                  roundingMethod: 'U',
+                  minimumValue: '0'
+              }"
+            ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Pretensiones por Vacaciones" label-for="prore_pretenciones_vacaciones">
             <b-form-input id="prore_pretenciones_vacaciones" v-model="process.prore_pretenciones_vacaciones" type="number" placeholder="$"></b-form-input>
@@ -59,9 +71,13 @@
 import { xray } from '../../../../config/pluginInit.js'
 import Vue from 'vue'
 import axios from 'axios'
+import VueAutonumeric from '../../../VueAutonumeric.vue'
 
 export default {
   name: 'CostosCuantiasProcesoLaboral',
+  components: {
+    VueAutonumeric
+  },
   props: ['prore_id', 'usr_id'],
   mounted () {
     xray.index()

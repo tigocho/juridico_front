@@ -35,7 +35,20 @@
       <div v-else>
         <b-row>
           <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="prore_val_dano_moral">
-            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_moral" type="number" placeholder="$"></b-form-input>
+            <!-- <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_moral" type="number" placeholder="$"></b-form-input> -->
+            <vue-autonumeric class="form-control"
+              v-model="process.prore_val_dano_moral"
+              @keyup="totalPerjuiciosInmateriales"
+              :options="{
+                  digitGroupSeparator: ',',
+                  decimalCharacter: '.',
+                  decimalCharacterAlternative: '.',
+                  currencySymbol: '\u00a0$',
+                  currencySymbolPlacement: 'p',
+                  roundingMethod: 'U',
+                  minimumValue: '0'
+              }"
+            ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="prore_val_dano_emergente">
             <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_dano_emergente" type="number" placeholder="$"></b-form-input>
@@ -66,9 +79,13 @@
 import { xray } from '../../../../config/pluginInit.js'
 import Vue from 'vue'
 import axios from 'axios'
+import VueAutonumeric from '../../../VueAutonumeric.vue'
 
 export default {
   name: 'CostosCuantiasProcesoMedico',
+  components: {
+    VueAutonumeric
+  },
   props: ['prore_id', 'usr_id'],
   mounted () {
     xray.index()
