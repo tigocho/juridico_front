@@ -13,9 +13,8 @@
           <b-col md="12">
             <b-card-title class="text-center">Pretensiones económicas</b-card-title>
             <hr>
-              <b-card-text><strong>Obligación:</strong> <span v-if="process.prore_cuantia_pretenciones != null">{{ formatPrice(process.prore_cuantia_pretenciones) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-              <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-              <b-card-text class="text-center"><h3><strong>TOTAL:</strong> <span v-if="process.prore_otros_valores == null && process.prore_cuantia_pretenciones == null"> $ 0</span><span v-else>{{ formatPrice(process.prore_otros_valores + process.prore_cuantia_pretenciones) }}</span></h3></b-card-text>
+              <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span v-else> $ 0</span></b-card-text>
+              <b-card-text class="text-center"><h3><strong>TOTAL:</strong> <span v-if="process.prore_cuantia_pretenciones == null"> $ 0</span><span v-else>{{ formatPrice(process.prore_cuantia_pretenciones) }}</span></h3></b-card-text>
           </b-col>
         </b-row>
       </div>
@@ -27,7 +26,7 @@
             ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
-            <b-form-input v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
+            <b-form-input @keyup="totalCuantiaPretenciones" v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
           </b-form-group>
         </b-row>
       </div>
@@ -159,20 +158,9 @@ export default {
           }
         })
     },
-    totalPerjuiciosMateriales () {
-      let valLucCesante = this.process.prore_val_luc_cesante > 0 ? this.process.prore_val_luc_cesante : 0
-      let valDanoEmergente = this.process.prore_val_dano_emergente > 0 ? this.process.prore_val_dano_emergente : 0
-      this.process.prore_total_perjuicios_materiales = parseInt(valLucCesante) + parseInt(valDanoEmergente)
-      this.cuantiaPretensiones()
-    },
-    totalPerjuiciosInmateriales () {
-      let valDanoMoral = this.process.prore_val_dano_moral > 0 ? this.process.prore_val_dano_moral : 0
-      let valDanoVida = this.process.prore_val_dano_vida > 0 ? this.process.prore_val_dano_vida : 0
-      this.process.prore_total_perjuicios_inmateriales = parseInt(valDanoMoral) + parseInt(valDanoVida)
-      this.cuantiaPretensiones()
-    },
-    cuantiaPretensiones () {
-      this.process.prore_cuantia_pretenciones = this.process.prore_total_perjuicios_materiales + this.process.prore_total_perjuicios_inmateriales
+    totalCuantiaPretenciones () {
+      let valOtros = this.process.prore_otros_valores > 0 ? this.process.prore_otros_valores : 0
+      this.process.prore_cuantia_pretenciones = valOtros
     },
     cancelarEdicionProceso () {
       this.textoEditarProceso = 'Editar Proceso'

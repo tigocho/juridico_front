@@ -10,27 +10,24 @@
     <template v-slot:body>
       <div v-if="!editando">
         <b-row>
-          <b-col md="6">
+          <b-col class="text-center" md="6">
             <b-card-title class="text-center">Perjuicios Inmateriales</b-card-title>
             <hr>
             <b-card-text><strong>Daños Morales:</strong> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Daño a la Vida ó Prejuicios Fisiologicos:</strong> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-row>
-              <b-card-text class="mr-4 mt-4 pt-3 text-center w-100"><h4><strong>TOTAL:</strong><span v-if="process.prore_val_dano_vida == null && process.prore_val_dano_moral == null && process.prore_otros_valores == null"> $ 0 </span><span v-else>{{ formatPrice(process.prore_val_dano_moral + process.prore_val_dano_vida + process.prore_otros_valores) }}</span></h4></b-card-text>
-            </b-row>
           </b-col>
-          <b-col md="6">
+          <b-col class="text-center" md="6">
             <b-card-title class="text-center">Perjuicios Materiales</b-card-title>
             <hr>
             <b-card-text><strong>Lucro Cesante:</strong> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Daños Emergentes:</strong> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-row>
-              <b-card-text class="mr-4 mt-4 pt-3 text-center w-100"><h4><strong>TOTAL:</strong> <span v-if="process.prore_val_luc_cesante == null && process.prore_val_dano_emergente == null && process.prore_otros_valores == null"> $ 0 </span><span v-else>{{ formatPrice(process.prore_val_luc_cesante+process.prore_val_dano_emergente+process.prore_otros_valores) }}</span></h4></b-card-text>
-            </b-row>
           </b-col>
         </b-row>
+        <b-row>
+              <b-card-text class="mr-4 mt-4 pt-3 text-center w-100"><h4><strong>TOTAL:</strong><span v-if="process.prore_cuantia_pretenciones == null"> $ 0 </span><span v-else> {{ formatPrice(process.prore_cuantia_pretenciones)}}  </span></h4></b-card-text>
+            </b-row>
       </div>
       <div v-else>
         <b-row>
@@ -199,7 +196,8 @@ export default {
     totalPerjuiciosMateriales () {
       let valLucCesante = this.process.prore_val_luc_cesante > 0 ? this.process.prore_val_luc_cesante : 0
       let valDanoEmergente = this.process.prore_val_dano_emergente > 0 ? this.process.prore_val_dano_emergente : 0
-      this.process.prore_total_perjuicios_materiales = parseInt(valLucCesante) + parseInt(valDanoEmergente)
+      let valOtros = this.process.prore_otros_valores > 0 ? this.process.prore_otros_valores : 0
+      this.process.prore_total_perjuicios_materiales = parseInt(valLucCesante) + parseInt(valDanoEmergente) + parseInt(valOtros)
       this.cuantiaPretensiones()
     },
     totalPerjuiciosInmateriales () {
@@ -209,7 +207,7 @@ export default {
       this.cuantiaPretensiones()
     },
     cuantiaPretensiones () {
-      this.process.prore_cuantia_pretenciones = this.process.prore_total_perjuicios_materiales + this.process.prore_total_perjuicios_inmateriales
+      this.process.prore_cuantia_pretenciones = parseInt(this.process.prore_total_perjuicios_materiales) + parseInt(this.process.prore_total_perjuicios_inmateriales)
     },
     cancelarEdicionProceso () {
       this.textoEditarProceso = 'Editar Proceso'
