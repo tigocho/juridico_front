@@ -22,7 +22,9 @@
       <div v-else>
         <b-row>
           <b-form-group class="col-md-6" label="Obligación" label-for="prore_cuantia_pretenciones">
-            <b-form-input v-model="process.prore_cuantia_pretenciones" type="number" placeholder="$"></b-form-input>
+            <vue-autonumeric class="form-control" v-model="process.prore_cuantia_pretenciones"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
             <b-form-input v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
@@ -44,9 +46,10 @@ import { xray } from '../../../../config/pluginInit.js'
 import Vue from 'vue'
 import axios from 'axios'
 import iqCard from '../../../xray/cards/iq-card.vue'
+import VueAutonumeric from '../../../VueAutonumeric.vue'
 
 export default {
-  components: { iqCard },
+  components: { iqCard, VueAutonumeric },
   name: 'CostosCuantiasProcesoEjecutivo',
   props: ['prore_id', 'usr_id'],
   mounted () {
@@ -55,6 +58,12 @@ export default {
   },
   data () {
     return {
+      optionNumeric: {
+        digitGroupSeparator: ',',
+        currencySymbol: '\u00a0$ ',
+        currencySymbolPlacement: 'p',
+        decimalPlaces: 0
+      },
       process: [],
       textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarCuantias: '',
