@@ -22,18 +22,8 @@
       <div v-else>
         <b-row>
           <b-form-group class="col-md-6" label="Obligación" label-for="prore_cuantia_pretenciones">
-            <!-- <b-form-input v-model="process.prore_cuantia_pretenciones" type="number" placeholder="$"></b-form-input> -->
-            <vue-autonumeric class="form-control"
-              v-model="process.prore_cuantia_pretenciones"
-              :options="{
-                  digitGroupSeparator: ',',
-                  decimalCharacter: '.',
-                  decimalCharacterAlternative: '.',
-                  currencySymbol: '\u00a0$',
-                  currencySymbolPlacement: 'p',
-                  roundingMethod: 'U',
-                  minimumValue: '0'
-              }"
+            <vue-autonumeric class="form-control" v-model="process.prore_cuantia_pretenciones"
+              :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
@@ -68,6 +58,12 @@ export default {
   },
   data () {
     return {
+      optionNumeric: {
+        digitGroupSeparator: ',',
+        currencySymbol: '\u00a0$ ',
+        currencySymbolPlacement: 'p',
+        decimalPlaces: 0
+      },
       process: [],
       textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarCuantias: '',

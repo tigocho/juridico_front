@@ -35,33 +35,35 @@
       <div v-else>
         <b-row>
           <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="prore_val_dano_moral">
-            <!-- <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_moral" type="number" placeholder="$"></b-form-input> -->
-            <vue-autonumeric class="form-control"
-              v-model="process.prore_val_dano_moral"
+            <vue-autonumeric class="form-control" v-model="process.prore_val_dano_moral"
               @keyup="totalPerjuiciosInmateriales"
-              :options="{
-                  digitGroupSeparator: ',',
-                  decimalCharacter: '.',
-                  decimalCharacterAlternative: '.',
-                  currencySymbol: '\u00a0$',
-                  currencySymbolPlacement: 'p',
-                  roundingMethod: 'U',
-                  minimumValue: '0'
-              }"
+              :options="optionNumeric"
             ></vue-autonumeric>
-          </b-form-group>
-          <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="prore_val_dano_emergente">
-            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_dano_emergente" type="number" placeholder="$"></b-form-input>
-          </b-form-group>
-          <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos" label-for="prore_val_dano_vida">
-            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_vida" type="number" placeholder="$"></b-form-input>
-          </b-form-group>
-          <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
-            <b-form-input v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
           </b-form-group>
           <!-- materiales -->
           <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="prore_val_luc_cesante">
-            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_luc_cesante" type="number" placeholder="$"></b-form-input>
+            <vue-autonumeric class="form-control" v-model="process.prore_val_luc_cesante"
+            @keyup="totalPerjuiciosMateriales"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos" label-for="prore_val_dano_vida">
+            <vue-autonumeric class="form-control" v-model="process.prore_val_dano_vida"
+              @keyup="totalPerjuiciosInmateriales"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <!-- materiales -->
+          <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="prore_val_dano_emergente">
+            <vue-autonumeric class="form-control" v-model="process.prore_val_dano_emergente"
+              @keyup="totalPerjuiciosMateriales"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Otros valores materiales e inmateriales" label-for="prore_otros_valores">
+            <vue-autonumeric class="form-control" v-model="process.prore_otros_valores"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
         </b-row>
       </div>
@@ -93,6 +95,12 @@ export default {
   },
   data () {
     return {
+      optionNumeric: {
+        digitGroupSeparator: ',',
+        currencySymbol: '\u00a0$ ',
+        currencySymbolPlacement: 'p',
+        decimalPlaces: 0
+      },
       process: [],
       textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarCuantias: '',
