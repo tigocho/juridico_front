@@ -26,22 +26,34 @@
       <div v-else>
         <b-row>
           <b-form-group class="col-md-6" label="Prestaciones Sociales" label-for="prore_prestaciones_sociales">
-            <b-form-input @keyup="totalCuantiasPretenciones" v-model="process.prore_prestaciones_sociales" type="number" placeholder="$"></b-form-input>
+            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_prestaciones_sociales"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Pretensiones por Vacaciones" label-for="prore_pretenciones_vacaciones">
-            <b-form-input @keyup="totalCuantiasPretenciones" id="prore_pretenciones_vacaciones" v-model="process.prore_pretenciones_vacaciones" type="number" placeholder="$"></b-form-input>
+            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_pretenciones_vacaciones"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Pretensiones por Indemnización" label-for="prore_pretenciones_indemnizacion">
-            <b-form-input @keyup="totalCuantiasPretenciones" v-model="process.prore_pretenciones_indemnizacion" type="number" placeholder="$"></b-form-input>
+            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_pretenciones_indemnizacion"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Pago de Seguridad Social en Salud" label-for="prore_pago_seguridad_social_sa">
-            <b-form-input @keyup="totalCuantiasPretenciones" v-model="process.prore_pago_seguridad_social_sa" type="number" placeholder="$"></b-form-input>
+            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_pago_seguridad_social_sa"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Salarios dejados de Percibir" label-for="prore_salario_dejados_percibir">
-            <b-form-input @keyup="totalCuantiasPretenciones" id="prore_salario_dejados_percibir" v-model="process.prore_salario_dejados_percibir" type="number" placeholder="$"></b-form-input>
+            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_salario_dejados_percibir"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
-            <b-form-input @keyup="totalCuantiasPretenciones" v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
+            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_otros_valores"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
         </b-row>
       </div>
@@ -59,9 +71,13 @@
 import { xray } from '../../../../config/pluginInit.js'
 import Vue from 'vue'
 import axios from 'axios'
+import VueAutonumeric from '../../../VueAutonumeric.vue'
 
 export default {
   name: 'CostosCuantiasProcesoLaboral',
+  components: {
+    VueAutonumeric
+  },
   props: ['prore_id', 'usr_id'],
   mounted () {
     xray.index()
@@ -69,6 +85,12 @@ export default {
   },
   data () {
     return {
+      optionNumeric: {
+        digitGroupSeparator: ',',
+        currencySymbol: '\u00a0$ ',
+        currencySymbolPlacement: 'p',
+        decimalPlaces: 0
+      },
       process: [],
       textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarCuantias: '',
