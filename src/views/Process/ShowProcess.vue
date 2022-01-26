@@ -250,7 +250,7 @@
                     <template v-slot:headerAction>
                       <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
                       <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
-                      <b-button variant="danger" :class="estadoBotonTerminarProceso" class="ml-3" v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(prore_id)">Terminar Proceso</b-button>
+                      <b-button variant="danger" v-if="process.prore_estado != 1" :class="estadoBotonTerminarProceso" class="ml-3" v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(prore_id)">Terminar Proceso</b-button>
                     </template>
                     <template v-slot:body>
                       <div v-if="implicateds != null">
@@ -705,8 +705,8 @@
                           <b-row class="col-md-12 pt-1">
                             <b-card-text class="my-0"><b>Abogado: </b><span v-if="proceeding.professional != null">{{ proceeding.professional.pro_name_first }} {{ proceeding.professional.pro_lastname_first }}</span></b-card-text>
                             <b-card-text class="pl-3 my-0"><b>Fecha de registro: </b>{{ proceeding.proce_fecha_ingreso }}</b-card-text>
-                            <b-card-text class="pl-3 my-0"><b>Fecha sig. audiencia: </b>{{ proceeding.proce_fecha_siguiente_audiencia }}</b-card-text>
-                            <b-card-text class="my-0"><b>Hora sig. audiencia: </b>{{ proceeding.proce_hora_siguiente_audiencia }}</b-card-text>
+                            <b-card-text v-if="proceeding.status_process.sta_id != 16" class="pl-3 my-0"><b>Fecha sig. audiencia: </b>{{ proceeding.proce_fecha_siguiente_audiencia }}</b-card-text>
+                            <b-card-text v-if="proceeding.status_process.sta_id != 16" class="my-0"><b>Hora sig. audiencia: </b>{{ proceeding.proce_hora_siguiente_audiencia }}</b-card-text>
                           </b-row>
                           <b-row class="col-md-12 pt-1">
                             <b-card-text><b>Descripción actuación: </b>{{ proceeding.proce_descripcion }}</b-card-text>

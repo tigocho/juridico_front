@@ -148,11 +148,11 @@
     </div>
     <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
     <!-- MODAL PARA TERMINAR UN PROCESO -->
-    <ModalTerminarProceso :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
+    <ModalTerminarProceso v-on:actualizarListaProcesos="actualizarLista" :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso"  />
     <!-- User Interface controls -->
     <b-row>
       <b-col lg="12">
-        <iq-card>
+        <iq-card :key="tableKey">
           <template v-slot:headerTitle>
             <h4 class="card-title">Litigios/Solicitudes</h4>
           </template>
@@ -213,7 +213,6 @@
                   </v-select>
                 </b-form-group>
               </b-col>
-
               <b-col sm="5" md="5" class="my-1">
                 <b-form-group
                   label="Buscar"
@@ -263,8 +262,9 @@
                   <b-dropdown-item @click="edit(row.item.prore_id)">Editar</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
                   ">+ Actuación</b-dropdown-item>
-                  <b-dropdown-item v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(row.item.prore_id, row.item)">Terminar</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
+                  <hr>
+                  <b-dropdown-item v-if="row.item.prore_status_process_id != 16" v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(row.item.prore_id, row.item)"><span class="text-danger">Terminar Proceso</span></b-dropdown-item>
                 </b-dropdown>
               </template>
             </b-table>
@@ -301,6 +301,7 @@ const FileDownload = require('js-file-download')
 export default {
   data () {
     return {
+      tableKey: 1,
       estadoBotonEliminarLinkProceeding: '',
       mostrarModalTerminarProceso: false,
       numRadicadoProcesoTerminar: '',
@@ -447,6 +448,10 @@ export default {
     }, 500)
   },
   methods: {
+    actualizarLista () {
+      this.getProcess()
+      this.tableKey++
+    },
     importarArchivo () {
       this.$router.push({ path: `/process/process-import` })
     },
