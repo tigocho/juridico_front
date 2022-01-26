@@ -44,3 +44,7 @@ import Css
 .notificacion .cerrar:hover{
   cursor: pointer;
 }
+
+.swal2-container .swal2-confirm{
+  margin-right: 20px;
+} 
