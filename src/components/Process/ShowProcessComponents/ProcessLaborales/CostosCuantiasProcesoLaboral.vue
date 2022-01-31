@@ -18,40 +18,41 @@
             <b-card-text><strong>Indemnización por despido sin justa causa:</strong> <span v-if="process.prore_pretenciones_indemnizacion != null">{{ formatPrice(process.prore_pretenciones_indemnizacion) }}</span><span v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Pago de Seguridad Social en Salud:</strong> <span v-if="process.prore_pago_seguridad_social_sa != null">{{ formatPrice(process.prore_pago_seguridad_social_sa) }}</span><span v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Salarios dejados de Percibir:</strong> <span v-if="process.prore_salario_dejados_percibir != null">{{ formatPrice(process.prore_salario_dejados_percibir) }}</span><span v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Otros costos:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span v-else> $ 0</span></b-card-text>
-            <b-card-text  class="text-center"><h3><strong>TOTAL:</strong> <span v-if="process.prore_cuantia_pretenciones  == null"> $ 0 </span><span v-else>{{ formatPrice(process.prore_cuantia_pretenciones) }}</span></h3></b-card-text>
+            <b-card-text><strong>Otros valores:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span v-else> $ 0</span></b-card-text>
+            <hr>
+            <b-card-text class="mt-2 pt-3 text-left w-100"><h3><strong class="text-danger">TOTAL:</strong><span v-if="process.prore_cuantia_pretenciones == null"> $ 0 </span><span v-else> {{ formatPrice(process.prore_cuantia_pretenciones)}}  </span></h3></b-card-text>
           </b-col>
         </b-row>
       </div>
       <div v-else>
         <b-row>
-          <b-form-group class="col-md-6" label="Prestaciones Sociales" label-for="prore_prestaciones_sociales">
-            <vue-autonumeric class="form-control" v-model="process.prore_prestaciones_sociales"
+          <b-form-group class="col-md-6" label="Prestaciones Sociales" label-for="tempProrePrestacionesSociales">
+            <vue-autonumeric class="form-control" v-model="tempProrePrestacionesSociales"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Pretensiones por Vacaciones" label-for="prore_pretenciones_vacaciones">
-            <vue-autonumeric class="form-control" v-model="process.prore_pretenciones_vacaciones"
+          <b-form-group class="col-md-6" label="Pretensiones por Vacaciones" label-for="tempProrePretencionesVacaciones">
+            <vue-autonumeric class="form-control" v-model="tempProrePretencionesVacaciones"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Pretensiones por Indemnización" label-for="prore_pretenciones_indemnizacion">
-            <vue-autonumeric class="form-control" v-model="process.prore_pretenciones_indemnizacion"
+          <b-form-group class="col-md-6" label="Pretensiones por Indemnización" label-for="tempProrePretencionesIndemnizacion">
+            <vue-autonumeric class="form-control" v-model="tempProrePretencionesIndemnizacion"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Pago de Seguridad Social en Salud" label-for="prore_pago_seguridad_social_sa">
-            <vue-autonumeric class="form-control" v-model="process.prore_pago_seguridad_social_sa"
+          <b-form-group class="col-md-6" label="Pago de Seguridad Social en Salud" label-for="tempProreSeguridadSocialSa">
+            <vue-autonumeric class="form-control" v-model="tempProreSeguridadSocialSa"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Salarios dejados de Percibir" label-for="prore_salario_dejados_percibir">
-            <vue-autonumeric class="form-control" v-model="process.prore_salario_dejados_percibir"
+          <b-form-group class="col-md-6" label="Salarios dejados de Percibir" label-for="tempProreSalariosDejadosPercibir">
+            <vue-autonumeric class="form-control" v-model="tempProreSalariosDejadosPercibir"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Otros costos" label-for="prore_otros_valores">
-            <vue-autonumeric class="form-control" v-model="process.prore_otros_valores"
+          <b-form-group class="col-md-6" label="Otros costos" label-for="tempProreValOtrosValores">
+            <vue-autonumeric class="form-control" v-model="tempProreValOtrosValores"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
@@ -92,6 +93,12 @@ export default {
         decimalPlaces: 0
       },
       process: [],
+      tempProrePrestacionesSociales: 0,
+      tempProrePretencionesVacaciones: 0,
+      tempProrePretencionesIndemnizacion: 0,
+      tempProreSeguridadSocialSa: 0,
+      tempProreSalariosDejadosPercibir: 0,
+      tempProreValOtrosValores: 0,
       textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarCuantias: '',
       estadoBotonActualizarProceso: '',
@@ -120,6 +127,14 @@ export default {
           }, 3500))
       }
     },
+    setVariablesTemporales () {
+      this.tempProrePrestacionesSociales = this.process.prore_prestaciones_sociales
+      this.tempProrePretencionesVacaciones = this.process.prore_pretenciones_vacaciones
+      this.tempProrePretencionesIndemnizacion = this.process.prore_pretenciones_indemnizacion
+      this.tempProreSeguridadSocialSa = this.process.prore_pago_seguridad_social_sa
+      this.tempProreSalariosDejadosPercibir = this.process.prore_salario_dejados_percibir
+      this.tempProreValOtrosValores = this.process.prore_otros_valores
+    },
     editarProceso () {
       if (this.editando) {
         this.totalCuantiasPretenciones()
@@ -130,6 +145,7 @@ export default {
           this.guardarProceso()
         }, 500)
       } else {
+        this.setVariablesTemporales()
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
           this.fetchProfileProcessOptions()
         }
@@ -190,21 +206,20 @@ export default {
     },
 
     totalCuantiasPretenciones () {
-      let valPrestacionesSociales = this.process.prore_prestaciones_sociales > 0 ? this.process.prore_prestaciones_sociales : 0
-      let valPretencionesVacaciones = this.process.prore_pretenciones_vacaciones > 0 ? this.process.prore_pretenciones_vacaciones : 0
-      let valPretencionesIndemnizacion = this.process.prore_pretenciones_indemnizacion > 0 ? this.process.prore_pretenciones_indemnizacion : 0
-      let valSeguridadSocial = this.process.prore_pago_seguridad_social_sa > 0 ? this.process.prore_pago_seguridad_social_sa : 0
-      let valSalarioDejadoRecibir = this.process.prore_salario_dejados_percibir > 0 ? this.process.prore_salario_dejados_percibir : 0
-      let valOtros = this.process.prore_otros_valores > 0 ? this.process.prore_otros_valores : 0
-      this.process.prore_cuantia_pretenciones = parseInt(valPrestacionesSociales) +
-                                                parseInt(valPretencionesVacaciones) +
-                                                parseInt(valPretencionesIndemnizacion) +
-                                                parseInt(valSeguridadSocial) +
-                                                parseInt(valSalarioDejadoRecibir) +
-                                                parseInt(valOtros)
+      this.process.prore_prestaciones_sociales = this.tempProrePrestacionesSociales > 0 ? this.tempProrePrestacionesSociales : 0
+      this.process.prore_pretenciones_vacaciones = this.tempProrePretencionesVacaciones > 0 ? this.tempProrePretencionesVacaciones : 0
+      this.process.prore_pretenciones_indemnizacion = this.tempProrePretencionesIndemnizacion > 0 ? this.tempProrePretencionesIndemnizacion : 0
+      this.process.prore_pago_seguridad_social_sa = this.tempProreSeguridadSocialSa > 0 ? this.tempProreSeguridadSocialSa : 0
+      this.process.prore_salario_dejados_percibir = this.tempProreSalariosDejadosPercibir > 0 ? this.tempProreSalariosDejadosPercibir : 0
+      this.process.prore_otros_valores = this.tempProreValOtrosValores > 0 ? this.tempProreValOtrosValores : 0
+      this.process.prore_cuantia_pretenciones = this.process.prore_prestaciones_sociales +
+                                                this.process.prore_pretenciones_vacaciones +
+                                                this.process.prore_pretenciones_indemnizacion +
+                                                this.process.prore_pago_seguridad_social_sa +
+                                                this.process.prore_salario_dejados_percibir +
+                                                this.process.prore_otros_valores
     },
     cancelarEdicionProceso () {
-      this.getProcess()
       this.textoEditarCuantias = 'Editar Costos/Cuantías'
       this.editando = false
     },

@@ -16,30 +16,31 @@
             <b-card-text><strong>Capital:</strong> <span v-if="process.prore_val_capital != null">{{ formatPrice(process.prore_val_capital) }}</span><span v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Intereses corrientes:</strong> <span v-if="process.prore_val_intereses_corrientes != null">{{ formatPrice(process.prore_val_intereses_corrientes) }}</span><span v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Intereses de mora:</strong> <span v-if="process.prore_val_intereses_mora!= null">{{ formatPrice(process.prore_val_intereses_mora) }}</span><span v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Otros costos:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span v-else> $ 0</span></b-card-text>
-            <b-card-text class="text-center"><h3><strong>TOTAL:</strong> <span v-if="process.prore_cuantia_pretenciones == null"> $ 0</span><span v-else>{{ formatPrice(process.prore_cuantia_pretenciones) }}</span></h3></b-card-text>
+            <b-card-text><strong>Otros valores:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span v-else> $ 0</span></b-card-text>
+            <hr>
+            <b-card-text class="mt-2 pt-3 text-left w-100"><h3><strong class="text-danger">TOTAL:</strong><span v-if="process.prore_cuantia_pretenciones == null"> $ 0 </span><span v-else> {{ formatPrice(process.prore_cuantia_pretenciones)}}  </span></h3></b-card-text>
           </b-col>
         </b-row>
       </div>
       <div v-else>
         <b-row>
-          <b-form-group class="col-md-6" label="Capital" label-for="prore_val_capital">
-            <vue-autonumeric class="form-control" v-model="process.prore_val_capital"
+          <b-form-group class="col-md-6" label="Capital" label-for="tempProreValCapital">
+            <vue-autonumeric class="form-control" v-model="tempProreValCapital"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Intereses corrientes" label-for="prore_val_intereses_corrientes">
-            <vue-autonumeric class="form-control" v-model="process.prore_val_intereses_corrientes"
+          <b-form-group class="col-md-6" label="Intereses corrientes" label-for="tempProreValInteresesCorrientes">
+            <vue-autonumeric class="form-control" v-model="tempProreValInteresesCorrientes"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Intereses de mora" label-for="prore_val_intereses_mora">
-            <vue-autonumeric class="form-control" v-model="process.prore_val_intereses_mora"
+          <b-form-group class="col-md-6" label="Intereses de mora" label-for="tempProreValInteresesMora">
+            <vue-autonumeric class="form-control" v-model="tempProreValInteresesMora"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Otros costos" label-for="prore_otros_valores">
-            <b-form-input v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
+          <b-form-group class="col-md-6" label="Otros costos" label-for="tempProreValOtrosValores">
+            <b-form-input v-model="tempProreValOtrosValores" type="number" placeholder="$"></b-form-input>
           </b-form-group>
         </b-row>
       </div>
@@ -77,6 +78,10 @@ export default {
         decimalPlaces: 0
       },
       process: [],
+      tempProreValCapital: 0,
+      tempProreValInteresesCorrientes: 0,
+      tempProreValInteresesMora: 0,
+      tempProreValOtrosValores: 0,
       textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarCuantias: '',
       estadoBotonActualizarProceso: '',
@@ -105,6 +110,12 @@ export default {
           }, 3500))
       }
     },
+    setVariablesTemporales () {
+      this.tempProreValCapital = this.process.prore_val_capital
+      this.tempProreValInteresesCorrientes = this.process.prore_val_intereses_corrientes
+      this.tempProreValInteresesMora = this.process.prore_val_intereses_mora
+      this.tempProreValOtrosValores = this.process.prore_otros_valores
+    },
     editarProceso () {
       if (this.editando) {
         this.totalCuantiaPretenciones()
@@ -115,6 +126,7 @@ export default {
           this.guardarProceso()
         }, 500)
       } else {
+        this.setVariablesTemporales()
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
           this.fetchProfileProcessOptions()
         }
@@ -174,14 +186,13 @@ export default {
         })
     },
     totalCuantiaPretenciones () {
-      let valCapital = this.process.prore_val_capital > 0 ? this.process.prore_val_capital : 0
-      let valInteresesCorrientes = this.process.prore_val_intereses_corrientes > 0 ? this.process.prore_val_intereses_corrientes : 0
-      let valInteresesMora = this.process.prore_val_intereses_mora > 0 ? this.process.prore_val_intereses_mora : 0
-      let valOtros = this.process.prore_otros_valores > 0 ? this.process.prore_otros_valores : 0
-      this.process.prore_cuantia_pretenciones = parseInt(valOtros) + parseInt(valCapital) + parseInt(valInteresesCorrientes) + parseInt(valInteresesMora)
+      this.process.prore_val_capital = this.tempProreValCapital > 0 ? this.tempProreValCapital : 0
+      this.process.prore_val_intereses_corrientes = this.tempProreValInteresesCorrientes > 0 ? this.tempProreValInteresesCorrientes : 0
+      this.process.prore_val_intereses_mora = this.tempProreValInteresesMora > 0 ? this.tempProreValInteresesMora : 0
+      this.process.prore_otros_valores = this.tempProreValOtrosValores > 0 ? this.tempProreValOtrosValores : 0
+      this.process.prore_cuantia_pretenciones = this.process.prore_val_capital + this.process.prore_val_intereses_corrientes + this.process.prore_val_intereses_mora + this.process.prore_otros_valores
     },
     cancelarEdicionProceso () {
-      this.getProcess()
       this.textoEditarCuantias = 'Editar Costos/Cuantías'
       this.editando = false
     },
