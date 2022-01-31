@@ -837,7 +837,7 @@
                     <template v-slot:body>
                       <b-table bordered hover foot-clone :items="links" :fields="columnasLinks" :key="tableLinkKey" stacked="md" small >
                         <template v-slot:cell(link_name)="row">
-                          <span v-if="!row.item.editable" style="word-break: break-all;">{{ row.item.link_name }}</span>
+                          <span v-if="!row.item.editable" style="word-break: break-all;"><a :href="row.item.link_url" target="_blank">{{ row.item.link_name }}</a></span>
                           <input type="text" v-model="row.item.link_name" v-else class="form-control">
                         </template>
                         <template v-slot:cell(link_url)="row">
