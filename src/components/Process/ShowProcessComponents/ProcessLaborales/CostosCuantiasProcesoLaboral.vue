@@ -18,7 +18,7 @@
             <b-card-text><strong>Indemnización por despido sin justa causa:</strong> <span v-if="process.prore_pretenciones_indemnizacion != null">{{ formatPrice(process.prore_pretenciones_indemnizacion) }}</span><span v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Pago de Seguridad Social en Salud:</strong> <span v-if="process.prore_pago_seguridad_social_sa != null">{{ formatPrice(process.prore_pago_seguridad_social_sa) }}</span><span v-else> $ 0</span></b-card-text>
             <b-card-text><strong>Salarios dejados de Percibir:</strong> <span v-if="process.prore_salario_dejados_percibir != null">{{ formatPrice(process.prore_salario_dejados_percibir) }}</span><span v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Otros costos:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span v-else> $ 0</span></b-card-text>
             <b-card-text  class="text-center"><h3><strong>TOTAL:</strong> <span v-if="process.prore_cuantia_pretenciones  == null"> $ 0 </span><span v-else>{{ formatPrice(process.prore_cuantia_pretenciones) }}</span></h3></b-card-text>
           </b-col>
         </b-row>
@@ -26,32 +26,32 @@
       <div v-else>
         <b-row>
           <b-form-group class="col-md-6" label="Prestaciones Sociales" label-for="prore_prestaciones_sociales">
-            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_prestaciones_sociales"
+            <vue-autonumeric class="form-control" v-model="process.prore_prestaciones_sociales"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Pretensiones por Vacaciones" label-for="prore_pretenciones_vacaciones">
-            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_pretenciones_vacaciones"
+            <vue-autonumeric class="form-control" v-model="process.prore_pretenciones_vacaciones"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Pretensiones por Indemnización" label-for="prore_pretenciones_indemnizacion">
-            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_pretenciones_indemnizacion"
+            <vue-autonumeric class="form-control" v-model="process.prore_pretenciones_indemnizacion"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Pago de Seguridad Social en Salud" label-for="prore_pago_seguridad_social_sa">
-            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_pago_seguridad_social_sa"
+            <vue-autonumeric class="form-control" v-model="process.prore_pago_seguridad_social_sa"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Salarios dejados de Percibir" label-for="prore_salario_dejados_percibir">
-            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_salario_dejados_percibir"
+            <vue-autonumeric class="form-control" v-model="process.prore_salario_dejados_percibir"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
-            <vue-autonumeric class="form-control" @keyup="totalCuantiasPretenciones" v-model="process.prore_otros_valores"
+          <b-form-group class="col-md-6" label="Otros costos" label-for="prore_otros_valores">
+            <vue-autonumeric class="form-control" v-model="process.prore_otros_valores"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
@@ -122,11 +122,13 @@ export default {
     },
     editarProceso () {
       if (this.editando) {
-        this.guardarProceso()
+        this.totalCuantiasPretenciones()
         this.estadoBotonActualizarProceso = 'disabled'
-        this.textoEditarProceso = 'Actualizando Proceso...'
         this.estadoBotonActualizarCuantias = 'disabled'
         this.textoEditarCuantias = 'Actualizando...'
+        setTimeout(() => {
+          this.guardarProceso()
+        }, 500)
       } else {
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
           this.fetchProfileProcessOptions()
@@ -202,7 +204,8 @@ export default {
                                                 parseInt(valOtros)
     },
     cancelarEdicionProceso () {
-      this.textoEditarProceso = 'Editar Proceso'
+      this.getProcess()
+      this.textoEditarCuantias = 'Editar Costos/Cuantías'
       this.editando = false
     },
     formatPrice (value) {
