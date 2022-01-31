@@ -882,6 +882,7 @@ export default {
       this.getEstadosProceso()
       this.fetchOptionsAbogados()
       this.fetchProfiles()
+      this.fetchProfileProcessOptions()
       setTimeout(() => {
         this.fetchEspecialidades()
         this.fetchOptionsClinicas()
