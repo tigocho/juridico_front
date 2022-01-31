@@ -13,16 +13,18 @@
           <b-col class="text-center" md="6">
             <b-card-title class="text-center">Perjuicios Inmateriales</b-card-title>
             <hr>
-            <b-card-text><strong>Daños Morales:</strong> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Daño a la Vida ó Prejuicios Fisiologicos:</strong> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daños Morales:</strong> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daño a la Vida ó Prejuicios Fisiologicos:</strong> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daño a la salud:</strong> <span v-if="process.prore_val_dano_salud != null">{{ formatPrice(process.prore_val_dano_salud) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daño a los bienes constitucionales y convencionales:</strong> <span v-if="process.prore_val_dano_bienes_constitucionales_convencionales != null">{{ formatPrice(process.prore_val_dano_bienes_constitucionales_convencionales) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span v-else> $ 0</span></b-card-text>
           </b-col>
           <b-col class="text-center" md="6">
             <b-card-title class="text-center">Perjuicios Materiales</b-card-title>
             <hr>
-            <b-card-text><strong>Lucro Cesante:</strong> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Daños Emergentes:</strong> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Lucro Cesante:</strong> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daños Emergentes:</strong> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span v-else> $ 0</span></b-card-text>
           </b-col>
         </b-row>
         <b-row>
@@ -31,29 +33,35 @@
       </div>
       <div v-else>
         <b-row>
+          <!-- Inmateriales -->
           <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="prore_val_dano_moral">
             <vue-autonumeric class="form-control" v-model="process.prore_val_dano_moral"
-              @keyup="totalPerjuiciosInmateriales"
-              :options="optionNumeric"
-            ></vue-autonumeric>
-          </b-form-group>
-          <!-- materiales -->
-          <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="prore_val_luc_cesante">
-            <vue-autonumeric class="form-control" v-model="process.prore_val_luc_cesante"
-            @keyup="totalPerjuiciosMateriales"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos" label-for="prore_val_dano_vida">
             <vue-autonumeric class="form-control" v-model="process.prore_val_dano_vida"
-              @keyup="totalPerjuiciosInmateriales"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Daño a la salud" label-for="prore_val_dano_salud">
+            <vue-autonumeric class="form-control" v-model="process.prore_val_dano_salud"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Daño a los bienes constitusionales y convencionales" label-for="prore_val_dano_bienes_constitucionales_convencionales">
+            <vue-autonumeric class="form-control" v-model="process.prore_val_dano_bienes_constitucionales_convencionales"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
           <!-- materiales -->
           <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="prore_val_dano_emergente">
             <vue-autonumeric class="form-control" v-model="process.prore_val_dano_emergente"
-              @keyup="totalPerjuiciosMateriales"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="prore_val_luc_cesante">
+            <vue-autonumeric class="form-control" v-model="process.prore_val_luc_cesante"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
@@ -129,14 +137,19 @@ export default {
     },
     editarProceso () {
       if (this.editando) {
-        this.guardarProceso()
+        this.totalPerjuiciosMateriales()
+        this.totalPerjuiciosInmateriales()
+        this.cuantiaPretensiones()
         this.estadoBotonActualizarProceso = 'disabled'
-        this.textoEditarProceso = 'Actualizando Proceso...'
         this.estadoBotonActualizarCuantias = 'disabled'
         this.textoEditarCuantias = 'Actualizando...'
+        setTimeout(() => {
+          this.guardarProceso()
+        }, 500)
       } else {
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
           this.fetchProfileProcessOptions()
+          console.log('editando')
         }
         this.textoEditarCuantias = 'Actualizar Proceso'
         this.editando = true
@@ -203,15 +216,18 @@ export default {
     totalPerjuiciosInmateriales () {
       let valDanoMoral = this.process.prore_val_dano_moral > 0 ? this.process.prore_val_dano_moral : 0
       let valDanoVida = this.process.prore_val_dano_vida > 0 ? this.process.prore_val_dano_vida : 0
-      this.process.prore_total_perjuicios_inmateriales = parseInt(valDanoMoral) + parseInt(valDanoVida)
+      let valDanoSalud = this.process.prore_val_dano_salud > 0 ? this.process.prore_val_dano_salud : 0
+      let valBienes = this.process.prore_val_dano_bienes_constitucionales_convencionales > 0 ? this.process.prore_val_dano_bienes_constitucionales_convencionales : 0
+      this.process.prore_total_perjuicios_inmateriales = parseInt(valDanoMoral) + parseInt(valDanoVida) + parseInt(valDanoSalud) + parseInt(valBienes)
       this.cuantiaPretensiones()
     },
     cuantiaPretensiones () {
       this.process.prore_cuantia_pretenciones = parseInt(this.process.prore_total_perjuicios_materiales) + parseInt(this.process.prore_total_perjuicios_inmateriales)
     },
     cancelarEdicionProceso () {
-      this.textoEditarProceso = 'Editar Proceso'
+      this.getProcess()
       this.editando = false
+      this.textoEditarCuantias = 'Editar Costos/Cuantías'
     },
     formatPrice (value) {
       let val = (value / 1).toFixed(0).replace('.', ',')
