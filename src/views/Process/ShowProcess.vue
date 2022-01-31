@@ -837,12 +837,12 @@
                     <template v-slot:body>
                       <b-table bordered hover foot-clone :items="links" :fields="columnasLinks" :key="tableLinkKey" stacked="md" small >
                         <template v-slot:cell(link_name)="row">
-                          <span v-if="!row.item.editable">{{ row.item.link_name }}</span>
+                          <span v-if="!row.item.editable" style="word-break: break-all;">{{ row.item.link_name }}</span>
                           <input type="text" v-model="row.item.link_name" v-else class="form-control">
                         </template>
                         <template v-slot:cell(link_url)="row">
-                          <a style="word-break: break-all;" v-bind:href="row.item.link_url" target="_blank" v-if="!row.item.editable">{{ row.item.link_url }}</a>
-                          <input type="text" v-model="row.item.link_url" v-else class="form-control">
+                            <a style="word-break: break-all;" v-bind:href="row.item.link_url" target="_blank" v-if="!row.item.editable">{{ row.item.link_url }}</a>
+                            <input type="text" v-model="row.item.link_url" v-else class="form-control">
                         </template>
                         <template #cell(actions)="row">
                           <!--<b-button class="mr-1" size="sm" variant="primary" @click="editLink(row.index)" :class="estadoBotonEliminarLinkProceeding"> Editar </b-button>
