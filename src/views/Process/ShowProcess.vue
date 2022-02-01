@@ -1563,6 +1563,9 @@ export default {
         if (linkFor.link_id != null) {
           axios.post('/links/update/' + linkFor.link_id + '/' + this.user_id, linkFor).then(res => {
             if (res.data.status_code === 200) {
+              var linkIndex = this.links.indexOf(linkFor)
+              var linkEdit = { ...this.links[linkIndex], ...{ editable: false, link_id: res.data.link.link_id, link_url: res.data.link.link_url } }
+              this.links.splice(linkIndex, 1, linkEdit)
               Vue.swal(res.data.message)
             } else {
               Vue.swal(res.data.message)
@@ -1576,7 +1579,7 @@ export default {
             if (res.data.status_code === 200) {
               Vue.swal(res.data.message)
               var linkIndex = this.links.indexOf(linkFor)
-              var linkEdit = { ...this.links[linkIndex], ...{ editable: false, link_id: res.data.link_id } }
+              var linkEdit = { ...this.links[linkIndex], ...{ editable: false, link_id: res.data.link.link_id, link_url: res.data.link.link_url } }
               this.links.splice(linkIndex, 1, linkEdit)
             } else {
               Vue.swal(res.data.message)
