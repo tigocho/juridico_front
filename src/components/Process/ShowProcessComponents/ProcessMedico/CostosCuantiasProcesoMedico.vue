@@ -10,45 +10,74 @@
     <template v-slot:body>
       <div v-if="!editando">
         <b-row>
-          <b-col md="6">
+          <b-col class="text-center" md="6">
             <b-card-title class="text-center">Perjuicios Inmateriales</b-card-title>
             <hr>
-            <b-card-text><strong>Daños Morales:</strong> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Daño a la Vida ó Prejuicios Fisiologicos:</strong> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-row>
-              <b-card-text class="mr-4 mt-4 pt-3 text-center w-100"><h4><strong>TOTAL:</strong><span v-if="process.prore_val_dano_vida == null && process.prore_val_dano_moral == null && process.prore_otros_valores == null"> $ 0 </span><span v-else>{{ formatPrice(process.prore_val_dano_moral + process.prore_val_dano_vida + process.prore_otros_valores) }}</span></h4></b-card-text>
-            </b-row>
+            <b-card-text><strong>Daños Morales:</strong> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daño a la Vida ó Prejuicios Fisiologicos:</strong> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daño a la salud:</strong> <span v-if="process.prore_val_dano_salud != null">{{ formatPrice(process.prore_val_dano_salud) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daño a los bienes constitucionales y convencionales:</strong> <span v-if="process.prore_val_dano_bienes_constitucionales_convencionales != null">{{ formatPrice(process.prore_val_dano_bienes_constitucionales_convencionales) }}</span><span v-else> $ 0</span></b-card-text>
           </b-col>
-          <b-col md="6">
+          <b-col class="text-center" md="6">
             <b-card-title class="text-center">Perjuicios Materiales</b-card-title>
             <hr>
-            <b-card-text><strong>Lucro Cesante:</strong> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Daños Emergentes:</strong> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-card-text><strong>Otros:</strong> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else> $ 0</span></b-card-text>
-            <b-row>
-              <b-card-text class="mr-4 mt-4 pt-3 text-center w-100"><h4><strong>TOTAL:</strong> <span v-if="process.prore_val_luc_cesante == null && process.prore_val_dano_emergente == null && process.prore_otros_valores == null"> $ 0 </span><span v-else>{{ formatPrice(process.prore_val_luc_cesante+process.prore_val_dano_emergente+process.prore_otros_valores) }}</span></h4></b-card-text>
-            </b-row>
+            <b-card-text><strong>Lucro Cesante:</strong> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>Daños Emergentes:</strong> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span v-else> $ 0</span></b-card-text>
           </b-col>
+        </b-row>
+        <b-row>
+          <b-card-text class="mr-4 mb-0 mt-4 pt-3 text-center w-100"><h5><strong>Otros valores:</strong><span v-if="process.prore_otros_valores == null"> $ 0 </span><span v-else> {{ formatPrice(process.prore_otros_valores)}}  </span></h5></b-card-text>
+        </b-row>
+        <hr>
+        <b-row>
+          <b-col class="text-center" md="6">
+            <b-card-text><strong>TOTAL PRETENCIONES INMATERIALES:</strong> <span v-if="totalInmateriales != null">{{ formatPrice(totalInmateriales) }}</span><span v-else> $ 0</span></b-card-text>
+          </b-col>
+          <b-col class="text-center" md="6">
+            <b-card-text><strong>TOTAL PRETENCIONES MATERIALES:</strong> <span v-if="totalMateriales != null">{{ formatPrice(totalMateriales) }}</span><span v-else> $ 0</span></b-card-text>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-card-text class="ml-4 mt-2 pt-3 text-left w-100"><h3><strong class="text-danger">TOTAL GENERAL:</strong><span v-if="process.prore_cuantia_pretenciones == null"> $ 0 </span><span v-else> {{ formatPrice(process.prore_cuantia_pretenciones)}}  </span></h3></b-card-text>
         </b-row>
       </div>
       <div v-else>
+        <!-- editando -->
         <b-row>
-          <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="prore_val_dano_moral">
-            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_moral" type="number" placeholder="$"></b-form-input>
+          <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="tempProreValDanoMoral">
+            <vue-autonumeric class="form-control" v-model="tempProreValDanoMoral"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="prore_val_dano_emergente">
-            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_dano_emergente" type="number" placeholder="$"></b-form-input>
+          <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="tempProreValLucCesante">
+            <vue-autonumeric class="form-control" v-model="tempProreValLucCesante"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos" label-for="prore_val_dano_vida">
-            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_vida" type="number" placeholder="$"></b-form-input>
+          <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos" label-for="tempProreValDanoVida">
+            <vue-autonumeric class="form-control" v-model="tempProreValDanoVida"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
-            <b-form-input v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
+          <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="tempProreValDanoEmergente">
+            <vue-autonumeric class="form-control" v-model="tempProreValDanoEmergente"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
-          <!-- materiales -->
-          <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="prore_val_luc_cesante">
-            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_luc_cesante" type="number" placeholder="$"></b-form-input>
+          <b-form-group class="col-md-6" label="Daño a la salud" label-for="tempProreValDanoSalud">
+            <vue-autonumeric class="form-control" v-model="tempProreValDanoSalud"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Otros costos materiales e inmateriales" label-for="tempProreValOtrosValores">
+            <vue-autonumeric class="form-control" v-model="tempProreValOtrosValores"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Daño a los bienes constitucionales y convencionales" label-for="tempProreValDanoBienesConstConv">
+            <vue-autonumeric class="form-control" v-model="tempProreValDanoBienesConstConv"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
         </b-row>
       </div>
@@ -66,9 +95,13 @@
 import { xray } from '../../../../config/pluginInit.js'
 import Vue from 'vue'
 import axios from 'axios'
+import VueAutonumeric from '../../../VueAutonumeric.vue'
 
 export default {
   name: 'CostosCuantiasProcesoMedico',
+  components: {
+    VueAutonumeric
+  },
   props: ['prore_id', 'usr_id'],
   mounted () {
     xray.index()
@@ -76,8 +109,23 @@ export default {
   },
   data () {
     return {
+      optionNumeric: {
+        digitGroupSeparator: ',',
+        currencySymbol: '\u00a0$ ',
+        currencySymbolPlacement: 'p',
+        decimalPlaces: 0
+      },
       process: [],
       textoEditarCuantias: 'Editar Costos/Cuantías',
+      totalMateriales: 0,
+      totalInmateriales: 0,
+      tempProreValLucCesante: 0,
+      tempProreValDanoMoral: 0,
+      tempProreValDanoVida: 0,
+      tempProreValDanoSalud: 0,
+      tempProreValDanoBienesConstConv: 0,
+      tempProreValDanoEmergente: 0,
+      tempProreValOtrosValores: 0,
       estadoBotonActualizarCuantias: '',
       estadoBotonActualizarProceso: '',
       editando: false,
@@ -94,6 +142,7 @@ export default {
           setTimeout(() => {
             if (res.data.process != null) {
               this.process = res.data.process[0]
+              this.setTotales()
             } else {
               Vue.swal('Ocurrió un error tratando de obtener los datos del proceso')
             }
@@ -105,14 +154,33 @@ export default {
           }, 3500))
       }
     },
+    setTotales () {
+      this.totalMateriales = this.process.prore_val_luc_cesante + this.process.prore_val_dano_emergente
+      this.totalInmateriales = this.process.prore_val_dano_moral + this.process.prore_val_dano_vida + this.process.prore_val_dano_salud + this.process.prore_val_dano_bienes_constitucionales_convencionales
+    },
+    setVariablesTemporales () {
+      this.tempProreValLucCesante = this.process.prore_val_luc_cesante
+      this.tempProreValDanoMoral = this.process.prore_val_dano_moral
+      this.tempProreValDanoVida = this.process.prore_val_dano_vida
+      this.tempProreValDanoSalud = this.process.prore_val_dano_salud
+      this.tempProreValDanoBienesConstConv = this.process.prore_val_dano_bienes_constitucionales_convencionales
+      this.tempProreValDanoEmergente = this.process.prore_val_dano_emergente
+      this.tempProreValOtrosValores = this.process.prore_otros_valores
+    },
     editarProceso () {
       if (this.editando) {
-        this.guardarProceso()
+        this.totalPerjuiciosMateriales()
+        this.totalPerjuiciosInmateriales()
+        this.cuantiaPretensiones()
+        this.setTotales()
         this.estadoBotonActualizarProceso = 'disabled'
-        this.textoEditarProceso = 'Actualizando Proceso...'
         this.estadoBotonActualizarCuantias = 'disabled'
         this.textoEditarCuantias = 'Actualizando...'
+        setTimeout(() => {
+          this.guardarProceso()
+        }, 500)
       } else {
+        this.setVariablesTemporales()
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
           this.fetchProfileProcessOptions()
         }
@@ -172,23 +240,27 @@ export default {
         })
     },
     totalPerjuiciosMateriales () {
-      let valLucCesante = this.process.prore_val_luc_cesante > 0 ? this.process.prore_val_luc_cesante : 0
-      let valDanoEmergente = this.process.prore_val_dano_emergente > 0 ? this.process.prore_val_dano_emergente : 0
-      this.process.prore_total_perjuicios_materiales = parseInt(valLucCesante) + parseInt(valDanoEmergente)
+      this.process.prore_val_luc_cesante = this.tempProreValLucCesante > 0 ? this.tempProreValLucCesante : 0
+      this.process.prore_val_dano_emergente = this.tempProreValDanoEmergente > 0 ? this.tempProreValDanoEmergente : 0
+      this.process.prore_otros_valores = this.tempProreValOtrosValores > 0 ? this.tempProreValOtrosValores : 0
+      this.process.prore_total_perjuicios_materiales = this.process.prore_val_luc_cesante + this.process.prore_val_dano_emergente + this.process.prore_otros_valores
       this.cuantiaPretensiones()
     },
     totalPerjuiciosInmateriales () {
-      let valDanoMoral = this.process.prore_val_dano_moral > 0 ? this.process.prore_val_dano_moral : 0
-      let valDanoVida = this.process.prore_val_dano_vida > 0 ? this.process.prore_val_dano_vida : 0
-      this.process.prore_total_perjuicios_inmateriales = parseInt(valDanoMoral) + parseInt(valDanoVida)
+      this.process.prore_val_dano_moral = this.tempProreValDanoMoral > 0 ? this.tempProreValDanoMoral : 0
+      this.process.prore_val_dano_vida = this.tempProreValDanoVida > 0 ? this.tempProreValDanoVida : 0
+      this.process.prore_val_dano_salud = this.tempProreValDanoSalud > 0 ? this.tempProreValDanoSalud : 0
+      this.process.prore_val_dano_bienes_constitucionales_convencionales = this.tempProreValDanoBienesConstConv > 0 ? this.tempProreValDanoBienesConstConv : 0
+      this.process.prore_total_perjuicios_inmateriales = this.process.prore_val_dano_moral + this.process.prore_val_dano_vida + this.process.prore_val_dano_salud + this.process.prore_val_dano_bienes_constitucionales_convencionales
       this.cuantiaPretensiones()
     },
     cuantiaPretensiones () {
-      this.process.prore_cuantia_pretenciones = this.process.prore_total_perjuicios_materiales + this.process.prore_total_perjuicios_inmateriales
+      this.process.prore_cuantia_pretenciones = parseInt(this.process.prore_total_perjuicios_materiales) + parseInt(this.process.prore_total_perjuicios_inmateriales)
     },
     cancelarEdicionProceso () {
-      this.textoEditarProceso = 'Editar Proceso'
+      this.setVariablesTemporales()
       this.editando = false
+      this.textoEditarCuantias = 'Editar Costos/Cuantías'
     },
     formatPrice (value) {
       let val = (value / 1).toFixed(0).replace('.', ',')

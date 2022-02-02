@@ -144,10 +144,11 @@
       </b-modal>
     </div>
     <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
+    <ModalTerminarProceso v-on:actualizarListaProcesos="actualizarLista" :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
     <!-- User Interface controls -->
     <b-row>
       <b-col lg="12">
-        <iq-card>
+        <iq-card :key="tableKey">
           <template v-slot:headerTitle>
             <h4 class="card-title">Litigios de proceso laborales</h4>
           </template>
@@ -253,6 +254,8 @@
                   <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
                   ">+ Actuación</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
+                  <hr>
+                  <b-dropdown-item v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(row.item.prore_id, row.item)"><span class="text-danger">Terminar Proceso</span></b-dropdown-item>
                 </b-dropdown>
               </template>
             </b-table>
@@ -289,8 +292,11 @@ const FileDownload = require('js-file-download')
 export default {
   data () {
     return {
+      tableKey: 1,
       estadoBotonEliminarLinkProceeding: '',
       botonDescargarInforme: 'Descargar Informe',
+      mostrarModalTerminarProceso: false,
+      numRadicadoProcesoTerminar: '',
       estadoBotonDescargarInforme: '',
       botonGuardarModal: '',
       textoGuardarActuacion: 'Guardar',
@@ -436,6 +442,10 @@ export default {
     }, 500)
   },
   methods: {
+    actualizarLista () {
+      this.getProcess()
+      this.tableKey++
+    },
     importarArchivo () {
       this.$router.push({ path: `/process/process-import` })
     },
@@ -635,6 +645,11 @@ export default {
       } else {
         return false
       }
+    },
+    verModalTerminarProceso (proreId, items) {
+      this.numRadicadoProcesoTerminar = items.prore_num_radicado
+      this.proceeding.proce_prore_id = proreId
+      this.mostrarModalTerminarProceso = true
     },
     checkFormActuacion () {
       if (this.proceeding.proce_pro_id && this.proceeding.proce_sta_id && this.proceeding.proce_fecha_ingreso && this.proceeding.proce_fecha_actualizacion && this.proceeding.proce_descripcion) {
