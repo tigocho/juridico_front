@@ -16,6 +16,9 @@ import ProcesosArchivados from '../views/Process/ProcessArchived'
 /* Process Laborales Ordinarios */
 import ProcessLaboralesList from '../views/ProcessLaboralesOrdinarios/ProcessLaboralesList'
 import ProcessLaboralesArchived from '../views/ProcessLaboralesOrdinarios/ProcessLaboralesArchived'
+/* Process Laborales Ordinarios */
+import ProcessOtrosList from '../views/ProcessOtros/ProcessOtrosList'
+import ProcessOtrosArchived from '../views/ProcessOtros/ProcessOtrosArchived'
 /* Policies View */
 import PoliciesList from '../views/Policies/PoliciesList'
 import AddPolicy from '../views/Policies/AddPolicy'
@@ -595,6 +598,21 @@ const processLaboralOrdinarioChildRoute = (prop, mode = false) => [
   }
 ]
 
+const processOtrosChildRoute = (prop, mode = false) => [
+  {
+    path: 'process-otros-list',
+    name: prop + '.list',
+    meta: { dark: mode, auth: true, name: 'Process Otros List' },
+    component: ProcessOtrosList
+  },
+  {
+    path: 'process-otros-archivados',
+    name: prop + '.archivados',
+    meta: { dark: mode, auth: true, name: 'Process Otros Archivados' },
+    component: ProcessOtrosArchived
+  }
+]
+
 const policiesChildRoute = (prop, mode = false) => [
   {
     path: 'policy-add',
@@ -733,6 +751,13 @@ const routes = [
     component: Layout1,
     meta: { auth: true },
     children: processLaboralOrdinarioChildRoute('process-laborales-ordinario')
+  },
+  {
+    path: '/process-otros',
+    name: 'process-otros',
+    component: Layout1,
+    meta: { auth: true },
+    children: processOtrosChildRoute('process-otros')
   },
   {
     path: '/policies',
