@@ -69,14 +69,11 @@
             </b-col>
             <b-col md="4">
               <b-form-group label="Tipo de actuación*" label-for="proce_sta_id">
-                <v-select
-                  v-model="proceeding.proce_sta_id"
-                  :options="statusProcessOptions"
-                  :reduce="label => label.code"
-                  label="label" id="proce_pro_id"
-                  >
-                  <span slot="no-options">No hay actuaciones.</span>
-                </v-select>
+                <b-form-select plain v-model="proceeding.proce_sta_id" :options="statusProcessOptions" id="proce_sta_id">
+                  <template v-slot:first>
+                    <b-form-select-option :value="null" disabled>Seleccione un estado</b-form-select-option>
+                  </template>
+                </b-form-select>
               </b-form-group>
             </b-col>
             <b-col md="4">
@@ -147,73 +144,21 @@
       </b-modal>
     </div>
     <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
-    <!-- MODAL PARA TERMINAR UN PROCESO -->
-    <ModalTerminarProceso v-on:actualizarListaProcesos="actualizarLista" :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso"  />
+    <ModalTerminarProceso v-on:actualizarListaProcesos="actualizarLista" :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
     <!-- User Interface controls -->
     <b-row>
       <b-col lg="12">
         <iq-card :key="tableKey">
           <template v-slot:headerTitle>
-            <h4 class="card-title">Litigios de resp. médica</h4>
+            <h4 class="card-title">Otros litigios</h4>
           </template>
           <template v-slot:headerAction>
             <b-button variant="primary" class="mr-2" @click="importarArchivo" >Importar procesos</b-button>
             <b-button variant="primary" @click="descargarInforme" :class="estadoBotonDescargarInforme">{{ botonDescargarInforme }}</b-button>
           </template>
           <template v-slot:body>
-            <b-row>
-              <b-col sm="3" md="3" class="my-1">
-                <b-form-group
-                  label="Por página"
-                  label-for="per-page-select"
-                  label-cols-sm="5"
-                  label-cols-md="4"
-                  label-cols-lg="5"
-                  label-align-sm="left"
-                  label-size="sm"
-                  class="mb-0"
-                >
-                  <b-form-select
-                    id="per-page-select"
-                    v-model="perPage"
-                    :options="pageOptions"
-                    size="sm"
-                    class="w-50"
-                  ></b-form-select>
-                </b-form-group>
-              </b-col>
-
-              <b-col sm="4" md="4" class="my-1">
-                <b-form-group
-                  label="Clinica"
-                  label-cols-sm="2"
-                  label-cols-md="2"
-                  label-cols-lg="3"
-                  label-align-sm="left"
-                  label-size="sm"
-                  class="mb-0"
-                >
-                  <!-- <b-form-select
-                    id="per-page-select"
-                    v-model="clinicaId"
-                    :options="clinicaOptions"
-                    size="sm"
-                    class="w-50"
-                  ></b-form-select> -->
-                  <v-select
-                    v-model="clinicaId"
-                    :options="clinicaOptions"
-                    @input="cambioClinica($event)"
-                    :reduce="label => label.code"
-                    label="label"
-                    id="clinica_id"
-                    :class="(errors.length > 0 ? ' is-invalid' : '')"
-                    >
-                    <span slot="no-options">No hay perfiles.</span>
-                  </v-select>
-                </b-form-group>
-              </b-col>
-              <b-col sm="5" md="5" class="my-1">
+             <b-row>
+              <b-col sm="6" md="6" lg="6" style="margin-left:auto" class="my-2">
                 <b-form-group
                   label="Buscar"
                   label-for="filter-input"
@@ -229,10 +174,79 @@
                       type="search"
                       placeholder="Escribe para buscar"
                     ></b-form-input>
+
                     <b-input-group-append>
                       <b-button :disabled="!rawInput" @click="rawInput = ''">{{ accionText }}</b-button>
                     </b-input-group-append>
                   </b-input-group>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col sm="3" md="3" lg="3" class="my-1">
+                <b-form-group
+                  label="Por página"
+                  label-for="per-page-select"
+                  label-cols-sm="3"
+                  label-cols-md="3"
+                  label-cols-lg="5"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <b-form-select
+                    id="per-page-select"
+                    v-model="perPage"
+                    :options="pageOptions"
+                    size="sm"
+                    class="w-100"
+                  ></b-form-select>
+                </b-form-group>
+              </b-col>
+              <b-col sm="4" md="4" class="my-1">
+                <b-form-group
+                  label="Clinica"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="3"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="clinicaId"
+                    :options="clinicaOptions"
+                    @input="cambioClinica($event)"
+                    :reduce="label => label.code"
+                    label="label"
+                    id="clinica_id"
+                    :class="(errors.length > 0 ? ' is-invalid' : '')"
+                    >
+                    <span slot="no-options">No hay clinicas.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+              <b-col sm="4" md="4" lg="5" class="my-1">
+                <b-form-group
+                  label="Tipo de proceso"
+                  label-cols-sm="3"
+                  label-cols-md="3"
+                  label-cols-lg="4"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="tipoProcesoId"
+                    :options="tiposProcesosOptions"
+                    @input="cambioTipos($event)"
+                    :reduce="label => label.code"
+                    label="label"
+                    id="typro_id"
+                    :class="(errors.length > 0 ? ' is-invalid' : '')"
+                    >
+                    <span slot="no-options">No hay tipos de procesos.</span>
+                  </v-select>
                 </b-form-group>
               </b-col>
             </b-row>
@@ -264,7 +278,7 @@
                   ">+ Actuación</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
                   <hr>
-                  <b-dropdown-item v-if="row.item.prore_status_process_id != 16" v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(row.item.prore_id, row.item)"><span class="text-danger">Terminar Proceso</span></b-dropdown-item>
+                  <b-dropdown-item v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(row.item.prore_id, row.item)"><span class="text-danger">Terminar Proceso</span></b-dropdown-item>
                 </b-dropdown>
               </template>
             </b-table>
@@ -303,9 +317,9 @@ export default {
     return {
       tableKey: 1,
       estadoBotonEliminarLinkProceeding: '',
+      botonDescargarInforme: 'Descargar Informe',
       mostrarModalTerminarProceso: false,
       numRadicadoProcesoTerminar: '',
-      botonDescargarInforme: 'Descargar Informe',
       estadoBotonDescargarInforme: '',
       botonGuardarModal: '',
       textoGuardarActuacion: 'Guardar',
@@ -341,6 +355,8 @@ export default {
       },
       abogadoOptions: [],
       fields: [
+        // { key: 'name', label: 'Person full name', sortable: true, sortDirection: 'desc' },
+        // { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
         { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left text-uppercase' },
         { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left text-uppercase' },
         {
@@ -393,6 +409,7 @@ export default {
       sortDirection: 'asc',
       rawInput: '',
       criteria: '',
+      filter: null,
       filterOn: [],
       infoModal: {
         id: 'info-modal',
@@ -401,6 +418,8 @@ export default {
       },
       clinicaId: null,
       clinicaOptions: [],
+      tipoProcesoId: null,
+      tiposProcesosOptions: [],
       links: {},
       intentos: 0,
       errores: {}
@@ -445,6 +464,7 @@ export default {
     setTimeout(() => {
       this.getEstadosProceso()
       this.fetchClinicaOptions()
+      this.fetchTiposProcesosOptions()
     }, 500)
   },
   methods: {
@@ -473,6 +493,32 @@ export default {
             this.errores = err
             if (this.intentos < 2) {
               this.fetchClinicaOptions()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
+    fetchTiposProcesosOptions () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtener-tipo-procesos/' + this.userLogged.usr_id).then(response => {
+          this.tiposProcesosOptions = response.data.tipos_procesos
+          console.log(this.tiposProcesosOptions)
+          if (this.tiposProcesosOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
+            if (this.tiposProcesosOptions.length === 1) {
+              this.tipoProcesoId = this.tiposProcesosOptions[0].code
+            } else {
+              this.tiposProcesosOptions.push({ code: 0, label: 'Todos' })
+            }
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchTipoProcesoOptions()
               this.intentos++
             }
           })
@@ -514,7 +560,7 @@ export default {
     getProcess () {
       var user = JSON.parse(auth.getUserLogged())
       this.user_id = user.usr_id
-      axios.get('/process/process-medicos/' + this.user_id).then(response => {
+      axios.get('process/process-otros/' + this.user_id).then(response => {
         this.process = response.data.process
         // Set the initial number of items
         this.totalRows = this.process.length
@@ -552,7 +598,6 @@ export default {
         if (res.data.status_code === 200) {
           Vue.swal('Audiencia agendada al proceso correctamente')
           this.$bvModal.hide('modal-lg')
-          this.$router.push({ name: 'process.list' })
         } else {
           Vue.swal('Datos no validos')
         }
@@ -593,14 +638,14 @@ export default {
         this.botonDescargarInforme = 'Descargando informe...'
         this.estadoBotonDescargarInforme = 'disabled'
         axios({
-          url: '/process/exportReport/' + this.userLogged.usr_id,
+          url: '/process/export-report-otros-procesos/' + this.userLogged.usr_id,
           method: 'GET',
           responseType: 'blob'
         }).then((response) => {
           this.botonDescargarInforme = 'Descargar informe'
           this.estadoBotonDescargarInforme = ''
           var fechaHora = moment().format('YYYY-MM-DD hh:mm:ss')
-          FileDownload(response.data, 'report-process-activos-' + fechaHora + '.xlsx')
+          FileDownload(response.data, 'report-process-otros-activos-' + fechaHora + '.xlsx')
         })
           .catch((err) => {
             this.botonDescargarInforme = 'Descargar informe'
@@ -624,11 +669,6 @@ export default {
     },
     agregarActuacion (proreId) {
       this.proceeding.proce_prore_id = proreId
-    },
-    verModalTerminarProceso (proreId, items) {
-      this.numRadicadoProcesoTerminar = items.prore_num_radicado
-      this.proceeding.proce_prore_id = proreId
-      this.mostrarModalTerminarProceso = true
     },
     guardarActuacion (bvModalEvt) {
       bvModalEvt.preventDefault()
@@ -657,6 +697,11 @@ export default {
       } else {
         return false
       }
+    },
+    verModalTerminarProceso (proreId, items) {
+      this.numRadicadoProcesoTerminar = items.prore_num_radicado
+      this.proceeding.proce_prore_id = proreId
+      this.mostrarModalTerminarProceso = true
     },
     checkFormActuacion () {
       if (this.proceeding.proce_pro_id && this.proceeding.proce_sta_id && this.proceeding.proce_fecha_ingreso && this.proceeding.proce_fecha_actualizacion && this.proceeding.proce_descripcion) {
@@ -719,7 +764,27 @@ export default {
     },
     cambioClinica (clinicaId) {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('process/obtener-procesos-activos-clinica/' + clinicaId + '/' + this.userLogged.usr_id).then(response => {
+        axios.get('process/obtener-otros-procesos-activos-clinica/' + clinicaId + '/' + this.userLogged.usr_id).then(response => {
+          this.process = response.data.process
+          // Set the initial number of items
+          this.totalRows = this.process.length
+          this.intentos = 0
+          this.errores = {}
+        })
+          .catch(error => {
+            this.errores = error
+            if (this.intentos < 2) {
+              this.getProcess()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
+    cambioTipos (tipoProcesoId) {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('process/obtener-otros-tipos-procesos/' + tipoProcesoId + '/' + this.userLogged.usr_id).then(response => {
           this.process = response.data.process
           // Set the initial number of items
           this.totalRows = this.process.length
