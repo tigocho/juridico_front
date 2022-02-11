@@ -190,13 +190,13 @@
                   <b-input-group size="sm">
                     <b-form-input
                       id="filter-input"
-                      v-model="filter"
+                      v-model="rawInput"
                       type="search"
                       placeholder="Escribe para buscar"
                     ></b-form-input>
 
                     <b-input-group-append>
-                      <b-button :disabled="!filter" @click="filter = ''">Limpiar</b-button>
+                      <b-button :disabled="!rawInput" @click="rawInput = ''">{{ accionText }}</b-button>
                     </b-input-group-append>
                   </b-input-group>
                 </b-form-group>
@@ -208,7 +208,7 @@
               :fields="fields"
               :current-page="currentPage"
               :per-page="perPage"
-              :filter="filter"
+              :filter="criteria"
               :filter-included-fields="filterOn"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
@@ -267,6 +267,7 @@ export default {
       botonGuardarModal: '',
       textoGuardarActuacion: 'Guardar',
       botonEliminarModal: '',
+      accionText: 'Limpiar',
       user_id: '',
       process: [],
       typeNotificationsOptions: [],
@@ -301,6 +302,32 @@ export default {
         // { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
         { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left' },
         { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left' },
+        {
+          key: 'implicateds',
+          label: 'Demandante/Demandado',
+          formatter: (value, key, item) => {
+            let abogadoDemandante = null
+            let demandante = null
+            for (var i = 0; i < value.length; i++) {
+              if (value[i].imp_principal) {
+                demandante = value[i].imp_apellidos !== null ? value[i].imp_nombres + ' ' + value[i].imp_apellidos : value[i].imp_nombres
+                break
+              } else {
+                if (value[i].imp_profile_id === 7) {
+                  demandante = value[i].imp_apellidos !== null ? value[i].imp_nombres + ' ' + value[i].imp_apellidos : value[i].imp_nombres
+                } else if (value[i].imp_profile_id === 6) {
+                  abogadoDemandante = value[i].imp_apellidos !== null ? value[i].imp_nombres + ' ' + value[i].imp_apellidos : value[i].imp_nombres
+                }
+              }
+            }
+            if (demandante !== null && demandante !== '') {
+              return demandante
+            } else {
+              return abogadoDemandante
+            }
+          },
+          class: 'text-left text-uppercase'
+        },
         { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
         { key: 'proceedings.0.status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
         { key: 'actions', label: 'Acciones', class: 'text-center' }
@@ -323,6 +350,8 @@ export default {
       sortDesc: false,
       estado_elegido: 'todos',
       sortDirection: 'asc',
+      rawInput: '',
+      criteria: '',
       filter: null,
       filterOn: [],
       infoModal: {
@@ -333,6 +362,24 @@ export default {
       links: {},
       intentos: 0,
       errores: {}
+    }
+  },
+  created () {
+    this.$_timeout = null
+  },
+  beforeDestroy () {
+    clearTimeout(this.$_timeout)
+  },
+  watch: {
+    rawInput (newVal) {
+      this.accionText = 'Buscando...'
+      clearTimeout(this.$_timeout)
+      this.$_timeout = setTimeout(() => {
+        this.criteria = newVal
+        setTimeout(() => {
+          this.accionText = 'Limpiar'
+        }, 100)
+      }, 1000)
     }
   },
   computed: {

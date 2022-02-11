@@ -144,10 +144,11 @@
       </b-modal>
     </div>
     <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
+    <ModalTerminarProceso v-on:actualizarListaProcesos="actualizarLista" :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
     <!-- User Interface controls -->
     <b-row>
       <b-col lg="12">
-        <iq-card>
+        <iq-card :key="tableKey">
           <template v-slot:headerTitle>
             <h4 class="card-title">Litigios de proceso laborales</h4>
           </template>
@@ -214,13 +215,13 @@
                   <b-input-group size="sm">
                     <b-form-input
                       id="filter-input"
-                      v-model="filter"
+                      v-model="rawInput"
                       type="search"
                       placeholder="Escribe para buscar"
                     ></b-form-input>
 
                     <b-input-group-append>
-                      <b-button :disabled="!filter" @click="filter = ''">Limpiar</b-button>
+                      <b-button :disabled="!rawInput" @click="rawInput = ''">{{ accionText }}</b-button>
                     </b-input-group-append>
                   </b-input-group>
                 </b-form-group>
@@ -232,7 +233,7 @@
               :fields="fields"
               :current-page="currentPage"
               :per-page="perPage"
-              :filter="filter"
+              :filter="criteria"
               :filter-included-fields="filterOn"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
@@ -253,6 +254,8 @@
                   <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
                   ">+ Actuación</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
+                  <hr>
+                  <b-dropdown-item v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(row.item.prore_id, row.item)"><span class="text-danger">Terminar Proceso</span></b-dropdown-item>
                 </b-dropdown>
               </template>
             </b-table>
@@ -289,12 +292,16 @@ const FileDownload = require('js-file-download')
 export default {
   data () {
     return {
+      tableKey: 1,
       estadoBotonEliminarLinkProceeding: '',
       botonDescargarInforme: 'Descargar Informe',
+      mostrarModalTerminarProceso: false,
+      numRadicadoProcesoTerminar: '',
       estadoBotonDescargarInforme: '',
       botonGuardarModal: '',
       textoGuardarActuacion: 'Guardar',
       botonEliminarModal: '',
+      accionText: 'Limpiar',
       user_id: '',
       process: [],
       typeNotificationsOptions: [],
@@ -327,11 +334,37 @@ export default {
       fields: [
         // { key: 'name', label: 'Person full name', sortable: true, sortDirection: 'desc' },
         // { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
-        { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left' },
-        { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left' },
-        { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
-        { key: 'proceedings.0.status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
-        { key: 'actions', label: 'Acciones', class: 'text-center' }
+        { key: 'prore_num_radicado', label: 'N°', sortable: true, sortDirection: 'desc', class: 'text-left text-uppercase' },
+        { key: 'clinica.cli_name', label: 'Clinica', sortable: true, class: 'text-left text-uppercase' },
+        {
+          key: 'implicateds',
+          label: 'Demandante/Demandado',
+          formatter: (value, key, item) => {
+            let abogadoDemandante = null
+            let demandante = null
+            for (var i = 0; i < value.length; i++) {
+              if (value[i].imp_principal) {
+                demandante = value[i].imp_apellidos !== null ? value[i].imp_nombres + ' ' + value[i].imp_apellidos : value[i].imp_nombres
+                break
+              } else {
+                if (value[i].imp_profile_id === 7) {
+                  demandante = value[i].imp_apellidos !== null ? value[i].imp_nombres + ' ' + value[i].imp_apellidos : value[i].imp_nombres
+                } else if (value[i].imp_profile_id === 6) {
+                  abogadoDemandante = value[i].imp_apellidos !== null ? value[i].imp_nombres + ' ' + value[i].imp_apellidos : value[i].imp_nombres
+                }
+              }
+            }
+            if (demandante !== null && demandante !== '') {
+              return demandante
+            } else {
+              return abogadoDemandante
+            }
+          },
+          class: 'text-left text-uppercase'
+        },
+        { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center text-uppercase' },
+        { key: 'proceedings.0.status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left text-uppercase' },
+        { key: 'actions', label: 'Acciones', class: 'text-center text-uppercase' }
       ],
       nuevoLinkProceeding: {
         link_name: null,
@@ -351,6 +384,8 @@ export default {
       sortDesc: false,
       estado_elegido: 'todos',
       sortDirection: 'asc',
+      rawInput: '',
+      criteria: '',
       filter: null,
       filterOn: [],
       infoModal: {
@@ -363,6 +398,24 @@ export default {
       links: {},
       intentos: 0,
       errores: {}
+    }
+  },
+  created () {
+    this.$_timeout = null
+  },
+  beforeDestroy () {
+    clearTimeout(this.$_timeout)
+  },
+  watch: {
+    rawInput (newVal) {
+      this.accionText = 'Buscando...'
+      clearTimeout(this.$_timeout)
+      this.$_timeout = setTimeout(() => {
+        this.criteria = newVal
+        setTimeout(() => {
+          this.accionText = 'Limpiar'
+        }, 100)
+      }, 1000)
     }
   },
   computed: {
@@ -389,6 +442,10 @@ export default {
     }, 500)
   },
   methods: {
+    actualizarLista () {
+      this.getProcess()
+      this.tableKey++
+    },
     importarArchivo () {
       this.$router.push({ path: `/process/process-import` })
     },
@@ -588,6 +645,11 @@ export default {
       } else {
         return false
       }
+    },
+    verModalTerminarProceso (proreId, items) {
+      this.numRadicadoProcesoTerminar = items.prore_num_radicado
+      this.proceeding.proce_prore_id = proreId
+      this.mostrarModalTerminarProceso = true
     },
     checkFormActuacion () {
       if (this.proceeding.proce_pro_id && this.proceeding.proce_sta_id && this.proceeding.proce_fecha_ingreso && this.proceeding.proce_fecha_actualizacion && this.proceeding.proce_descripcion) {

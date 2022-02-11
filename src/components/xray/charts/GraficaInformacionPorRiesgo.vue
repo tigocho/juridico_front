@@ -2,10 +2,10 @@
   <iq-card :key="informacionPorRiesgoKey">
     <b-row class="text-center">
       <b-col class="col-4">
-        <i class='fa fa-circle' style='color: #47A9A1;'></i><p>Posibles: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[3])) }}</p>
+        <i class='fa fa-circle' style='color: #05a29d;'></i><p>Posibles: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[3])) }}</p>
       </b-col>
       <b-col class="col-4">
-        <i class='fa fa-circle' style='color: #B8B8B7;'></i><p>Probables: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[4])) }}</p>
+        <i class='fa fa-circle' style='color: #e64141;'></i><p>Probables: <br> {{ formatoEnMillones(formatPrice(procesosPorRiesgo[4])) }}</p>
       </b-col>
       <b-col class="col-4">
         <i class='fa fa-circle' style='color: #FFE633;'></i><p>Remotos: <br>  {{ formatoEnMillones(formatPrice(procesosPorRiesgo[5])) }}</p>
@@ -49,7 +49,7 @@ export default {
         title: 'Informacion por riesgo',
         type: 'pie',
         bodyData: {
-          colors: ['#47A9A1', '#B8B8B7', '#FFE633'],
+          colors: ['#05a29d', '#e64141', '#FFE633'],
           value: ['porcentajes'],
           category: ['resultado'],
           data: [

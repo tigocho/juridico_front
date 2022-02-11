@@ -443,7 +443,7 @@ export default {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         var user = JSON.parse(auth.getUserLogged())
         this.user_id = user.usr_id
-        axios.get('/process/processArchived/' + this.userLogged.usr_id).then(response => {
+        axios.get('/process/procesos-otros-archived/' + this.userLogged.usr_id).then(response => {
           this.process = response.data.process
           // Set the initial number of items
           this.totalRows = this.process.length
@@ -525,14 +525,14 @@ export default {
         this.botonDescargarInforme = 'Descargando informe...'
         this.estadoBotonDescargarInforme = 'disabled'
         axios({
-          url: '/process/exportReportArchived/' + this.userLogged.usr_id,
+          url: '/process/export-report-otros-procesos-archived/' + this.userLogged.usr_id,
           method: 'GET',
           responseType: 'blob'
         }).then((response) => {
           this.botonDescargarInforme = 'Descargar informe'
           this.estadoBotonDescargarInforme = ''
           var fechaHora = moment().format('YYYY-MM-DD hh:mm:ss')
-          FileDownload(response.data, 'report-process-archivados-' + fechaHora + '.xlsx')
+          FileDownload(response.data, 'report-process-otros-procesos-archivados-' + fechaHora + '.xlsx')
         })
           .catch((err) => {
             this.botonDescargarInforme = 'Descargar informe'

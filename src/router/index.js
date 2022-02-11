@@ -16,6 +16,9 @@ import ProcesosArchivados from '../views/Process/ProcessArchived'
 /* Process Laborales Ordinarios */
 import ProcessLaboralesList from '../views/ProcessLaboralesOrdinarios/ProcessLaboralesList'
 import ProcessLaboralesArchived from '../views/ProcessLaboralesOrdinarios/ProcessLaboralesArchived'
+/* Process Laborales Ordinarios */
+import ProcessOtrosList from '../views/ProcessOtros/ProcessOtrosList'
+import ProcessOtrosArchived from '../views/ProcessOtros/ProcessOtrosArchived'
 /* Policies View */
 import PoliciesList from '../views/Policies/PoliciesList'
 import AddPolicy from '../views/Policies/AddPolicy'
@@ -429,9 +432,14 @@ const authChildRoutes = (prop, mode = false) => [
   },
   {
     path: 'password-reset1',
-    name: prop + 'password-reset1',
+    name: prop + '.password-reset1',
     meta: { auth: false },
     component: RecoverPassword1
+  },
+  {
+    path: 'change-password/:token',
+    name: prop + '.change-password',
+    component: ChangePassword
   }
 ]
 
@@ -533,11 +541,6 @@ const userChildRoute = (prop, mode = false) => [
     name: prop + '.list',
     meta: { dark: mode, auth: true, name: 'User List' },
     component: UserList
-  },
-  {
-    path: 'change-password/:token',
-    name: prop + 'change-password',
-    component: ChangePassword
   }
 ]
 
@@ -592,6 +595,21 @@ const processLaboralOrdinarioChildRoute = (prop, mode = false) => [
     name: prop + '.archivados',
     meta: { dark: mode, auth: true, name: 'Process Laborales Archivados' },
     component: ProcessLaboralesArchived
+  }
+]
+
+const processOtrosChildRoute = (prop, mode = false) => [
+  {
+    path: 'process-otros-list',
+    name: prop + '.list',
+    meta: { dark: mode, auth: true, name: 'Process Otros List' },
+    component: ProcessOtrosList
+  },
+  {
+    path: 'process-otros-archivados',
+    name: prop + '.archivados',
+    meta: { dark: mode, auth: true, name: 'Process Otros Archivados' },
+    component: ProcessOtrosArchived
   }
 ]
 
@@ -689,7 +707,7 @@ const routes = [
     path: '/auth',
     name: 'auth1',
     component: AuthLayout1,
-    meta: { auth: true },
+    meta: { auth: false },
     children: authChildRoutes('auth1')
   },
   {
@@ -733,6 +751,13 @@ const routes = [
     component: Layout1,
     meta: { auth: true },
     children: processLaboralOrdinarioChildRoute('process-laborales-ordinario')
+  },
+  {
+    path: '/process-otros',
+    name: 'process-otros',
+    component: Layout1,
+    meta: { auth: true },
+    children: processOtrosChildRoute('process-otros')
   },
   {
     path: '/policies',

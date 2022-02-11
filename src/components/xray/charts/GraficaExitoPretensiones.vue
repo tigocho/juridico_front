@@ -40,7 +40,7 @@ export default {
         title: 'Nivel de éxito sobre pretensiones',
         type: 'pie',
         bodyData: {
-          colors: ['#47A9A1', '#e64141'],
+          colors: ['#05a29d', '#e64141'],
           value: ['porcentajes'],
           category: ['resultado'],
           data: [

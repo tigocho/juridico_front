@@ -15,10 +15,6 @@
       <ValidationProvider vid="password" name="Password" rules="required" v-slot="{ errors }">
         <div class="form-group">
           <label for="passwordInput">Contraseña</label>
-          <router-link to="/auth/password-reset1" class="float-right">
-            ¿Olvidaste tu contraseña?
-          </router-link>
-          <!--<a href="#" @click="recuperarPassword" class="float-right">¿Olvidaste tu contraseña?</a>-->
           <input type="password"  :class="'form-control mb-0' +(errors.length > 0 ? ' is-invalid' : '')"
                  id="passwordInput"
                  v-model="user.usr_password" placeholder="Contraseña" required>
@@ -27,12 +23,14 @@
           </div>
         </div>
       </ValidationProvider>
-      <div class="d-inline-block w-100">
-        <div class="custom-control custom-checkbox d-inline-block mt-2 pt-1">
-          <input type="checkbox" class="custom-control-input" :id="formType">
-          <label class="custom-control-label" :for="formType">Recuerdame</label>
-        </div>
-        <button type="submit" class="btn btn-primary float-right" :class="estado">{{ texto }}</button>
+      <div class="d-flex justify-content-between ml-4">
+        <b-form-checkbox class="form-check-input col-6" type="checkbox" v-model="recordarme" id="flexCheckChecked">Recordarme</b-form-checkbox>
+        <router-link to="/auth/password-reset1" class="pt-1">
+            ¿Olvidaste tu contraseña?
+        </router-link>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary mt-3" :class="estado">{{ texto }}</button>
       </div>
       <!--<div class="sign-info">
           <span class="dark-color d-inline-block line-height-2">
@@ -56,6 +54,7 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import axios from 'axios'
 import auth from '@/logic/auth'
+import { Base64 } from 'js-base64'
 
 export default {
   name: 'SignIn1Form',
@@ -66,14 +65,23 @@ export default {
       usr_email: '',
       usr_password: ''
     },
+    recordarme: false,
     texto: 'Iniciar Sesión',
     estado: '',
     intentos: '',
     errores: []
   }),
   mounted () {
-    this.user.usr_email = this.$props.email
-    this.user.usr_password = this.$props.password
+    const email = this.getCookie('email-jur')
+    const password = this.getCookie('pass-jur')
+    if (email && password) {
+      this.user.usr_email = email
+      this.user.usr_password = Base64.decode(password)
+      this.recordarme = true
+    } else {
+      this.user.usr_email = this.$props.email
+      this.user.usr_password = this.$props.password
+    }
     this.user.nombre_completo = ''
     this.user.id = ''
   },
@@ -83,6 +91,25 @@ export default {
     })
   },
   methods: {
+    getCookie (key) {
+      if (document.cookie.length > 0) {
+        let start = document.cookie.indexOf(key + '=')
+        if (start !== -1) {
+          start = start + key.length + 1
+          let end = document.cookie.indexOf(';', start)
+          if (end === -1) {
+            end = document.cookie.length
+            return Base64.decode(document.cookie.substring(start, end))
+          } else {
+            return document.cookie.substring(start, end)
+          }
+        }
+      }
+      return ''
+    },
+    setCookie (cName, value) {
+      document.cookie = cName + '=' + value + ';expires=Fri, 31 Dec 9999 23:59:59 GMT'
+    },
     onSubmit () {
       // this.handleLogin()
       this.login()
@@ -97,9 +124,15 @@ export default {
     login () {
       axios.post('/login', this.user).then(res => {
         if (res.data.status_code === 200) {
-          // this.user.nombre_completo = res.data.nombre_completo
-          // this.user.id = res.data.user_id
           const token = res.data.token
+          if (this.recordarme) {
+            this.setCookie('email-jur', this.user.usr_email)
+            const password = Base64.encode(this.user.usr_password)
+            this.setCookie('pass-jur', password)
+          } else {
+            this.setCookie('email-jur', '')
+            this.setCookie('pass-jur', '')
+          }
           localStorage.setItem('access_token', token)
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
           auth.setUserLogged(res.data.user)
@@ -116,9 +149,6 @@ export default {
           this.errores = err
           Vue.swal('Ups, ocurrió un error, intente más tarde')
         })
-    },
-    recuperarPassword () {
-      this.$router.push({ name: 'auth.password-reset1' })
     }
   }
 }

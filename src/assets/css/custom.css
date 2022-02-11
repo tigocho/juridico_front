@@ -33,3 +33,18 @@ import Css
 .pagina-detalle-proceso b, .pagina-detalle-proceso p, .pagina-detalle-poliza b, .pagina-detalle-poliza p {
   color: #343a40!important;
 }
+
+.notificacion{
+  padding: 15px;
+  border-radius: 10px;
+  background-color: rgb(213, 248, 213);
+  color: green;
+}
+
+.notificacion .cerrar:hover{
+  cursor: pointer;
+}
+
+.swal2-container .swal2-confirm{
+  margin-right: 20px;
+} 

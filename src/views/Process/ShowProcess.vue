@@ -117,6 +117,7 @@
           </b-modal>
         </div>
         <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
+        <ModalTerminarProceso :num_radicado="process.prore_num_radicado" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
         <!-- INICIO DE MODAL DE AGREGAR IMPLICADO -->
         <div>
           <b-modal id="modal-nuevo-implicated" size="lg" title="Agregar/Editar involucrado" hide-footer>
@@ -173,7 +174,7 @@
                   </b-form-group>
                 </b-col>
                 <b-col md="4">
-                  <b-form-group label="Dirección residencia" label-for="imp_direccion">
+                  <b-form-group label="Dirección de residencia" label-for="imp_direccion">
                     <b-form-input id="imp_direccion" v-model="nuevoImplicated.imp_direccion" type="text"></b-form-input>
                   </b-form-group>
                 </b-col>
@@ -200,6 +201,11 @@
                   </b-form-group>
                 </b-col>
               </b-row>
+              <b-row>
+                <div class="form-check col-12 m-3">
+                  <b-form-checkbox class="form-check-input" type="checkbox" v-model="nuevoImplicated.imp_principal" id="flexCheckChecked">Involucrado principal</b-form-checkbox>
+                </div>
+              </b-row>
               <div class="text-right pt-1">
                 <b-button class="sm-3 mr-1" variant="secondary" @click="$bvModal.hide('modal-nuevo-implicated')">Cancelar</b-button>
                 <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="guardarImplicated">{{ textoGuardarModal }}</b-button>
@@ -219,9 +225,9 @@
                     <tab-nav-items class="col-auto p-0" :active="false" href="#actuaciones" title="Actuaciones" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#costos-cuantias" title="Costos/Cuantías" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#poliza" title="Poliza" />
-                    <tab-nav-items class="col-auto p-0" :active="false" href="#comentarios" title="Comentarios" />
-                    <tab-nav-items class="col-auto p-0" :active="false" href="#notas" title="Notas" />
-                    <tab-nav-items class="col-auto p-0" :active="false" href="#links" title="Links" />
+                    <!-- <tab-nav-items class="col-auto p-0" :active="false" href="#comentarios" title="Comentarios" />
+                    <tab-nav-items class="col-auto p-0" :active="false" href="#notas" title="Notas" /> -->
+                    <tab-nav-items class="col-auto p-0" :active="false" href="#links" title="Documentos del proceso" />
                   </tab-nav>
                 </div>
               </template>
@@ -235,17 +241,70 @@
                     <template v-slot:headerTitle>
                       <h4 class="card-title">Información del proceso
                         <span v-if="process.profile != null">
-                          <span v-if="process.prore_profile_id == 7" class='text-success'>({{ process.profile.prof_name }})</span>
-                          <span v-else-if="process.prore_profile_id == 8" class='text-danger'>({{ process.profile.prof_name }})</span>
-                          <span v-else class='text-warning'>({{ process.profile.prof_name }})</span>
+                          <span v-if="process.prore_profile_id == 7" class='text-success'>(ROL DE CLÍNICA - {{ process.profile.prof_name }})</span>
+                          <span v-else-if="process.prore_profile_id == 8" class='text-danger'>(ROL DE CLÍNICA: {{ process.profile.prof_name }})</span>
+                          <span v-else class='text-warning'>(ROL DE CLÍNICA - {{ process.profile.prof_name }})</span>
                         </span>
                       </h4>
                     </template>
                     <template v-slot:headerAction>
                       <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
                       <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
+                      <b-button variant="danger" v-if="process.prore_estado != 1" :class="estadoBotonTerminarProceso" class="ml-3" v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(prore_id)">Terminar Proceso</b-button>
                     </template>
                     <template v-slot:body>
+                      <div v-if="implicateds != null">
+                        <b-row class="col-md-12 pt-2">
+                          <h4 class="card-title">
+                            <span v-if="process.prore_profile_id == 7"><strong>Demandado(s):</strong></span>
+                            <span v-else-if="process.prore_profile_id == 8"><strong>Demandante(s):</strong></span>
+                            <span v-else><strong>Demandante(s):</strong></span>
+                          </h4>
+                          <b-row class="col-md-12 pt-2">
+                            <span v-for="(implicate, index) in implicateds" :key="index">
+                              <p class="pr-3">
+                                <span v-if="process.prore_profile_id == 7">
+                                  <b-card-text class="my-0 pt-1 text-upper" v-if="implicate.imp_profile_id == 8">
+                                    <span v-b-tooltip.hover title="Principal" class="bg-danger p-1" style="background-color: #089bab; color: white; border-radius:4px" v-if="implicate.imp_principal">
+                                      <i class="fas fa-user" style="color:red"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                    <span v-else>
+                                      <i class="fas fa-user"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                  </b-card-text>
+                                </span>
+                                <span v-else-if="process.prore_profile_id == 8">
+                                  <b-card-text class="my-0 pt-1 text-uppercase" v-if="implicate.imp_profile_id == 7 || implicate.imp_profile_id == 6">
+                                    <span v-b-tooltip.hover title="Principal" class="p-1" style="background-color: #089bab; color: white; border-radius:4px" v-if="implicate.imp_principal">
+                                      <i class="fas fa-user" style="color:white"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                    <span v-else>
+                                      <i class="fas fa-user"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                  </b-card-text>
+                                </span>
+                                <span v-else>
+                                  <b-card-text class="my-0 pt-1 text-uppercase" v-if="implicate.imp_profile_id == 7 || implicate.imp_profile_id == 6">
+                                    <span v-b-tooltip.hover title="Principal" class="p-1" style="background-color: #089bab; color: white; border-radius:4px" v-if="implicate.imp_principal">
+                                      <i class="fas fa-user" style="color:white"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                    <span v-else>
+                                      <i class="fas fa-user"></i>
+                                      {{implicate.imp_nombres + " " + implicate.imp_apellidos}}
+                                    </span>
+                                  </b-card-text>
+                                </span>
+                              </p>
+                            </span>
+                          </b-row>
+                        </b-row>
+                      </div>
+                      <hr>
                       <div v-if="!editando">
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.proceedings != null && process.proceedings[0] != null">{{ process.proceedings[0].status_process.estado_proceso }}</span></b-card-text>
@@ -288,6 +347,7 @@
                           <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial: </b>{{ process.prore_fec_noti_preju }}</b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial:</b> {{ process.prore_fec_audi_conci_preju }}</b-card-text>
                         </b-row>
+                        <hr>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text><b>Descripción del siniestro: </b>{{ process.prore_sinies_description }}</b-card-text>
                         </b-row>
@@ -603,7 +663,7 @@
                     <template v-slot:body>
                       <b-row class="col-md-12" v-for="(implicate, index) in implicateds" :key="index">
                         <b-row class="col-md-12 pt-1">
-                          <h6><b class="text-black" style="text-decoration:underline;">{{ implicate.profile.prof_name }}</b><button class="btn btn-link pt-0" @click="editImplicated(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteImplicated(implicate)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
+                          <h6><b class="text-black" style="text-decoration:underline;">{{ implicate.profile.prof_name }}</b><button class="btn btn-link pt-0" @click="editImplicated(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteImplicated(implicate)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6><span v-if="implicate.imp_principal" class="mx-2 px-2" style="color: white; background-color: #089bab; border-radius: 3px; max-height:25px">PRINCIPAL</span>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="px-2 my-0"><b>Tipo identificación: </b>{{ tipoIdentificacion(implicate.imp_tipo_identificacion) }}</b-card-text>
@@ -629,9 +689,9 @@
                   <iq-card :key="proceedingKey">
                     <template v-slot:headerTitle>
                       <h4 class="card-title">Actuaciones</h4>
-                    </template>s
+                    </template>
                     <template v-slot:headerAction>
-                      <button class="btn btn-primary" @click="agregarActuacion"><i class="ri-add-line mr-2" ></i>Agregar actuación</button>
+                      <button class="btn btn-primary" :disabled="process.prore_estado == 1" @click="agregarActuacion"><i class="ri-add-line mr-2" ></i>Agregar actuación</button>
                     </template>
                     <template v-slot:body>
                       <ul class="iq-timeline">
@@ -645,8 +705,8 @@
                           <b-row class="col-md-12 pt-1">
                             <b-card-text class="my-0"><b>Abogado: </b><span v-if="proceeding.professional != null">{{ proceeding.professional.pro_name_first }} {{ proceeding.professional.pro_lastname_first }}</span></b-card-text>
                             <b-card-text class="pl-3 my-0"><b>Fecha de registro: </b>{{ proceeding.proce_fecha_ingreso }}</b-card-text>
-                            <b-card-text class="pl-3 my-0"><b>Fecha sig. audiencia: </b>{{ proceeding.proce_fecha_siguiente_audiencia }}</b-card-text>
-                            <b-card-text class="my-0"><b>Hora sig. audiencia: </b>{{ proceeding.proce_hora_siguiente_audiencia }}</b-card-text>
+                            <b-card-text v-if="proceeding.status_process.sta_id != 16" class="pl-3 my-0"><b>Fecha sig. audiencia: </b>{{ proceeding.proce_fecha_siguiente_audiencia }}</b-card-text>
+                            <b-card-text v-if="proceeding.status_process.sta_id != 16" class="my-0"><b>Hora sig. audiencia: </b>{{ proceeding.proce_hora_siguiente_audiencia }}</b-card-text>
                           </b-row>
                           <b-row class="col-md-12 pt-1">
                             <b-card-text><b>Descripción actuación: </b>{{ proceeding.proce_descripcion }}</b-card-text>
@@ -663,113 +723,14 @@
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="costos-cuantias">
-                  <iq-card>
-                    <template v-slot:headerTitle>
-                      <h4 class="card-title">Costos y cuantías</h4>
-                    </template>
-                    <template v-slot:headerAction>
-                      <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
-                      <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarCuantias" @click="editarProceso">{{ textoEditarCuantias }}</b-button>
-                    </template>
-                    <template v-slot:body>
-                      <div v-if="!editando">
-                        <b-row>
-                          <b-col md="6">
-                            <b-card-text><b>Pretensiones/Capital/Interes/Honorarios:</b> <span v-if="process.prore_pretenciones_cap_int_hon != null">{{ formatPrice(process.prore_pretenciones_cap_int_hon) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Valor Daño Emergente:</b> <span v-if="process.prore_val_dano_emergente != null">{{ formatPrice(process.prore_val_dano_emergente) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Pretensiones Laborales:</b> <span v-if="process.prore_pretenciones_laborales != null">{{ formatPrice(process.prore_pretenciones_laborales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Prestaciones Sociales:</b> <span v-if="process.prore_prestaciones_sociales != null">{{ formatPrice(process.prore_prestaciones_sociales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Pretensiones por Vacaciones:</b> <span v-if="process.prore_pretenciones_vacaciones != null">{{ formatPrice(process.prore_pretenciones_vacaciones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Pretensiones por Indemnización:</b> <span v-if="process.prore_pretenciones_indemnizacion != null">{{ formatPrice(process.prore_pretenciones_indemnizacion) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Pago de Seguridad Social en Salud:</b> <span v-if="process.prore_pago_seguridad_social_sa != null">{{ formatPrice(process.prore_pago_seguridad_social_sa) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Salarios dejados de Percibir:</b> <span v-if="process.prore_salario_dejados_percibir != null">{{ formatPrice(process.prore_salario_dejados_percibir) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Otros:</b> <span v-if="process.prore_otros_valores != null">{{ formatPrice(process.prore_otros_valores) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          </b-col>
-                          <b-col md="6">
-                            <b-card-text><b>Valor Lucro Cesante:</b> <span v-if="process.prore_val_luc_cesante != null">{{ formatPrice(process.prore_val_luc_cesante) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Total Perjuicios Materiales:</b> <span v-if="process.prore_total_perjuicios_materiales != null">{{ formatPrice(process.prore_total_perjuicios_materiales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Estimado a Pagar Por Perjuicios Mat.:</b> <span v-if="process.prore_estimacion_pago_perju_materiales != null">{{ formatPrice(process.prore_estimacion_pago_perju_materiales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Daño a la Vida ó Prejuicios Fisiologicos y Otros:</b> <span v-if="process.prore_val_dano_vida != null">{{ formatPrice(process.prore_val_dano_vida) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Valor Daño Moral:</b> <span v-if="process.prore_val_dano_moral != null">{{ formatPrice(process.prore_val_dano_moral) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Total Perjuicios Inmateriales:</b> <span v-if="process.prore_total_perjuicios_inmateriales != null">{{ formatPrice(process.prore_total_perjuicios_inmateriales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Estimado a Pagar Por Perjuicios Inmat.:</b> <span v-if="process.prore_estimacion_pago_perju_inmateriales != null">{{ formatPrice(process.prore_estimacion_pago_perju_inmateriales) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Valor que Cube la Poliza Prejuicios Inmat.:</b> <span v-if="process.prore_val_cubre_poliza_perjuicios_inmat != null">{{ formatPrice(process.prore_val_cubre_poliza_perjuicios_inmat) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Cuantía de las Pretensiones:</b> <span v-if="process.prore_cuantia_pretenciones != null">{{ formatPrice(process.prore_cuantia_pretenciones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                            <b-card-text><b>Valor a Provisionar:</b> <span v-if="process.prore_valor_provisionar != null">{{ formatPrice(process.prore_valor_provisionar) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          </b-col>
-                        </b-row>
-                      </div>
-                      <div v-else>
-                        <b-row>
-                          <b-form-group class="col-md-6" label="Pretensiones/Capital/Interes/Honorarios" label-for="prore_pretenciones_cap_int_hon">
-                            <b-form-input v-model="process.prore_pretenciones_cap_int_hon" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Pretensiones Laborales" label-for="prore_pretenciones_laborales">
-                            <b-form-input v-model="process.prore_pretenciones_laborales" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Estimado a Pagar Por Perjuicios Mat." label-for="prore_estimacion_pago_perju_materiales">
-                            <b-form-input v-model="process.prore_estimacion_pago_perju_materiales" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Prestaciones Sociales" label-for="prore_prestaciones_sociales">
-                            <b-form-input v-model="process.prore_prestaciones_sociales" type="number" placeholder="$"></b-form-input>
-                            </b-form-group>
-                          <b-form-group class="col-md-6" label="Pretensiones por Vacaciones" label-for="prore_pretenciones_vacaciones">
-                            <b-form-input id="prore_pretenciones_vacaciones" v-model="process.prore_pretenciones_vacaciones" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Pretensiones por Indemnización" label-for="prore_pretenciones_indemnizacion">
-                            <b-form-input v-model="process.prore_pretenciones_indemnizacion" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Pago de Seguridad Social en Salud" label-for="prore_pago_seguridad_social_sa">
-                            <b-form-input v-model="process.prore_pago_seguridad_social_sa" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Salarios dejados de Percibir" label-for="prore_salario_dejados_percibir">
-                            <b-form-input id="prore_salario_dejados_percibir" v-model="process.prore_salario_dejados_percibir" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Otros" label-for="prore_otros_valores">
-                            <b-form-input v-model="process.prore_otros_valores" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Valor Lucro Cesante" label-for="prore_val_luc_cesante">
-                            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_luc_cesante" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Valor Daño Emergente" label-for="prore_val_dano_emergente">
-                            <b-form-input @keyup="totalPerjuiciosMateriales" v-model="process.prore_val_dano_emergente" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Total Perjuicios Materiales" label-for="prore_total_perjuicios_materiales">
-                            <b-form-input id="prore_total_perjuicios_materiales" v-model="process.prore_total_perjuicios_materiales" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Estimado a Pagar Por Perjuicios Materiales" label-for="prore_estimacion_pago_perju">
-                            <b-form-input id="prore_estimacion_pago_perju_materiales" v-model="process.prore_estimacion_pago_perju_materiales" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Valor Daño Moral" label-for="prore_val_dano_moral">
-                            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_moral" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Daño a la Vida ó Prejuicios Fisiologicos y Otros" label-for="prore_val_dano_vida">
-                            <b-form-input @keyup="totalPerjuiciosInmateriales" v-model="process.prore_val_dano_vida" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Total Perjuicios Inmateriales" label-for="prore_total_perjuicios_inmateriales">
-                            <b-form-input v-model="process.prore_total_perjuicios_inmateriales" type="number" disabled="disabled" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Estimado Del Monto A Pagar Por Perjuicios Inmateriales" label-for="prore_estimacion_pago_perju_inmateriales">
-                            <b-form-input id="prore_estimacion_pago_perju_inmateriales" v-model="process.prore_estimacion_pago_perju_inmateriales" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <!-- <b-form-group class="col-md-6" label="Valor que Cubre la Poliza Prejuicios Inmateriales" label-for="prore_val_cubre_poliza_perjuicios_inmat">
-                            <b-form-input id="prore_val_cubre_poliza_perjuicios_inmat" v-model="process.prore_val_cubre_poliza_perjuicios_inmat" type="number" placeholder="$"></b-form-input>
-                          </b-form-group> -->
-                          <b-form-group class="col-md-6" label="Cuantía de las Pretensiones" label-for="prore_cuantia_pretenciones">
-                            <b-form-input id="prore_cuantia_pretenciones" v-model="process.prore_cuantia_pretenciones" disabled="disabled" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                          <b-form-group class="col-md-6" label="Valor a Provisionar" label-for="prore_valor_provisionar">
-                            <b-form-input id="prore_valor_provisionar" v-model="process.prore_valor_provisionar" type="number" placeholder="$"></b-form-input>
-                          </b-form-group>
-                        </b-row>
-                      </div>
-                    </template>
-                    <template v-slot:footer>
-                      <div class="text-right">
-                        <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
-                        <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarCuantias" @click="editarProceso">{{ textoEditarCuantias }}</b-button>
-                      </div>
-                    </template>
+                  <iq-card v-if="process.prore_typro_id != 11 && process.prore_typro_id != 8 && process.prore_typro_id != 10">
+                    <CostosCuantiasProcesoMedico :prore_id="prore_id" :usr_id="userLogged.usr_id"/>
+                  </iq-card>
+                  <iq-card v-else-if="process.prore_typro_id == 11">
+                    <CostosCuantiasProcesoLaboral :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id"/>
+                  </iq-card>
+                  <iq-card v-else>
+                    <CostosCuantiasProcesoEjecutivo :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id"/>
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="poliza">
@@ -847,7 +808,7 @@
                     </template>
                   </iq-card>
                 </tab-content-item>
-                <tab-content-item :active="false" id="comentarios">
+                <!-- <tab-content-item :active="false" id="comentarios">
                   <iq-card>
                     <template v-slot:headerTitle>
                       <h4 class="card-title">Comentarios</h4>
@@ -864,24 +825,24 @@
                     <template v-slot:body>
                     </template>
                   </iq-card>
-                </tab-content-item>
+                </tab-content-item> -->
                 <tab-content-item :active="false" id="links">
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title">Links</h4>
+                      <h4 class="card-title">Documentos del proceso</h4>
                     </template>
                     <template v-slot:headerAction>
-                      <b-button variant="primary" @click="agregarLink"><i class="ri-add-line mr-2" ></i>Agregar link</b-button>
+                      <b-button variant="primary" @click="agregarLink"><i class="fas fa-plus-circle"></i>Agregar</b-button>
                     </template>
                     <template v-slot:body>
                       <b-table bordered hover foot-clone :items="links" :fields="columnasLinks" :key="tableLinkKey" stacked="md" small >
                         <template v-slot:cell(link_name)="row">
-                          <span v-if="!row.item.editable">{{ row.item.link_name }}</span>
+                          <span v-if="!row.item.editable" style="word-break: break-all;"><a :href="row.item.link_url" target="_blank">{{ row.item.link_name }}</a></span>
                           <input type="text" v-model="row.item.link_name" v-else class="form-control">
                         </template>
                         <template v-slot:cell(link_url)="row">
-                          <a style="word-break: break-all;" v-bind:href="row.item.link_url" target="_blank" v-if="!row.item.editable">{{ row.item.link_url }}</a>
-                          <input type="text" v-model="row.item.link_url" v-else class="form-control">
+                            <a style="word-break: break-all;" v-bind:href="row.item.link_url" target="_blank" v-if="!row.item.editable">{{ row.item.link_url }}</a>
+                            <input type="text" v-model="row.item.link_url" v-else class="form-control">
                         </template>
                         <template #cell(actions)="row">
                           <!--<b-button class="mr-1" size="sm" variant="primary" @click="editLink(row.index)" :class="estadoBotonEliminarLinkProceeding"> Editar </b-button>
@@ -909,8 +870,10 @@ import { required } from 'vuelidate/lib/validators'
 import Vue from 'vue'
 import axios from 'axios'
 import auth from '@/logic/auth'
+import iqCard from '../../components/xray/cards/iq-card.vue'
 
 export default {
+  components: { iqCard },
   name: 'ProfileEdit',
   mounted () {
     xray.index()
@@ -921,6 +884,7 @@ export default {
       this.getEstadosProceso()
       this.fetchOptionsAbogados()
       this.fetchProfiles()
+      this.fetchProfileProcessOptions()
       setTimeout(() => {
         this.fetchEspecialidades()
         this.fetchOptionsClinicas()
@@ -943,8 +907,6 @@ export default {
   data () {
     return {
       nocloseonbackdrop: true,
-      estadoBotonActualizarCuantias: '',
-      textoEditarCuantias: 'Editar Costos/Cuantías',
       estadoBotonActualizarProceso: '',
       textoEditarProceso: 'Editar Proceso',
       user_id: null,
@@ -952,6 +914,8 @@ export default {
       intentos: 0,
       prore_id: this.$route.params.prore_id,
       editando: false,
+      estadoBotonTerminarProceso: '',
+      mostrarModalTerminarProceso: false,
       implicateds: [],
       process: [],
       loading: true,
@@ -1041,6 +1005,7 @@ export default {
         imp_emails: '',
         imp_profile_id: '',
         imp_genero_id: '',
+        imp_principal: false,
         imp_process_request_id: this.$route.params.prore_id
       },
       generoOptions: [
@@ -1465,6 +1430,11 @@ export default {
         this.errors.push('La descripción es obligatoria.')
       }
     },
+    verModalTerminarProceso (proreId, numRadicado) {
+      this.proceeding.proce_prore_id = proreId
+      this.$bvModal.show('modal-terminar-proceso')
+      this.mostrarModalTerminarProceso = true
+    },
     agregarActuacion () {
       this.limpiarModalActuacion()
       this.$bvModal.show('modal-nueva-actuacion')
@@ -1593,6 +1563,9 @@ export default {
         if (linkFor.link_id != null) {
           axios.post('/links/update/' + linkFor.link_id + '/' + this.user_id, linkFor).then(res => {
             if (res.data.status_code === 200) {
+              var linkIndex = this.links.indexOf(linkFor)
+              var linkEdit = { ...this.links[linkIndex], ...{ editable: false, link_id: res.data.link.link_id, link_url: res.data.link.link_url } }
+              this.links.splice(linkIndex, 1, linkEdit)
               Vue.swal(res.data.message)
             } else {
               Vue.swal(res.data.message)
@@ -1606,7 +1579,7 @@ export default {
             if (res.data.status_code === 200) {
               Vue.swal(res.data.message)
               var linkIndex = this.links.indexOf(linkFor)
-              var linkEdit = { ...this.links[linkIndex], ...{ editable: false, link_id: res.data.link_id } }
+              var linkEdit = { ...this.links[linkIndex], ...{ editable: false, link_id: res.data.link.link_id, link_url: res.data.link.link_url } }
               this.links.splice(linkIndex, 1, linkEdit)
             } else {
               Vue.swal(res.data.message)
@@ -1693,6 +1666,7 @@ export default {
       this.nuevoImplicated.imp_telefonos = ''
       this.nuevoImplicated.imp_emails = ''
       this.nuevoImplicated.imp_profile_id = ''
+      this.nuevoImplicated.imp_principal = false
     },
     guardarImplicated () {
       if (this.checkFormImplicated()) {
@@ -1792,6 +1766,7 @@ export default {
       this.nuevoImplicated.imp_profile_id = this.implicateds[implicatedIndex].imp_profile_id
       this.nuevoImplicated.imp_rango_edad = this.implicateds[implicatedIndex].imp_rango_edad
       this.nuevoImplicated.imp_genero_id = this.implicateds[implicatedIndex].imp_genero_id
+      this.nuevoImplicated.imp_principal = this.implicateds[implicatedIndex].imp_principal
       this.$bvModal.show('modal-nuevo-implicated')
     },
     deleteImplicated (implicated) {
