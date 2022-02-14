@@ -504,7 +504,6 @@ export default {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         axios.get('/process/obtener-tipo-procesos/' + this.userLogged.usr_id).then(response => {
           this.tiposProcesosOptions = response.data.tipos_procesos
-          console.log(this.tiposProcesosOptions)
           if (this.tiposProcesosOptions[0] !== undefined) {
             this.intentos = 0
             this.errores = {}
