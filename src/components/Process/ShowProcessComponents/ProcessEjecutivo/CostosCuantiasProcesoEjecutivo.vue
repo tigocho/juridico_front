@@ -40,7 +40,9 @@
             ></vue-autonumeric>
           </b-form-group>
           <b-form-group class="col-md-6" label="Otros costos" label-for="tempProreValOtrosValores">
-            <b-form-input v-model="tempProreValOtrosValores" type="number" placeholder="$"></b-form-input>
+            <vue-autonumeric class="form-control" v-model="tempProreValOtrosValores"
+              :options="optionNumeric"
+            ></vue-autonumeric>
           </b-form-group>
         </b-row>
       </div>

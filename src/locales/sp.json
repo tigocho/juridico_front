@@ -19,13 +19,17 @@
     "inbox": "Bandeja de entrada",
     "emailCompose": "Correo Electrónico Componer",
     "calendar": "Calendario Juridico",
-    "procesos": "Procesos Juridicos",
+    "procesos": "Procesos Resp. Médica",
     "procesosLaborales": "Procesos Laborales Ord.",
     "agregarProceso": "Agregar Proceso juridico",
     "ListaProcesos": "Lista de Procesos",
     "ProcesosArchivados": "Procesos archivados",
     "ListaProcesosLaboralesOrdinarios": "Lista de Procesos Laborales Ord.",
     "ProcesosArchivadosLaboralesOrdinarios": "Procesos archivados",
+    "otrosProcesos" : "Otros Procesos",
+    "ListaOtrosProcesos": "Lista de Otros procesos",
+    "otrosProcesosArchivados": "Otros Procesos Archivados",
+
 
 
     "polizas": "Polizas",
