@@ -691,7 +691,7 @@
                       <h4 class="card-title">Actuaciones</h4>
                     </template>
                     <template v-slot:headerAction>
-                      <button class="btn btn-primary" @click="agregarActuacion"><i class="ri-add-line mr-2" ></i>Agregar actuación</button>
+                      <button class="btn btn-primary" :disabled="process.prore_estado == 1" @click="agregarActuacion"><i class="ri-add-line mr-2" ></i>Agregar actuación</button>
                     </template>
                     <template v-slot:body>
                       <ul class="iq-timeline">
