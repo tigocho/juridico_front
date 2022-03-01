@@ -1,12 +1,12 @@
 {
   "sidebar": {
-    "dashboard": "Juridico App",
+    "dashboard": "Páneles",
     "dashboard1": "Panel Administrativo",
-    "dashboard2": "Panel de control del hospital 1",
+    "dashboard2": "Panel Gerencial",
     "dashboard3": "Panel de control del hospital 2",
     "dashboard4": "Panel del paciente",
     "videoChat": "Chat De Vídeo",
-    "app": "Aplicación",
+    "app": "Procesos Jurídicos",
     "eCommerce": "E-Commerce",
     "productListing": "Ficha De Producto",
     "productDetail": "Detalles Del Producto",
@@ -30,7 +30,14 @@
     "ListaOtrosProcesos": "Lista de Otros procesos",
     "otrosProcesosArchivados": "Otros Procesos Archivados",
 
-
+    "ans": "ANS",
+    "casos": "Casos Jurídicos",
+    "crearCaso": "Crear Caso",
+    "misCasos": "Mis Casos Jurídicos",
+    "misAsignaciones": "Mis Asignaciones",
+    "casosPorAsignar": "Casos por Asignar",
+    "todosLosCasos": "Todos los casos",
+    "graficasReportesAns": "Gráficas y Reportes",
 
     "polizas": "Polizas",
     "listaPolizas": "Lista de pólizas",
