@@ -69,6 +69,7 @@ export default {
     texto: 'Iniciar Sesión',
     estado: '',
     intentos: '',
+    perfilAdministrativo: [1, 2],
     errores: []
   }),
   mounted () {
@@ -136,7 +137,11 @@ export default {
           localStorage.setItem('access_token', token)
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
           auth.setUserLogged(res.data.user)
-          this.$router.push({ name: 'process.list' })
+          if (this.perfilAdministrativo.includes(res.data.user.user_profile)) {
+            this.$router.push({ name: 'process.list' })
+          } else {
+            this.$router.push({ name: 'dashboard.home-2' })
+          }
         } else {
           this.texto = 'Iniciar Sesión'
           this.estado = ''

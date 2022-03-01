@@ -16,7 +16,7 @@
     </div>
     <div id="sidebar-scrollbar">
       <nav class="iq-sidebar-menu" :class="horizontal ? 'd-xl-none' : ''">
-        <List :items="items" :open="true" :horizontal="horizontal"/>
+        <List :items="items" :rol="userLogged.user_profile" :open="true" :horizontal="horizontal"/>
       </nav>
       <div class="p-3"></div>
     </div>
@@ -26,6 +26,7 @@
 
 <script>
 import List from '../menus/ListStyle1'
+import auth from '@/logic/auth'
 export default {
   name: 'SideBarStyle1',
   props: {
@@ -36,6 +37,11 @@ export default {
   },
   components: {
     List
+  },
+  computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    }
   },
   methods: {
     miniSidebar () {
