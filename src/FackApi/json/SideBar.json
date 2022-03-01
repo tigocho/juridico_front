@@ -6,7 +6,8 @@
     "is_active": false,
     "class_name": "",
     "is_icon_class": true,
-    "icon": ""
+    "icon": "",
+    "roles": [1]
   },
   {
     "title": "Dashboard Gerencial",
@@ -18,7 +19,8 @@
     },
     "class_name": "",
     "is_icon_class": true,
-    "icon": "ri-user-star-line"
+    "icon": "ri-user-star-line",
+    "roles": [1]
   },
   {
     "title": "Doctor Dashboard",
@@ -30,7 +32,8 @@
     },
     "class_name": "",
     "is_icon_class": true,
-    "icon": "ri-hospital-fill"
+    "icon": "ri-hospital-fill",
+    "roles": [1]
   },
   {
     "title": "Apps",
@@ -39,7 +42,8 @@
     "is_active": false,
     "class_name": "",
     "is_icon_class": true,
-    "icon": ""
+    "icon": "",
+    "roles": [1, 2]
   },
   {
     "title": "Process",
@@ -50,6 +54,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-file-list-fill",
+    "roles": [1, 2],
     "children": [
       {
         "title": "Process List",
@@ -60,7 +65,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-book-mark-line"
+        "icon": "ri-book-mark-line",
+        "roles": [1, 2]
       },
       {
         "title": "Add Proces",
@@ -71,7 +77,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-folder-add-line"
+        "icon": "ri-folder-add-line",
+        "roles": [1, 2]
       },
       {
         "title": "Process Archived",
@@ -82,7 +89,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-inbox-archive-fill"
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 2]
       }      
     ]
   },
@@ -95,6 +103,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-government-fill",
+    "roles": [1, 2],
     "children": [
       {
         "title": "Process List Laborales",
@@ -105,7 +114,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-book-mark-line"
+        "icon": "ri-book-mark-line",
+        "roles": [1, 2]
       },
       {
         "title": "Process Archived Laborales",
@@ -116,7 +126,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-inbox-archive-fill"
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 2]
       }
     ]
   },
@@ -129,6 +140,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "fas fa-bars",
+    "roles": [1, 2],
     "children": [
       {
         "title": "otrosProcesosList",
@@ -139,7 +151,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-book-mark-line"
+        "icon": "ri-book-mark-line",
+        "roles": [1, 2]
       },
       {
         "title": "otrosProcesosArchivados",
@@ -150,7 +163,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "fas fa-archive"
+        "icon": "fas fa-archive",
+        "roles": [1, 2]
       }
     ]
   },
@@ -163,6 +177,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-shield-flash-fill",
+    "roles": [1, 2],
     "children": [
       {
         "title": "Policies List",
@@ -173,7 +188,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-shield-fill"
+        "icon": "ri-shield-fill",
+        "roles": [1, 2]
       },
       {
         "title": "Add Policy",
@@ -184,7 +200,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-shield-cross-fill"
+        "icon": "ri-shield-cross-fill",
+        "roles": [1, 2]
       },
       {
         "title": "Policies Archived",
@@ -195,7 +212,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-shield-flash-fill"
+        "icon": "ri-shield-flash-fill",
+        "roles": [1, 2]
       }      
     ]
   },
@@ -209,6 +227,7 @@
     },
     "class_name": "",
     "is_icon_class": true,
-    "icon": "ri-calendar-event-fill"
+    "icon": "ri-calendar-event-fill",
+    "roles": [1, 2]
   }
 ]
