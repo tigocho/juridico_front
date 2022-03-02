@@ -29,10 +29,10 @@
             ¿Olvidaste tu contraseña?
         </router-link>
       </div>
-      <div class="d-flex justify-content-center">
+      <div class="d-flex justify-content-end">
         <button type="submit" class="btn btn-primary mt-3" :class="estado">{{ texto }}</button>
       </div>
-      <div class="sign-info d-flex justify-content-center">
+      <!-- <div class="sign-info d-flex justify-content-center">
         <span class="dark-color d-inline-block line-height-2">
           ¿No tienes cuenta?
           <router-link to="/dark/auth/sign-up1" class="iq-waves-effect pr-4" v-if="$route.meta.dark">
@@ -42,7 +42,7 @@
             Crear una cuenta
           </router-link>
         </span>
-      </div>
+      </div> -->
     </form>
   </ValidationObserver>
 </template>
