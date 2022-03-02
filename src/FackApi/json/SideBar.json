@@ -321,7 +321,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-inbox-archive-fill",
-        "roles": [1, 2, 12, 13]
+        "roles": [1, 12, 13]
       },
       {
         "title": "Gráficas y reportes",
@@ -333,7 +333,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-inbox-archive-fill",
-        "roles": [1, 2, 12, 13]
+        "roles": [1, 12, 13]
       }
     ]
   }

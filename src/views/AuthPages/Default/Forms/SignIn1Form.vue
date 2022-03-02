@@ -29,21 +29,20 @@
             ¿Olvidaste tu contraseña?
         </router-link>
       </div>
-      <div class="d-flex justify-content-end">
+      <div class="d-flex justify-content-center">
         <button type="submit" class="btn btn-primary mt-3" :class="estado">{{ texto }}</button>
       </div>
-      <!--<div class="sign-info">
-          <span class="dark-color d-inline-block line-height-2">
-            No tienes una cuenta?
-            <router-link to="/dark/auth/sign-up1" class="iq-waves-effect pr-4" v-if="$route.meta.dark">
-              Registrate
-            </router-link>
-            <router-link to="/auth/sign-up1" class="iq-waves-effect pr-4" v-else>
-              Registrate
-            </router-link>
-          </span>
-        <social-login-form></social-login-form>
-      </div>-->
+      <div class="sign-info d-flex justify-content-center">
+        <span class="dark-color d-inline-block line-height-2">
+          ¿No tienes cuenta?
+          <router-link to="/dark/auth/sign-up1" class="iq-waves-effect pr-4" v-if="$route.meta.dark">
+            Crear una cuenta
+          </router-link>
+          <router-link to="/auth/sign-up1" class="iq-waves-effect pr-4" v-else>
+            Crear una cuenta
+          </router-link>
+        </span>
+      </div>
     </form>
   </ValidationObserver>
 </template>
