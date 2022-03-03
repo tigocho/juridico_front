@@ -415,7 +415,7 @@ const authChildRoutes = (prop, mode = false) => [
   {
     path: 'sign-up1',
     name: prop + '.sign-up1',
-    meta: { dark: mode, auth: true },
+    meta: { dark: mode, auth: false },
     component: SignUp1
   },
   {
