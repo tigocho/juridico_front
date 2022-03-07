@@ -544,6 +544,21 @@ const userChildRoute = (prop, mode = false) => [
   }
 ]
 
+const usuariosChildRoute = (prop, mode = false) => [
+  {
+    path: 'crear-usuario',
+    name: prop + '.crear',
+    meta: { dark: mode, auth: true, name: 'Crear Usuario' },
+    component: AddUser
+  },
+  {
+    path: 'listar-usuarios',
+    name: prop + '.listar',
+    meta: { dark: mode, auth: true, name: 'Listar Usuarios' },
+    component: UserList
+  }
+]
+
 const processChildRoute = (prop, mode = false) => [
   {
     path: 'process-add',
@@ -737,6 +752,13 @@ const routes = [
     component: Layout1,
     meta: { auth: true },
     children: userChildRoute('doctor')
+  },
+  {
+    path: '/usuarios',
+    name: 'usuarios',
+    component: Layout1,
+    meta: { auth: true },
+    children: usuariosChildRoute('usuarios')
   },
   {
     path: '/process',
