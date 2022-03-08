@@ -282,7 +282,6 @@ export default {
     },
     addUser () {
       this.textoBoton = 'Creando usuario...'
-      console.log(this.user)
       axios.post('/register', this.user).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal('Usuario agregado correctamente')
