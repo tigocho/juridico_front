@@ -24,7 +24,7 @@
                   v-model="perPage"
                   :options="pageOptions"
                   size="sm"
-                  class="w-50"
+                  class="w-80"
                 ></b-form-select>
               </b-form-group>
             </b-col>
@@ -65,9 +65,9 @@
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             :sort-direction="sortDirection"
-            stacked="lg"
+            stacked="md"
             show-empty
-            large
+            small
             @filtered="onFiltered"
           >
         <template #cell(name)="row">
@@ -196,7 +196,6 @@ export default {
   mounted () {
     xray.index()
     this.getUsers()
-    this.totalRows = this.usuarios.length
   },
   methods: {
     add () {
@@ -206,6 +205,7 @@ export default {
     getUsers () {
       axios.get('/users').then(response => {
         this.usuarios = response.data.usuarios
+        this.totalRows = this.usuarios.length
       })
     },
     esAbogado (profileId) {
