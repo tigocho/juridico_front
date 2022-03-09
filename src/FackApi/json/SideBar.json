@@ -36,6 +36,53 @@
     "roles": [1, 12]
   },
   {
+    "title": "Administrar",
+    "name": "sidebar.administrar",
+    "is_heading": true,
+    "is_active": false,
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "",
+    "roles": [1, 12]
+  },
+  {
+    "title": "Usuarios",
+    "name": "sidebar.gestionUsuarios",
+    "is_heading": false,
+    "is_active": false,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-file-list-fill",
+    "roles": [1, 12],
+    "children": [
+      {
+        "title": "Crear Usuario",
+        "name": "sidebar.crearUsuario",
+        "is_active": false,
+        "link": {
+          "name" : "usuarios.crear"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-book-mark-line",
+        "roles": [1, 12]
+      },
+      {
+        "title": "Listar usuarios",
+        "name": "sidebar.listaUsuarios",
+        "is_active": false,
+        "link": {
+          "name" : "usuarios.listar"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-folder-add-line",
+        "roles": [1, 12]
+      }    
+    ]
+  },
+  {
     "title": "Apps",
     "name": "sidebar.app",
     "is_heading": true,
@@ -309,7 +356,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-inbox-archive-fill",
-        "roles": [1, 2, 12]
+        "roles": [2, 12]
       },
       {
         "title": "Todos los casos",
