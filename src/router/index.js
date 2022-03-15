@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 /* User View */
-import Profile from '../views/User/Profile'
 import ProfileEdit from '../views/User/ProfileEdit'
 import AddUser from '../views/User/AddUser'
 import UserList from '../views/User/UserList'
@@ -517,33 +516,6 @@ const pagesChildRoutes = (prop, mode = false) => [
     component: Maintenance
   }
 ]
-const userChildRoute = (prop, mode = false) => [
-  {
-    path: 'profile',
-    name: prop + '.profile',
-    meta: { dark: mode, auth: true, name: 'Profile' },
-    component: Profile
-  },
-  {
-    path: 'profile-edit/:user_id',
-    name: prop + '.edit',
-    meta: { dark: mode, auth: true, name: 'Edit Profile' },
-    component: ProfileEdit
-  },
-  {
-    path: 'add-user',
-    name: prop + '.add',
-    meta: { dark: mode, auth: true, name: 'Add Profile' },
-    component: AddUser
-  },
-  {
-    path: 'user-list',
-    name: prop + '.list',
-    meta: { dark: mode, auth: true, name: 'User List' },
-    component: UserList
-  }
-]
-
 const usuariosChildRoute = (prop, mode = false) => [
   {
     path: 'crear-usuario',
@@ -556,6 +528,12 @@ const usuariosChildRoute = (prop, mode = false) => [
     name: prop + '.listar',
     meta: { dark: mode, auth: true, name: 'Listar Usuarios' },
     component: UserList
+  },
+  {
+    path: 'profile-edit/:user_id',
+    name: prop + '.edit',
+    meta: { dark: mode, auth: true, name: 'Edit Profile' },
+    component: ProfileEdit
   }
 ]
 
@@ -745,13 +723,6 @@ const routes = [
     component: Layout1,
     meta: { auth: true },
     children: appChildRoute('app')
-  },
-  {
-    path: '/doctor',
-    name: 'doctor',
-    component: Layout1,
-    meta: { auth: true },
-    children: userChildRoute('doctor')
   },
   {
     path: '/usuarios',
