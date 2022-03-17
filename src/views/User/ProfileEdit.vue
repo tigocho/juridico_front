@@ -21,7 +21,7 @@
             <tab-content id="pills-tabContent-2">
               <tab-content-item :active="true" id="personal-information" >
                 <iq-card>
-                  <template v-slot:headerTitle>
+                  <template class="col-12" v-slot:headerTitle>
                     <h4 class="card-title">Información Personal</h4>
                   </template>
                   <template v-slot:body>
@@ -66,8 +66,8 @@
                           <b-form-radio inline v-model="user.gender" value="male">Male</b-form-radio>
                           <b-form-radio inline v-model="user.gender" value="female">Female</b-form-radio>
                         </b-form-group>-->
-                        <b-form-group class="col-sm-6" label="Fecha de nacimiento" label-for="pro_day_of_birth">
-                          <b-form-input type="date" v-model="user.pro_day_of_birth" id="pro_day_of_birth"></b-form-input>
+                        <b-form-group class="col-sm-6" label="Fecha de nacimiento" label-for="usr_day_of_birth">
+                          <b-form-input type="date" v-model="user.usr_day_of_birth" id="usr_day_of_birth"></b-form-input>
                         </b-form-group>
                         <b-form-group class="col-md-6" label="Correo electrónico" label-for="usr_email">
                           <ValidationProvider name="Correo electrónico" rules="required" v-slot="{ errors }">
@@ -77,9 +77,9 @@
                             </div>
                           </ValidationProvider>
                         </b-form-group>
-                        <b-form-group class="col-md-6" label="Perfil del Usuario" label-for="usr_role_id">
+                        <b-form-group class="col-md-4" label="Perfil del Usuario" label-for="usr_role_id">
                           <ValidationProvider name="Perfil de Usuario" rules="required" v-slot="{ errors }">
-                            <b-form-select plain v-model="user.usr_role_id" :options="profilesOptions" id="selectuserrole" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                            <b-form-select plain v-model="user.usr_role_id" :options="roles" id="selectuserrole" :class="(errors.length > 0 ? ' is-invalid' : '')">
                               <template v-slot:first>
                                 <b-form-select-option :value="null" disabled>Seleccione un perfil</b-form-select-option>
                               </template>
@@ -89,9 +89,30 @@
                             </div>
                           </ValidationProvider>
                         </b-form-group>
-                        <b-form-group class="col-md-6" label="Tipo de identificación" label-for="pro_identificacion_type">
+                        <b-form-group label="Clínicas para el usuario" label-for="clinicas" class="col-md-4">
+                          <v-select
+                            multiple
+                            v-model="user.clinicas"
+                            :options="clinicaOptions"
+                            :reduce="label => label.code"
+                            label="label"
+                            id="clinica_id"
+                            :class="(errors.length > 0 ? ' is-invalid' : '') + 'ml-1' "
+                            >
+                            <span slot="no-options">No hay clínicas.</span>
+                          </v-select>
+                        </b-form-group>
+                        <b-form-group class="col-md-4" label="Color para el usuario" label-for="usr_color">
+                          <ValidationProvider name="Color para el usuario" rules="required" v-slot="{ errors }">
+                            <b-form-input v-model="user.usr_color" type="color" placeholder="Color" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                            <div class="invalid-feedback">
+                              <span>{{ errors[0] }}</span>
+                            </div>
+                          </ValidationProvider>
+                        </b-form-group>
+                        <b-form-group class="col-md-6" label="Tipo de identificación" label-for="usr_identification_type">
                           <ValidationProvider name="Perfil de Usuario" rules="required" v-slot="{ errors }">
-                            <b-form-select plain v-model="user.pro_identificacion_type" :options="ids" id="pro_identificacion_type" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                            <b-form-select plain v-model="user.usr_identification_type" :options="ids" id="usr_identification_type" :class="(errors.length > 0 ? ' is-invalid' : '')">
                               <template v-slot:first>
                                 <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
                               </template>
@@ -101,50 +122,46 @@
                             </div>
                           </ValidationProvider>
                         </b-form-group>
-                        <b-form-group class="col-md-6" label="Número de Identificación" label-for="pro_identificacion">
+                        <b-form-group class="col-md-6" label="Número de Identificación" label-for="usr_identification">
                           <ValidationProvider name="Número de Identificación" rules="required" v-slot="{ errors }">
-                            <b-form-input v-model="user.pro_identificacion" type="text" placeholder="Número de Identificación" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                            <b-form-input v-model="user.usr_identification" type="text" placeholder="Número de Identificación" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                             <div class="invalid-feedback">
                               <span>{{ errors[0] }}</span>
                             </div>
                           </ValidationProvider>
                         </b-form-group>
-                        <b-form-group class="col-md-6" label="Color para el usuario" label-for="usr_color">
-                          <ValidationProvider name="Color para el usuario" rules="required" v-slot="{ errors }">
-                            <b-form-input v-model="user.usr_color" type="color" placeholder="Color" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                            <div class="invalid-feedback">
-                              <span>{{ errors[0] }}</span>
-                            </div>
-                          </ValidationProvider>
-                        </b-form-group>
-                        <b-form-group class="col-md-6" label="Genero del usuario" label-for="pro_gender">
+                        <b-form-group class="col-md-6" label="Género del usuario" label-for="usr_gender">
                           <ValidationProvider name="Genero del usuario" rules="required" v-slot="{ errors }">
                             <template v-for="(item,index) in state">
-                              <b-form-radio inline v-model="user.pro_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="(errors.length > 0 ? ' is-invalid' : '')">{{ item.label }}</b-form-radio>
+                              <b-form-radio inline v-model="user.usr_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="(errors.length > 0 ? ' is-invalid' : '')">{{ item.label }}</b-form-radio>
                             </template>
                             <div class="invalid-feedback">
                               <span>{{ errors[0] }}</span>
                             </div>
                           </ValidationProvider>
                         </b-form-group>
-                        <b-form-group class="col-md-6" label="Teléfono/Celular" label-for="pro_cell_phone">
+                        <b-form-group class="col-md-6" label="Teléfono/Celular" label-for="usr_cell_phone">
                           <ValidationProvider name="Teléfono/Celular" rules="required" v-slot="{ errors }">
-                            <b-form-input v-model="user.pro_cell_phone" type="number" placeholder="ej: 3019972139" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                            <b-form-input v-model="user.usr_cell_phone" type="number" placeholder="ej: 3019972139" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                               <div class="invalid-feedback">
                                 <span>{{ errors[0] }}</span>
                               </div>
                           </ValidationProvider>
                         </b-form-group>
                       </b-row>
-                      <div class="form-group row align-items-center">
-                        <label class="col-auto" for="user.usr_is_active">Usuario activo:</label>
-                        <div class="col-auto custom-control custom-switch" style="min-height:33px;">
-                          <input type="checkbox" class="custom-control-input" id="user.usr_is_active" v-model="user.usr_is_active" :value="user.usr_is_active">
-                          <label class="custom-control-label" for="user.usr_is_active"></label>
+                      <div class="form-group row mt-3">
+                        <div class="col-6 d-flex">
+                          <label class="col-auto" for="user.usr_is_active">Usuario activo:</label>
+                          <div class="col-auto custom-control custom-switch" style="min-height:33px;">
+                            <input type="checkbox" class="custom-control-input" id="user.usr_is_active" v-model="user.usr_is_active" :value="user.usr_is_active">
+                            <label class="custom-control-label" for="user.usr_is_active"></label>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <b-button @click="guardarInformacionPersonal" variant="primary" class="ml-2 d-flex float-right">{{textoGuardar}}</b-button>
+                          <b-button @click="volverListadoUsuarios" variant="none" class="iq-bg-danger d-flex float-right">Cancelar</b-button>
                         </div>
                       </div>
-                      <b-button @click="guardarInformacionPersonal" variant="primary" class="mr-2">Guardar</b-button>
-                      <b-button @click="volverListadoUsuarios" variant="none" class="iq-bg-danger">Cancelar</b-button>
                   </template>
                 </iq-card>
               </tab-content-item>
@@ -154,113 +171,31 @@
                     <h4 class="card-title">Cambiar Contraseña</h4>
                   </template>
                   <template v-slot:body>
-                    <b-form-group class="col-md-6" label="Nueva contraseña" label-for="pass">
-                      <ValidationProvider name="Password" rules="confirmed:repeat_password" v-slot="{ errors }">
-                        <b-form-input v-model="newPassword" type="password" placeholder="Contraseña" autocomplete="new-password" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                        <div class="invalid-feedback">
-                          <span>{{ errors[0] }}</span>
-                        </div>
-                      </ValidationProvider>
-                    </b-form-group>
-                    <b-form-group class="col-md-6" label="Repetir contraseña" label-for="rpass">
-                      <ValidationProvider vid="repeat_password" name="Repetir contraseña" rules="required" v-slot="{ errors }">
-                        <b-form-input v-model="newPassword2" type="password" placeholder="Repeat Password" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                        <div class="invalid-feedback">
-                          <span>{{ errors[0] }}</span>
-                        </div>
-                      </ValidationProvider>
-                    </b-form-group>
-                    <b-form-group class="col-md-6" label-for="buttons">
-                      <b-button @click="cambiarPassword" variant="primary" class="mr-2">Guardar</b-button>
-                      <b-button @click="volverListadoUsuarios" variant="none" class="iq-bg-danger">Cancelar</b-button>
+                    <div class="row">
+                      <b-form-group class="col-md-6" label="Nueva contraseña" label-for="pass">
+                        <ValidationProvider name="Password" rules="confirmed:repeat_password" v-slot="{ errors }">
+                          <b-form-input v-model="newPassword" type="password" placeholder="Contraseña" autocomplete="new-password" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                          <div class="invalid-feedback">
+                            <span>{{ errors[0] }}</span>
+                          </div>
+                        </ValidationProvider>
+                      </b-form-group>
+                      <b-form-group class="col-md-6" label="Repetir contraseña" label-for="rpass">
+                        <ValidationProvider vid="repeat_password" name="Repetir contraseña" rules="required" v-slot="{ errors }">
+                          <b-form-input v-model="newPassword2" type="password" placeholder="Repeat Password" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                          <div class="invalid-feedback">
+                            <span>{{ errors[0] }}</span>
+                          </div>
+                        </ValidationProvider>
+                      </b-form-group>
+                    </div>
+                    <b-form-group class="col-12 p-3" label-for="buttons">
+                      <b-button @click="cambiarPassword" variant="primary" class="ml-2 d-flex float-right">{{textoGuardar}}</b-button>
+                      <b-button @click="volverListadoUsuarios" variant="none" class="iq-bg-danger d-flex float-right">Cancelar</b-button>
                     </b-form-group>
                   </template>
                 </iq-card>
               </tab-content-item>
-              <!--<tab-content-item :active="false" id="emailandsms">
-                <iq-card>
-                  <template v-slot:headerTitle>
-                    <h4 class="card-title">Email and SMS</h4>
-                  </template>
-                  <template v-slot:body>
-                      <div class="form-group row align-items-center">
-                        <label class="col-md-3" for="emailnotification">Email Notification:</label>
-                        <div class="col-md-9 custom-control custom-switch">
-                          <input type="checkbox" class="custom-control-input" id="emailnotification" checked="">
-                          <label class="custom-control-label" for="emailnotification"></label>
-                        </div>
-                      </div>
-                      <div class="form-group row align-items-center">
-                        <label class="col-md-3" for="smsnotification">SMS Notification:</label>
-                        <div class="col-md-9 custom-control custom-switch">
-                          <input type="checkbox" class="custom-control-input" id="smsnotification" checked="">
-                          <label class="custom-control-label" for="smsnotification"></label>
-                        </div>
-                      </div>
-                      <div class="form-group row align-items-center">
-                        <label class="col-md-3" for="npass">When To Email</label>
-                        <div class="col-md-9">
-                          <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="email01">
-                            <label class="custom-control-label" for="email01">You have new notifications.</label>
-                          </div>
-                          <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="email02">
-                            <label class="custom-control-label" for="email02">You're sent a direct message</label>
-                          </div>
-                          <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="email03" checked="">
-                            <label class="custom-control-label" for="email03">Someone adds you as a connection</label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="form-group row align-items-center">
-                        <label class="col-md-3" for="npass">When To Escalate Emails</label>
-                        <div class="col-md-9">
-                          <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="email04">
-                            <label class="custom-control-label" for="email04"> Upon new order.</label>
-                          </div>
-                          <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="email05">
-                            <label class="custom-control-label" for="email05"> New membership approval</label>
-                          </div>
-                          <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="email06" checked="">
-                            <label class="custom-control-label" for="email06"> Member registration</label>
-                          </div>
-                        </div>
-                      </div>
-                      <b-button type="submit" variant="primary" class="mr-2">Submit</b-button>
-                      <b-button type="reset" variant="none" class="iq-bg-danger">Cancel</b-button>
-                  </template>
-                </iq-card>
-              </tab-content-item>
-              <tab-content-item :active="false" id="manage-contact">
-                <iq-card>
-                  <template v-slot:headerTitle>
-                    <h4 class="card-title">Manage Contact</h4>
-                  </template>
-                  <template v-slot:body>
-                    <b-form>
-                      <b-form-group>
-                        <label for="contact_no">Contact Number:</label>
-                        <b-form-input id="contact_no" type="text" v-model="user.mobile_no"></b-form-input>
-                      </b-form-group>
-                      <b-form-group>
-                        <label for="email">Email:</label>
-                        <b-form-input id="email" type="text" v-model="user.email"></b-form-input>
-                      </b-form-group>
-                      <b-form-group>
-                        <label for="url">Url:</label>
-                        <b-form-input id="url" type="text" v-model="user.url"></b-form-input>
-                      </b-form-group>
-                      <b-button type="submit" variant="primary" class="mr-2">Submit</b-button>
-                      <b-button type="reset" variant="none" class="iq-bg-danger">Cancel</b-button>
-                    </b-form>
-                  </template>
-                </iq-card>
-              </tab-content-item>-->
             </tab-content>
           </div>
         </b-col>
@@ -269,22 +204,29 @@
   </b-container>
 </template>
 <script>
+import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
 
 export default {
   name: 'ProfileEdit',
-  created: function () {
-    this.getUser()
-  },
+  // created: function () {
+  //   this.getUser()
+  // },
   mounted () {
     xray.index()
-    this.fetchProfiles()
+    this.fetchClinicaOptions()
+    this.getUserClinicas()
+    setTimeout(() => {
+      this.getUser()
+    }, 1000)
   },
   data () {
     return {
       user_id: this.$route.params.user_id,
+      textoGuardar: 'Guardar',
+      errors: [],
       user: {
         usr_identification_type: '',
         usr_identification: '',
@@ -292,21 +234,24 @@ export default {
         usr_lastname_first: '',
         usr_name_second: '',
         usr_lastname_second: '',
-        pro_day_of_birth: '',
+        usr_day_of_birth: '',
+        usr_cell_phone: '',
+        usr_color: '',
+        clinicas: null,
         usr_email: '',
+        usr_is_active: true,
         usr_password: '',
         usr_role_id: '',
-        pro_identificacion: '',
-        pro_identificacion_type: '',
         profile_image: require('../../assets/images/user/11.png'),
         city: '',
         pincode: '',
         role: '',
-        gender: '',
+        usr_gender: '',
         dob: '',
         url: ''
       },
-      profilesOptions: {},
+      clinicaOptions: [],
+      clinicasUsuario: [],
       ids: [
         { text: 'CC.', value: 1 },
         { text: 'TI.', value: 2 },
@@ -327,18 +272,76 @@ export default {
           value: 1,
           disabled: false
         }
+      ],
+      roles: [
+        { text: 'Administrador', value: 1 },
+        { text: 'Abogado Líder', value: 12 },
+        { text: 'Abogado', value: 2 },
+        { text: 'Cliente', value: 11 },
+        { text: 'Calidad', value: 13 }
       ]
     }
   },
+  computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    },
+    fullName: function () {
+      return this.user.usr_name_first + ' ' + this.user.usr_lastname_first
+    }
+  },
   methods: {
+    fetchClinicaOptions () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/clinicas/obtener-clinicas/' + this.userLogged.usr_id).then(response => {
+          this.clinicaOptions = response.data.clinicas
+          this.clinicaOptions.push({ code: 0, label: 'Todas' })
+          if (this.clinicaOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
+            if (this.clinicaOptions.length === 1) {
+              this.clinicaId = this.clinicaOptions[0].code
+            }
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchClinicaOptions()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
     getUser () {
       axios.get('/users/edit/' + this.user_id).then(res => {
         if (res.data.status_code === 200) {
           this.user = res.data.user
+          this.clinicaOptions.length - 1 === this.clinicasUsuario.length ? this.user.clinicas = [0] : this.user.clinicas = this.clinicasUsuario
         } else {
           Vue.swal(res.data.message)
         }
       })
+    },
+    getUserClinicas () {
+      axios.get('/clinicas/' + this.user_id).then(res => {
+        if (res.data.success === 200) {
+          for (let i = 0; i < res.data.clinicas.length; i++) {
+            this.clinicasUsuario.push(res.data.clinicas[i].code)
+          }
+        } else {
+          Vue.swal(res.data.message)
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.getUserClinicas()
+            this.intentos++
+          }
+        })
     },
     previewImage: function (event) {
       const input = event.target
@@ -353,11 +356,14 @@ export default {
       }
     },
     guardarInformacionPersonal: function () {
+      this.textoGuardar = 'Guardando...'
       axios.post('/users/update/' + this.user_id, this.user).then(res => {
         if (res.data.status_code === 200) {
+          this.textoGuardar = 'Guardar'
           Vue.swal(res.data.message)
           this.getUser()
         } else {
+          this.textoGuardar = 'Guardar'
           Vue.swal(res.data.message)
         }
       })
@@ -375,16 +381,7 @@ export default {
       })
     },
     volverListadoUsuarios: function () {
-      this.$router.push({ path: `/doctor/user-list` })
-    },
-    fetchProfiles () {
-      axios.get('/profiles/fetch').then(res => {
-        if (res.data.status_code === 200) {
-          this.profilesOptions = res.data.profiles
-        } else {
-          Vue.swal('Ups, sucedió un error')
-        }
-      })
+      this.$router.push({ path: `/usuarios/listar-usuarios` })
     }
   }
 }

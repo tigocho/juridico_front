@@ -77,9 +77,9 @@
           <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
             + Info
           </b-button>-->
-          <b-button size="sm" @click="row.toggleDetails(); obtenerProcesos(row.item.pro_id, row.detailsShowing, row)" class="mr-1">
+          <!-- <b-button size="sm" @click="row.toggleDetails(); obtenerProcesos(row.item.pro_id, row.detailsShowing, row)" class="mr-1">
             {{ row.detailsShowing ? 'Ocultar' : 'Mostrar' }}
-          </b-button>
+          </b-button> -->
           <b-button size="sm" variant="primary" @click="editarUsuario(row.item.user_id)">
             Editar
           </b-button>
@@ -164,7 +164,7 @@ export default {
         { label: 'Apellido', key: 'usr_lastname_first', class: 'text-left' },
         {
           label: 'Identificación',
-          key: 'pro_identificacion',
+          key: 'user_identificacion',
           class: 'text-left'
         },
         { label: 'Correo electronico', key: 'usr_email', class: 'text-left' },
@@ -217,7 +217,7 @@ export default {
     },
     editarUsuario (usuarioId) {
       // `/process/process-edit/${item}`
-      this.$router.push({ path: `/doctor/profile-edit/${usuarioId}` })
+      this.$router.push({ path: `/usuarios/profile-edit/${usuarioId}` })
     },
     onFiltered (filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
