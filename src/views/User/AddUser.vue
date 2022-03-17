@@ -102,19 +102,19 @@
                       </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Genero del usuario" label-for="pro_gender">
+                  <b-form-group class="col-md-6" label="Genero del usuario" label-for="usr_gender">
                     <ValidationProvider name="Genero del usuario" rules="required" v-slot="{ errors }">
                       <template v-for="(item,index) in state">
-                        <b-form-radio inline v-model="user.pro_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="(errors.length > 0 ? ' is-invalid' : '')">{{ item.label }}</b-form-radio>
+                        <b-form-radio inline v-model="user.usr_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="(errors.length > 0 ? ' is-invalid' : '')">{{ item.label }}</b-form-radio>
                       </template>
                       <div class="invalid-feedback">
                         <span>{{ errors[0] }}</span>
                       </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Teléfono/Celular" label-for="pro_cell_phone">
+                  <b-form-group class="col-md-6" label="Teléfono/Celular" label-for="usr_cell_phone">
                     <ValidationProvider name="Teléfono/Celular" rules="required" v-slot="{ errors }">
-                      <b-form-input v-model="user.pro_cell_phone" type="number" placeholder="ej: 3019972139" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                      <b-form-input v-model="user.usr_cell_phone" type="number" placeholder="ej: 3019972139" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                         <div class="invalid-feedback">
                           <span>Número inválido</span>
                         </div>
@@ -193,8 +193,8 @@ export default {
         city: '',
         usr_role_id: '',
         usr_accept_terms: 1,
-        pro_gender: '',
-        pro_cell_phone: '',
+        usr_gender: '',
+        usr_cell_phone: '',
         usr_is_active: 1,
         usr_color: '',
         usr_password: '',
