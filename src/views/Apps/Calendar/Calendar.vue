@@ -96,7 +96,7 @@
         </b-form-group>
         <b-row>
           <b-col md="12">
-            <b-form-group  class="sm-6" label="Radicado del Proceso - ID litigando" label-for="agen_prore_id">
+            <b-form-group  class="sm-6" label="Radicado del Proceso - ID Litigando" label-for="agen_prore_id">
 
               <v-select v-model="formData.agen_prore_id" :options="processOpenedOptions" :reduce="label => label.value"  label="text" id="selectuserrole" >
                           <span slot="no-options">No se ha encontrado</span>
