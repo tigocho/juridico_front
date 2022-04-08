@@ -92,7 +92,7 @@
                         <b-form-group label="Clínicas para el usuario" label-for="clinicas" class="col-md-4">
                           <v-select
                             multiple
-                            v-model="user.clinicas"
+                            v-model="user_clinicas"
                             :options="clinicaOptions"
                             :reduce="label => label.code"
                             label="label"
@@ -237,8 +237,8 @@ export default {
         usr_day_of_birth: '',
         usr_cell_phone: '',
         usr_color: '',
-        clinicas: null,
         usr_email: '',
+        clinicas: null,
         usr_is_active: true,
         usr_password: '',
         usr_role_id: '',
@@ -250,6 +250,7 @@ export default {
         dob: '',
         url: ''
       },
+      user_clinicas: null,
       clinicaOptions: [],
       clinicasUsuario: [],
       ids: [
@@ -319,7 +320,7 @@ export default {
       axios.get('/users/edit/' + this.user_id).then(res => {
         if (res.data.status_code === 200) {
           this.user = res.data.user
-          this.clinicaOptions.length - 1 === this.clinicasUsuario.length ? this.user.clinicas = [0] : this.user.clinicas = this.clinicasUsuario
+          // this.clinicaOptions.length - 1 === this.clinicasUsuario.length ? this.user.clinicas = [0] : this.user.clinicas = this.clinicasUsuario
         } else {
           Vue.swal(res.data.message)
         }
@@ -331,6 +332,7 @@ export default {
           for (let i = 0; i < res.data.clinicas.length; i++) {
             this.clinicasUsuario.push(res.data.clinicas[i].code)
           }
+          this.clinicaOptions.length - 1 === this.clinicasUsuario.length ? this.user_clinicas = [0] : this.user_clinicas = this.clinicasUsuario
         } else {
           Vue.swal(res.data.message)
         }
@@ -357,6 +359,7 @@ export default {
     },
     guardarInformacionPersonal: function () {
       this.textoGuardar = 'Guardando...'
+      this.user.clinicas = this.user_clinicas
       axios.post('/users/update/' + this.user_id, this.user).then(res => {
         if (res.data.status_code === 200) {
           this.textoGuardar = 'Guardar'
