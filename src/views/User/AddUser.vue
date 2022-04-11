@@ -284,10 +284,12 @@ export default {
       this.textoBoton = 'Creando usuario...'
       axios.post('/register', this.user).then(res => {
         if (res.data.status_code === 200) {
-          Vue.swal('Usuario agregado correctamente')
+          Vue.swal(res.data.message)
           this.$router.push({ name: 'usuarios.listar' })
         } else {
-          Vue.swal('Datos no validos')
+          Vue.swal(res.data.message)
+          this.estadoBoton = ''
+          this.textoBoton = 'Guardar'
         }
       })
     }
