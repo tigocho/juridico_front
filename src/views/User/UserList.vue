@@ -73,16 +73,15 @@
         <template #cell(name)="row">
           {{ row.value.first }} {{ row.value.last }}
         </template>
-        <template #cell(actions)="row">
-          <!--<b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
-            + Info
-          </b-button>-->
-          <!-- <b-button size="sm" @click="row.toggleDetails(); obtenerProcesos(row.item.pro_id, row.detailsShowing, row)" class="mr-1">
-            {{ row.detailsShowing ? 'Ocultar' : 'Mostrar' }}
-          </b-button> -->
-          <b-button size="sm" variant="primary" @click="editarUsuario(row.item.user_id)">
-            Editar
-          </b-button>
+          <template #cell(actions)="row">
+           <b-dropdown variant="primary" text="Acciones">
+              <b-dropdown-item @click="editarUsuario(row.item.user_id)">
+                Editar
+              </b-dropdown-item>
+              <b-dropdown-item @click="eliminarUsuario(row.item.user_id)" >
+                Eliminar
+              </b-dropdown-item>
+          </b-dropdown>
         </template>
         <template #row-details="row">
           <b-row v-if="procesos.length > 0">
@@ -151,6 +150,7 @@ import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
 import iqCard from '../../components/xray/cards/iq-card.vue'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 export default {
   components: { iqCard },
   data () {
@@ -252,6 +252,30 @@ export default {
     },
     edit (item) {
       this.$router.push({ path: `/process/process-edit/${item}` })
+    },
+    eliminarUsuario (usuarioId) {
+      Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text: '¿Deseas eliminar este usuario?',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar'
+
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.get('/users/delete/' + usuarioId).then(res => {
+            if (res.data.status_code === 200) {
+              Vue.swal(res.data.message)
+              this.getUsers()
+            } else {
+              Vue.swal(res.data.message)
+            }
+          })
+            .catch((err) => {
+              Vue.swal('Ups sucedió un error tratando de consulta la información. ' + err)
+            })
+        }
+      })
     }
   }
 }

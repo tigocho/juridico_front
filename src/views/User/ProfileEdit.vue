@@ -359,7 +359,9 @@ export default {
     },
     guardarInformacionPersonal: function () {
       this.textoGuardar = 'Guardando...'
-      this.user.clinicas = this.user_clinicas
+
+      if (this.user_clinicas.includes(0)) { this.user.clinicas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] } else { this.user.clinicas = this.user_clinicas }
+
       axios.post('/users/update/' + this.user_id, this.user).then(res => {
         if (res.data.status_code === 200) {
           this.textoGuardar = 'Guardar'
