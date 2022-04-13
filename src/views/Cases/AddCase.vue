@@ -9,29 +9,29 @@
               <iq-card>
                 <template v-slot:headerTitle>
                   <h4 class="card-title">Crear Caso</h4>
+                  <h6 class="card-title">Campos marcados con * son obligatorios</h6>
                 </template>
                 <template v-slot:body>
-                   <b-form-group class="col-md-6" label="Titulo de la Solicitud" label-for="case_title">
+                    <b-row class="justify-content-center text-center align-items-center">
+                        <b-col lg="6">
+                        <b-form-group  label="Titulo de la Solicitud*" label-for="case_title">
+                            <b-form-input v-model="cases.case_title" type="text" :required="true" ></b-form-input>
+                        </b-form-group>
 
-                        <b-form-input v-model="cases.case_title" type="text" :required="true" ></b-form-input>
-                        <div class="invalid-feedback">
-                        </div>
+                        <b-form-group  label="Descripción*" label-for="textarea-decription">
+                            <b-form-textarea id="textarea-decription" v-model="cases.case_description" :required="true" ></b-form-textarea>
+                        </b-form-group>
 
-                    </b-form-group>
+                        <b-form-group >
+                            <b-form-file class="mt-3" @change="onFileChange" placeholder="Añade un archivo"></b-form-file>
 
-                    <b-form-group class="col-md-6" label="Descripción" label-for="textarea-decription">
-                          <b-form-textarea id="textarea-decription" v-model="cases.case_description" :required="true" ></b-form-textarea>
-                    </b-form-group>
+                        </b-form-group>
 
-                    <b-form-group class="col-md-6">
-                        <b-form-file class="mt-3" @change="onFileChange" plain></b-form-file>
-
-                    </b-form-group>
-
-                    <b-form-group class="col-md-6">
-                        <b-button variant="primary" type="submit" class="d-flex float-right" :class="estadoBoton">{{ textoBoton }}</b-button>
-                    </b-form-group>
-
+                        <b-form-group >
+                            <b-button variant="primary" type="submit"  :class="estadoBoton">{{ textoBoton }}</b-button>
+                        </b-form-group>
+                        </b-col>
+                    </b-row>
                 </template>
               </iq-card>
             </b-col>
