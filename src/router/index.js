@@ -105,6 +105,8 @@ import SelectDemo from '../views/Plugins/SelectDemo'
 import DragDropDemo from '../views/Plugins/DragDropDemo'
 import AppTreeView from '../views/Plugins/AppTreeView'
 import axios from 'axios'
+/* Cases Views */
+import AddCase from '../views/Cases/AddCase'
 
 Vue.use(VueRouter)
 
@@ -660,6 +662,16 @@ const pluginsChildRoute = (prop, mode = false) => [
   }
 ]
 
+const casesChildRoute = (prop, mode = false) => [
+  {
+    path: 'create-case',
+    name: prop + '.add',
+    meta: { dark: mode, auth: true, name: 'Crear Caso' },
+    component: AddCase
+  }
+
+]
+
 const routes = [
   {
     path: '/',
@@ -785,6 +797,13 @@ const routes = [
     name: 'callback',
     meta: { auth: false },
     component: Callback
+  },
+  {
+    path: '/cases',
+    name: 'cases',
+    component: Layout1,
+    meta: { auth: true },
+    children: casesChildRoute('cases')
   }
 ]
 
