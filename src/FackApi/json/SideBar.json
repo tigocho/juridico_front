@@ -315,7 +315,7 @@
         "name": "sidebar.crearCaso",
         "is_active": false,
         "link": {
-          "name" : "TBD"
+          "name" : "cases.add"
         },
         "class_name": "",
         "is_icon_class": true,
@@ -327,7 +327,7 @@
         "name": "sidebar.crearCaso",
         "is_active": false,
         "link": {
-          "name" : "TBD"
+          "name" : "cases.add"
         },
         "class_name": "",
         "is_icon_class": true,
@@ -375,7 +375,7 @@
         "name": "sidebar.graficasReportesAns",
         "is_active": false,
         "link": {
-          "name" : "process.archived"
+          "name" : ""
         },
         "class_name": "",
         "is_icon_class": true,
