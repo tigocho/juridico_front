@@ -107,6 +107,7 @@ import AppTreeView from '../views/Plugins/AppTreeView'
 import axios from 'axios'
 /* Cases Views */
 import AddCase from '../views/Cases/AddCase'
+import MyCases from '../views/Cases/MyCases'
 
 Vue.use(VueRouter)
 
@@ -668,6 +669,12 @@ const casesChildRoute = (prop, mode = false) => [
     name: prop + '.add',
     meta: { dark: mode, auth: true, name: 'Crear Caso' },
     component: AddCase
+  },
+  {
+    path: 'my-cases',
+    name: prop + '.mylist',
+    meta: { dark: mode, auth: true, name: 'Mis Casos' },
+    component: MyCases
   }
 
 ]

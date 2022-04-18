@@ -359,6 +359,18 @@
         "roles": [2, 12]
       },
       {
+        "title": "Mis casos",
+        "name": "sidebar.miListaCasos",
+        "is_active": false,
+        "link": {
+          "name" : "cases.mylist"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 12, 13]
+      },
+      {
         "title": "Todos los casos",
         "name": "sidebar.todosLosCasos",
         "is_active": false,
