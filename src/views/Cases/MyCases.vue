@@ -91,8 +91,8 @@
         </template>
         <template #cell(actions)="row">
            <b-dropdown variant="primary" text="Acciones">
-              <b-dropdown-item @click="editarCaso(row.item.caso_id)">
-                Editar
+              <b-dropdown-item @click="verCaso(row.item.caso_id)">
+                Ver
               </b-dropdown-item>
               <b-dropdown-item @click="eliminarcaso(row.item.caso_id)" >
                 Eliminar
@@ -178,8 +178,10 @@ export default {
         this.casos = response.data.casos
         this.totalRows = this.casos.length
       })
+    },
+    verCaso (casoId) {
+      this.$router.push({ path: `/cases/cases-show/${casoId}` })
     }
-
   }
 }
 </script>
