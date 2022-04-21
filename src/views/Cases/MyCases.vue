@@ -1,5 +1,28 @@
 <template>
   <b-container fluid>
+       <!-- MODAL DE EDITAR CASO -->
+        <div>
+          <b-modal id="modal-editar-caso" size="lg" title="Editar Caso" hide-footer>
+            <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+            <form ref="form" @submit.prevent="handleSubmit(onSubmit)">
+               <b-row class="justify-content-center text-center align-items-center">
+                        <b-col lg="6">
+                        <b-form-group  label="Titulo de la Solicitud*" label-for="case_title">
+                            <b-form-input v-model="caso.caso_titulo" type="text" :required="true" ></b-form-input>
+                        </b-form-group>
+                        <b-form-group  label="Descripción*" label-for="textarea-decription">
+                            <b-form-textarea id="textarea-decription" v-model="caso.caso_descripcion" :required="true" ></b-form-textarea>
+                        </b-form-group>
+                        <b-form-group >
+                            <b-button variant="primary" type="submit"  >Editar Caso</b-button>
+                        </b-form-group>
+                        </b-col>
+                    </b-row>
+            </form>
+            </ValidationObserver>
+          </b-modal>
+        </div>
+        <!-- FIN DE MODAL-->
     <b-row>
       <b-col lg="12">
         <iq-card>
@@ -94,6 +117,9 @@
               <b-dropdown-item @click="verCaso(row.item.caso_id)">
                 Ver
               </b-dropdown-item>
+              <b-dropdown-item @click="editarCaso(row.item)">
+                Editar
+              </b-dropdown-item>
               <b-dropdown-item @click="eliminarcaso(row.item.caso_id)" >
                 Eliminar
               </b-dropdown-item>
@@ -123,12 +149,13 @@
 <script>
 import axios from 'axios'
 import auth from '@/logic/auth'
-
+import Vue from 'vue'
 export default {
   name: 'MyCases',
   data () {
     return {
       casos: [],
+      caso: {},
       estado: 'd-none',
       bRowLast: {},
       fields: [
@@ -181,6 +208,23 @@ export default {
     },
     verCaso (casoId) {
       this.$router.push({ path: `/cases/cases-show/${casoId}` })
+    },
+    editarCaso (caso) {
+      this.caso = caso
+      this.$bvModal.show('modal-editar-caso')
+    },
+    onSubmit () {
+      this.actualizarCaso()
+    },
+    actualizarCaso () {
+      axios.post('/casos/update/' + this.caso.caso_id, this.caso).then(res => {
+        if (res.data.status_code === 200) {
+          Vue.swal(res.data.message)
+          this.getMyCasos()
+        } else {
+          Vue.swal(res.data.message)
+        }
+      })
     }
   }
 }
