@@ -108,12 +108,10 @@ export default {
 
       axios.post('/casos/create', data).then(res => {
         if (res.data.status_code === 200) {
-          console.log(res.data)
           this.textoGuardar = 'Guardar'
           Vue.swal(res.data.message)
           this.getUser()
         } else {
-          console.log(res.data)
           this.textoGuardar = 'Guardar'
           Vue.swal(res.data.message)
         }
