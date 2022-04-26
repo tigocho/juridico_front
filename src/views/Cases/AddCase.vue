@@ -107,10 +107,9 @@ export default {
       data.append('import_file', this.import_file)
 
       axios.post('/casos/create', data).then(res => {
-        if (res.data.status_code === 200) {
-          this.textoGuardar = 'Guardar'
+        if (res.status === 200) {
+          this.$router.push({ path: '/cases/my-cases' })
           Vue.swal(res.data.message)
-          this.getUser()
         } else {
           this.textoGuardar = 'Guardar'
           Vue.swal(res.data.message)
