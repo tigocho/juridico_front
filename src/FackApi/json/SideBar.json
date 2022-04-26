@@ -339,7 +339,7 @@
         "name": "sidebar.misCasos",
         "is_active": false,
         "link": {
-          "name" : "process.add"
+          "name" : "cases.mylist"
         },
         "class_name": "",
         "is_icon_class": true,

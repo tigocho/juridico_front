@@ -120,7 +120,7 @@
               <b-dropdown-item @click="editarCaso(row.item)">
                 Editar
               </b-dropdown-item>
-              <b-dropdown-item @click="eliminarcaso(row.item.caso_id)" >
+              <b-dropdown-item v-if="user_profile == 1" @click="eliminarCaso(row.item.caso_id)" >
                 Eliminar
               </b-dropdown-item>
           </b-dropdown>
@@ -150,6 +150,7 @@
 import axios from 'axios'
 import auth from '@/logic/auth'
 import Vue from 'vue'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 export default {
   name: 'MyCases',
   data () {
@@ -175,7 +176,8 @@ export default {
       sortDesc: false,
       sortDirection: 'asc',
       filter: null,
-      filterOn: []
+      filterOn: [],
+      user_profile: null
     }
   },
   computed: {
@@ -204,6 +206,7 @@ export default {
       axios.get('/mycases/' + this.userLogged.usr_id).then(response => {
         this.casos = response.data.casos
         this.totalRows = this.casos.length
+        this.user_profile = this.userLogged.user_profile
       })
     },
     verCaso (casoId) {
@@ -223,6 +226,29 @@ export default {
           this.getMyCasos()
         } else {
           Vue.swal(res.data.message)
+        }
+      })
+    },
+    eliminarCaso (casoId) {
+      Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text: '¿Deseas eliminar este Caso?',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.get('/casos/delete/' + casoId).then(res => {
+            if (res.status === 200) {
+              Vue.swal(res.data.message)
+              this.getMyCasos()
+            } else {
+              Vue.swal(res.data.message)
+            }
+          })
+            .catch((err) => {
+              Vue.swal('Ups sucedió un error tratando de consulta la información. ' + err)
+            })
         }
       })
     }
