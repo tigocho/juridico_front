@@ -151,6 +151,7 @@ import axios from 'axios'
 import auth from '@/logic/auth'
 import Vue from 'vue'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import { xray } from '../../config/pluginInit'
 export default {
   name: 'MyCases',
   data () {
@@ -194,6 +195,7 @@ export default {
     }
   },
   mounted () {
+    xray.index()
     this.getMyCasos()
   },
   methods: {
