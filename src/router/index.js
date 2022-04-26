@@ -108,6 +108,7 @@ import axios from 'axios'
 /* Cases Views */
 import AddCase from '../views/Cases/AddCase'
 import MyCases from '../views/Cases/MyCases'
+import ShowCase from '../views/Cases/ShowCase'
 
 Vue.use(VueRouter)
 
@@ -675,6 +676,12 @@ const casesChildRoute = (prop, mode = false) => [
     name: prop + '.mylist',
     meta: { dark: mode, auth: true, name: 'Mis Casos' },
     component: MyCases
+  },
+  {
+    path: 'cases-show/:caso_id/',
+    name: prop + '.show',
+    meta: { dark: mode, auth: true, name: 'Ver Caso' },
+    component: ShowCase
   }
 
 ]
