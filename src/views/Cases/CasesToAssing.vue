@@ -104,6 +104,9 @@
               <b-dropdown-item @click="editarCaso(row.item)">
                 Editar
               </b-dropdown-item>
+              <b-dropdown-item @click="editarCaso(row.item)">
+                Asignar
+              </b-dropdown-item>
               <b-dropdown-item v-if="user_profile == 1" @click="eliminarCaso(row.item.caso_id)" >
                 Eliminar
               </b-dropdown-item>
