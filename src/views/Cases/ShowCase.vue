@@ -66,7 +66,7 @@
                           >
                           <b-col cols="5"
                             ><strong>Tiempo de Solución: </strong>
-                            {{ caso.caso_fecha_estimada_solucion }}
+                            {{ caso.fecha_solucion }}
                           </b-col>
                         </b-row>
                       </b-card-text>
@@ -134,6 +134,7 @@ export default {
       caso: {},
       archivo: {},
       progress_total: 4,
+      max: 100,
       loading: true
     }
   },

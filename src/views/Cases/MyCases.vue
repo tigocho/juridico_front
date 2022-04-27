@@ -165,7 +165,7 @@ export default {
         { label: 'Descripción', key: 'caso_descripcion', class: 'text-left' },
         { label: 'Estado', key: 'estado', class: 'text-left' },
         { label: 'Fecha de Apertura', key: 'caso_fecha_apertura', class: 'text-left' },
-        { label: 'Fecha estimada Solución', key: 'caso_fecha_estimada_solucion', class: 'text-left' },
+        { label: 'Fecha estimada Solución', key: 'fecha_solucion', class: 'text-left' },
         { label: 'Abogado Asignado', key: 'abogado', class: 'text-left' },
         { label: 'Acciones', key: 'actions', class: 'text-center' }
       ],
