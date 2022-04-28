@@ -69,6 +69,7 @@ export default {
     estado: '',
     intentos: '',
     perfilAdministrativo: [1, 2],
+    perfilCliente: 11,
     errores: []
   }),
   mounted () {
@@ -138,6 +139,8 @@ export default {
           auth.setUserLogged(res.data.user)
           if (this.perfilAdministrativo.includes(res.data.user.user_profile)) {
             this.$router.push({ name: 'process.list' })
+          } else if (this.perfilCliente === res.data.user.user_profile) {
+            this.$router.push({ name: 'cases.mylist' })
           } else {
             this.$router.push({ name: 'dashboard.home-2' })
           }
