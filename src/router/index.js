@@ -109,6 +109,7 @@ import axios from 'axios'
 import AddCase from '../views/Cases/AddCase'
 import MyCases from '../views/Cases/MyCases'
 import ShowCase from '../views/Cases/ShowCase'
+import CasesToAssing from '../views/Cases/CasesToAssing'
 
 Vue.use(VueRouter)
 
@@ -682,6 +683,12 @@ const casesChildRoute = (prop, mode = false) => [
     name: prop + '.show',
     meta: { dark: mode, auth: true, name: 'Ver Caso' },
     component: ShowCase
+  },
+  {
+    path: 'cases-to-assing',
+    name: prop + '.toassing',
+    meta: { dark: mode, auth: true, name: 'Casos Por Assignar' },
+    component: CasesToAssing
   }
 
 ]
