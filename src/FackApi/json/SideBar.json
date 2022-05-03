@@ -303,7 +303,7 @@
         "name": "sidebar.casosPorAsignar",
         "is_active": false,
         "link": {
-          "name" : "process.archived"
+          "name" : "cases.toassing"
         },
         "class_name": "",
         "is_icon_class": true,
