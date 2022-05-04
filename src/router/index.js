@@ -110,6 +110,7 @@ import AddCase from '../views/Cases/AddCase'
 import MyCases from '../views/Cases/MyCases'
 import ShowCase from '../views/Cases/ShowCase'
 import CasesToAssing from '../views/Cases/CasesToAssing'
+import AddCaseAbogado from '../views/Cases/AddCaseAbogado'
 
 Vue.use(VueRouter)
 
@@ -689,6 +690,12 @@ const casesChildRoute = (prop, mode = false) => [
     name: prop + '.toassing',
     meta: { dark: mode, auth: true, name: 'Casos Por Assignar' },
     component: CasesToAssing
+  },
+  {
+    path: 'add-cases-abogado',
+    name: prop + '.addabogado',
+    meta: { dark: mode, auth: true, name: 'Crear Caso Abagado' },
+    component: AddCaseAbogado
   }
 
 ]
