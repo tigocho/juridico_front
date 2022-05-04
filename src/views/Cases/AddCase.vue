@@ -108,7 +108,7 @@ export default {
 
       axios.post('/casos/create', data).then(res => {
         if (res.status === 200) {
-          this.$router.push({ path: '/cases/my-cases' })
+          this.$router.push({ path: `/cases/cases-show/${res.data.caso_id}` })
           Vue.swal(res.data.message)
         } else {
           this.textoGuardar = 'Guardar'

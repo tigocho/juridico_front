@@ -292,6 +292,7 @@ export default {
       axios.post('/casos-abogado/create', data).then((res) => {
         if (res.status === 200) {
           Vue.swal(res.data.message)
+          this.$router.push({ path: `/cases/cases-show/${res.data.caso_id}` })
         } else {
           this.estadoBoton = ''
           this.textoGuardar = 'Guardar'
