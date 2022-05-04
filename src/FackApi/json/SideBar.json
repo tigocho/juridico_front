@@ -315,7 +315,7 @@
         "name": "sidebar.crearCaso",
         "is_active": false,
         "link": {
-          "name" : "cases.add"
+          "name" : "cases.addabogado"
         },
         "class_name": "",
         "is_icon_class": true,
