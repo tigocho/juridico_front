@@ -6,7 +6,7 @@
             <ValidationObserver ref="form" v-slot="{ handleSubmit }">
             <form ref="form" @submit.prevent="handleSubmit(onSubmit)">
                <b-row class="justify-content-center text-center align-items-center">
-                        <b-col lg="6">
+                        <b-col lg="10">
                         <b-form-group  label="Titulo de la Solicitud*" label-for="case_title">
                             <b-form-input v-model="caso.caso_titulo" type="text" :required="true" ></b-form-input>
                         </b-form-group>

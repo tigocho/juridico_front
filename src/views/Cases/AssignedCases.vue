@@ -8,7 +8,7 @@
             <b-row
               class="justify-content-center text-center align-items-center"
             >
-              <b-col lg="6">
+              <b-col lg="10">
                 <b-form-group
                   label="Titulo de la Solicitud*"
                   label-for="case_title"
