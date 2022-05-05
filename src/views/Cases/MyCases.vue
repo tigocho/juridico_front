@@ -222,6 +222,7 @@ export default {
       this.actualizarCaso()
     },
     actualizarCaso () {
+      this.$bvModal.hide('modal-editar-caso')
       axios.post('/casos/update/' + this.caso.caso_id, this.caso).then(res => {
         if (res.data.status_code === 200) {
           Vue.swal(res.data.message)

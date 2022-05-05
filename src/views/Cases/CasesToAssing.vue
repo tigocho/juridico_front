@@ -318,6 +318,7 @@ export default {
       this.actualizarCaso()
     },
     actualizarCaso () {
+      this.$bvModal.hide('modal-editar-caso')
       axios
         .post('/casos/update/' + this.caso.caso_id, this.caso)
         .then((res) => {
@@ -375,6 +376,7 @@ export default {
       })
     },
     SaveAsignacionCaso () {
+      this.$bvModal.hide('modal-asignar-caso')
       axios
         .post('/casos/asignar/' + this.caso.caso_id, this.asginarData)
         .then((res) => {

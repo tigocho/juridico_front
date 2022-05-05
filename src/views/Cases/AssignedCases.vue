@@ -255,6 +255,7 @@ export default {
       this.actualizarCaso()
     },
     actualizarCaso () {
+      this.$bvModal.hide('modal-editar-caso')
       axios
         .post('/casos/update/' + this.caso.caso_id, this.caso)
         .then((res) => {
