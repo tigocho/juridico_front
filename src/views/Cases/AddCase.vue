@@ -19,7 +19,7 @@
                         </b-form-group>
 
                         <b-form-group  label="Descripción*" label-for="textarea-decription">
-                            <b-form-textarea id="textarea-decription" v-model="cases.case_description" :required="true" ></b-form-textarea>
+                            <b-form-textarea id="textarea-decription" v-model="cases.case_description" rows="3" :state="cases.case_description.length <= 250" :required="true" ></b-form-textarea>
                         </b-form-group>
 
                         <b-form-group >

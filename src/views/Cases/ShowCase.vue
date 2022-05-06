@@ -46,6 +46,8 @@
                       <b-form-textarea
                         id="textarea-decription"
                         v-model="caso.caso_descripcion"
+                        rows="3"
+                        :state="caso.caso_descripcion.length <= 250"
                         :required="true"
                       ></b-form-textarea>
                     </b-form-group>

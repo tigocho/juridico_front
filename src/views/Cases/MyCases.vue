@@ -11,7 +11,7 @@
                             <b-form-input v-model="caso.caso_titulo" type="text" :required="true" ></b-form-input>
                         </b-form-group>
                         <b-form-group  label="Descripción*" label-for="textarea-decription">
-                            <b-form-textarea id="textarea-decription" v-model="caso.caso_descripcion" :required="true" ></b-form-textarea>
+                            <b-form-textarea id="textarea-decription" v-model="caso.caso_descripcion" rows="3" :state="caso.caso_descripcion.length <= 250" :required="true" ></b-form-textarea>
                         </b-form-group>
                         <b-form-group >
                             <b-button variant="primary" type="submit"  >Editar Caso</b-button>
