@@ -3,43 +3,13 @@
     <!-- MODAL DE EDITAR CASO -->
     <div>
       <b-modal id="modal-editar-caso" size="lg" title="Editar Caso" hide-footer>
-        <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-          <form ref="form" @submit.prevent="handleSubmit(onSubmit)">
-            <b-row
-              class="justify-content-center text-center align-items-center"
-            >
-              <b-col lg="10">
-                <b-form-group
-                  label="Titulo de la Solicitud*"
-                  label-for="case_title"
-                >
-                  <b-form-input
-                    v-model="caso.caso_titulo"
-                    type="text"
-                    :required="true"
-                  ></b-form-input>
-                </b-form-group>
-                <b-form-group
-                  label="Descripción*"
-                  label-for="textarea-decription"
-                >
-                  <b-form-textarea
-                    id="textarea-decription"
-                    v-model="caso.caso_descripcion"
-                    rows="3"
-                    :state="caso.caso_descripcion.length <= 250"
-                    :required="true"
-                  ></b-form-textarea>
-                </b-form-group>
-                <b-form-group>
-                  <b-button variant="primary" type="submit"
-                    >Editar Caso</b-button
-                  >
-                </b-form-group>
-              </b-col>
-            </b-row>
-          </form>
-        </ValidationObserver>
+        <FormCase
+          :case_id="caso.caso_id"
+          :case_title="caso.caso_titulo"
+          :case_description="caso.caso_descripcion"
+          :onEdit="true"
+          :reloadFunciont="this.getCasosToAssing"
+        />
       </b-modal>
     </div>
     <!-- FIN DE MODAL-->
@@ -235,8 +205,12 @@ import axios from 'axios'
 import auth from '@/logic/auth'
 import Vue from 'vue'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import FormCase from '../Cases/components/FormCase.vue'
 export default {
   name: 'CasesToAssing',
+  components: {
+    FormCase
+  },
   data () {
     return {
       casos: [],
@@ -297,6 +271,7 @@ export default {
       this.currentPage = 1
     },
     getCasosToAssing () {
+      this.$bvModal.hide('modal-editar-caso')
       axios.get('/casos/por-asignar').then((response) => {
         this.casos = response.data.casos
         this.totalRows = this.casos.length
@@ -315,22 +290,6 @@ export default {
       this.getProfesionals()
       this.caso = caso
       this.$bvModal.show('modal-asignar-caso')
-    },
-    onSubmit () {
-      this.actualizarCaso()
-    },
-    actualizarCaso () {
-      this.$bvModal.hide('modal-editar-caso')
-      axios
-        .post('/casos/update/' + this.caso.caso_id, this.caso)
-        .then((res) => {
-          if (res.data.status_code === 200) {
-            Vue.swal(res.data.message)
-            this.getCasosToAssing()
-          } else {
-            Vue.swal(res.data.message)
-          }
-        })
     },
     eliminarCaso (casoId) {
       Swal.fire({
