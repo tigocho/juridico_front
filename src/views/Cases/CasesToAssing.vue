@@ -304,11 +304,9 @@ export default {
             .get('/casos/delete/' + casoId)
             .then((res) => {
               if (res.status === 200) {
-                Vue.swal(res.data.message)
                 this.getCasosToAssing()
-              } else {
-                Vue.swal(res.data.message)
               }
+              Vue.swal(res.data.message)
             })
             .catch((err) => {
               Vue.swal(
@@ -342,11 +340,9 @@ export default {
         .post('/casos/asignar/' + this.caso.caso_id, this.asginarData)
         .then((res) => {
           if (res.status === 200) {
-            Vue.swal(res.data.message)
             this.getCasosToAssing()
-          } else {
-            Vue.swal(res.data.message)
           }
+          Vue.swal(res.data.message)
         })
     }
   }
