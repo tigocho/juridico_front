@@ -44,7 +44,7 @@
 
               <b-col sm="3" md="3" class="my-1">
                 <b-form-group
-                  label="Filtrar"
+                  label="Estados"
                   label-cols-sm="2"
                   label-cols-md="2"
                   label-cols-lg="3"
@@ -52,7 +52,14 @@
                   label-size="sm"
                   class="mb-0"
                 >
-                  <v-select>
+                  <v-select
+                    v-model="estadoId"
+                    :options="estadosOptions"
+                    @input="getCases(estadoId)"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="estado_select"
+                  >
                     <span slot="no-options">No hay estados.</span>
                   </v-select>
                 </b-form-group>
@@ -171,6 +178,8 @@ export default {
     return {
       casos: [],
       caso: {},
+      estadosId: '',
+      estadosOptions: [],
       textoBoton: 'Guardar Caso',
       estado: 'd-none',
       bRowLast: {},
@@ -221,6 +230,7 @@ export default {
   mounted () {
     xray.index()
     this.getMyCasos()
+    this.getEstados()
   },
   methods: {
     onFiltered (filteredItems) {
@@ -269,6 +279,24 @@ export default {
               )
             })
         }
+      })
+    },
+    getCases (id) {
+      if (id != null) {
+        axios
+          .get('/casos-estados/' + this.userLogged.usr_id + '/' + id)
+          .then((response) => {
+            this.casos = response.data.casos
+            this.totalRows = this.casos.length
+            this.user_profile = this.userLogged.user_profile
+          })
+      } else {
+        this.getMyCasos()
+      }
+    },
+    getEstados () {
+      axios.get('/estados/fetch').then((response) => {
+        this.estadosOptions = response.data.estados
       })
     }
   }
