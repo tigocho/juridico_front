@@ -136,6 +136,12 @@
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="seguimiento">
+                  <iq-card>
+                    <template v-slot:headerTitle>
+                      <h4 class="card-title text-center justify-content-center">Crear Segumiento</h4>
+                    </template>
+                    <FormSegumiento :case_id="caso.caso_id" />
+                  </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="historial">
                 </tab-content-item>
@@ -190,10 +196,12 @@ import Vue from 'vue'
 import fileDownload from 'js-file-download'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import FormCase from '../Cases/components/FormCase.vue'
+import FormSegumiento from '../Cases/components/FormSegumiento.vue'
 export default {
   name: 'ShowCase',
   components: {
-    FormCase
+    FormCase,
+    FormSegumiento
   },
   data () {
     return {
