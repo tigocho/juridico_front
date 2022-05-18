@@ -99,7 +99,8 @@ import auth from '@/logic/auth'
 export default {
   name: 'FormSegumiento',
   props: {
-    case_id: String
+    case_id: String,
+    onCreate: Function
   },
   data () {
     return {
@@ -163,7 +164,7 @@ export default {
 
       axios.post('/seguimiento/create', data).then((res) => {
         if (res.status === 200) {
-          this.$router.push({ path: `/cases/cases-show/${res.data.caso_id}` })
+          this.onCreate()
         }
         Vue.swal(res.data.message)
         this.estadoBoton = ''
