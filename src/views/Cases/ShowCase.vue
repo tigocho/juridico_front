@@ -172,7 +172,7 @@
                                 style="margin-top: 15px; margin-left: 45px"
                               >
                                 <b-card-text
-                                  ><b-row>{{ seguimiento.usuario }}</b-row>
+                                  ><b-row><strong>{{ seguimiento.usuario }}</strong></b-row>
                                   <b-row>{{ seguimiento.seg_fecha }}</b-row>
                                 </b-card-text>
                               </b-col>
@@ -220,7 +220,7 @@
                                 style="margin-top: 15px; margin-left: 15px"
                               >
                                 <b-card-text
-                                  ><b-row>{{ seguimiento.usuario }}</b-row>
+                                  ><b-row><strong>{{ seguimiento.usuario }}</strong></b-row>
                                   <b-row>{{ seguimiento.seg_fecha }}</b-row>
                                 </b-card-text>
                               </b-col>
@@ -231,7 +231,7 @@
                           <b-row>
                             <b-col style="margin-top: 15px; margin-left: 45px"
                               ><b-card-text
-                                ><b-row>{{ caso.solicitante }}</b-row>
+                                ><b-row><strong>{{ caso.solicitante }}</strong></b-row>
                                 <b-row>{{ caso.caso_fecha_apertura }}</b-row>
                               </b-card-text>
                             </b-col>
