@@ -145,6 +145,7 @@
                         <FormSegumiento
                           :case_id="caso.caso_id"
                           :onCreate="getSeguimientos"
+                          :onCancel="onCancel"
                         />
                       </div>
                       <div v-else>
@@ -160,28 +161,71 @@
                           v-for="(seguimiento, index) in seguimientosCaso"
                           :key="index"
                         >
-                          <b-row>
-                            <b-col cols="8" style="margin-left: 25px"
-                              ><b-card
-                                style="
-                                  border-radius: 20px;
-                                  border: 1px solid #000;
-                                "
-                                bg-variant="light"
-                                :title="seguimiento.seg_titulo"
+                          <div
+                            v-if="
+                              seguimiento.seg_usuario_id ===
+                              caso.caso_usuario_id
+                            "
+                          >
+                            <b-row>
+                              <b-col
+                                style="margin-top: 15px; margin-left: 45px"
                               >
-                                <b-card-text>{{
-                                  seguimiento.seg_descripcion
-                                }}</b-card-text>
-                              </b-card></b-col
-                            >
-                            <b-col style="margin-top: 15px; margin-left: 15px">
-                              <b-card-text
-                                ><b-row>{{ seguimiento.usuario }}</b-row>
-                                <b-row>{{ seguimiento.seg_fecha }}</b-row>
-                              </b-card-text>
-                            </b-col>
-                          </b-row>
+                                <b-card-text
+                                  ><b-row>{{ seguimiento.usuario }}</b-row>
+                                  <b-row>{{ seguimiento.seg_fecha }}</b-row>
+                                </b-card-text>
+                              </b-col>
+                              <b-col cols="9" style="margin-right: 75px"
+                                ><b-card
+                                  style="
+                                    border-radius: 20px;
+                                    border: 1px solid #000;
+                                  "
+                                  :bg-variant="
+                                    seguimiento.seg_tipo_seg_id === 2
+                                      ? 'success'
+                                      : seguimiento.seg_tipo_seg_id === 3 ? 'danger' : 'info'
+                                  "
+                                  :title="seguimiento.seg_titulo"
+                                >
+                                  <b-card-text>{{
+                                    seguimiento.seg_descripcion
+                                  }}</b-card-text>
+                                </b-card></b-col
+                              >
+                            </b-row>
+                          </div>
+                          <div v-else>
+                            <b-row>
+                              <b-col cols="8" style="margin-left: 25px"
+                                ><b-card
+                                  style="
+                                    border-radius: 20px;
+                                    border: 1px solid #000;
+                                  "
+                                  :bg-variant="
+                                    seguimiento.seg_tipo_seg_id === 2
+                                      ? 'light'
+                                      :seguimiento.seg_tipo_seg_id === 3 ? 'danger' : 'info'
+                                  "
+                                  :title="seguimiento.seg_titulo"
+                                >
+                                  <b-card-text>{{
+                                    seguimiento.seg_descripcion
+                                  }}</b-card-text>
+                                </b-card></b-col
+                              >
+                              <b-col
+                                style="margin-top: 15px; margin-left: 15px"
+                              >
+                                <b-card-text
+                                  ><b-row>{{ seguimiento.usuario }}</b-row>
+                                  <b-row>{{ seguimiento.seg_fecha }}</b-row>
+                                </b-card-text>
+                              </b-col>
+                            </b-row>
+                          </div>
                         </div>
                         <div style="margin-top: 10px">
                           <b-row>
@@ -414,6 +458,9 @@ export default {
             this.archivosSeguimiento = res.data.archivoSeguimiento
           }
         })
+    },
+    onCancel () {
+      this.addSeguimiento = false
     }
   }
 }

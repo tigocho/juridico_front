@@ -77,6 +77,12 @@
                   ></b-form-group>
                   <b-form-group>
                     <b-button
+                      style="margin-right: 10px"
+                      :class="estadoBoton"
+                      @click="onCancel"
+                      >Cancelar</b-button
+                    >
+                    <b-button
                       variant="primary"
                       type="submit"
                       :class="estadoBoton"
@@ -100,7 +106,8 @@ export default {
   name: 'FormSegumiento',
   props: {
     case_id: String,
-    onCreate: Function
+    onCreate: Function,
+    onCancel: Function
   },
   data () {
     return {
