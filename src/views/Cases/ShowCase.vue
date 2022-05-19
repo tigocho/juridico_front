@@ -172,7 +172,11 @@
                                 style="margin-top: 15px; margin-left: 45px"
                               >
                                 <b-card-text
-                                  ><b-row><strong>{{ seguimiento.usuario }}</strong></b-row>
+                                  ><b-row
+                                    ><strong>{{
+                                      seguimiento.usuario
+                                    }}</strong></b-row
+                                  >
                                   <b-row>{{ seguimiento.seg_fecha }}</b-row>
                                 </b-card-text>
                               </b-col>
@@ -185,7 +189,9 @@
                                   :bg-variant="
                                     seguimiento.seg_tipo_seg_id === 2
                                       ? 'success'
-                                      : seguimiento.seg_tipo_seg_id === 3 ? 'danger' : 'info'
+                                      : seguimiento.seg_tipo_seg_id === 3
+                                      ? 'danger'
+                                      : 'info'
                                   "
                                   :title="seguimiento.seg_titulo"
                                 >
@@ -207,12 +213,17 @@
                                   :bg-variant="
                                     seguimiento.seg_tipo_seg_id === 2
                                       ? 'light'
-                                      :seguimiento.seg_tipo_seg_id === 3 ? 'danger' : 'info'
+                                      : seguimiento.seg_tipo_seg_id === 3
+                                      ? 'danger'
+                                      : 'info'
                                   "
                                   :title="seguimiento.seg_titulo"
                                 >
                                   <b-card-text>{{
                                     seguimiento.seg_descripcion
+                                  }}</b-card-text>
+                                  <b-card-text class="text-right font-italic">{{
+                                    seguimiento.tipo_seg_nombre
                                   }}</b-card-text>
                                 </b-card></b-col
                               >
@@ -220,7 +231,11 @@
                                 style="margin-top: 15px; margin-left: 15px"
                               >
                                 <b-card-text
-                                  ><b-row><strong>{{ seguimiento.usuario }}</strong></b-row>
+                                  ><b-row
+                                    ><strong>{{
+                                      seguimiento.usuario
+                                    }}</strong></b-row
+                                  >
                                   <b-row>{{ seguimiento.seg_fecha }}</b-row>
                                 </b-card-text>
                               </b-col>
@@ -231,7 +246,11 @@
                           <b-row>
                             <b-col style="margin-top: 15px; margin-left: 45px"
                               ><b-card-text
-                                ><b-row><strong>{{ caso.solicitante }}</strong></b-row>
+                                ><b-row
+                                  ><strong>{{
+                                    caso.solicitante
+                                  }}</strong></b-row
+                                >
                                 <b-row>{{ caso.caso_fecha_apertura }}</b-row>
                               </b-card-text>
                             </b-col>
@@ -247,6 +266,9 @@
                                 <b-card-text>{{
                                   caso.caso_descripcion
                                 }}</b-card-text>
+                                <b-card-text class="text-right font-italic"
+                                  >Apertura</b-card-text
+                                >
                               </b-card></b-col
                             >
                           </b-row>
