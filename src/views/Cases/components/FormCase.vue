@@ -58,7 +58,8 @@
                       style="margin-left: 5px"
                       v-b-tooltip.hover
                       title="Quitar archivo"
-                      ><i class="fa fa-minus" @click="removeFile"></i></b-button
+                      @click="removeFile"
+                      ><i class="fa fa-minus"></i></b-button
                   ></b-form-group>
                   <b-form-group>
                     <b-button
