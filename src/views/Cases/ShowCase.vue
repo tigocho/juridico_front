@@ -118,7 +118,7 @@
                           </b-col>
                           <b-col cols="5"
                             ><strong>Tipo de Actividad: </strong>
-                            {{ caso.subact_nombre }}
+                            {{ caso.subactividad }}
                           </b-col>
                         </b-row>
                         <b-row>

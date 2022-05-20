@@ -76,7 +76,7 @@
             </b-row>
 
             <b-row>
-              <b-col sm="6" md="6" class="my-1">
+              <b-col sm="5" md="5" class="my-1">
                 <b-form-group
                   label="Abogado"
                   label-cols-sm="2"
@@ -87,9 +87,9 @@
                   class="mb-0"
                 >
                   <v-select
-                    v-model="abogadoId"
+                    v-model="filtros.abogado_id"
                     :options="abogadosOptions"
-                    @input="getCases('abogado', abogadoId)"
+                    @input="getCases()"
                     :reduce="(label) => label.code"
                     label="label"
                     id="abogados_select"
@@ -109,9 +109,9 @@
                   class="mb-0"
                 >
                   <v-select
-                    v-model="estadoId"
+                    v-model="filtros.estado_id"
                     :options="estadosOptions"
-                    @input="getCases('estado', estadoId)"
+                    @input="getCases()"
                     :reduce="(label) => label.code"
                     label="label"
                     id="estado_select"
@@ -120,9 +120,9 @@
                   </v-select>
                 </b-form-group>
               </b-col>
-              <b-col sm="3" md="3" class="my-1">
+              <b-col sm="4" md="4" class="my-1">
                 <b-form-group
-                  label="Servicio"
+                  label="Clinicas"
                   label-cols-sm="2"
                   label-cols-md="2"
                   label-cols-lg="3"
@@ -131,14 +131,14 @@
                   class="mb-0"
                 >
                   <v-select
-                    v-model="servicioId"
-                    :options="serviciosOptions"
-                    @input="getCases('servicio', servicioId)"
+                    v-model="filtros.clinica_id"
+                    :options="clinicasOptions"
+                    @input="getCases()"
                     :reduce="(label) => label.code"
                     label="label"
-                    id="servicio_select"
+                    id="clinica_select"
                   >
-                    <span slot="no-options">No hay Servicios.</span>
+                    <span slot="no-options">No hay Clinicas.</span>
                   </v-select>
                 </b-form-group>
               </b-col>
@@ -189,7 +189,9 @@
               <template #row-details="row">
                 <b-card>
                   <b-row class="mb-2">
-                    <b-col sm="3" class="text-sm-right"><strong>Servicio:</strong></b-col>
+                    <b-col sm="3" class="text-sm-right"
+                      ><strong>Servicio:</strong></b-col
+                    >
                     <b-col>{{ row.item.servicio }}</b-col>
                     <b-col sm="3" class="text-sm-right"
                       ><strong>Subactividad:</strong></b-col
@@ -221,6 +223,7 @@
 <script>
 import axios from 'axios'
 import Vue from 'vue'
+import auth from '@/logic/auth'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { xray } from '../../config/pluginInit'
 import FormCase from '../Cases/components/FormCase.vue'
@@ -233,11 +236,13 @@ export default {
     return {
       casos: [],
       caso: {},
-      abogadoId: '',
+      filtros: {
+        abogado_id: '',
+        clinica_id: '',
+        estados_id: ''
+      },
       abogadosOptions: [],
-      servicioId: '',
-      serviciosOptions: [],
-      estadosId: '',
+      clinicasOptions: [],
       estadosOptions: [],
       textoBoton: 'Guardar Caso',
       estado: 'd-none',
@@ -282,13 +287,16 @@ export default {
         .map((f) => {
           return { text: f.label, value: f.key }
         })
+    },
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
     }
   },
   mounted () {
     xray.index()
-    this.getAllCases()
+    this.getCases()
     this.getProfesionals()
-    this.getServicios()
+    this.getUserClinicas()
     this.getEstados()
   },
   methods: {
@@ -296,14 +304,6 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
       this.currentPage = 1
-    },
-    getAllCases () {
-      this.$bvModal.hide('modal-editar-caso')
-      axios.get('/casos-all').then((response) => {
-        this.casos = response.data.casos
-        this.totalRows = this.casos.length
-        this.user_profile = this.userLogged.user_profile
-      })
     },
     verCaso (casoId) {
       this.$router.push({ path: `/cases/cases-show/${casoId}` })
@@ -340,16 +340,24 @@ export default {
         }
       })
     },
-    getCases (filtro, id) {
-      if (id != null) {
-        axios.get('/casos-filtro/' + filtro + '/' + id).then((response) => {
+    getCases () {
+      this.$bvModal.hide('modal-editar-caso')
+      axios.post('/casos-lista', this.filtros).then((response) => {
+        if (response.status === 200) {
           this.casos = response.data.casos
           this.totalRows = this.casos.length
           this.user_profile = this.userLogged.user_profile
-        })
-      } else {
-        this.getAllCases()
-      }
+        }
+      })
+    },
+    getUserClinicas () {
+      axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
+        if (res.status === 200) {
+          this.clinicasOptions = res.data.clinicas
+        } else {
+          Vue.swal(res.data.message)
+        }
+      })
     },
     getServicios () {
       axios.get('/servicios/fetch').then((response) => {
