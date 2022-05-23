@@ -169,6 +169,12 @@
                     Editar
                   </b-dropdown-item>
                   <b-dropdown-item
+                    v-if="anularPerfiles.includes(user_profile)"
+                    @click="anularCaso(row.item.caso_id)"
+                  >
+                    Anular
+                  </b-dropdown-item>
+                  <b-dropdown-item
                     v-if="user_profile == 1"
                     @click="eliminarCaso(row.item.caso_id)"
                   >
@@ -244,6 +250,7 @@ export default {
       abogadosOptions: [],
       clinicasOptions: [],
       estadosOptions: [],
+      anularPerfiles: [1, 12],
       textoBoton: 'Guardar Caso',
       estado: 'd-none',
       bRowLast: {},
@@ -372,6 +379,33 @@ export default {
     getProfesionals () {
       axios.get('/professionals/fetch').then((response) => {
         this.abogadosOptions = response.data.professionals
+      })
+    },
+    anularCaso (casoId) {
+      Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text: '¿Deseas anular este Caso?',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .get('/casos-estado/' + casoId + '/5')
+            .then((res) => {
+              if (res.status === 200) {
+                this.getCases()
+              }
+
+              Vue.swal(res.data.message)
+            })
+            .catch((err) => {
+              Vue.swal(
+                'Ups sucedió un error tratando de consulta la información. ' +
+                  err
+              )
+            })
+        }
       })
     }
   }
