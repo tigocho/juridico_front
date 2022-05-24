@@ -425,7 +425,7 @@ export default {
         .finally(
           setTimeout(() => {
             this.loading = false
-          }, 3500)
+          }, 3000)
         )
     },
     descargarArchivoCaso (filename, id) {

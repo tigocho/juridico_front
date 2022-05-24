@@ -113,6 +113,7 @@ import CasesToAssing from '../views/Cases/CasesToAssing'
 import AddCaseAbogado from '../views/Cases/AddCaseAbogado'
 import AssignedCases from '../views/Cases/AssignedCases'
 import AllCases from '../views/Cases/AllCases'
+import GraphsAndReports from '../views/Cases/GraphsAndReports'
 
 Vue.use(VueRouter)
 
@@ -710,6 +711,12 @@ const casesChildRoute = (prop, mode = false) => [
     name: prop + '.all',
     meta: { dark: mode, auth: true, name: 'Todos los Casos' },
     component: AllCases
+  },
+  {
+    path: 'cases-reports',
+    name: prop + '.reports',
+    meta: { dark: mode, auth: true, name: 'Graficas y Reportes' },
+    component: GraphsAndReports
   }
 
 ]
