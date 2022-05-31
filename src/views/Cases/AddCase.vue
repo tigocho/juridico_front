@@ -10,6 +10,7 @@
   </iq-card>
 </template>
 <script>
+import { xray } from '../../config/pluginInit'
 import FormCase from '../Cases/components/FormCase.vue'
 export default {
   name: 'AddCase',
@@ -24,6 +25,9 @@ export default {
         case_description: ''
       }
     }
+  },
+  mounted () {
+    xray.index()
   }
 }
 </script>
