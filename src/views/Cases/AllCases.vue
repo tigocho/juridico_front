@@ -333,7 +333,7 @@ export default {
             .then((res) => {
               if (res.status === 200) {
                 Vue.swal(res.data.message)
-                this.getMyCasos()
+                this.getCases()
               } else {
                 Vue.swal(res.data.message)
               }
