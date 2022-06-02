@@ -23,6 +23,7 @@
               <iq-card>
                 <template v-slot:headerTitle>
                   <h4>Casos por Abogado</h4>
+                  <h6>Total de casos asignados {{ totalAbogado }} </h6>
                 </template>
                 <template v-slot:body>
                   <CasosPorAbogado
@@ -38,6 +39,7 @@
               <iq-card>
                 <template v-slot:headerTitle>
                   <h4>Casos por Clinica</h4>
+                  <h6>Total de Casos {{ totalClinica }} </h6>
                 </template>
                 <template v-slot:body>
                   <CasosPorClinicas
@@ -51,6 +53,7 @@
               <iq-card>
                 <template v-slot:headerTitle>
                   <h4>Casos por Servicio</h4>
+                  <h6>Total de Casos {{ totalSubactividades }} </h6>
                 </template>
                 <template v-slot:body>
                   <CasosPorSubactividad
@@ -95,7 +98,10 @@ export default {
       loading: true,
       casosAbogado: [],
       casosClinicas: [],
-      casosSubactividad: []
+      casosSubactividad: [],
+      totalAbogado: '',
+      totalClinica: '',
+      totalSubactividades: ''
     }
   },
   methods: {
@@ -113,6 +119,7 @@ export default {
       axios.get('/casos-abogado').then((res) => {
         if (res.status === 200) {
           this.casosAbogado = res.data.casos
+          this.totalAbogado = res.data.total
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
         }
@@ -122,6 +129,7 @@ export default {
       axios.get('/casos-clinicas').then((res) => {
         if (res.status === 200) {
           this.casosClinicas = res.data.casos
+          this.totalClinica = res.data.total
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
         }
@@ -131,6 +139,7 @@ export default {
       axios.get('/casos-subactividad').then((res) => {
         if (res.status === 200) {
           this.casosSubactividad = res.data.casos
+          this.totalSubactividades = res.data.total
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
         }

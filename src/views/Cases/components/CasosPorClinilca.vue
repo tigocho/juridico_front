@@ -29,7 +29,7 @@ export default {
           height: 500,
           type: 'bar'
         },
-        colors: ['#089bab'],
+        colors: ['#08ab92'],
         plotOptions: {
           bar: {
             dataLabels: {
@@ -52,7 +52,7 @@ export default {
         },
         grid: {
           row: {
-            colors: ['#fff', '#f2f2f2']
+            colors: ['#fff', '#cccccc']
           }
         },
         xaxis: {
