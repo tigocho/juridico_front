@@ -149,18 +149,42 @@
                             id="textarea-decription"
                             v-model="caso.case_description"
                             rows="3"
-                            :state="caso.case_description.length <= 250 && caso.case_description.length >= 5"
+                            :state="
+                              caso.case_description.length <= 250 &&
+                              caso.case_description.length >= 5
+                            "
                             :required="true"
                           ></b-form-textarea>
                         </b-form-group>
-
-                        <b-form-group>
-                          <b-form-file
-                            class="mt-3 col-md-6"
-                            @change="onFileChange"
-                            placeholder="Añade un archivo"
-                          ></b-form-file>
-                        </b-form-group>
+                        <div
+                          v-for="(casefile, index) in caseFiles"
+                          :key="index"
+                        >
+                          <b-form-group>
+                            <b-form-file
+                              v-model="casefile.file"
+                              :name="`file-${index}`"
+                              placeholder="Añade un archivo"
+                            ></b-form-file>
+                          </b-form-group>
+                        </div>
+                        <b-form-group
+                          ><b-button
+                            size="sm"
+                            variant="success"
+                            v-b-tooltip.hover
+                            title="Adjuntar otro archivo"
+                            @click="addFile"
+                            ><i class="fa fa-plus"></i> </b-button
+                          ><b-button
+                            size="sm"
+                            variant="danger"
+                            style="margin-left: 5px"
+                            v-b-tooltip.hover
+                            title="Quitar archivo"
+                            @click="removeFile"
+                            ><i class="fa fa-minus"></i></b-button
+                        ></b-form-group>
 
                         <b-form-group>
                           <b-button
@@ -211,7 +235,11 @@ export default {
       actividadesOptions: [],
       subactividadOptions: [],
       mediosOptions: [],
-      import_file: null
+      caseFiles: [
+        {
+          file: null
+        }
+      ]
     }
   },
   mounted () {
@@ -236,9 +264,6 @@ export default {
           Vue.swal(res.data.message)
         }
       })
-    },
-    onFileChange (e) {
-      this.import_file = e.target.files[0]
     },
     getActividades () {
       axios.get('/actividades/fetch').then((response) => {
@@ -276,8 +301,16 @@ export default {
       this.estadoBoton = 'disabled'
       this.guardarCaso()
     },
+    addFile () {
+      this.caseFiles.push({
+        file: null
+      })
+    },
+    removeFile () {
+      this.caseFiles.pop()
+    },
     guardarCaso () {
-      this.texttextoBotonoGuardar = 'Guardando...'
+      this.textoBoton = 'Guardando...'
 
       const data = new FormData()
 
@@ -289,7 +322,16 @@ export default {
       data.append('profesional_id', this.caso.abogado_id)
       data.append('subactividad_id', this.caso.subactividad_id)
       data.append('medio_id', this.caso.medio_id)
-      data.append('import_file', this.import_file)
+
+      let index = 0
+      for (let casefile of this.caseFiles) {
+        if (casefile.file != null) {
+          data.append('file-' + index, casefile.file, casefile.file.name) // note, no square-brackets
+          index++
+        }
+      }
+
+      data.append('cantidad_archivos', index)
 
       axios.post('/casos-abogado/create', data).then((res) => {
         if (res.status === 200) {
