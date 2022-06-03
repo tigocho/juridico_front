@@ -130,7 +130,7 @@ export default {
       this.selected = ctx.selectedYMD
     },
     onSubmit () {
-      console.log(this.user)
+      // console.log(this.user)
     },
     jwtRegister () {
       this.$store.dispatch('Setting/addUserAction', this.user)

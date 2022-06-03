@@ -475,7 +475,6 @@ export default {
         responseType: 'blob'
       })
         .then((response) => {
-          console.log(response)
           if (response.data != null) {
             fileDownload(response.data, filename)
           } else {
@@ -517,7 +516,6 @@ export default {
         responseType: 'blob'
       })
         .then((response) => {
-          console.log(response)
           if (response.data != null) {
             fileDownload(response.data, filename)
           } else {
