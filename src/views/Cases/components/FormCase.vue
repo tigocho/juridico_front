@@ -51,7 +51,7 @@
                       v-b-tooltip.hover
                       title="Adjuntar otro archivo"
                       @click="addFile"
-                      ><i class="fa fa-plus"></i> </b-button
+                      ><em class="fa fa-plus"></em> </b-button
                     ><b-button
                       size="sm"
                       variant="danger"
@@ -59,7 +59,7 @@
                       v-b-tooltip.hover
                       title="Quitar archivo"
                       @click="removeFile"
-                      ><i class="fa fa-minus"></i></b-button
+                      ><em class="fa fa-minus"></em></b-button
                   ></b-form-group>
                   <b-form-group>
                     <b-button
@@ -155,8 +155,8 @@ export default {
     getUserClinicas () {
       axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
         if (res.data.success === 200) {
-          for (let i = 0; i < res.data.clinicas.length; i++) {
-            this.clinicasUser.push(res.data.clinicas[i].code)
+          for (let clinica of res.data.clinicas) {
+            this.clinicasUser.push(clinica.code)
           }
         } else {
           Vue.swal(res.data.message)

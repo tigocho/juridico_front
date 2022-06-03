@@ -9,7 +9,7 @@
             :style="{ width: progress_total + '%' }"
           >
             <span
-              ><b>{{ progress_total }}%</b></span
+              ><strong>{{ progress_total }}%</strong></span
             >
           </b-progress-bar>
         </b-progress>
@@ -57,6 +57,13 @@
                       :active="false"
                       href="#historial"
                       title="Historial"
+                    />
+                    <tab-nav-items
+                      class="col-auto p-0"
+                      disabled
+                      :active="false"
+                      href="#archivos"
+                      title="Archivos"
                     />
                   </tab-nav>
                 </div>
@@ -120,20 +127,6 @@
                             {{ caso.med_sol_nombre }}
                           </b-col>
                         </b-row>
-                        <b-row>
-                          <b-col>
-                            <strong>Archivo: </strong>
-                            <span
-                              v-if="archivo != null"
-                              style="
-                                text-decoration: underline;
-                                cursor: pointer;
-                              "
-                              @click="descargarArchivoCaso()"
-                              >Descargar Archivo
-                            </span>
-                          </b-col>
-                        </b-row>
                       </b-card-text>
                       <b-card-text>
                         <strong>Descripción </strong>
@@ -145,6 +138,43 @@
                 <tab-content-item :active="false" id="seguimiento">
                 </tab-content-item>
                 <tab-content-item :active="false" id="historial">
+                </tab-content-item>
+                <tab-content-item :active="false" id="archivos">
+                  <iq-card>
+                    <template v-slot:headerTitle>
+                      <h4 class="card-title">
+                        Archivos Caso - {{ caso.caso_id }}
+                      </h4>
+                    </template>
+                    <template v-slot:body>
+                      <div v-for="(archivo, index) in archivos" :key="index">
+                        <b-card-text>
+                          <b-col>
+                            <span
+                              style="
+                                text-decoration: underline;
+                                cursor: pointer;
+                              "
+                              @click="
+                                descargarArchivoCaso(archivo.arch_casos_nombre)
+                              "
+                              v-b-tooltip.hover
+                              title="Descargar archivo"
+                              >{{ archivo.arch_casos_nombre }}
+                            </span>
+                            <b-badge
+                              variant="danger"
+                              style="margin-left: 5px"
+                              v-b-tooltip.hover
+                              title="Quitar archivo"
+                              @click="eliminarArchivo(archivo.arch_casos_id)"
+                              ><em class="fa fa-times"></em
+                            ></b-badge>
+                          </b-col>
+                        </b-card-text>
+                      </div>
+                    </template>
+                  </iq-card>
                 </tab-content-item>
               </tab-content>
             </div>
@@ -158,6 +188,7 @@
 import axios from 'axios'
 import Vue from 'vue'
 import fileDownload from 'js-file-download'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 import FormCase from '../Cases/components/FormCase.vue'
 export default {
   name: 'ShowCase',
@@ -169,7 +200,7 @@ export default {
       estadoBoton: '',
       textoBoton: 'Editar Caso',
       caso: {},
-      archivo: {},
+      archivos: [],
       progress_total: 4,
       max: 100,
       loading: true
@@ -186,7 +217,7 @@ export default {
         .get('/show-caso/' + this.$route.params.caso_id)
         .then((res) => {
           this.caso = res.data.caso[0]
-          this.archivo = res.data.archivos[0]
+          this.archivos = res.data.archivos
         })
         .catch((err) => {
           this.errores = err
@@ -197,7 +228,7 @@ export default {
           }, 3500)
         )
     },
-    descargarArchivoCaso () {
+    descargarArchivoCaso (filename) {
       axios({
         url: '/casos/descargar-archivo/' + this.$route.params.caso_id,
         method: 'GET',
@@ -206,8 +237,6 @@ export default {
         .then((response) => {
           console.log(response)
           if (response.data != null) {
-            const filename =
-              this.caso.caso_titulo + '-' + this.caso.caso_id + '.pdf'
             fileDownload(response.data, filename)
           } else {
             Vue.swal('No se encontró archivo')
@@ -226,6 +255,33 @@ export default {
     },
     editarCaso () {
       this.$bvModal.show('modal-editar-caso')
+    },
+    eliminarArchivo (archivoId) {
+      Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text: '¿Deseas eliminar este Archivo?',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .get('/archivo-caso/delete/' + archivoId)
+            .then((res) => {
+              if (res.status === 200) {
+                this.loading = true
+                this.getCase()
+              }
+              Vue.swal(res.data.message)
+            })
+            .catch((err) => {
+              Vue.swal(
+                'Ups sucedió un error tratando de consulta la información. ' +
+                  err
+              )
+            })
+        }
+      })
     }
   }
 }
