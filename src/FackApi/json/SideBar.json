@@ -387,7 +387,7 @@
         "name": "sidebar.graficasReportesAns",
         "is_active": false,
         "link": {
-          "name" : ""
+          "name" : "cases.reports"
         },
         "class_name": "",
         "is_icon_class": true,
