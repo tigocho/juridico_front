@@ -8,7 +8,7 @@
           :case_title="caso.caso_titulo"
           :case_description="caso.caso_descripcion"
           :onEdit="true"
-          :reloadFunciont="this.getMyCasos"
+          :reloadFunciont="this.getAllCases"
         />
       </b-modal>
     </div>
@@ -17,7 +17,7 @@
       <b-col lg="12">
         <iq-card>
           <template v-slot:headerTitle>
-            <h4 class="card-title">Mis Casos</h4>
+            <h4 class="card-title">Todos Los Casos</h4>
           </template>
           <template v-slot:body>
             <b-row>
@@ -157,13 +157,12 @@
 
 <script>
 import axios from 'axios'
-import auth from '@/logic/auth'
 import Vue from 'vue'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { xray } from '../../config/pluginInit'
 import FormCase from '../Cases/components/FormCase.vue'
 export default {
-  name: 'MyCases',
+  name: 'AllCases',
   components: {
     FormCase
   },
@@ -189,6 +188,7 @@ export default {
           key: 'fecha_solucion',
           class: 'text-left'
         },
+        { label: 'Solicitante', key: 'solicitante', class: 'text-left' },
         { label: 'Abogado Asignado', key: 'abogado', class: 'text-left' },
         { label: 'Acciones', key: 'actions', class: 'text-center' }
       ],
@@ -213,14 +213,11 @@ export default {
         .map((f) => {
           return { text: f.label, value: f.key }
         })
-    },
-    userLogged () {
-      return JSON.parse(auth.getUserLogged())
     }
   },
   mounted () {
     xray.index()
-    this.getMyCasos()
+    this.getAllCases()
   },
   methods: {
     onFiltered (filteredItems) {
@@ -228,9 +225,9 @@ export default {
       this.totalRows = filteredItems.length
       this.currentPage = 1
     },
-    getMyCasos () {
+    getAllCases () {
       this.$bvModal.hide('modal-editar-caso')
-      axios.get('/mycases/' + this.userLogged.usr_id).then((response) => {
+      axios.get('/casos-all').then((response) => {
         this.casos = response.data.casos
         this.totalRows = this.casos.length
         this.user_profile = this.userLogged.user_profile

@@ -375,7 +375,7 @@
         "name": "sidebar.todosLosCasos",
         "is_active": false,
         "link": {
-          "name" : "process.archived"
+          "name" : "cases.all"
         },
         "class_name": "",
         "is_icon_class": true,
