@@ -42,23 +42,13 @@
                 </b-form-group>
               </b-col>
 
-              <b-col sm="3" md="3" class="my-1">
-                <b-form-group
-                  label="Filtrar"
-                  label-cols-sm="2"
-                  label-cols-md="2"
-                  label-cols-lg="3"
-                  label-align-sm="left"
-                  label-size="sm"
-                  class="mb-0"
-                >
-                  <v-select>
-                    <span slot="no-options">No hay estados.</span>
-                  </v-select>
-                </b-form-group>
-              </b-col>
-
-              <b-col sm="6" md="6" class="my-1">
+              <b-col
+                sm="6"
+                md="6"
+                lg="6"
+                style="margin-left: auto"
+                class="my-2"
+              >
                 <b-form-group
                   label="Buscar"
                   label-for="filter-input"
@@ -81,6 +71,75 @@
                       >
                     </b-input-group-append>
                   </b-input-group>
+                </b-form-group>
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col sm="6" md="6" class="my-1">
+                <b-form-group
+                  label="Abogado"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="2"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="abogadoId"
+                    :options="abogadosOptions"
+                    @input="getCases('abogado', abogadoId)"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="abogados_select"
+                  >
+                    <span slot="no-options">No hay Abogados.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+              <b-col sm="3" md="3" class="my-1">
+                <b-form-group
+                  label="Estado"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="3"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="estadoId"
+                    :options="estadosOptions"
+                    @input="getCases('estado', estadoId)"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="estado_select"
+                  >
+                    <span slot="no-options">No hay Estados.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+              <b-col sm="3" md="3" class="my-1">
+                <b-form-group
+                  label="Servicio"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="3"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="servicioId"
+                    :options="serviciosOptions"
+                    @input="getCases('servicio', servicioId)"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="servicio_select"
+                  >
+                    <span slot="no-options">No hay Servicios.</span>
+                  </v-select>
                 </b-form-group>
               </b-col>
             </b-row>
@@ -130,8 +189,12 @@
               <template #row-details="row">
                 <b-card>
                   <b-row class="mb-2">
-                    <b-col sm="3" class="text-sm-right"><b>Id:</b></b-col>
-                    <b-col>{{ row.item.caso_id }}</b-col>
+                    <b-col sm="3" class="text-sm-right"><b>Servicio:</b></b-col>
+                    <b-col>{{ row.item.servicio }}</b-col>
+                    <b-col sm="3" class="text-sm-right"
+                      ><b>Subactividad:</b></b-col
+                    >
+                    <b-col>{{ row.item.subactividad }}</b-col>
                   </b-row>
                 </b-card>
               </template>
@@ -170,6 +233,12 @@ export default {
     return {
       casos: [],
       caso: {},
+      abogadoId: '',
+      abogadosOptions: [],
+      servicioId: '',
+      serviciosOptions: [],
+      estadosId: '',
+      estadosOptions: [],
       textoBoton: 'Guardar Caso',
       estado: 'd-none',
       bRowLast: {},
@@ -218,6 +287,9 @@ export default {
   mounted () {
     xray.index()
     this.getAllCases()
+    this.getProfesionals()
+    this.getServicios()
+    this.getEstados()
   },
   methods: {
     onFiltered (filteredItems) {
@@ -266,6 +338,32 @@ export default {
               )
             })
         }
+      })
+    },
+    getCases (filtro, id) {
+      if (id != null) {
+        axios.get('/casos-filtro/' + filtro + '/' + id).then((response) => {
+          this.casos = response.data.casos
+          this.totalRows = this.casos.length
+          this.user_profile = this.userLogged.user_profile
+        })
+      } else {
+        this.getAllCases()
+      }
+    },
+    getServicios () {
+      axios.get('/servicios/fetch').then((response) => {
+        this.serviciosOptions = response.data.servicios
+      })
+    },
+    getEstados () {
+      axios.get('/estados/fetch').then((response) => {
+        this.estadosOptions = response.data.estados
+      })
+    },
+    getProfesionals () {
+      axios.get('/professionals/fetch').then((response) => {
+        this.abogadosOptions = response.data.professionals
       })
     }
   }
