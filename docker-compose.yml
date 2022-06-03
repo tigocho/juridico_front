@@ -10,7 +10,4 @@ services:
     ports:
       - "8081:80"
     networks:
-      - juridico-net
-networks:
-  juridico-net:
-    driver: bridge
+      - juridico-network
