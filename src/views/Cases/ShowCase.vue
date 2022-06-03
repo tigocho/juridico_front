@@ -278,6 +278,44 @@
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="historial">
+                  <iq-card>
+                    <template v-slot:body>
+                      <section class="timeline">
+                        <b-card-text>
+                        <ul>
+                          <li v-if="caso.caso_fecha_cierre != null">
+                            <span></span>
+                            <div>Fecha de Cierre</div>
+                            <div class="year">
+                              <span>{{ caso.caso_fecha_cierre }}</span>
+                            </div>
+                          </li>
+                          <li v-if="caso.fecha_solucion != null">
+                            <span></span>
+                            <div>Fecha de Solución</div>
+                            <div class="year">
+                              <span>{{ caso.fecha_solucion }}</span>
+                            </div>
+                          </li>
+                          <li v-if="caso.caso_fecha_asignacion != null">
+                            <span></span>
+                            <div>Fecha de Asignacion</div>
+                            <div class="year">
+                              <span>{{ caso.caso_fecha_asignacion }}</span>
+                            </div>
+                          </li>
+                          <li>
+                            <span></span>
+                            <div>Fecha de Apertura</div>
+                            <div class="year">
+                              <span>{{ caso.caso_fecha_apertura }}</span>
+                            </div>
+                          </li>
+                        </ul>
+                        </b-card-text>
+                      </section>
+                    </template>
+                  </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="archivos">
                   <iq-card>
@@ -418,7 +456,7 @@ export default {
       axios
         .get('/show-caso/' + this.$route.params.caso_id)
         .then((res) => {
-          this.caso = res.data.caso[0]
+          this.caso = res.data.caso
           this.archivos = res.data.archivos
         })
         .catch((err) => {

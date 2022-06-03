@@ -116,7 +116,10 @@
                   <b-dropdown-item @click="editarCaso(row.item)">
                     Editar
                   </b-dropdown-item>
-                  <b-dropdown-item @click="cerrarCaso(row.item.caso_id)">
+                  <b-dropdown-item
+                    v-if="row.item.est_id != '4'"
+                    @click="cerrarCaso(row.item.caso_id)"
+                  >
                     Cerrar
                   </b-dropdown-item>
                   <b-dropdown-item
@@ -140,7 +143,9 @@
               <template #row-details="row">
                 <b-card>
                   <b-row class="mb-2">
-                    <b-col sm="3" class="text-sm-right"><strong>Id:</strong></b-col>
+                    <b-col sm="3" class="text-sm-right"
+                      ><strong>Id:</strong></b-col
+                    >
                     <b-col>{{ row.item.caso_id }}</b-col>
                   </b-row>
                 </b-card>
