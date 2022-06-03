@@ -116,6 +116,9 @@
                   <b-dropdown-item @click="editarCaso(row.item)">
                     Editar
                   </b-dropdown-item>
+                  <b-dropdown-item @click="cerrarCaso(row.item.caso_id)">
+                    Cerrar
+                  </b-dropdown-item>
                   <b-dropdown-item
                     v-if="user_profile == 1"
                     @click="eliminarCaso(row.item.caso_id)"
@@ -288,6 +291,33 @@ export default {
     getEstados () {
       axios.get('/estados/fetch').then((response) => {
         this.estadosOptions = response.data.estados
+      })
+    },
+    cerrarCaso (casoId) {
+      Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text: '¿Deseas cerrar este Caso?',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .get('/casos-estado/' + casoId + '/4')
+            .then((res) => {
+              if (res.status === 200) {
+                this.getCases(0)
+              }
+
+              Vue.swal(res.data.message)
+            })
+            .catch((err) => {
+              Vue.swal(
+                'Ups sucedió un error tratando de consulta la información. ' +
+                  err
+              )
+            })
+        }
       })
     }
   }

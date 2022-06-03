@@ -113,6 +113,18 @@
                     Editar
                   </b-dropdown-item>
                   <b-dropdown-item
+                    v-if="row.item.caso_estado_id == 2"
+                    @click="cambiarEstado(row.item.caso_id, 3)"
+                  >
+                    En Espera
+                  </b-dropdown-item>
+                  <b-dropdown-item
+                    v-if="row.item.caso_estado_id != 2"
+                    @click="cambiarEstado(row.item.caso_id, 2)"
+                  >
+                    En Proceso
+                  </b-dropdown-item>
+                  <b-dropdown-item
                     v-if="deletedProfiles.includes(user_profile)"
                     @click="eliminarCaso(row.item.caso_id)"
                   >
@@ -241,11 +253,39 @@ export default {
             .get('/casos/delete/' + casoId)
             .then((res) => {
               if (res.status === 200) {
-                Vue.swal(res.data.message)
                 this.getCasosAssignados()
-              } else {
-                Vue.swal(res.data.message)
               }
+              Vue.swal(res.data.message)
+            })
+            .catch((err) => {
+              Vue.swal(
+                'Ups sucedió un error tratando de consulta la información. ' +
+                  err
+              )
+            })
+        }
+      })
+    },
+    cambiarEstado (casoId, estadoId) {
+      Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text:
+          estadoId === 2
+            ? '¿Deseas poner este Caso en proceso?'
+            : '¿Deseas poner este Caso en espera?',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .get('/casos-estado/' + casoId + '/' + estadoId)
+            .then((res) => {
+              if (res.status === 200) {
+                this.getCasosAssignados()
+              }
+
+              Vue.swal(res.data.message)
             })
             .catch((err) => {
               Vue.swal(
