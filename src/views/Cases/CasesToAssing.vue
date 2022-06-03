@@ -8,7 +8,7 @@
             <b-row
               class="justify-content-center text-center align-items-center"
             >
-              <b-col lg="6">
+              <b-col lg="10">
                 <b-form-group
                   label="Titulo de la Solicitud*"
                   label-for="case_title"
@@ -26,6 +26,8 @@
                   <b-form-textarea
                     id="textarea-decription"
                     v-model="caso.caso_descripcion"
+                    rows="3"
+                    :state="caso.caso_descripcion.length <= 250"
                     :required="true"
                   ></b-form-textarea>
                 </b-form-group>
@@ -318,6 +320,7 @@ export default {
       this.actualizarCaso()
     },
     actualizarCaso () {
+      this.$bvModal.hide('modal-editar-caso')
       axios
         .post('/casos/update/' + this.caso.caso_id, this.caso)
         .then((res) => {
@@ -375,6 +378,7 @@ export default {
       })
     },
     SaveAsignacionCaso () {
+      this.$bvModal.hide('modal-asignar-caso')
       axios
         .post('/casos/asignar/' + this.caso.caso_id, this.asginarData)
         .then((res) => {

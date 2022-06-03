@@ -254,7 +254,7 @@ textarea {
 	margin: 0;
 	font-family: inherit;
 	font-size: inherit;
-	line-height: inherit
+	line-height: normal;
 }
 
 button,
@@ -2284,7 +2284,8 @@ select.form-control[size] {
 }
 
 textarea.form-control {
-	height: auto
+	height: auto;
+	line-height: 1.5;
 }
 
 .form-group {
