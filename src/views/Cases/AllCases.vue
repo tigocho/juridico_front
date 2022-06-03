@@ -189,10 +189,10 @@
               <template #row-details="row">
                 <b-card>
                   <b-row class="mb-2">
-                    <b-col sm="3" class="text-sm-right"><b>Servicio:</b></b-col>
+                    <b-col sm="3" class="text-sm-right"><strong>Servicio:</strong></b-col>
                     <b-col>{{ row.item.servicio }}</b-col>
                     <b-col sm="3" class="text-sm-right"
-                      ><b>Subactividad:</b></b-col
+                      ><strong>Subactividad:</strong></b-col
                     >
                     <b-col>{{ row.item.subactividad }}</b-col>
                   </b-row>

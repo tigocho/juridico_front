@@ -137,7 +137,7 @@
               <template #row-details="row">
                 <b-card>
                   <b-row class="mb-2">
-                    <b-col sm="3" class="text-sm-right"><b>Id:</b></b-col>
+                    <b-col sm="3" class="text-sm-right"><strong>Id:</strong></b-col>
                     <b-col>{{ row.item.caso_id }}</b-col>
                   </b-row>
                 </b-card>

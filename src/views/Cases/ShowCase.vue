@@ -49,7 +49,7 @@
                       class="col-auto p-0"
                       :active="false"
                       href="#seguimiento"
-                      title="Segumiento"
+                      title="Seguimiento"
                     />
                     <tab-nav-items
                       class="col-auto p-0"
@@ -138,9 +138,143 @@
                 <tab-content-item :active="false" id="seguimiento">
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title text-center justify-content-center">Crear Segumiento</h4>
+                      <h4 class="card-title">Seguimiento</h4>
                     </template>
-                    <FormSegumiento :case_id="caso.caso_id" />
+                    <template v-slot:body>
+                      <div v-if="addSeguimiento">
+                        <FormSegumiento
+                          :case_id="caso.caso_id"
+                          :onCreate="getSeguimientos"
+                          :onCancel="onCancel"
+                        />
+                      </div>
+                      <div v-else>
+                        <b-button
+                          style="margin-left: 25px; margin-bottom: 20px"
+                          variant="primary"
+                          @click="addSeguimiento = true"
+                          ><em class="fa fa-plus"></em> Agregar
+                          Seguimiento</b-button
+                        >
+                        <div
+                          style="margin-top: 10px"
+                          v-for="(seguimiento, index) in seguimientosCaso"
+                          :key="index"
+                        >
+                          <div
+                            v-if="
+                              seguimiento.seg_usuario_id ===
+                              caso.caso_usuario_id
+                            "
+                          >
+                            <b-row>
+                              <b-col
+                                style="margin-top: 15px; margin-left: 45px"
+                              >
+                                <b-card-text
+                                  ><b-row
+                                    ><strong>{{
+                                      seguimiento.usuario
+                                    }}</strong></b-row
+                                  >
+                                  <b-row>{{ seguimiento.seg_fecha }}</b-row>
+                                </b-card-text>
+                              </b-col>
+                              <b-col cols="9" style="margin-right: 75px"
+                                ><b-card
+                                  style="
+                                    border-radius: 20px;
+                                    border: 1px solid #000;
+                                  "
+                                  :bg-variant="
+                                    seguimiento.seg_tipo_seg_id === 2
+                                      ? 'success'
+                                      : seguimiento.seg_tipo_seg_id === 3
+                                      ? 'danger'
+                                      : 'info'
+                                  "
+                                  :title="seguimiento.seg_titulo"
+                                >
+                                  <b-card-text>{{
+                                    seguimiento.seg_descripcion
+                                  }}</b-card-text>
+                                </b-card></b-col
+                              >
+                            </b-row>
+                          </div>
+                          <div v-else>
+                            <b-row>
+                              <b-col cols="8" style="margin-left: 25px"
+                                ><b-card
+                                  style="
+                                    border-radius: 20px;
+                                    border: 1px solid #000;
+                                  "
+                                  :bg-variant="
+                                    seguimiento.seg_tipo_seg_id === 2
+                                      ? 'light'
+                                      : seguimiento.seg_tipo_seg_id === 3
+                                      ? 'danger'
+                                      : 'info'
+                                  "
+                                  :title="seguimiento.seg_titulo"
+                                >
+                                  <b-card-text>{{
+                                    seguimiento.seg_descripcion
+                                  }}</b-card-text>
+                                  <b-card-text class="text-right font-italic">{{
+                                    seguimiento.tipo_seg_nombre
+                                  }}</b-card-text>
+                                </b-card></b-col
+                              >
+                              <b-col
+                                style="margin-top: 15px; margin-left: 15px"
+                              >
+                                <b-card-text
+                                  ><b-row
+                                    ><strong>{{
+                                      seguimiento.usuario
+                                    }}</strong></b-row
+                                  >
+                                  <b-row>{{ seguimiento.seg_fecha }}</b-row>
+                                </b-card-text>
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </div>
+                        <div style="margin-top: 10px">
+                          <b-row>
+                            <b-col style="margin-top: 15px; margin-left: 45px"
+                              ><b-card-text
+                                ><b-row
+                                  ><strong>{{
+                                    caso.solicitante
+                                  }}</strong></b-row
+                                >
+                                <b-row>{{ caso.caso_fecha_apertura }}</b-row>
+                              </b-card-text>
+                            </b-col>
+                            <b-col cols="9" style="margin-right: 75px"
+                              ><b-card
+                                style="
+                                  border-radius: 20px;
+                                  border: 1px solid #000;
+                                "
+                                bg-variant="success"
+                                :title="caso.caso_titulo"
+                              >
+                                <b-card-text>{{
+                                  caso.caso_descripcion
+                                }}</b-card-text>
+                                <b-card-text class="text-right font-italic"
+                                  >Apertura</b-card-text
+                                >
+                              </b-card></b-col
+                            >
+                          </b-row>
+                        </div>
+                      </div>
+                    </template>
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="historial">
@@ -153,7 +287,12 @@
                       </h4>
                     </template>
                     <template v-slot:body>
-                      <div v-for="(archivo, index) in archivos" :key="index">
+                      <h5 v-if="archivos.length > 0">Documentos Caso:</h5>
+                      <div
+                        style="margin-top: 10px"
+                        v-for="(archivo, index) in archivos"
+                        :key="index"
+                      >
                         <b-card-text>
                           <b-col>
                             <span
@@ -174,6 +313,42 @@
                               v-b-tooltip.hover
                               title="Quitar archivo"
                               @click="eliminarArchivo(archivo.arch_casos_id)"
+                              ><em class="fa fa-times"></em
+                            ></b-badge>
+                          </b-col>
+                        </b-card-text>
+                      </div>
+                      <h5
+                        v-if="archivosSeguimiento.length > 0"
+                        style="margin-top: 20px"
+                      >
+                        Documentos Seguimiento:
+                      </h5>
+                      <div
+                        style="margin-top: 10px"
+                        v-for="(archivo, index) in archivosSeguimiento"
+                        :key="index"
+                      >
+                        <b-card-text>
+                          <b-col>
+                            <span
+                              style="
+                                text-decoration: underline;
+                                cursor: pointer;
+                              "
+                              @click="
+                                descargarArchivoCaso(archivo.arch_seg_nombre)
+                              "
+                              v-b-tooltip.hover
+                              title="Descargar archivo"
+                              >{{ archivo.arch_seg_nombre }}
+                            </span>
+                            <b-badge
+                              variant="danger"
+                              style="margin-left: 5px"
+                              v-b-tooltip.hover
+                              title="Quitar archivo"
+                              @click="eliminarArchivo(archivo.arch_seg_id)"
                               ><em class="fa fa-times"></em
                             ></b-badge>
                           </b-col>
@@ -209,14 +384,18 @@ export default {
       textoBoton: 'Editar Caso',
       caso: {},
       archivos: [],
+      archivosSeguimiento: [],
       progress_total: 4,
       max: 100,
-      loading: true
+      loading: true,
+      addSeguimiento: false,
+      seguimientosCaso: []
     }
   },
   mounted () {
     this.barraCargando()
     this.getCase()
+    this.getSeguimientos()
   },
   methods: {
     getCase () {
@@ -290,6 +469,20 @@ export default {
             })
         }
       })
+    },
+    getSeguimientos () {
+      this.addSeguimiento = false
+      axios
+        .get('/seguimientos-caso/' + this.$route.params.caso_id)
+        .then((res) => {
+          if (res.status === 200) {
+            this.seguimientosCaso = res.data.seguimientos
+            this.archivosSeguimiento = res.data.archivoSeguimiento
+          }
+        })
+    },
+    onCancel () {
+      this.addSeguimiento = false
     }
   }
 }

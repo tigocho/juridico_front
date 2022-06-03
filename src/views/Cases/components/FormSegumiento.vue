@@ -77,6 +77,12 @@
                   ></b-form-group>
                   <b-form-group>
                     <b-button
+                      style="margin-right: 10px"
+                      :class="estadoBoton"
+                      @click="onCancel"
+                      >Cancelar</b-button
+                    >
+                    <b-button
                       variant="primary"
                       type="submit"
                       :class="estadoBoton"
@@ -99,7 +105,9 @@ import auth from '@/logic/auth'
 export default {
   name: 'FormSegumiento',
   props: {
-    case_id: String
+    case_id: String,
+    onCreate: Function,
+    onCancel: Function
   },
   data () {
     return {
@@ -163,7 +171,7 @@ export default {
 
       axios.post('/seguimiento/create', data).then((res) => {
         if (res.status === 200) {
-          this.$router.push({ path: `/cases/cases-show/${res.data.caso_id}` })
+          this.onCreate()
         }
         Vue.swal(res.data.message)
         this.estadoBoton = ''
