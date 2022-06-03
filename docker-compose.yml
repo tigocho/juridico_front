@@ -10,4 +10,7 @@ services:
     ports:
       - "8081:80"
     networks:
-      - juridico-network
+      - juridico_api_juridico-network
+networks:
+  juridico_api_juridico-network:
+    external: true
