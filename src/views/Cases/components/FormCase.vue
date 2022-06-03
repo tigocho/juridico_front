@@ -8,7 +8,40 @@
               <b-row
                 class="justify-content-center text-center align-items-center"
               >
-                <b-col lg="6">
+                <b-col lg="7">
+                  <b-row v-if="!onEdit">
+                    <b-form-group
+                      class="col-md-6"
+                      label="Actividad*"
+                      label-for="act_id"
+                    >
+                      <v-select
+                        v-model="actividad_id"
+                        :options="actividadesOptions"
+                        :reduce="(label) => label.code"
+                        label="label"
+                        id="act_id"
+                        @input="getSubactividades"
+                      >
+                        <span slot="no-options">No hay Actividades.</span>
+                      </v-select>
+                    </b-form-group>
+                    <b-form-group
+                      class="col-md-6"
+                      label="Subactividad*"
+                      label-for="subact_id"
+                    >
+                      <v-select
+                        v-model="subactividad_id"
+                        :options="subactividadesOptions"
+                        :reduce="(label) => label.code"
+                        label="label"
+                        id="subact_id"
+                      >
+                        <span slot="no-options">No hay Subctividades.</span>
+                      </v-select>
+                    </b-form-group>
+                  </b-row>
                   <b-form-group
                     label="Titulo de la Solicitud*"
                     label-for="case_title"
@@ -94,6 +127,10 @@ export default {
   data () {
     return {
       clinicasUser: [],
+      actividadesOptions: [],
+      actividad_id: '',
+      subactividadesOptions: [],
+      subactividad_id: '',
       textoBoton: 'Guardar Caso',
       estadoBoton: '',
       caseFiles: [
@@ -109,6 +146,7 @@ export default {
     }
   },
   mounted () {
+    this.getActividades()
     if (!this.onEdit) this.getUserClinicas()
   },
   methods: {
@@ -170,11 +208,12 @@ export default {
       data.append('case_description', this.case_description)
       data.append('user_id', this.userLogged.usr_id)
       data.append('clinica_id', this.clinicasUser[0])
-      // data.append('import_file', this.import_file)
+      data.append('subactividad_id', this.subactividad_id)
+
       let index = 0
       for (let casefile of this.caseFiles) {
         if (casefile.file != null) {
-          data.append('file-' + index, casefile.file, casefile.file.name) // note, no square-brackets
+          data.append('file-' + index, casefile.file, casefile.file.name)
           index++
         }
       }
@@ -187,6 +226,18 @@ export default {
         }
         Vue.swal(res.data.message)
       })
+    },
+    getActividades () {
+      axios.get('/actividades/fetch').then((response) => {
+        this.actividadesOptions = response.data.actividades
+      })
+    },
+    getSubactividades () {
+      axios
+        .get('/subactividades/fetch/' + this.actividad_id)
+        .then((response) => {
+          this.subactividadesOptions = response.data.subactividades
+        })
     }
   }
 }
