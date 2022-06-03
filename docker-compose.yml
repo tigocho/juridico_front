@@ -1,16 +1,16 @@
 version: "3.7"
 
 services:
-  vue-app:
+  juridico-front:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: vue-app
+    container_name: juridico-front
     restart: always
     ports:
-      - "80:80"
+      - "8081:80"
     networks:
-      - vue-network
+      - juridico-net
 networks:
-  vue-network:
+  juridico-net:
     driver: bridge
