@@ -47,6 +47,19 @@
                 </template>
               </iq-card>
             </b-col>
+            <b-col lg="6">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Casos por Servicio</h4>
+                </template>
+                <template v-slot:body>
+                  <CasosPorSubactividad
+                    element="GraficasPorSubactividad"
+                    :casosSubactividad="casosSubactividad"
+                  />
+                </template>
+              </iq-card>
+            </b-col>
           </b-row>
         </iq-card>
       </b-col>
@@ -57,6 +70,7 @@
 import { xray } from '../../config/pluginInit'
 import CasosPorAbogado from './components/CasosPorAbogado.vue'
 import CasosPorClinicas from './components/CasosPorClinilca.vue'
+import CasosPorSubactividad from './components/CasosPorSubactividad.vue'
 import Vue from 'vue'
 import axios from 'axios'
 
@@ -64,13 +78,15 @@ export default {
   name: 'GraphsAndReports',
   components: {
     CasosPorAbogado,
-    CasosPorClinicas
+    CasosPorClinicas,
+    CasosPorSubactividad
   },
   mounted () {
     xray.index()
     this.barraCargando()
     this.obtenerCasosPorAbogado()
     this.obtenerCasosPorClinica()
+    this.obtenerCasosPorSubactividad()
   },
   data: function () {
     return {
@@ -78,7 +94,8 @@ export default {
       max: 100,
       loading: true,
       casosAbogado: [],
-      casosClinicas: []
+      casosClinicas: [],
+      casosSubactividad: []
     }
   },
   methods: {
@@ -105,6 +122,15 @@ export default {
       axios.get('/casos-clinicas').then((res) => {
         if (res.status === 200) {
           this.casosClinicas = res.data.casos
+        } else {
+          Vue.swal('Ocurrió un error tratando de obtener los datos')
+        }
+      })
+    },
+    obtenerCasosPorSubactividad () {
+      axios.get('/casos-subactividad').then((res) => {
+        if (res.status === 200) {
+          this.casosSubactividad = res.data.casos
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
         }
