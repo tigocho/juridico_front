@@ -31,7 +31,7 @@ export default {
           height: 500,
           type: 'bar'
         },
-        colors: ['#089bab'],
+        colors: ['#08a9ab'],
         plotOptions: {
           bar: {
             dataLabels: {
@@ -45,7 +45,7 @@ export default {
           enabled: true,
           position: 'top',
           style: {
-            colors: ['#089bab']
+            colors: ['#08a9ab']
           },
           offsetY: -25
         },
