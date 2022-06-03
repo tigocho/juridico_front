@@ -23,13 +23,34 @@
               <iq-card>
                 <template v-slot:headerTitle>
                   <h4>Casos por Abogado</h4>
-                  <h6>Total de casos asignados {{ totalAbogado }} </h6>
+                  <h6>Total de casos asignados {{ totalAbogado }}</h6>
+                  <b-form-select
+                    plain
+                    v-model="selectedAbogado"
+                    :options="optionsFechas"
+                    @input="filtroCasosAbogado"
+                  >
+                    <template #first>
+                      <b-form-select-option :value="null" disabled
+                        >-- Selecione un filtro --</b-form-select-option
+                      >
+                    </template>
+                  </b-form-select>
                 </template>
                 <template v-slot:body>
                   <CasosPorAbogado
+                    v-if="loadAbogado"
                     element="GraficasPorAbogado"
                     :casosAbogado="casosAbogado"
                   />
+                  <div class="text-center" v-else>
+                    <b-spinner
+                      style="width: 3rem; height: 3rem"
+                      variant="primary"
+                      type="grow"
+                      label="Spinning"
+                    ></b-spinner>
+                  </div>
                 </template>
               </iq-card>
             </b-col>
@@ -39,13 +60,34 @@
               <iq-card>
                 <template v-slot:headerTitle>
                   <h4>Casos por Clinica</h4>
-                  <h6>Total de Casos {{ totalClinica }} </h6>
+                  <h6>Total de Casos {{ totalClinica }}</h6>
+                  <b-form-select
+                    plain
+                    v-model="selectedClinica"
+                    :options="optionsFechas"
+                    @input="filtroCasosClinicas"
+                  >
+                    <template #first>
+                      <b-form-select-option :value="null" disabled
+                        >-- Selecione un filtro --</b-form-select-option
+                      >
+                    </template>
+                  </b-form-select>
                 </template>
                 <template v-slot:body>
                   <CasosPorClinicas
+                    v-if="loadClinica"
                     element="GraficasPorClinicas"
                     :casosClinicas="casosClinicas"
                   />
+                  <div class="text-center" v-else>
+                    <b-spinner
+                      style="width: 3rem; height: 3rem"
+                      variant="primary"
+                      type="grow"
+                      label="Spinning"
+                    ></b-spinner>
+                  </div>
                 </template>
               </iq-card>
             </b-col>
@@ -53,13 +95,34 @@
               <iq-card>
                 <template v-slot:headerTitle>
                   <h4>Casos por Servicio</h4>
-                  <h6>Total de Casos {{ totalSubactividades }} </h6>
+                  <h6>Total de Casos {{ totalSubactividades }}</h6>
+                  <b-form-select
+                    plain
+                    v-model="selectedSubactividad"
+                    :options="optionsFechas"
+                    @input="filtroCasosSubactividades"
+                  >
+                    <template #first>
+                      <b-form-select-option :value="null" disabled
+                        >-- Selecione un filtro --</b-form-select-option
+                      >
+                    </template>
+                  </b-form-select>
                 </template>
                 <template v-slot:body>
                   <CasosPorSubactividad
+                    v-if="loadSubactividad"
                     element="GraficasPorSubactividad"
                     :casosSubactividad="casosSubactividad"
                   />
+                  <div class="text-center" v-else>
+                    <b-spinner
+                      style="width: 3rem; height: 3rem"
+                      variant="primary"
+                      type="grow"
+                      label="Spinning"
+                    ></b-spinner>
+                  </div>
                 </template>
               </iq-card>
             </b-col>
@@ -99,6 +162,18 @@ export default {
       casosAbogado: [],
       casosClinicas: [],
       casosSubactividad: [],
+      selectedAbogado: null,
+      loadAbogado: true,
+      selectedClinica: null,
+      loadClinica: true,
+      selectedSubactividad: null,
+      loadSubactividad: true,
+      optionsFechas: [
+        { value: '1', text: 'Últimos 15 dias' },
+        { value: '2', text: 'Mes Actual' },
+        { value: '3', text: 'Últimos 6 meses' },
+        { value: '4', text: 'Año Actual' }
+      ],
       totalAbogado: '',
       totalClinica: '',
       totalSubactividades: ''
@@ -116,7 +191,7 @@ export default {
       }, 100)
     },
     obtenerCasosPorAbogado () {
-      axios.get('/casos-abogado').then((res) => {
+      axios.post('/casos-abogado').then((res) => {
         if (res.status === 200) {
           this.casosAbogado = res.data.casos
           this.totalAbogado = res.data.total
@@ -126,7 +201,7 @@ export default {
       })
     },
     obtenerCasosPorClinica () {
-      axios.get('/casos-clinicas').then((res) => {
+      axios.post('/casos-clinicas').then((res) => {
         if (res.status === 200) {
           this.casosClinicas = res.data.casos
           this.totalClinica = res.data.total
@@ -136,10 +211,49 @@ export default {
       })
     },
     obtenerCasosPorSubactividad () {
-      axios.get('/casos-subactividad').then((res) => {
+      axios.post('/casos-subactividad').then((res) => {
         if (res.status === 200) {
           this.casosSubactividad = res.data.casos
           this.totalSubactividades = res.data.total
+        } else {
+          Vue.swal('Ocurrió un error tratando de obtener los datos')
+        }
+      })
+    },
+    filtroCasosAbogado () {
+      this.loadAbogado = false
+      const data = { filtro: this.selectedAbogado }
+      axios.post('/casos-abogado', data).then((res) => {
+        if (res.status === 200) {
+          this.casosAbogado = res.data.casos
+          this.totalAbogado = res.data.total
+          this.loadAbogado = true
+        } else {
+          Vue.swal('Ocurrió un error tratando de obtener los datos')
+        }
+      })
+    },
+    filtroCasosClinicas () {
+      this.loadClinica = false
+      const data = { filtro: this.selectedClinica }
+      axios.post('/casos-clinicas', data).then((res) => {
+        if (res.status === 200) {
+          this.casosClinicas = res.data.casos
+          this.totalClinica = res.data.total
+          this.loadClinica = true
+        } else {
+          Vue.swal('Ocurrió un error tratando de obtener los datos')
+        }
+      })
+    },
+    filtroCasosSubactividades () {
+      this.loadSubactividad = false
+      const data = { filtro: this.selectedSubactividad }
+      axios.post('/casos-subactividad', data).then((res) => {
+        if (res.status === 200) {
+          this.casosSubactividad = res.data.casos
+          this.totalSubactividades = res.data.total
+          this.loadSubactividad = true
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
         }

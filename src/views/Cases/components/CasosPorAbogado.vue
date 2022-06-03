@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div :id="element"></div>
-    <div v-if="!hasData">
+    <div v-if="casosAbogado.length > 0" :id="element"></div>
+    <div v-else>
       <h4 class="col-12 text-center">No hay Casos asiganados a los abogados</h4>
     </div>
   </div>
@@ -17,9 +17,6 @@ export default {
   },
   data () {
     return {
-      max: 0,
-      errores: [],
-      hasData: false,
       chartOptions: {
         series: [
           {
@@ -34,6 +31,7 @@ export default {
         colors: ['#08a9ab'],
         plotOptions: {
           bar: {
+            borderRadius: 5,
             dataLabels: {
               position: 'top'
             },
@@ -102,9 +100,10 @@ export default {
         cantidad.push(caso.cantidad)
         abogados.push(caso.abogados)
       }
+      const max = Math.max(...cantidad)
+      this.chartOptions.yaxis.max = max + 2
 
-      if (this.casosAbogado.length > 0) this.hasData = true
-
+      console.log(max)
       this.chartOptions.xaxis.categories = abogados
       this.chartOptions.series[0].data = cantidad
       const chart = new ApexCharts(
