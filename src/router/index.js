@@ -864,9 +864,10 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const rutaAuth = to.matched.some((record) => record.meta.auth)
-  const token = axios.defaults.headers.common['Authorization']
+  const token = localStorage.getItem('access_token')
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   next()
-  if (rutaAuth && token == null) {
+  if (rutaAuth && token === null) {
     next({ name: 'auth1.sign-in1' })
     // this.$router.push({ name: 'auth1.sign-in1' })
   } else {

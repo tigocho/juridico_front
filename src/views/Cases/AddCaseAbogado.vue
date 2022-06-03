@@ -207,6 +207,7 @@
   </b-container>
 </template>
 <script>
+import { xray } from '../../config/pluginInit'
 import auth from '@/logic/auth'
 import Vue from 'vue'
 import axios from 'axios'
@@ -243,6 +244,7 @@ export default {
     }
   },
   mounted () {
+    xray.index()
     this.getActividades()
     this.getProfesionals()
     this.getUserClinicas()

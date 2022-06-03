@@ -379,6 +379,7 @@
   </b-container>
 </template>
 <script>
+import { xray } from '../../config/pluginInit'
 import axios from 'axios'
 import Vue from 'vue'
 import fileDownload from 'js-file-download'
@@ -406,6 +407,7 @@ export default {
     }
   },
   mounted () {
+    xray.index()
     this.barraCargando()
     this.getCase()
     this.getSeguimientos()

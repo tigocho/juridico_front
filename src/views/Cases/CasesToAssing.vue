@@ -206,6 +206,7 @@ import auth from '@/logic/auth'
 import Vue from 'vue'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import FormCase from '../Cases/components/FormCase.vue'
+import { xray } from '../../config/pluginInit'
 export default {
   name: 'CasesToAssing',
   components: {
@@ -262,6 +263,7 @@ export default {
     }
   },
   mounted () {
+    xray.index()
     this.getCasosToAssing()
   },
   methods: {
