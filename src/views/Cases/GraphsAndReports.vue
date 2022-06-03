@@ -33,6 +33,21 @@
               </iq-card>
             </b-col>
           </b-row>
+          <b-row>
+            <b-col lg="6">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Casos por Clinica</h4>
+                </template>
+                <template v-slot:body>
+                  <CasosPorClinicas
+                    element="GraficasPorClinicas"
+                    :casosClinicas="casosClinicas"
+                  />
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
         </iq-card>
       </b-col>
     </b-row>
@@ -41,25 +56,29 @@
 <script>
 import { xray } from '../../config/pluginInit'
 import CasosPorAbogado from './components/CasosPorAbogado.vue'
+import CasosPorClinicas from './components/CasosPorClinilca.vue'
 import Vue from 'vue'
 import axios from 'axios'
 
 export default {
   name: 'GraphsAndReports',
   components: {
-    CasosPorAbogado
+    CasosPorAbogado,
+    CasosPorClinicas
   },
   mounted () {
     xray.index()
     this.barraCargando()
     this.obtenerCasosPorAbogado()
+    this.obtenerCasosPorClinica()
   },
   data: function () {
     return {
       progress_total: 4,
       max: 100,
       loading: true,
-      casosAbogado: []
+      casosAbogado: [],
+      casosClinicas: []
     }
   },
   methods: {
@@ -77,6 +96,15 @@ export default {
       axios.get('/casos-abogado').then((res) => {
         if (res.status === 200) {
           this.casosAbogado = res.data.casos
+        } else {
+          Vue.swal('Ocurrió un error tratando de obtener los datos')
+        }
+      })
+    },
+    obtenerCasosPorClinica () {
+      axios.get('/casos-clinicas').then((res) => {
+        if (res.status === 200) {
+          this.casosClinicas = res.data.casos
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
         }
