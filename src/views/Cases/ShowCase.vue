@@ -301,7 +301,10 @@
                                 cursor: pointer;
                               "
                               @click="
-                                descargarArchivoCaso(archivo.arch_casos_nombre)
+                                descargarArchivoCaso(
+                                  archivo.arch_casos_nombre,
+                                  archivo.arch_casos_id
+                                )
                               "
                               v-b-tooltip.hover
                               title="Descargar archivo"
@@ -312,7 +315,9 @@
                               style="margin-left: 5px"
                               v-b-tooltip.hover
                               title="Quitar archivo"
-                              @click="eliminarArchivo(archivo.arch_casos_id)"
+                              @click="
+                                eliminarArchivo('caso', archivo.arch_casos_id)
+                              "
                               ><em class="fa fa-times"></em
                             ></b-badge>
                           </b-col>
@@ -337,7 +342,10 @@
                                 cursor: pointer;
                               "
                               @click="
-                                descargarArchivoCaso(archivo.arch_seg_nombre)
+                                descargarArchivoSeguimiento(
+                                  archivo.arch_seg_nombre,
+                                  archivo.arch_seg_id
+                                )
                               "
                               v-b-tooltip.hover
                               title="Descargar archivo"
@@ -348,7 +356,12 @@
                               style="margin-left: 5px"
                               v-b-tooltip.hover
                               title="Quitar archivo"
-                              @click="eliminarArchivo(archivo.arch_seg_id)"
+                              @click="
+                                eliminarArchivo(
+                                  'segumiento',
+                                  archivo.arch_seg_id
+                                )
+                              "
                               ><em class="fa fa-times"></em
                             ></b-badge>
                           </b-col>
@@ -415,9 +428,9 @@ export default {
           }, 3500)
         )
     },
-    descargarArchivoCaso (filename) {
+    descargarArchivoCaso (filename, id) {
       axios({
-        url: '/casos/descargar-archivo/' + this.$route.params.caso_id,
+        url: '/casos/descargar-archivo/' + id,
         method: 'GET',
         responseType: 'blob'
       })
@@ -443,7 +456,39 @@ export default {
     editarCaso () {
       this.$bvModal.show('modal-editar-caso')
     },
-    eliminarArchivo (archivoId) {
+    getSeguimientos () {
+      this.addSeguimiento = false
+      axios
+        .get('/seguimientos-caso/' + this.$route.params.caso_id)
+        .then((res) => {
+          if (res.status === 200) {
+            this.seguimientosCaso = res.data.seguimientos
+            this.archivosSeguimiento = res.data.archivoSeguimiento
+          }
+        })
+    },
+    onCancel () {
+      this.addSeguimiento = false
+    },
+    descargarArchivoSeguimiento (filename, id) {
+      axios({
+        url: '/seguimiento/descargar-archivo/' + id,
+        method: 'GET',
+        responseType: 'blob'
+      })
+        .then((response) => {
+          console.log(response)
+          if (response.data != null) {
+            fileDownload(response.data, filename)
+          } else {
+            Vue.swal('No se encontró archivo')
+          }
+        })
+        .catch((err) => {
+          Vue.swal('Ups, ocurrió un error ' + err)
+        })
+    },
+    eliminarArchivo (tipo, archivoId) {
       Swal.fire({
         icon: 'warning',
         title: '¿Estás seguro?',
@@ -453,7 +498,7 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           axios
-            .get('/archivo-caso/delete/' + archivoId)
+            .get('/archivo-' + tipo + '/delete/' + archivoId)
             .then((res) => {
               if (res.status === 200) {
                 this.loading = true
@@ -469,20 +514,6 @@ export default {
             })
         }
       })
-    },
-    getSeguimientos () {
-      this.addSeguimiento = false
-      axios
-        .get('/seguimientos-caso/' + this.$route.params.caso_id)
-        .then((res) => {
-          if (res.status === 200) {
-            this.seguimientosCaso = res.data.seguimientos
-            this.archivosSeguimiento = res.data.archivoSeguimiento
-          }
-        })
-    },
-    onCancel () {
-      this.addSeguimiento = false
     }
   }
 }
