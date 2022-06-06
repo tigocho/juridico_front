@@ -103,7 +103,6 @@ export default {
       const max = Math.max(...cantidad)
       this.chartOptions.yaxis.max = max + 2
 
-      console.log(max)
       this.chartOptions.xaxis.categories = abogados
       this.chartOptions.series[0].data = cantidad
       const chart = new ApexCharts(

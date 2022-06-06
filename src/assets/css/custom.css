@@ -51,11 +51,11 @@ import Css
 
 /* SIDEBAR */
 .iq-sidebar {
-  background-color:  #343a40 !important;
-  background: #7e1818 !important;
+  background-color: #089bab !important;
+  background: #089bab !important;
 }
 .iq-sidebar-menu .iq-menu li.active > a {
-  color: #7e1818 !important;
+  color: #089bab !important;
 }
 
 .iq-sidebar-menu .iq-menu li.active .iq-submenu li.active > a {
@@ -64,5 +64,5 @@ import Css
   border-radius: 0;
 }
 .iq-sidebar-menu .iq-menu li ul a:hover {
-  color: #7e1818 !important;
+  color: #089bab !important;
 }

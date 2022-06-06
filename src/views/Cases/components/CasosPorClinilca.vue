@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="casosClinicas.length > 0" :id="element"></div>
-    <div>
+    <div v-else>
       <h4 class="col-12 text-center">No hay Casos</h4>
     </div>
   </div>

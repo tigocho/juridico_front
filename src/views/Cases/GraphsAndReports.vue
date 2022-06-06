@@ -168,6 +168,8 @@ export default {
       loadClinica: true,
       selectedSubactividad: null,
       loadSubactividad: true,
+      intentos: 0,
+      errors: {},
       optionsFechas: [
         { value: '1', text: 'Últimos 15 dias' },
         { value: '2', text: 'Mes Actual' },
@@ -191,34 +193,61 @@ export default {
       }, 100)
     },
     obtenerCasosPorAbogado () {
-      axios.post('/casos-abogado').then((res) => {
-        if (res.status === 200) {
-          this.casosAbogado = res.data.casos
-          this.totalAbogado = res.data.total
-        } else {
-          Vue.swal('Ocurrió un error tratando de obtener los datos')
-        }
-      })
+      axios
+        .post('/casos-abogado')
+        .then((res) => {
+          if (res.status === 200) {
+            this.casosAbogado = res.data.casos
+            this.totalAbogado = res.data.total
+            this.intentos = 0
+            this.errors = {}
+          }
+        })
+        .catch((err) => {
+          this.errors = err
+          if (this.intentos < 2) {
+            this.obtenerCasosPorAbogado()
+            this.intentos++
+          }
+        })
     },
     obtenerCasosPorClinica () {
-      axios.post('/casos-clinicas').then((res) => {
-        if (res.status === 200) {
-          this.casosClinicas = res.data.casos
-          this.totalClinica = res.data.total
-        } else {
-          Vue.swal('Ocurrió un error tratando de obtener los datos')
-        }
-      })
+      axios
+        .post('/casos-clinicas')
+        .then((res) => {
+          if (res.status === 200) {
+            this.casosClinicas = res.data.casos
+            this.totalClinica = res.data.total
+            this.intentos = 0
+            this.errors = {}
+          }
+        })
+        .catch((err) => {
+          this.errors = err
+          if (this.intentos < 2) {
+            this.obtenerCasosPorClinica()
+            this.intentos++
+          }
+        })
     },
     obtenerCasosPorSubactividad () {
-      axios.post('/casos-subactividad').then((res) => {
-        if (res.status === 200) {
-          this.casosSubactividad = res.data.casos
-          this.totalSubactividades = res.data.total
-        } else {
-          Vue.swal('Ocurrió un error tratando de obtener los datos')
-        }
-      })
+      axios
+        .post('/casos-subactividad')
+        .then((res) => {
+          if (res.status === 200) {
+            this.casosSubactividad = res.data.casos
+            this.totalSubactividades = res.data.total
+            this.intentos = 0
+            this.errors = {}
+          }
+        })
+        .catch((err) => {
+          this.errors = err
+          if (this.intentos < 2) {
+            this.obtenerCasosPorSubactividad()
+            this.intentos++
+          }
+        })
     },
     filtroCasosAbogado () {
       this.loadAbogado = false

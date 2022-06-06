@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="casosSubactividad.length > 0" :id="element"></div>
-    <div>
+    <div v-else>
       <h4 class="col-12 text-center">No hay Casos</h4>
     </div>
   </div>
@@ -103,7 +103,6 @@ export default {
 
       const max = Math.max(...cantidad)
       this.chartOptions.yaxis.max = max + 2
-      console.log(max)
 
       this.chartOptions.xaxis.categories = subactividad
       this.chartOptions.series[0].data = cantidad
