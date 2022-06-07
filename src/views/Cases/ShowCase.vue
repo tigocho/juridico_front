@@ -282,36 +282,36 @@
                     <template v-slot:body>
                       <section class="timeline">
                         <b-card-text>
-                        <ul>
-                          <li v-if="caso.caso_fecha_cierre != null">
-                            <span></span>
-                            <div>Fecha de Cierre</div>
-                            <div class="year">
-                              <span>{{ caso.caso_fecha_cierre }}</span>
-                            </div>
-                          </li>
-                          <li v-if="caso.fecha_solucion != null">
-                            <span></span>
-                            <div>Fecha de Solución</div>
-                            <div class="year">
-                              <span>{{ caso.fecha_solucion }}</span>
-                            </div>
-                          </li>
-                          <li v-if="caso.caso_fecha_asignacion != null">
-                            <span></span>
-                            <div>Fecha de Asignacion</div>
-                            <div class="year">
-                              <span>{{ caso.caso_fecha_asignacion }}</span>
-                            </div>
-                          </li>
-                          <li>
-                            <span></span>
-                            <div>Fecha de Apertura</div>
-                            <div class="year">
-                              <span>{{ caso.caso_fecha_apertura }}</span>
-                            </div>
-                          </li>
-                        </ul>
+                          <ul>
+                            <li v-if="caso.caso_fecha_cierre != null">
+                              <span></span>
+                              <div>Fecha de Cierre</div>
+                              <div class="year">
+                                <span>{{ caso.caso_fecha_cierre }}</span>
+                              </div>
+                            </li>
+                            <li v-if="caso.fecha_solucion != null">
+                              <span></span>
+                              <div>Fecha de Solución</div>
+                              <div class="year">
+                                <span>{{ caso.fecha_solucion }}</span>
+                              </div>
+                            </li>
+                            <li v-if="caso.caso_fecha_asignacion != null">
+                              <span></span>
+                              <div>Fecha de Asignacion</div>
+                              <div class="year">
+                                <span>{{ caso.caso_fecha_asignacion }}</span>
+                              </div>
+                            </li>
+                            <li>
+                              <span></span>
+                              <div>Fecha de Apertura</div>
+                              <div class="year">
+                                <span>{{ caso.caso_fecha_apertura }}</span>
+                              </div>
+                            </li>
+                          </ul>
                         </b-card-text>
                       </section>
                     </template>
@@ -334,9 +334,10 @@
                         <b-card-text>
                           <b-col>
                             <span
-                              style="
-                                text-decoration: underline;
-                                cursor: pointer;
+                              :style="
+                                archivo.deleted_at !== null
+                                  ? 'opacity: 0.4;'
+                                  : 'text-decoration: underline;cursor: pointer;'
                               "
                               @click="
                                 descargarArchivoCaso(
@@ -347,8 +348,14 @@
                               v-b-tooltip.hover
                               title="Descargar archivo"
                               >{{ archivo.arch_casos_nombre }}
+                              {{
+                                archivo.deleted_at != null
+                                  ? '  eliminado por ' + archivo.user
+                                  : ' '
+                              }}
                             </span>
                             <b-badge
+                              v-if="archivo.deleted_at === null"
                               variant="danger"
                               style="margin-left: 5px"
                               v-b-tooltip.hover
@@ -417,6 +424,7 @@
   </b-container>
 </template>
 <script>
+import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
 import axios from 'axios'
 import Vue from 'vue'
@@ -442,6 +450,11 @@ export default {
       loading: true,
       addSeguimiento: false,
       seguimientosCaso: []
+    }
+  },
+  computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
     }
   },
   mounted () {
@@ -538,7 +551,14 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           axios
-            .get('/archivo-' + tipo + '/delete/' + archivoId)
+            .get(
+              '/archivo-' +
+                tipo +
+                '/delete/' +
+                archivoId +
+                '/' +
+                this.userLogged.usr_id
+            )
             .then((res) => {
               if (res.status === 200) {
                 this.loading = true
