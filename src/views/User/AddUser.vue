@@ -46,8 +46,8 @@
                     </b-form-select>
                   </b-form-group>
                   <b-form-group class="col-md-6" label="Identificación:" label-for="mobno">
-                    <ValidationProvider name="Identificación" rules="required" v-slot="{ errors }">
-                      <b-form-input v-model="user.usr_identification" type="text" placeholder="Identificación" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                    <ValidationProvider name="Identificación" rules="required|numeric" v-slot="{ errors }">
+                      <b-form-input v-model="user.usr_identification" type="number" placeholder="Identificación" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                       <div class="invalid-feedback">
                         <span>Número de identificación inválido</span>
                       </div>
@@ -89,7 +89,6 @@
                       :reduce="label => label.code"
                       label="label"
                       id="clinica_id"
-                      :class="(errors.length > 0 ? ' is-invalid' : '') + 'ml-1' "
                       >
                       <span slot="no-options">No hay clínicas.</span>
                     </v-select>
@@ -172,6 +171,7 @@ export default {
   mounted () {
     xray.index()
     this.fetchClinicaOptions()
+    this.fetchPerfilesPlataformaOptions()
   },
   data () {
     return {
@@ -187,7 +187,7 @@ export default {
         usr_identification: '',
         usr_birthday: '',
         usr_username: '',
-        clinicas: null,
+        clinicas: '',
         usr_email: '',
         profile_image: require('../../assets/images/user/11.png'),
         city: '',
@@ -196,7 +196,7 @@ export default {
         usr_gender: '',
         usr_cell_phone: '',
         usr_is_active: 1,
-        usr_color: '',
+        usr_color: '#000000',
         usr_password: '',
         newPassword2: ''
       },
@@ -215,13 +215,7 @@ export default {
           disabled: false
         }
       ],
-      roles: [
-        { text: 'Administrador', value: 1 },
-        { text: 'Abogado Líder', value: 12 },
-        { text: 'Abogado', value: 2 },
-        { text: 'Cliente', value: 11 },
-        { text: 'Calidad', value: 13 }
-      ],
+      roles: {},
       ids: [
         { text: 'CC.', value: 1 },
         { text: 'TI.', value: 2 },
@@ -252,6 +246,18 @@ export default {
         reader.readAsDataURL(input.files[0])
       }
     },
+    fetchPerfilesPlataformaOptions () {
+      axios.get('/profiles/perfiles-plataforma').then(response => {
+        this.roles = response.data.profiles
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchPerfilesPlataformaOptions()
+            this.intentos++
+          }
+        })
+    },
     fetchClinicaOptions () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         axios.get('/clinicas/obtener-clinicas/' + this.userLogged.usr_id).then(response => {
@@ -277,8 +283,12 @@ export default {
       }
     },
     onSubmit () {
-      this.estadoBoton = 'disabled'
-      this.addUser()
+      if (this.user.clinicas != null && this.user.clinicas.length > 0) {
+        this.estadoBoton = 'disabled'
+        this.addUser()
+      } else {
+        Vue.swal('Por favor seleccione al menos una clínica para el usuario.')
+      }
     },
     addUser () {
       this.textoBoton = 'Creando usuario...'
