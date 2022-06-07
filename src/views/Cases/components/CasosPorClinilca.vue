@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div :id="element"></div>
-    <div v-if="!hasData">
+    <div v-if="casosClinicas.length > 0" :id="element"></div>
+    <div v-else>
       <h4 class="col-12 text-center">No hay Casos</h4>
     </div>
   </div>
@@ -17,7 +17,6 @@ export default {
   },
   data () {
     return {
-      hasData: false,
       chartOptions: {
         series: [
           {
@@ -35,6 +34,7 @@ export default {
             dataLabels: {
               position: 'top'
             },
+            borderRadius: 5,
             columnWidth: '80%',
             endingShape: 'rounded'
           }
@@ -101,7 +101,8 @@ export default {
         clinicas.push(caso.clinica)
       }
 
-      if (this.casosClinicas.length > 0) this.hasData = true
+      const max = Math.max(...cantidad)
+      this.chartOptions.yaxis.max = max + 2
 
       this.chartOptions.xaxis.categories = clinicas
       this.chartOptions.series[0].data = cantidad
