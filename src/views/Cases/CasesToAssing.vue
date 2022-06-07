@@ -25,6 +25,7 @@
           <form ref="form-2" @submit.prevent="handleSubmit(SaveAsignacionCaso)">
             <b-row>
               <b-col lg="10" class="pagina-detalle-proceso">
+                <p><strong>Actividad: </strong>{{ caso.subactividad }}</p>
                 <p>
                   <strong>{{ caso.caso_titulo }}</strong>
                 </p>
@@ -40,39 +41,6 @@
                     <span slot="no-options">No hay Abogados.</span>
                   </v-select>
                 </b-form-group>
-                <b-row>
-                  <b-form-group
-                    class="col-md-6"
-                    label="Actividad*"
-                    label-for="act_id"
-                  >
-                    <v-select
-                      v-model="actividad_id"
-                      :options="actividadesOptions"
-                      :reduce="(label) => label.code"
-                      label="label"
-                      id="act_id"
-                      @input="getSubactividades"
-                    >
-                      <span slot="no-options">No hay Actividades.</span>
-                    </v-select>
-                  </b-form-group>
-                  <b-form-group
-                    class="col-md-6"
-                    label="Subactividad*"
-                    label-for="subact_id"
-                  >
-                    <v-select
-                      v-model="asginarData.subactividad_id"
-                      :options="subactividadesOptions"
-                      :reduce="(label) => label.code"
-                      label="label"
-                      id="subact_id"
-                    >
-                      <span slot="no-options">No hay Subctividades.</span>
-                    </v-select>
-                  </b-form-group>
-                </b-row>
                 <b-form-group>
                   <b-button variant="primary" type="submit"
                     >Asignar Caso</b-button
@@ -217,18 +185,15 @@ export default {
       casos: [],
       caso: {},
       estado: 'd-none',
-      actividadesOptions: [],
-      subactividadesOptions: [],
       profesionalesOptions: [],
       bRowLast: {},
-      actividad_id: '',
       asginarData: {
-        subactividad_id: '',
         profesional_id: ''
       },
       fields: [
         { label: 'Título', key: 'caso_titulo', class: 'text-left' },
         { label: 'Descripción', key: 'caso_descripcion', class: 'text-left' },
+        { label: 'Actividad', key: 'subactividad', class: 'text-left' },
         { label: 'Estado', key: 'estado', class: 'text-left' },
         {
           label: 'Fecha de Apertura',
@@ -288,7 +253,6 @@ export default {
       this.$bvModal.show('modal-editar-caso')
     },
     asignarCaso (caso) {
-      this.getActividades()
       this.getProfesionals()
       this.caso = caso
       this.$bvModal.show('modal-asignar-caso')
@@ -318,18 +282,6 @@ export default {
             })
         }
       })
-    },
-    getActividades () {
-      axios.get('/actividades/fetch').then((response) => {
-        this.actividadesOptions = response.data.actividades
-      })
-    },
-    getSubactividades () {
-      axios
-        .get('/subactividades/fetch/' + this.actividad_id)
-        .then((response) => {
-          this.subactividadesOptions = response.data.subactividades
-        })
     },
     getProfesionals () {
       axios.get('/professionals/fetch').then((response) => {
