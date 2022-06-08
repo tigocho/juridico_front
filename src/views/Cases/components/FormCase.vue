@@ -71,10 +71,20 @@
                   <div v-for="(casefile, index) in caseFiles" :key="index">
                     <b-form-group>
                       <b-form-file
+                        class="col-md-10"
                         v-model="casefile.file"
                         :name="`file-${index}`"
-                        placeholder="Añade un archivo"
+                        placeholder="Añadir archivo"
                       ></b-form-file>
+                      <b-button
+                        size="sm"
+                        variant="danger"
+                        style="margin-left: 10px"
+                        v-b-tooltip.hover
+                        title="Quitar archivo"
+                        @click="removeFile(index)"
+                        ><em class="fa fa-times"></em
+                      ></b-button>
                     </b-form-group>
                   </div>
                   <b-form-group
@@ -85,14 +95,6 @@
                       title="Adjuntar otro archivo"
                       @click="addFile"
                       ><em class="fa fa-plus"></em> </b-button
-                    ><b-button
-                      size="sm"
-                      variant="danger"
-                      style="margin-left: 5px"
-                      v-b-tooltip.hover
-                      title="Quitar archivo"
-                      @click="removeFile"
-                      ><em class="fa fa-minus"></em></b-button
                   ></b-form-group>
                   <b-form-group>
                     <b-button
@@ -155,8 +157,8 @@ export default {
         file: null
       })
     },
-    removeFile () {
-      this.caseFiles.pop()
+    removeFile (index) {
+      this.caseFiles.splice(index, 1)
     },
     onSubmit () {
       this.estadoBoton = 'disabled'

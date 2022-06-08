@@ -146,6 +146,7 @@
                           label-for="textarea-decription"
                         >
                           <b-form-textarea
+                            class="col-md-6"
                             id="textarea-decription"
                             v-model="caso.case_description"
                             rows="3"
@@ -162,10 +163,20 @@
                         >
                           <b-form-group>
                             <b-form-file
+                              class="col-md-5"
                               v-model="casefile.file"
                               :name="`file-${index}`"
-                              placeholder="Añade un archivo"
+                              placeholder="Añadir archivo"
                             ></b-form-file>
+                            <b-button
+                              size="sm"
+                              variant="danger"
+                              style="margin-left: 10px"
+                              v-b-tooltip.hover
+                              title="Quitar archivo"
+                              @click="removeFile(index)"
+                              ><em class="fa fa-times"></em
+                            ></b-button>
                           </b-form-group>
                         </div>
                         <b-form-group
@@ -175,15 +186,7 @@
                             v-b-tooltip.hover
                             title="Adjuntar otro archivo"
                             @click="addFile"
-                            ><i class="fa fa-plus"></i> </b-button
-                          ><b-button
-                            size="sm"
-                            variant="danger"
-                            style="margin-left: 5px"
-                            v-b-tooltip.hover
-                            title="Quitar archivo"
-                            @click="removeFile"
-                            ><i class="fa fa-minus"></i></b-button
+                            ><em class="fa fa-plus"></em> </b-button
                         ></b-form-group>
 
                         <b-form-group>
@@ -308,8 +311,8 @@ export default {
         file: null
       })
     },
-    removeFile () {
-      this.caseFiles.pop()
+    removeFile (index) {
+      this.caseFiles.splice(index, 1)
     },
     guardarCaso () {
       this.textoBoton = 'Guardando...'
