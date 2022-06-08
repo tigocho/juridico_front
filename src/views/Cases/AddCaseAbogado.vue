@@ -20,30 +20,51 @@
                             label="Solicitante*"
                             label-for="user_id"
                           >
-                            <v-select
-                              v-model="caso.user_id"
-                              :options="clientesOptions"
-                              :reduce="(label) => label.code"
-                              label="label"
-                              id="user_id"
+                            <ValidationProvider
+                              name="Cliente"
+                              rules="required"
+                              v-slot="{ errors }"
                             >
-                              <span slot="no-options">No hay Clientes.</span>
-                            </v-select>
+                              <v-select
+                                v-model="caso.user_id"
+                                :options="clientesOptions"
+                                :reduce="(label) => label.code"
+                                @input="getUserClinicas"
+                                label="label"
+                                id="user_id"
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
+                              >
+                                <span slot="no-options">No hay Clientes.</span>
+                              </v-select>
+                              <div class="invalid-feedback">
+                                <span>Debe de seleccionar un cliente</span>
+                              </div>
+                            </ValidationProvider>
                           </b-form-group>
                           <b-form-group
                             class="col-md-5"
                             label="Tipo de servicio*"
                             label-for="servicio_id"
                           >
-                            <v-select
-                              v-model="caso.servicio_id"
-                              :options="serviciosOptions"
-                              :reduce="(label) => label.code"
-                              label="label"
-                              id="servicio_id"
+                            <ValidationProvider
+                              name="Servicio"
+                              rules="required"
+                              v-slot="{ errors }"
                             >
-                              <span slot="no-options">No hay Servicios.</span>
-                            </v-select>
+                              <v-select
+                                v-model="caso.servicio_id"
+                                :options="serviciosOptions"
+                                :reduce="(label) => label.code"
+                                label="label"
+                                id="servicio_id"
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
+                              >
+                                <span slot="no-options">No hay Servicios.</span>
+                              </v-select>
+                              <div class="invalid-feedback">
+                                <span>Debe de seleccionar un Servicio</span>
+                              </div>
+                            </ValidationProvider>
                           </b-form-group>
                         </b-row>
                         <b-row>
@@ -52,30 +73,50 @@
                             label="Clinica*"
                             label-for="clinica_id"
                           >
-                            <v-select
-                              v-model="caso.clinica_id"
-                              :options="clinicasOptions"
-                              :reduce="(label) => label.code"
-                              label="label"
-                              id="clinica_id"
+                            <ValidationProvider
+                              name="clinicas"
+                              rules="required"
+                              v-slot="{ errors }"
                             >
-                              <span slot="no-options">No hay clinicas.</span>
-                            </v-select>
+                              <v-select
+                                v-model="caso.clinica_id"
+                                :options="clinicasOptions"
+                                :reduce="(label) => label.code"
+                                label="label"
+                                id="clinica_id"
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
+                              >
+                                <span slot="no-options">No hay clinicas.</span>
+                              </v-select>
+                              <div class="invalid-feedback">
+                                <span>Debe de seleccionar una clinicas</span>
+                              </div>
+                            </ValidationProvider>
                           </b-form-group>
                           <b-form-group
                             class="col-md-5"
                             label="Asignado a *"
                             label-for="abogado_id"
                           >
-                            <v-select
-                              v-model="caso.abogado_id"
-                              :options="abogadosOptions"
-                              :reduce="(label) => label.code"
-                              label="label"
-                              id="abogado_id"
+                            <ValidationProvider
+                              name="abogado"
+                              rules="required"
+                              v-slot="{ errors }"
                             >
-                              <span slot="no-options">No hay Abogados.</span>
-                            </v-select>
+                              <v-select
+                                v-model="caso.abogado_id"
+                                :options="abogadosOptions"
+                                :reduce="(label) => label.code"
+                                label="label"
+                                id="abogado_id"
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
+                              >
+                                <span slot="no-options">No hay Abogados.</span>
+                              </v-select>
+                              <div class="invalid-feedback">
+                                <span>Debe de seleccionar un abogado</span>
+                              </div>
+                            </ValidationProvider>
                           </b-form-group>
                         </b-row>
                         <b-row>
@@ -84,33 +125,53 @@
                             label="Actividad*"
                             label-for="actividad_id"
                           >
-                            <v-select
-                              v-model="actividad_id"
-                              :options="actividadesOptions"
-                              :reduce="(label) => label.code"
-                              label="label"
-                              id="actividad_id"
-                              @input="getSubactividades"
+                            <ValidationProvider
+                              name="Actividad"
+                              rules="required"
+                              v-slot="{ errors }"
                             >
-                              <span slot="no-options">No hay Actividad.</span>
-                            </v-select>
+                              <v-select
+                                v-model="actividad_id"
+                                :options="actividadesOptions"
+                                :reduce="(label) => label.code"
+                                label="label"
+                                id="actividad_id"
+                                @input="getSubactividades"
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
+                              >
+                                <span slot="no-options">No hay Actividad.</span>
+                              </v-select>
+                              <div class="invalid-feedback">
+                                <span>Debe de seleccionar una Actividad</span>
+                              </div>
+                            </ValidationProvider>
                           </b-form-group>
                           <b-form-group
                             class="col-md-5"
                             label="Tipo*"
                             label-for="subactividad_id"
                           >
-                            <v-select
-                              v-model="caso.subactividad_id"
-                              :options="subactividadOptions"
-                              :reduce="(label) => label.code"
-                              label="label"
-                              id="subactividad_id"
+                            <ValidationProvider
+                              name="Tipo"
+                              rules="required"
+                              v-slot="{ errors }"
                             >
-                              <span slot="no-options"
-                                >No hay Tipos de Actividad.</span
+                              <v-select
+                                v-model="caso.subactividad_id"
+                                :options="subactividadOptions"
+                                :reduce="(label) => label.code"
+                                label="label"
+                                id="subactividad_id"
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
                               >
-                            </v-select>
+                                <span slot="no-options"
+                                  >No hay Tipos de Actividad.</span
+                                >
+                              </v-select>
+                              <div class="invalid-feedback">
+                                <span>Debe de seleccionar un Tipo</span>
+                              </div>
+                            </ValidationProvider>
                           </b-form-group>
                         </b-row>
                         <b-row>
@@ -119,15 +180,25 @@
                             label="Medio Solicitud*"
                             label-for="medio_id"
                           >
-                            <v-select
-                              v-model="caso.medio_id"
-                              :options="mediosOptions"
-                              :reduce="(label) => label.code"
-                              label="label"
-                              id="medio_id"
+                            <ValidationProvider
+                              name="Medios"
+                              rules="required"
+                              v-slot="{ errors }"
                             >
-                              <span slot="no-options">No hay Medio.</span>
-                            </v-select>
+                              <v-select
+                                v-model="caso.medio_id"
+                                :options="mediosOptions"
+                                :reduce="(label) => label.code"
+                                label="label"
+                                id="medio_id"
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
+                              >
+                                <span slot="no-options">No hay Medio.</span>
+                              </v-select>
+                              <div class="invalid-feedback">
+                                <span>Debe de seleccionar un medio</span>
+                              </div>
+                            </ValidationProvider>
                           </b-form-group>
                         </b-row>
                       </b-col>
@@ -211,7 +282,6 @@
 </template>
 <script>
 import { xray } from '../../config/pluginInit'
-import auth from '@/logic/auth'
 import Vue from 'vue'
 import axios from 'axios'
 
@@ -250,19 +320,13 @@ export default {
     xray.index()
     this.getActividades()
     this.getProfesionals()
-    this.getUserClinicas()
     this.getClientes()
     this.getServicios()
     this.getMediosSolicitud()
   },
-  computed: {
-    userLogged () {
-      return JSON.parse(auth.getUserLogged())
-    }
-  },
   methods: {
     getUserClinicas () {
-      axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
+      axios.get('/clinicas/' + this.caso.user_id).then((res) => {
         if (res.status === 200) {
           this.clinicasOptions = res.data.clinicas
         } else {
