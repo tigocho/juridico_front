@@ -177,7 +177,9 @@
                                       seguimiento.usuario
                                     }}</strong></b-row
                                   >
-                                  <b-row>{{ seguimiento.seg_fecha }}</b-row>
+                                  <b-row>{{
+                                    formatFecha(seguimiento.seg_fecha)
+                                  }}</b-row>
                                 </b-card-text>
                               </b-col>
                               <b-col cols="9" style="margin-right: 75px"
@@ -236,7 +238,9 @@
                                       seguimiento.usuario
                                     }}</strong></b-row
                                   >
-                                  <b-row>{{ seguimiento.seg_fecha }}</b-row>
+                                  <b-row>{{
+                                    formatFecha(seguimiento.seg_fecha)
+                                  }}</b-row>
                                 </b-card-text>
                               </b-col>
                             </b-row>
@@ -251,7 +255,9 @@
                                     caso.solicitante
                                   }}</strong></b-row
                                 >
-                                <b-row>{{ caso.caso_fecha_apertura }}</b-row>
+                                <b-row>{{
+                                  formatFecha(caso.caso_fecha_apertura)
+                                }}</b-row>
                               </b-card-text>
                             </b-col>
                             <b-col cols="9" style="margin-right: 75px"
@@ -287,28 +293,36 @@
                               <span></span>
                               <div>Fecha de Cierre</div>
                               <div class="year">
-                                <span>{{ caso.caso_fecha_cierre }}</span>
+                                <span>{{
+                                  formatFecha(caso.caso_fecha_cierre)
+                                }}</span>
                               </div>
                             </li>
-                            <li v-if="caso.fecha_solucion != null">
+                            <li v-if="caso.fecha_solucion != 'Por Asignar'">
                               <span></span>
                               <div>Fecha de Solución</div>
                               <div class="year">
-                                <span>{{ caso.fecha_solucion }}</span>
+                                <span>{{
+                                  formatFecha(caso.fecha_solucion)
+                                }}</span>
                               </div>
                             </li>
                             <li v-if="caso.caso_fecha_asignacion != null">
                               <span></span>
                               <div>Fecha de Asignacion</div>
                               <div class="year">
-                                <span>{{ caso.caso_fecha_asignacion }}</span>
+                                <span>{{
+                                  formatFecha(caso.caso_fecha_asignacion)
+                                }}</span>
                               </div>
                             </li>
                             <li>
                               <span></span>
                               <div>Fecha de Apertura</div>
                               <div class="year">
-                                <span>{{ caso.caso_fecha_apertura }}</span>
+                                <span>{{
+                                  formatFecha(caso.caso_fecha_apertura)
+                                }}</span>
                               </div>
                             </li>
                           </ul>
@@ -432,6 +446,7 @@ import fileDownload from 'js-file-download'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import FormCase from '../Cases/components/FormCase.vue'
 import FormSegumiento from '../Cases/components/FormSegumiento.vue'
+import moment from 'moment'
 export default {
   name: 'ShowCase',
   components: {
@@ -572,6 +587,9 @@ export default {
             })
         }
       })
+    },
+    formatFecha (fecha) {
+      return moment(fecha).format('DD/MM/YYYY')
     }
   }
 }
