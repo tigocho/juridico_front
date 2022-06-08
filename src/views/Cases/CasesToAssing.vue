@@ -25,7 +25,10 @@
           <form ref="form-2" @submit.prevent="handleSubmit(SaveAsignacionCaso)">
             <b-row>
               <b-col lg="10" class="pagina-detalle-proceso">
-                <p><strong>Actividad: </strong>{{ caso.subactividad }}</p>
+                <p>
+                  <strong>Actividad: </strong>{{ caso.actividad }}
+                  <strong>Subactividad: </strong>{{ caso.subactividad }}
+                </p>
                 <p>
                   <strong>{{ caso.caso_titulo }}</strong>
                 </p>
@@ -289,15 +292,19 @@ export default {
       })
     },
     SaveAsignacionCaso () {
-      this.$bvModal.hide('modal-asignar-caso')
-      axios
-        .post('/casos/asignar/' + this.caso.caso_id, this.asginarData)
-        .then((res) => {
-          if (res.status === 200) {
-            this.getCasosToAssing()
-          }
-          Vue.swal(res.data.message)
-        })
+      if (this.asginarData.profesional_id !== '') {
+        this.$bvModal.hide('modal-asignar-caso')
+        axios
+          .post('/casos/asignar/' + this.caso.caso_id, this.asginarData)
+          .then((res) => {
+            if (res.status === 200) {
+              this.getCasosToAssing()
+            }
+            Vue.swal(res.data.message)
+          })
+      } else {
+        Vue.swal('Por favor selecione un Abogado')
+      }
     }
   }
 }
