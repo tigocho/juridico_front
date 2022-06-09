@@ -20,7 +20,7 @@ export default {
   data () {
     return {
       cases: {
-        case_id: '',
+        case_id: null,
         case_title: '',
         case_description: ''
       }

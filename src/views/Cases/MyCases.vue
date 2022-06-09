@@ -180,7 +180,7 @@ export default {
     return {
       casos: [],
       caso: {},
-      estadosId: '',
+      estadoId: '',
       estadosOptions: [],
       textoBoton: 'Guardar Caso',
       estado: 'd-none',
