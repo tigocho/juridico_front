@@ -127,18 +127,21 @@
                       <h4 class="card-title">ID - {{ caso.caso_id }}</h4>
                     </template>
                     <template v-slot:headerAction>
-                      <h4 v-if="caso.est_id !== 1">
-                        <b-badge variant="secondary">
-                          {{ caso.estado }}</b-badge
-                        >
-                      </h4>
                       <b-button
-                        v-else
+                        v-if="
+                          caso.est_id === 1 &&
+                          asignarProfiles.includes(user_profile)
+                        "
                         variant="secondary"
                         style="margin-left: 5px"
                         @click="asignarCaso(caso)"
                         >Asignar Caso</b-button
                       >
+                      <h4 v-else>
+                        <b-badge variant="secondary">
+                          {{ caso.estado }}</b-badge
+                        >
+                      </h4>
                       <b-button
                         variant="primary"
                         style="margin-left: 5px"
@@ -515,6 +518,8 @@ export default {
       caso: {},
       archivos: [],
       archivosSeguimiento: [],
+      asignarProfiles: [1, 12],
+      user_profile: null,
       progress_total: 4,
       max: 100,
       loading: true,
@@ -540,6 +545,7 @@ export default {
   methods: {
     getCase () {
       this.$bvModal.hide('modal-editar-caso')
+      this.user_profile = this.userLogged.user_profile
       axios
         .get('/show-caso/' + this.$route.params.caso_id)
         .then((res) => {
