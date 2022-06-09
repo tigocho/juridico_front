@@ -27,6 +27,7 @@
               :case_id="caso.caso_id"
               :case_title="caso.caso_titulo"
               :case_description="caso.caso_descripcion"
+              :case_clinica_id="caso.caso_clinica_id"
               :onEdit="true"
               :reloadFunciont="this.getCase"
             />

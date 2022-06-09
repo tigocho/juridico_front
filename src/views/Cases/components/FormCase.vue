@@ -8,7 +8,7 @@
               <b-row
                 class="justify-content-center text-center align-items-center"
               >
-                <b-col lg="7">
+                <b-col lg="9">
                   <b-row v-if="!onEdit">
                     <b-form-group
                       class="col-md-6"
@@ -51,7 +51,7 @@
                         label-for="user_id"
                       >
                         <v-select
-                          v-model="clinicaSeleccionada"
+                          v-model="caseClinicaId"
                           :options="clinicasUser"
                           :reduce="(label) => label.code"
                           label="label"
@@ -83,8 +83,8 @@
                       v-model="caseDescription"
                       rows="3"
                       :state="
-                        case_description.length <= 250 &&
-                        case_description.length >= 5
+                        caseDescription.length <= 250 &&
+                        caseDescription.length >= 5
                       "
                       :required="true"
                     ></b-form-textarea>
@@ -142,16 +142,17 @@ export default {
     case_id: Number,
     case_title: String,
     case_description: String,
+    case_clinica_id: Number,
     onEdit: Boolean,
     reloadFunciont: Function
   },
   data () {
     return {
       clinicasUser: [],
-      clinicaSeleccionada: null,
       actividadesOptions: [],
       caseTitle: '',
       caseDescription: '',
+      caseClinicaId: null,
       actividad_id: '',
       subactividadesOptions: [],
       subactividad_id: '',
@@ -174,9 +175,10 @@ export default {
   },
   mounted () {
     this.getActividades()
-    if (!this.onEdit) this.getUserClinicas()
+    this.getUserClinicas()
     this.caseTitle = this.case_title
     this.caseDescription = this.case_description
+    this.caseClinicaId = this.case_clinica_id
   },
   methods: {
     addFile () {
@@ -201,6 +203,7 @@ export default {
 
       data.append('case_title', this.caseTitle)
       data.append('case_description', this.caseDescription)
+      data.append('case_clinica_id', this.caseClinicaId)
 
       let index = 0
       for (let casefile of this.caseFiles) {
@@ -227,7 +230,7 @@ export default {
               this.clinicasUser.push(clinica)
             }
           } else {
-            this.clinicaSeleccionada = res.data.clinicas[0].code
+            this.caseClinicaId = res.data.clinicas[0].code
           }
         } else {
           Vue.swal(res.data.message)
@@ -240,7 +243,7 @@ export default {
       data.append('case_title', this.caseTitle)
       data.append('case_description', this.caseDescription)
       data.append('user_id', this.userLogged.usr_id)
-      data.append('clinica_id', this.clinicaSeleccionada)
+      data.append('clinica_id', this.caseClinicaId)
       data.append('subactividad_id', this.subactividad_id)
 
       let index = 0

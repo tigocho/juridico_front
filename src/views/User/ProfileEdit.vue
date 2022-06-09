@@ -396,6 +396,8 @@ export default {
           if (this.intentos < 2) {
             this.guardarInformacionPersonal()
             this.intentos++
+          } else {
+            Vue.swal('error', 'Ups, ocurrió un error tratando de actualizar el usuario.', 'error')
           }
         })
     },
