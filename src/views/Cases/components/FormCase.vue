@@ -32,6 +32,7 @@
                       label-for="subact_id"
                     >
                       <v-select
+                        @input="getTiempoAns"
                         v-model="subactividad_id"
                         :options="subactividadesOptions"
                         :reduce="(label) => label.code"
@@ -40,26 +41,46 @@
                       >
                         <span slot="no-options">No hay Subctividades.</span>
                       </v-select>
+                      <p :key="fechaSolucionKey" class="text-left" v-if="fechaSolucion !== null">Fecha apróximada de solución o respuesta: {{ fechaSolucion }}</p>
                     </b-form-group>
                   </b-row>
+                  <b-row>
+                    <b-col v-if="clinicasUser.length > 1" xs="12">
+                      <b-form-group
+                        label="Clinica*"
+                        label-for="user_id"
+                      >
+                        <v-select
+                          v-model="clinicaSeleccionada"
+                          :options="clinicasUser"
+                          :reduce="(label) => label.code"
+                          label="label"
+                          id="user_id"
+                        >
+                        <span slot="no-options">No hay Clinicas.</span>
+                      </v-select>
+                      </b-form-group>
+                    </b-col>
+                    <b-col xs="12">
+                      <b-form-group
+                        label="Asunto*"
+                        label-for="case_title"
+                      >
+                        <b-form-input
+                          v-model="caseTitle"
+                          type="text"
+                          :required="true"
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
                   <b-form-group
-                    label="Titulo de la Solicitud*"
-                    label-for="case_title"
-                  >
-                    <b-form-input
-                      v-model="case_title"
-                      type="text"
-                      :required="true"
-                    ></b-form-input>
-                  </b-form-group>
-
-                  <b-form-group
-                    label="Descripción*"
+                    label="Descripción del asunto*"
                     label-for="textarea-decription"
                   >
                     <b-form-textarea
                       id="textarea-decription"
-                      v-model="case_description"
+                      v-model="caseDescription"
                       rows="3"
                       :state="
                         case_description.length <= 250 &&
@@ -118,7 +139,7 @@ import auth from '@/logic/auth'
 export default {
   name: 'FormCase',
   props: {
-    case_id: String,
+    case_id: Number,
     case_title: String,
     case_description: String,
     onEdit: Boolean,
@@ -127,7 +148,10 @@ export default {
   data () {
     return {
       clinicasUser: [],
+      clinicaSeleccionada: null,
       actividadesOptions: [],
+      caseTitle: '',
+      caseDescription: '',
       actividad_id: '',
       subactividadesOptions: [],
       subactividad_id: '',
@@ -137,7 +161,10 @@ export default {
         {
           file: null
         }
-      ]
+      ],
+      intentos: 0,
+      fechaSolucion: null,
+      fechaSolucionKey: 0
     }
   },
   computed: {
@@ -148,6 +175,8 @@ export default {
   mounted () {
     this.getActividades()
     if (!this.onEdit) this.getUserClinicas()
+    this.caseTitle = this.case_title
+    this.caseDescription = this.case_description
   },
   methods: {
     addFile () {
@@ -170,8 +199,8 @@ export default {
     actualizarCaso () {
       const data = new FormData()
 
-      data.append('case_title', this.case_title)
-      data.append('case_description', this.case_description)
+      data.append('case_title', this.caseTitle)
+      data.append('case_description', this.caseDescription)
 
       let index = 0
       for (let casefile of this.caseFiles) {
@@ -193,8 +222,12 @@ export default {
     getUserClinicas () {
       axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
         if (res.data.success === 200) {
-          for (let clinica of res.data.clinicas) {
-            this.clinicasUser.push(clinica.code)
+          if (res.data.clinicas.length > 1) {
+            for (let clinica of res.data.clinicas) {
+              this.clinicasUser.push(clinica)
+            }
+          } else {
+            this.clinicaSeleccionada = res.data.clinicas[0].code
           }
         } else {
           Vue.swal(res.data.message)
@@ -204,10 +237,10 @@ export default {
     crearCaso () {
       const data = new FormData()
 
-      data.append('case_title', this.case_title)
-      data.append('case_description', this.case_description)
+      data.append('case_title', this.caseTitle)
+      data.append('case_description', this.caseDescription)
       data.append('user_id', this.userLogged.usr_id)
-      data.append('clinica_id', this.clinicasUser[0])
+      data.append('clinica_id', this.clinicaSeleccionada)
       data.append('subactividad_id', this.subactividad_id)
 
       let index = 0
@@ -233,10 +266,25 @@ export default {
       })
     },
     getSubactividades () {
+      this.subactividad_id = ''
+      this.fechaSolucion = null
+      this.fechaSolucionKey++
       axios
         .get('/subactividades/fetch/' + this.actividad_id)
         .then((response) => {
           this.subactividadesOptions = response.data.subactividades
+        })
+    },
+    getTiempoAns () {
+      axios.get('/subactividades/getTiempoAns/' + this.subactividad_id).then(res => {
+        this.fechaSolucion = res.data.fechaSolucion
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.getTiempoAns()
+            this.intentos++
+          }
         })
     }
   }
