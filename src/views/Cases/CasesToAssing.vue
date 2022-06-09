@@ -25,14 +25,20 @@
           <form ref="form-2" @submit.prevent="handleSubmit(SaveAsignacionCaso)">
             <b-row>
               <b-col lg="10" class="pagina-detalle-proceso">
-                <p>
-                  <strong>Actividad: </strong>{{ caso.actividad }}
-                  <strong>Subactividad: </strong>{{ caso.subactividad }}
-                </p>
-                <p>
-                  <strong>{{ caso.caso_titulo }}</strong>
-                </p>
-                <p>{{ caso.caso_descripcion }}</p>
+                <b-card-text style="margin-left: 15px">
+                      <b-row>
+                        <strong>Actividad: </strong>&nbsp;
+                        {{ caso.actividad }}&nbsp;
+                        <strong>Subactividad: </strong>&nbsp;
+                        {{ caso.subactividad }} </b-row
+                      ><b-row>
+                        <strong>Asunto: </strong>&nbsp;
+                        {{ caso.caso_titulo }} </b-row
+                      ><b-row>
+                        <strong>Descripcion: </strong>&nbsp;
+                        {{ caso.caso_descripcion }}
+                      </b-row>
+                    </b-card-text>
                 <b-form-group label="Abogado*" label-for="profesional_id">
                   <v-select
                     v-model="asginarData.profesional_id"
