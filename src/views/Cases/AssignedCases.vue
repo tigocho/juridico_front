@@ -113,7 +113,7 @@
                     Editar
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="row.item.caso_estado_id == 2"
+                    v-if="row.item.caso_estado_id != 3"
                     @click="cambiarEstado(row.item.caso_id, 3)"
                   >
                     En Espera
@@ -123,6 +123,12 @@
                     @click="cambiarEstado(row.item.caso_id, 2)"
                   >
                     En Proceso
+                  </b-dropdown-item>
+                  <b-dropdown-item
+                    v-if="row.item.caso_estado_id != 4"
+                    @click="cambiarEstado(row.item.caso_id, 4)"
+                  >
+                    Cerrar
                   </b-dropdown-item>
                   <b-dropdown-item
                     v-if="deletedProfiles.includes(user_profile)"
@@ -273,7 +279,9 @@ export default {
         text:
           estadoId === 2
             ? '¿Deseas poner este Caso en proceso?'
-            : '¿Deseas poner este Caso en espera?',
+            : estadoId === 3
+              ? '¿Deseas poner este Caso en espera?'
+              : '¿Deseas Cerrar este Caso?',
         showCancelButton: true,
         confirmButtonText: 'Aceptar'
       }).then((result) => {
