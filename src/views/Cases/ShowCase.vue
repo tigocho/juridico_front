@@ -17,7 +17,7 @@
       <div v-else>
         <!-- MODAL DE EDITAR CASO -->
         <div>
-          <b-modal id="modal-editar-caso" title="Editar Caso" hide-footer>
+          <b-modal id="modal-editar-caso" size="lg" title="Editar Caso" hide-footer>
             <FormCase
               :case_id="caso.caso_id"
               :case_title="caso.caso_titulo"
