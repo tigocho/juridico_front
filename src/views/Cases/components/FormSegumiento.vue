@@ -8,7 +8,7 @@
               <b-row
                 class="justify-content-center text-center align-items-center"
               >
-                <b-col lg="7">
+                <b-col lg="8">
                   <b-row>
                     <b-col cols="8">
                       <b-form-group label="Titulo:" label-for="seg_title">
@@ -51,11 +51,37 @@
                   </b-form-group>
                   <div v-for="(casefile, index) in caseFiles" :key="index">
                     <b-form-group>
-                      <b-form-file
-                        v-model="casefile.file"
-                        :name="`file-${index}`"
-                        placeholder="Añade un archivo"
-                      ></b-form-file>
+                      <b-row>
+                        <b-form-file
+                          class="col-md-6"
+                          v-model="casefile.file"
+                          :name="`file-${index}`"
+                          placeholder="Añadir archivo"
+                        ></b-form-file>
+                        <b-form-datepicker
+                          placeholder="Fecha de Recepción"
+                          class="col-md-4"
+                          style="margin-left: 10px; height: 35px"
+                          id="exampleInputdate"
+                          :date-format-options="{
+                            year: 'numeric',
+                            month: 'short',
+                            day: '2-digit',
+                            weekday: 'short'
+                          }"
+                          v-model="casefile.date"
+                          locale="es"
+                        ></b-form-datepicker>
+                        <b-button
+                          size="sm"
+                          variant="danger"
+                          style="margin-left: 10px; height: 30px"
+                          v-b-tooltip.hover
+                          title="Quitar archivo"
+                          @click="removeFile(index)"
+                          ><em class="fa fa-times"></em
+                        ></b-button>
+                      </b-row>
                     </b-form-group>
                   </div>
                   <b-form-group
@@ -66,14 +92,6 @@
                       title="Adjuntar otro archivo"
                       @click="addFile"
                       ><em class="fa fa-plus"></em> </b-button
-                    ><b-button
-                      size="sm"
-                      variant="danger"
-                      style="margin-left: 5px"
-                      v-b-tooltip.hover
-                      title="Quitar archivo"
-                      @click="removeFile"
-                      ><em class="fa fa-minus"></em></b-button
                   ></b-form-group>
                   <b-form-group>
                     <b-button
@@ -117,9 +135,11 @@ export default {
       tiposSegumientoOptions: [],
       textoBoton: 'Guardar',
       estadoBoton: '',
+      validData: true,
       caseFiles: [
         {
-          file: null
+          file: null,
+          date: null
         }
       ]
     }
@@ -162,21 +182,31 @@ export default {
       let index = 0
       for (let casefile of this.caseFiles) {
         if (casefile.file != null) {
-          data.append('file-' + index, casefile.file, casefile.file.name) // note, no square-brackets
-          index++
+          if (casefile.date != null) {
+            data.append('file-' + index, casefile.file, casefile.file.name) // note, no square-brackets
+            data.append('file_date-' + index, casefile.date)
+            index++
+          } else {
+            this.validData = false
+            Vue.swal('Debes subir archivos con fecha de recepción')
+          }
         }
       }
 
       data.append('cantidad_archivos', index)
-
-      axios.post('/seguimiento/create', data).then((res) => {
-        if (res.status === 200) {
-          this.onCreate()
-        }
-        Vue.swal(res.data.message)
+      if (this.validData) {
+        axios.post('/seguimiento/create', data).then((res) => {
+          if (res.status === 200) {
+            this.onCreate()
+          }
+          Vue.swal(res.data.message)
+          this.estadoBoton = ''
+          this.textoBoton = 'Guardar'
+        })
+      } else {
         this.estadoBoton = ''
         this.textoBoton = 'Guardar'
-      })
+      }
     }
   }
 }
