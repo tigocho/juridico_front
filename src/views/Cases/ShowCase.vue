@@ -407,7 +407,7 @@
                           <b-col>
                             <span
                               :style="
-                                archivo.deleted_at !== null
+                                archivo.deleted_at != null
                                   ? 'opacity: 0.4;'
                                   : 'text-decoration: underline;cursor: pointer;'
                               "
@@ -425,7 +425,11 @@
                                   ? '  eliminado por ' + archivo.user
                                   : ' '
                               }}
-                            </span>
+                            </span>&nbsp;
+                            <strong>
+                              Fecha de Recepcion:
+                            </strong>
+                            {{ archivo.arch_casos_fecha_recepcion }}
                             <b-badge
                               v-if="archivo.deleted_at === null"
                               variant="danger"
@@ -467,20 +471,11 @@
                               v-b-tooltip.hover
                               title="Descargar archivo"
                               >{{ archivo.arch_seg_nombre }}
-                            </span>
-                            <b-badge
-                              variant="danger"
-                              style="margin-left: 5px"
-                              v-b-tooltip.hover
-                              title="Quitar archivo"
-                              @click="
-                                eliminarArchivo(
-                                  'segumiento',
-                                  archivo.arch_seg_id
-                                )
-                              "
-                              ><em class="fa fa-times"></em
-                            ></b-badge>
+                            </span>&nbsp;
+                            <strong>
+                              Fecha de Recepcion:
+                            </strong>
+                            {{ archivo.arch_seg_fecha_recepcion }}
                           </b-col>
                         </b-card-text>
                       </div>
