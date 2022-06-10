@@ -432,7 +432,11 @@
                                   ? '  eliminado por ' + archivo.user
                                   : ' '
                               }}
-                            </span>
+                            </span>&nbsp;
+                            <strong>
+                              Fecha de Recepcion:
+                            </strong>
+                            {{ archivo.arch_casos_fecha_recepcion }}
                           </b-col>
                         </b-card-text>
                       </div>
@@ -469,7 +473,11 @@
                                   ? '  eliminado por ' + archivo.user
                                   : ' '
                               }}
-                            </span>
+                            </span>&nbsp;
+                            <strong>
+                              Fecha de Recepcion:
+                            </strong>
+                            {{ archivo.arch_seg_fecha_recepcion }}
                           </b-col>
                         </b-card-text>
                       </div>
