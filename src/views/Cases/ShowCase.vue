@@ -17,7 +17,12 @@
       <div v-else>
         <!-- MODAL DE EDITAR CASO -->
         <div>
-          <b-modal id="modal-editar-caso" size="lg" title="Editar Caso" hide-footer>
+          <b-modal
+            id="modal-editar-caso"
+            size="lg"
+            title="Editar Caso"
+            hide-footer
+          >
             <FormCase
               :case_id="caso.caso_id"
               :case_title="caso.caso_titulo"
@@ -25,6 +30,8 @@
               :case_clinica_id="caso.caso_clinica_id"
               :onEdit="true"
               :reloadFunciont="this.getCase"
+              :archivosCaso="archivos"
+              :archivosSeguimiento="archivosSeguimiento"
             />
           </b-modal>
         </div>
@@ -401,7 +408,7 @@
                       <div
                         style="margin-top: 10px"
                         v-for="(archivo, index) in archivos"
-                        :key="index"
+                        :key="archivo.arch_casos_id+index"
                       >
                         <b-card-text>
                           <b-col>
@@ -430,17 +437,6 @@
                               Fecha de Recepcion:
                             </strong>
                             {{ archivo.arch_casos_fecha_recepcion }}
-                            <b-badge
-                              v-if="archivo.deleted_at === null"
-                              variant="danger"
-                              style="margin-left: 5px"
-                              v-b-tooltip.hover
-                              title="Quitar archivo"
-                              @click="
-                                eliminarArchivo('caso', archivo.arch_casos_id)
-                              "
-                              ><em class="fa fa-times"></em
-                            ></b-badge>
                           </b-col>
                         </b-card-text>
                       </div>
@@ -453,14 +449,15 @@
                       <div
                         style="margin-top: 10px"
                         v-for="(archivo, index) in archivosSeguimiento"
-                        :key="index"
+                        :key="archivo.arch_seg_id+index"
                       >
                         <b-card-text>
                           <b-col>
                             <span
-                              style="
-                                text-decoration: underline;
-                                cursor: pointer;
+                              :style="
+                                archivo.deleted_at != null
+                                  ? 'opacity: 0.4;'
+                                  : 'text-decoration: underline;cursor: pointer;'
                               "
                               @click="
                                 descargarArchivoSeguimiento(
@@ -471,6 +468,11 @@
                               v-b-tooltip.hover
                               title="Descargar archivo"
                               >{{ archivo.arch_seg_nombre }}
+                              {{
+                                archivo.deleted_at != null
+                                  ? '  eliminado por ' + archivo.user
+                                  : ' '
+                              }}
                             </span>&nbsp;
                             <strong>
                               Fecha de Recepcion:
@@ -496,7 +498,6 @@ import { xray } from '../../config/pluginInit'
 import axios from 'axios'
 import Vue from 'vue'
 import fileDownload from 'js-file-download'
-import Swal from 'sweetalert2/dist/sweetalert2.js'
 import FormCase from '../Cases/components/FormCase.vue'
 import FormSegumiento from '../Cases/components/FormSegumiento.vue'
 import moment from 'moment'
@@ -613,40 +614,6 @@ export default {
         .catch((err) => {
           Vue.swal('Ups, ocurrió un error ' + err)
         })
-    },
-    eliminarArchivo (tipo, archivoId) {
-      Swal.fire({
-        icon: 'warning',
-        title: '¿Estás seguro?',
-        text: '¿Deseas eliminar este Archivo?',
-        showCancelButton: true,
-        confirmButtonText: 'Eliminar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          axios
-            .get(
-              '/archivo-' +
-                tipo +
-                '/delete/' +
-                archivoId +
-                '/' +
-                this.userLogged.usr_id
-            )
-            .then((res) => {
-              if (res.status === 200) {
-                this.loading = true
-                this.getCase()
-              }
-              Vue.swal(res.data.message)
-            })
-            .catch((err) => {
-              Vue.swal(
-                'Ups sucedió un error tratando de consulta la información. ' +
-                  err
-              )
-            })
-        }
-      })
     },
     formatFecha (fecha) {
       return moment(fecha).format('DD/MM/YYYY')
