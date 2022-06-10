@@ -90,6 +90,67 @@
                       :required="true"
                     ></b-form-textarea>
                   </b-form-group>
+                  <div v-if="onEdit" class="text-left" style="margin: 20px">
+                    <b-list-group
+                      v-for="(archivo, index) in archivosCaso"
+                      :key="archivo.arch_casos_id+index"
+                    >
+                      <b-list-group-item v-if="archivo.deleted_at !== null">
+                        <span
+                          style="text-decoration: underline; cursor: pointer"
+                          @click="
+                            descargarArchivoCaso(
+                              archivo.arch_casos_nombre,
+                              archivo.arch_casos_id
+                            )
+                          "
+                          v-b-tooltip.hover
+                          title="Descargar archivo"
+                          >{{ archivo.arch_casos_nombre }}
+                        </span>
+                        <b-badge
+                          variant="danger"
+                          style="margin-left: 5px"
+                          v-b-tooltip.hover
+                          title="Quitar archivo"
+                          @click="
+                            eliminarArchivo('caso', archivo.arch_casos_id)
+                          "
+                          ><em class="fa fa-times"></em
+                        ></b-badge>
+                      </b-list-group-item>
+                    </b-list-group>
+                    <b-list-group
+                      style="margin-top: 10px"
+                      v-for="(archivo, index) in archivosSeguimiento"
+                      :key="archivo.arch_seg_id+index"
+                    >
+                      <b-list-group-item>
+                        <span
+                          style="text-decoration: underline; cursor: pointer"
+                          @click="
+                            descargarArchivoSeguimiento(
+                              archivo.arch_seg_nombre,
+                              archivo.arch_seg_id
+                            )
+                          "
+                          v-b-tooltip.hover
+                          title="Descargar archivo"
+                          >{{ archivo.arch_seg_nombre }}
+                        </span>
+                        <b-badge
+                          variant="danger"
+                          style="margin-left: 5px"
+                          v-b-tooltip.hover
+                          title="Quitar archivo"
+                          @click="
+                            eliminarArchivo('segumiento', archivo.arch_seg_id)
+                          "
+                          ><em class="fa fa-times"></em
+                        ></b-badge>
+                      </b-list-group-item>
+                    </b-list-group>
+                  </div>
                   <div v-for="(casefile, index) in caseFiles" :key="index">
                     <b-form-group>
                       <b-row>
@@ -155,6 +216,8 @@
 import axios from 'axios'
 import Vue from 'vue'
 import auth from '@/logic/auth'
+import fileDownload from 'js-file-download'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 export default {
   name: 'FormCase',
   props: {
@@ -163,7 +226,9 @@ export default {
     case_description: String,
     case_clinica_id: Number,
     onEdit: Boolean,
-    reloadFunciont: Function
+    reloadFunciont: Function,
+    archivosCaso: Array,
+    archivosSeguimiento: Array
   },
   data () {
     return {
@@ -334,6 +399,74 @@ export default {
             this.intentos++
           }
         })
+    },
+    descargarArchivoCaso (filename, id) {
+      axios({
+        url: '/casos/descargar-archivo/' + id,
+        method: 'GET',
+        responseType: 'blob'
+      })
+        .then((response) => {
+          if (response.data != null) {
+            fileDownload(response.data, filename)
+          } else {
+            Vue.swal('No se encontró archivo')
+          }
+        })
+        .catch((err) => {
+          Vue.swal('Ups, ocurrió un error ' + err)
+        })
+    },
+    descargarArchivoSeguimiento (filename, id) {
+      axios({
+        url: '/seguimiento/descargar-archivo/' + id,
+        method: 'GET',
+        responseType: 'blob'
+      })
+        .then((response) => {
+          if (response.data != null) {
+            fileDownload(response.data, filename)
+          } else {
+            Vue.swal('No se encontró archivo')
+          }
+        })
+        .catch((err) => {
+          Vue.swal('Ups, ocurrió un error ' + err)
+        })
+    },
+    eliminarArchivo (tipo, archivoId) {
+      Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text: '¿Deseas eliminar este Archivo?',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .get(
+              '/archivo-' +
+                tipo +
+                '/delete/' +
+                archivoId +
+                '/' +
+                this.userLogged.usr_id
+            )
+            .then((res) => {
+              if (res.status === 200) {
+                this.loading = true
+                this.reloadFunciont()
+              }
+              Vue.swal(res.data.message)
+            })
+            .catch((err) => {
+              Vue.swal(
+                'Ups sucedió un error tratando de consulta la información. ' +
+                  err
+              )
+            })
+        }
+      })
     }
   }
 }
