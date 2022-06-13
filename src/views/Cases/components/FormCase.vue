@@ -8,7 +8,7 @@
               <b-row
                 class="justify-content-center text-center align-items-center"
               >
-                <b-col lg="9">
+                <b-col lg="10">
                   <b-row v-if="!onEdit">
                     <b-form-group
                       class="col-md-6"
@@ -41,15 +41,19 @@
                       >
                         <span slot="no-options">No hay Subctividades.</span>
                       </v-select>
-                      <p :key="fechaSolucionKey" class="text-left" v-if="fechaSolucion !== null">Fecha apróximada de solución o respuesta: {{ fechaSolucion }}</p>
+                      <p
+                        :key="fechaSolucionKey"
+                        class="text-left"
+                        v-if="fechaSolucion !== null"
+                      >
+                        Fecha apróximada de solución o respuesta:
+                        {{ fechaSolucion }}
+                      </p>
                     </b-form-group>
                   </b-row>
                   <b-row>
                     <b-col v-if="clinicasUser.length > 1" xs="12">
-                      <b-form-group
-                        label="Clinica*"
-                        label-for="user_id"
-                      >
+                      <b-form-group label="Clinica*" label-for="user_id">
                         <v-select
                           v-model="caseClinicaId"
                           :options="clinicasUser"
@@ -57,15 +61,12 @@
                           label="label"
                           id="user_id"
                         >
-                        <span slot="no-options">No hay Clinicas.</span>
-                      </v-select>
+                          <span slot="no-options">No hay Clinicas.</span>
+                        </v-select>
                       </b-form-group>
                     </b-col>
                     <b-col xs="12">
-                      <b-form-group
-                        label="Asunto*"
-                        label-for="case_title"
-                      >
+                      <b-form-group label="Asunto*" label-for="case_title">
                         <b-form-input
                           v-model="caseTitle"
                           type="text"
@@ -91,21 +92,37 @@
                   </b-form-group>
                   <div v-for="(casefile, index) in caseFiles" :key="index">
                     <b-form-group>
-                      <b-form-file
-                        class="col-md-10"
-                        v-model="casefile.file"
-                        :name="`file-${index}`"
-                        placeholder="Añadir archivo"
-                      ></b-form-file>
-                      <b-button
-                        size="sm"
-                        variant="danger"
-                        style="margin-left: 10px"
-                        v-b-tooltip.hover
-                        title="Quitar archivo"
-                        @click="removeFile(index)"
-                        ><em class="fa fa-times"></em
-                      ></b-button>
+                      <b-row>
+                        <b-form-file
+                          class="col-md-6"
+                          v-model="casefile.file"
+                          :name="`file-${index}`"
+                          placeholder="Añadir archivo"
+                        ></b-form-file>
+                        <b-form-datepicker
+                          placeholder="Fecha de Recepción"
+                          class="col-md-4"
+                          style="margin-left: 10px; height: 35px"
+                          id="exampleInputdate"
+                          :date-format-options="{
+                            year: 'numeric',
+                            month: 'short',
+                            day: '2-digit',
+                            weekday: 'short'
+                          }"
+                          v-model="casefile.date"
+                          locale="es"
+                        ></b-form-datepicker>
+                        <b-button
+                          size="sm"
+                          variant="danger"
+                          style="margin-left: 10px; height: 30px"
+                          v-b-tooltip.hover
+                          title="Quitar archivo"
+                          @click="removeFile(index)"
+                          ><em class="fa fa-times"></em
+                        ></b-button>
+                      </b-row>
                     </b-form-group>
                   </div>
                   <b-form-group
@@ -162,12 +179,14 @@ export default {
       estadoBoton: '',
       caseFiles: [
         {
-          file: null
+          file: null,
+          date: null
         }
       ],
       intentos: 0,
       fechaSolucion: null,
-      fechaSolucionKey: 0
+      fechaSolucionKey: 0,
+      validData: true
     }
   },
   computed: {
@@ -185,7 +204,8 @@ export default {
   methods: {
     addFile () {
       this.caseFiles.push({
-        file: null
+        file: null,
+        date: null
       })
     },
     removeFile (index) {
@@ -210,19 +230,29 @@ export default {
       let index = 0
       for (let casefile of this.caseFiles) {
         if (casefile.file != null) {
-          data.append('file-' + index, casefile.file, casefile.file.name) // note, no square-brackets
-          index++
+          if (casefile.date != null) {
+            data.append('file-' + index, casefile.file, casefile.file.name) // note, no square-brackets
+            data.append('file_date-' + index, casefile.date)
+            index++
+          } else {
+            this.validData = false
+            Vue.swal('Debes subir archivos con fecha de recepción')
+          }
         }
       }
 
       data.append('cantidad_archivos', index)
-
-      axios.post('/casos/update/' + this.case_id, data).then((res) => {
-        if (res.status === 200) {
-          this.reloadFunciont()
-        }
-        Vue.swal(res.data.message)
-      })
+      if (this.validData) {
+        axios.post('/casos/update/' + this.case_id, data).then((res) => {
+          if (res.status === 200) {
+            this.reloadFunciont()
+          }
+          Vue.swal(res.data.message)
+        })
+      } else {
+        this.estadoBoton = ''
+        this.textoBoton = 'Guardar'
+      }
     },
     getUserClinicas () {
       axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
@@ -251,19 +281,30 @@ export default {
       let index = 0
       for (let casefile of this.caseFiles) {
         if (casefile.file != null) {
-          data.append('file-' + index, casefile.file, casefile.file.name)
-          index++
+          if (casefile.date != null) {
+            data.append('file-' + index, casefile.file, casefile.file.name) // note, no square-brackets
+            data.append('file_date-' + index, casefile.date)
+            index++
+          } else {
+            this.validData = false
+            Vue.swal('Debes subir archivos con fecha de recepción')
+          }
         }
       }
 
       data.append('cantidad_archivos', index)
 
-      axios.post('/casos/create', data).then((res) => {
-        if (res.status === 200) {
-          this.$router.push({ path: `/cases/cases-show/${res.data.caso_id}` })
-        }
-        Vue.swal(res.data.message)
-      })
+      if (this.validData) {
+        axios.post('/casos/create', data).then((res) => {
+          if (res.status === 200) {
+            this.$router.push({ path: `/cases/cases-show/${res.data.caso_id}` })
+          }
+          Vue.swal(res.data.message)
+        })
+      } else {
+        this.estadoBoton = ''
+        this.textoBoton = 'Guardar'
+      }
     },
     getActividades () {
       axios.get('/actividades/fetch').then((response) => {
@@ -281,9 +322,11 @@ export default {
         })
     },
     getTiempoAns () {
-      axios.get('/subactividades/getTiempoAns/' + this.subactividad_id).then(res => {
-        this.fechaSolucion = res.data.fechaSolucion
-      })
+      axios
+        .get('/subactividades/getTiempoAns/' + this.subactividad_id)
+        .then((res) => {
+          this.fechaSolucion = res.data.fechaSolucion
+        })
         .catch((err) => {
           this.errores = err
           if (this.intentos < 2) {
