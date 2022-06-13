@@ -635,7 +635,7 @@ export default {
           .post('/casos/asignar/' + this.caso.caso_id, this.asginarData)
           .then((res) => {
             if (res.status === 200) {
-              this.getCasosToAssing()
+              this.getCase()
             }
             Vue.swal(res.data.message)
           })
