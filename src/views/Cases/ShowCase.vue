@@ -131,7 +131,14 @@
                 <tab-content-item :active="true" id="información-general">
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title">ID - {{ caso.caso_id }}</h4>
+                      <h4 class="card-title">
+                        Radicado
+                        {{
+                          new Date(caso.caso_fecha_apertura).getFullYear() +
+                          '-' +
+                          formatId(String(caso.caso_id))
+                        }}
+                      </h4>
                     </template>
                     <template v-slot:headerAction>
                       <b-button
@@ -408,7 +415,7 @@
                       <div
                         style="margin-top: 10px"
                         v-for="(archivo, index) in archivos"
-                        :key="archivo.arch_casos_id+index"
+                        :key="archivo.arch_casos_id + index"
                       >
                         <b-card-text>
                           <b-col>
@@ -431,11 +438,9 @@
                                 archivo.deleted_at != null
                                   ? '  eliminado por ' + archivo.user
                                   : ' '
-                              }}
-                            </span>&nbsp;
-                            <strong>
-                              Fecha de Recepcion:
-                            </strong>
+                              }} </span
+                            >&nbsp;
+                            <strong> Fecha de Recepcion: </strong>
                             {{ archivo.arch_casos_fecha_recepcion }}
                           </b-col>
                         </b-card-text>
@@ -449,7 +454,7 @@
                       <div
                         style="margin-top: 10px"
                         v-for="(archivo, index) in archivosSeguimiento"
-                        :key="archivo.arch_seg_id+index"
+                        :key="archivo.arch_seg_id + index"
                       >
                         <b-card-text>
                           <b-col>
@@ -472,11 +477,9 @@
                                 archivo.deleted_at != null
                                   ? '  eliminado por ' + archivo.user
                                   : ' '
-                              }}
-                            </span>&nbsp;
-                            <strong>
-                              Fecha de Recepcion:
-                            </strong>
+                              }} </span
+                            >&nbsp;
+                            <strong> Fecha de Recepcion: </strong>
                             {{ archivo.arch_seg_fecha_recepcion }}
                           </b-col>
                         </b-card-text>
@@ -642,6 +645,28 @@ export default {
       } else {
         Vue.swal('Por favor selecione un Abogado')
       }
+    },
+    formatId (casoId) {
+      const digitos = casoId.length
+
+      let identificador
+
+      switch (digitos) {
+        case 1:
+          identificador = '000' + casoId
+          break
+        case 2:
+          identificador = '00' + casoId
+          break
+        case 3:
+          identificador = '0' + casoId
+          break
+        default:
+          identificador = casoId
+          break
+      }
+
+      return identificador
     }
   }
 }
