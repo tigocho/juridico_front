@@ -75,28 +75,30 @@
                       </b-form-group>
                     </b-col>
                   </b-row>
-                  <b-col xs="10" style="margin-bottom: 25px">
-                    <label for="textarea-decription">
-                      Descripción del asunto*
-                      <b-badge
-                        variant="info"
-                        style="margin-left: 5px"
-                        v-b-tooltip.hover
-                        title="En este campo detalla la solicitud que requiere que realice nuestro equipo de abogados"
-                        ><em class="fa fa-info"></em></b-badge
-                    ></label>
-                    <b-form-textarea
-                      id="textarea-decription"
-                      v-model="caseDescription"
-                      placeholder="Por favor escribe el detalle de tu solicitud..."
-                      rows="3"
-                      :state="
-                        caseDescription.length <= 500 &&
-                        caseDescription.length >= 5
-                      "
-                      :required="true"
-                    ></b-form-textarea>
-                  </b-col>
+                  <b-row>
+                    <b-col xs="10" style="margin-bottom: 25px">
+                      <label for="textarea-decription">
+                        Descripción del asunto*
+                        <b-badge
+                          variant="info"
+                          style="margin-left: 5px"
+                          v-b-tooltip.hover
+                          title="En este campo detalla la solicitud que requiere que realice nuestro equipo de abogados"
+                          ><em class="fa fa-info"></em></b-badge
+                      ></label>
+                      <b-form-textarea
+                        id="textarea-decription"
+                        v-model="caseDescription"
+                        placeholder="Por favor escribe el detalle de tu solicitud..."
+                        rows="3"
+                        :state="
+                          caseDescription.length <= 500 &&
+                          caseDescription.length >= 5
+                        "
+                        :required="true"
+                      ></b-form-textarea>
+                    </b-col>
+                  </b-row>
                   <div v-if="onEdit" class="text-left" style="margin: 20px">
                     <b-list-group
                       v-for="(archivo, index) in archivosCaso"
@@ -158,41 +160,46 @@
                       </b-list-group-item>
                     </b-list-group>
                   </div>
-                  <div v-for="(casefile, index) in caseFiles" :key="index">
-                    <b-form-group>
-                      <b-row>
-                        <b-form-file
-                          class="col-md-6"
-                          v-model="casefile.file"
-                          :name="`file-${index}`"
-                          placeholder="Añadir archivo"
-                        ></b-form-file>
-                        <b-form-datepicker
-                          placeholder="Fecha de Recepción"
-                          class="col-md-4"
-                          style="margin-left: 10px; height: 35px"
-                          id="exampleInputdate"
-                          :date-format-options="{
-                            year: 'numeric',
-                            month: 'short',
-                            day: '2-digit',
-                            weekday: 'short'
-                          }"
-                          v-model="casefile.date"
-                          locale="es"
-                        ></b-form-datepicker>
-                        <b-button
-                          size="sm"
-                          variant="danger"
-                          style="margin-left: 10px; height: 30px"
-                          v-b-tooltip.hover
-                          title="Quitar archivo"
-                          @click="removeFile(index)"
-                          ><em class="fa fa-times"></em
-                        ></b-button>
-                      </b-row>
-                    </b-form-group>
-                  </div>
+                  <b-row v-for="(casefile, index) in caseFiles" :key="index">
+                    <b-col xs="12">
+                      <b-form-group>
+                        <b-row>
+                          <b-col xs="8">
+                            <b-form-file
+                              v-model="casefile.file"
+                              :name="`file-${index}`"
+                              placeholder="Añadir archivo"
+                            ></b-form-file>
+                          </b-col>
+                          <b-col xs="5">
+                            <b-form-datepicker
+                              placeholder="Fecha de Recepción"
+                              style="height: 35px;"
+                              :id="`exampleInputdate-${index}`"
+                              class="fecha-archivo-caso"
+                              :date-format-options="{
+                                year: 'numeric',
+                                month: 'short',
+                                day: '2-digit',
+                                weekday: 'short'
+                              }"
+                              v-model="casefile.date"
+                              locale="es"
+                            ></b-form-datepicker>
+                          </b-col>
+                          <b-button
+                            size="sm"
+                            variant="danger"
+                            style="margin-left: 10px; height: 30px"
+                            v-b-tooltip.hover
+                            title="Quitar archivo"
+                            @click="removeFile(index)"
+                            ><em class="fa fa-times"></em
+                          ></b-button>
+                        </b-row>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
                   <b-form-group
                     ><b-button
                       size="sm"
@@ -200,7 +207,7 @@
                       v-b-tooltip.hover
                       title="Adjuntar otro archivo"
                       @click="addFile"
-                      ><em class="fa fa-plus"></em> </b-button
+                      ><em class="fa fa-plus"></em> Agregar fila</b-button
                   ></b-form-group>
                   <b-form-group>
                     <b-button
