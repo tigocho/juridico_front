@@ -26,19 +26,19 @@
             <b-row>
               <b-col lg="10" class="pagina-detalle-proceso">
                 <b-card-text style="margin-left: 15px">
-                      <b-row>
-                        <strong>Actividad: </strong>&nbsp;
-                        {{ caso.actividad }}&nbsp;
-                        <strong>Subactividad: </strong>&nbsp;
-                        {{ caso.subactividad }} </b-row
-                      ><b-row>
-                        <strong>Asunto: </strong>&nbsp;
-                        {{ caso.caso_titulo }} </b-row
-                      ><b-row>
-                        <strong>Descripcion: </strong>&nbsp;
-                        {{ caso.caso_descripcion }}
-                      </b-row>
-                    </b-card-text>
+                  <b-row>
+                    <strong>Actividad: </strong>&nbsp;
+                    {{ caso.actividad }}&nbsp;
+                    <strong>Subactividad: </strong>&nbsp;
+                    {{ caso.subactividad }} </b-row
+                  ><b-row>
+                    <strong>Asunto: </strong>&nbsp;
+                    {{ caso.caso_titulo }} </b-row
+                  ><b-row>
+                    <strong>Descripcion: </strong>&nbsp;
+                    {{ caso.caso_descripcion }}
+                  </b-row>
+                </b-card-text>
                 <b-form-group label="Abogado*" label-for="profesional_id">
                   <v-select
                     v-model="asginarData.profesional_id"
@@ -92,7 +92,7 @@
                 </b-form-group>
               </b-col>
 
-              <b-col sm="7" md="7" class="my-1">
+              <b-col lg="9" class="my-1">
                 <b-form-group
                   label="Buscar"
                   label-for="filter-input"
@@ -202,7 +202,6 @@ export default {
       fields: [
         { label: 'Título', key: 'caso_titulo', class: 'text-left' },
         { label: 'Descripción', key: 'caso_descripcion', class: 'text-left' },
-        { label: 'Actividad', key: 'subactividad', class: 'text-left' },
         { label: 'Estado', key: 'estado', class: 'text-left' },
         {
           label: 'Fecha de Apertura',
