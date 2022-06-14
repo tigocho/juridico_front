@@ -75,25 +75,32 @@
                       </b-form-group>
                     </b-col>
                   </b-row>
-                  <b-form-group
-                    label="Descripción del asunto*"
-                    label-for="textarea-decription"
-                  >
+                  <b-col xs="10" style="margin-bottom: 25px">
+                    <label for="textarea-decription">
+                      Descripción del asunto*
+                      <b-badge
+                        variant="info"
+                        style="margin-left: 5px"
+                        v-b-tooltip.hover
+                        title="En este campo detalla la solicitud que requiere que realice nuestro equipo de abogados"
+                        ><em class="fa fa-info"></em></b-badge
+                    ></label>
                     <b-form-textarea
                       id="textarea-decription"
                       v-model="caseDescription"
+                      placeholder="Por favor escribe el detalle de tu solicitud..."
                       rows="3"
                       :state="
-                        caseDescription.length <= 250 &&
+                        caseDescription.length <= 500 &&
                         caseDescription.length >= 5
                       "
                       :required="true"
                     ></b-form-textarea>
-                  </b-form-group>
+                  </b-col>
                   <div v-if="onEdit" class="text-left" style="margin: 20px">
                     <b-list-group
                       v-for="(archivo, index) in archivosCaso"
-                      :key="archivo.arch_casos_id+index"
+                      :key="archivo.arch_casos_id + index"
                     >
                       <b-list-group-item v-if="archivo.deleted_at !== null">
                         <span
@@ -123,7 +130,7 @@
                     <b-list-group
                       style="margin-top: 10px"
                       v-for="(archivo, index) in archivosSeguimiento"
-                      :key="archivo.arch_seg_id+index"
+                      :key="archivo.arch_seg_id + index"
                     >
                       <b-list-group-item>
                         <span
