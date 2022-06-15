@@ -591,6 +591,12 @@ const processLaboralOrdinarioChildRoute = (prop, mode = false) => [
     component: ProcessLaboralesList
   },
   {
+    path: 'process-laboral',
+    name: prop + '.add',
+    meta: { dark: mode, auth: true, name: 'Add Porcess' },
+    component: AddProcess
+  },
+  {
     path: 'process-laborales-ordinario-archivados',
     name: prop + '.archivados',
     meta: { dark: mode, auth: true, name: 'Process Laborales Archivados' },
