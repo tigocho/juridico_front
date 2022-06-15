@@ -66,3 +66,7 @@ import Css
 .iq-sidebar-menu .iq-menu li ul a:hover {
   color: #089bab !important;
 }
+
+.fecha-archivo-caso label{
+  line-height: 20px!important;
+}
