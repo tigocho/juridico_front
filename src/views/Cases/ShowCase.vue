@@ -349,10 +349,8 @@
                             </b-col>
                             <b-col cols="9" style="margin-right: 75px"
                               ><b-card
-                                style="
-                                  background-color: #58d68d;
-                                "
-                                 class="card-border"
+                                style="background-color: #58d68d"
+                                class="card-border"
                                 :title="caso.caso_titulo"
                               >
                                 <b-card-text class="text-white">{{
