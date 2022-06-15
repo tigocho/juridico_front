@@ -129,7 +129,7 @@
               </template>
             </iq-card>
           </b-col>
-          <b-col lg="12" class="pagina-detalle-proceso">
+          <b-col lg="12" class="pagina-detalle-caso">
             <div class="iq-edit-list-data">
               <tab-content id="pills-tabContent-2">
                 <tab-content-item :active="true" id="información-general">
@@ -260,22 +260,29 @@
                               </b-col>
                               <b-col cols="9" style="margin-right: 75px"
                                 ><b-card
-                                  style="
-                                    border-radius: 20px;
-                                    border: 1px solid #000;
-                                  "
-                                  :bg-variant="
+                                  :style="
                                     seguimiento.seg_tipo_seg_id === 2
-                                      ? 'success'
+                                      ? 'background-color: #152265'
                                       : seguimiento.seg_tipo_seg_id === 3
-                                      ? 'danger'
-                                      : 'info'
+                                      ? 'background-color: #2E86C1'
+                                      : seguimiento.seg_tipo_seg_id === 4
+                                      ? 'background-color: #EC7063'
+                                      : seguimiento.seg_tipo_seg_id === 5
+                                      ? 'background-color: #F1C40F'
+                                      : 'background-color: #8E44AD'
                                   "
+                                  class="card-border"
                                   :title="seguimiento.seg_titulo"
                                 >
-                                  <b-card-text>{{
+                                  <b-card-text class="text-white">{{
                                     seguimiento.seg_descripcion
-                                  }}</b-card-text>
+                                  }}</b-card-text
+                                  ><b-card-text
+                                    class="text-right text-white font-italic"
+                                    >{{
+                                      seguimiento.tipo_seg_nombre
+                                    }}</b-card-text
+                                  >
                                 </b-card></b-col
                               >
                             </b-row>
@@ -284,25 +291,29 @@
                             <b-row>
                               <b-col cols="8" style="margin-left: 25px"
                                 ><b-card
-                                  style="
-                                    border-radius: 20px;
-                                    border: 1px solid #000;
-                                  "
-                                  :bg-variant="
+                                  :style="
                                     seguimiento.seg_tipo_seg_id === 2
-                                      ? 'light'
+                                      ? 'background-color: #152265'
                                       : seguimiento.seg_tipo_seg_id === 3
-                                      ? 'danger'
-                                      : 'info'
+                                      ? 'background-color: #2E86C1'
+                                      : seguimiento.seg_tipo_seg_id === 4
+                                      ? 'background-color: #EC7063'
+                                      : seguimiento.seg_tipo_seg_id === 5
+                                      ? 'background-color: #F1C40F'
+                                      : 'background-color: #8E44AD'
                                   "
                                   :title="seguimiento.seg_titulo"
+                                  class="card-border"
                                 >
-                                  <b-card-text>{{
+                                  <b-card-text class="text-white">{{
                                     seguimiento.seg_descripcion
                                   }}</b-card-text>
-                                  <b-card-text class="text-right font-italic">{{
-                                    seguimiento.tipo_seg_nombre
-                                  }}</b-card-text>
+                                  <b-card-text
+                                    class="text-right text-white font-italic"
+                                    >{{
+                                      seguimiento.tipo_seg_nombre
+                                    }}</b-card-text
+                                  >
                                 </b-card></b-col
                               >
                               <b-col
@@ -339,16 +350,16 @@
                             <b-col cols="9" style="margin-right: 75px"
                               ><b-card
                                 style="
-                                  border-radius: 20px;
-                                  border: 1px solid #000;
+                                  background-color: #58d68d;
                                 "
-                                bg-variant="success"
+                                 class="card-border"
                                 :title="caso.caso_titulo"
                               >
-                                <b-card-text>{{
+                                <b-card-text class="text-white">{{
                                   caso.caso_descripcion
                                 }}</b-card-text>
-                                <b-card-text class="text-right font-italic"
+                                <b-card-text
+                                  class="text-right text-white font-italic"
                                   >Apertura</b-card-text
                                 >
                               </b-card></b-col
