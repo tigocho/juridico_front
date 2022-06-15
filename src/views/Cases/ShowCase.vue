@@ -147,8 +147,8 @@
                     <template v-slot:headerAction>
                       <b-button
                         v-if="
-                          caso.est_id === 1 &&
-                          asignarProfiles.includes(user_profile)
+                          asignarProfiles.includes(user_profile) &&
+                          caso.abogado === 'Por Asignar'
                         "
                         variant="secondary"
                         style="margin-left: 5px"
