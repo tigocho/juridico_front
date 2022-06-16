@@ -330,7 +330,8 @@ export default {
         })
       } else {
         this.estadoBoton = ''
-        this.textoBoton = 'Guardar'
+        this.textoBoton = 'Guardar Caso'
+        this.validData = true
       }
     },
     getUserClinicas () {
@@ -382,7 +383,8 @@ export default {
         })
       } else {
         this.estadoBoton = ''
-        this.textoBoton = 'Guardar'
+        this.textoBoton = 'Guardar Caso'
+        this.validData = true
       }
     },
     getActividades () {
