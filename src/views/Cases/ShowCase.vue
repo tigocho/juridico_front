@@ -118,7 +118,11 @@
                       disabled
                       :active="false"
                       href="#archivos"
-                      title="Archivos"
+                      :title="
+                        cantidadArchivos > 0
+                          ? 'Archivos (' + cantidadArchivos + ')'
+                          : 'Archivos'
+                      "
                     />
                   </tab-nav>
                 </div>
@@ -170,7 +174,7 @@
                             ><strong>Título: </strong>
                             {{ caso.caso_titulo }}</b-col
                           >
-                          <b-col cols="5"
+                          <b-col cols="6"
                             ><strong>Tiempo de Solución: </strong>
                             {{ caso.fecha_solucion }}
                           </b-col>
@@ -180,7 +184,7 @@
                             ><strong>Solicitante: </strong>
                             {{ caso.solicitante }}</b-col
                           >
-                          <b-col cols="5"
+                          <b-col cols="6"
                             ><strong>Abogado: </strong> {{ caso.abogado }}
                           </b-col>
                         </b-row>
@@ -188,7 +192,7 @@
                           <b-col>
                             <strong>Clínica: </strong> {{ caso.cli_name }}
                           </b-col>
-                          <b-col cols="5"
+                          <b-col cols="6"
                             ><strong>Tipo de Actividad: </strong>
                             {{ caso.subactividad }}
                           </b-col>
@@ -517,6 +521,7 @@ export default {
       caso: {},
       archivos: [],
       archivosSeguimiento: [],
+      cantidadArchivos: 0,
       asignarProfiles: [1, 12],
       user_profile: null,
       progress_total: 4,
@@ -550,6 +555,7 @@ export default {
         .then((res) => {
           this.caso = res.data.caso
           this.archivos = res.data.archivos
+          this.cantidadArchivos = res.data.archivos.length
         })
         .catch((err) => {
           this.errores = err
@@ -595,6 +601,7 @@ export default {
           if (res.status === 200) {
             this.seguimientosCaso = res.data.seguimientos
             this.archivosSeguimiento = res.data.archivoSeguimiento
+            this.cantidadArchivos += res.data.archivoSeguimiento.length
           }
         })
     },
