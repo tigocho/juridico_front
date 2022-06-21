@@ -100,6 +100,7 @@
               show-empty
               small
               @filtered="onFiltered"
+              :tbody-tr-class="rowClass"
             >
               <template #cell(name)="row">
                 {{ row.value.first }} {{ row.value.last }}
@@ -303,6 +304,9 @@ export default {
             })
         }
       })
+    },
+    rowClass (item) {
+      if (item.seg_tipo_seg_id === 6) return 'table-devolucion'
     }
   }
 }

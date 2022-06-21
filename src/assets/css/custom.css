@@ -81,3 +81,7 @@ import Css
 .fecha-archivo-caso label{
   line-height: 20px!important;
 }
+
+.table-devolucion{
+  background-color: #FFC300
+}

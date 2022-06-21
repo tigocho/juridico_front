@@ -268,8 +268,8 @@
                                       : seguimiento.seg_tipo_seg_id === 4
                                       ? 'background-color: #EC7063'
                                       : seguimiento.seg_tipo_seg_id === 5
-                                      ? 'background-color: #F1C40F'
-                                      : 'background-color: #8E44AD'
+                                      ? 'background-color: #8E44AD'
+                                      : 'background-color: #F1C40F'
                                   "
                                   class="card-border"
                                   :title="seguimiento.seg_titulo"
@@ -299,8 +299,8 @@
                                       : seguimiento.seg_tipo_seg_id === 4
                                       ? 'background-color: #EC7063'
                                       : seguimiento.seg_tipo_seg_id === 5
-                                      ? 'background-color: #F1C40F'
-                                      : 'background-color: #8E44AD'
+                                      ? 'background-color: #8E44AD'
+                                      : 'background-color: #F1C40F'
                                   "
                                   :title="seguimiento.seg_titulo"
                                   class="card-border"

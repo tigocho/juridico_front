@@ -159,6 +159,7 @@
               show-empty
               small
               @filtered="onFiltered"
+              :tbody-tr-class="rowClass"
             >
               <template #cell(actions)="row">
                 <b-dropdown variant="primary" text="Acciones">
@@ -407,6 +408,9 @@ export default {
             })
         }
       })
+    },
+    rowClass (item) {
+      if (item.seg_tipo_seg_id === 6) return 'table-devolucion'
     }
   }
 }
