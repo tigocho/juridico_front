@@ -23,17 +23,27 @@
                     </b-col>
                     <b-col>
                       <b-form-group label="Tipo" label-for="tipo_id">
+                        <ValidationProvider
+                              name="Seguimiento"
+                              rules="required"
+                              v-slot="{ errors }"
+                            >
                         <v-select
                           v-model="tiposSegumientoId"
                           :options="tiposSegumientoOptions"
                           :reduce="(label) => label.code"
                           label="label"
                           id="tipo_id"
+                          :class="errors.length > 0 ? ' is-invalid' : ''"
                         >
                           <span slot="no-options"
                             >No hay Tipos de Actividad.</span
                           >
                         </v-select>
+                        <div class="invalid-feedback">
+                                <span>Debe de seleccionar un tipo de Seguimiento</span>
+                              </div>
+                            </ValidationProvider>
                       </b-form-group>
                     </b-col>
                   </b-row>
