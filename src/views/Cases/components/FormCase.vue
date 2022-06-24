@@ -15,6 +15,11 @@
                       label="Actividad*"
                       label-for="act_id"
                     >
+                    <ValidationProvider
+                              name="Actividad"
+                              rules="required"
+                              v-slot="{ errors }"
+                            >
                       <v-select
                         v-model="actividad_id"
                         :options="actividadesOptions"
@@ -22,15 +27,25 @@
                         label="label"
                         id="act_id"
                         @input="getSubactividades"
+                        :class="errors.length > 0 ? ' is-invalid' : ''"
                       >
                         <span slot="no-options">No hay Actividades.</span>
                       </v-select>
+                       <div class="invalid-feedback">
+                                <span>Debe de seleccionar una Actividad</span>
+                              </div>
+                            </ValidationProvider>
                     </b-form-group>
                     <b-form-group
                       class="col-md-6"
                       label="Subactividad*"
                       label-for="subact_id"
                     >
+                     <ValidationProvider
+                              name="Subctividad"
+                              rules="required"
+                              v-slot="{ errors }"
+                            >
                       <v-select
                         @input="getTiempoAns"
                         v-model="subactividad_id"
@@ -38,9 +53,14 @@
                         :reduce="(label) => label.code"
                         label="label"
                         id="subact_id"
+                        :class="errors.length > 0 ? ' is-invalid' : ''"
                       >
                         <span slot="no-options">No hay Subctividades.</span>
                       </v-select>
+                       <div class="invalid-feedback">
+                                <span>Debe de seleccionar una Subctividad</span>
+                              </div>
+                            </ValidationProvider>
                       <p
                         :key="fechaSolucionKey"
                         class="text-left"
