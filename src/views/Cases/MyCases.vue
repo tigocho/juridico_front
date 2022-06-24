@@ -294,7 +294,7 @@ export default {
       })
     },
     rowClass (item) {
-      if (item.seg_tipo_seg_id === 6) return 'table-devolucion'
+      if (item.est_id === 3) return 'table-devolucion'
     }
   }
 }
