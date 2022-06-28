@@ -135,14 +135,14 @@
                 <tab-content-item :active="true" id="información-general">
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title">
+                      <h5 class="card-title">
                         Radicado
                         {{
                           new Date(caso.caso_fecha_apertura).getFullYear() +
                           '-' +
                           formatId(String(caso.caso_id))
                         }}
-                      </h4>
+                      </h5>
                     </template>
                     <template v-slot:headerAction>
                       <b-button

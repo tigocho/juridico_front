@@ -85,3 +85,17 @@ import Css
 .table-devolucion{
   background-color: #FFC300
 }
+
+.b-form-btn-label-control.form-control > .form-control {
+  height: auto;
+  min-height: calc(calc(1.5em + 0.75rem + 2px) - 2px);
+  padding-left: 0.25rem;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  word-break: break-word;
+  font-size: inherit;
+  white-space: normal;
+  cursor: pointer;
+}
