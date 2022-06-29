@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 /* User View */
-import Profile from '../views/User/Profile'
 import ProfileEdit from '../views/User/ProfileEdit'
 import AddUser from '../views/User/AddUser'
 import UserList from '../views/User/UserList'
@@ -106,6 +105,15 @@ import SelectDemo from '../views/Plugins/SelectDemo'
 import DragDropDemo from '../views/Plugins/DragDropDemo'
 import AppTreeView from '../views/Plugins/AppTreeView'
 import axios from 'axios'
+/* Cases Views */
+import AddCase from '../views/Cases/AddCase'
+import MyCases from '../views/Cases/MyCases'
+import ShowCase from '../views/Cases/ShowCase'
+import CasesToAssing from '../views/Cases/CasesToAssing'
+import AddCaseAbogado from '../views/Cases/AddCaseAbogado'
+import AssignedCases from '../views/Cases/AssignedCases'
+import AllCases from '../views/Cases/AllCases'
+import GraphsAndReports from '../views/Cases/GraphsAndReports'
 
 Vue.use(VueRouter)
 
@@ -415,7 +423,7 @@ const authChildRoutes = (prop, mode = false) => [
   {
     path: 'sign-up1',
     name: prop + '.sign-up1',
-    meta: { dark: mode, auth: true },
+    meta: { dark: mode, auth: false },
     component: SignUp1
   },
   {
@@ -517,30 +525,24 @@ const pagesChildRoutes = (prop, mode = false) => [
     component: Maintenance
   }
 ]
-const userChildRoute = (prop, mode = false) => [
+const usuariosChildRoute = (prop, mode = false) => [
   {
-    path: 'profile',
-    name: prop + '.profile',
-    meta: { dark: mode, auth: true, name: 'Profile' },
-    component: Profile
+    path: 'crear-usuario',
+    name: prop + '.crear',
+    meta: { dark: mode, auth: true, name: 'Crear Usuario' },
+    component: AddUser
+  },
+  {
+    path: 'listar-usuarios',
+    name: prop + '.listar',
+    meta: { dark: mode, auth: true, name: 'Listar Usuarios' },
+    component: UserList
   },
   {
     path: 'profile-edit/:user_id',
     name: prop + '.edit',
     meta: { dark: mode, auth: true, name: 'Edit Profile' },
     component: ProfileEdit
-  },
-  {
-    path: 'add-user',
-    name: prop + '.add',
-    meta: { dark: mode, auth: true, name: 'Add Profile' },
-    component: AddUser
-  },
-  {
-    path: 'user-list',
-    name: prop + '.list',
-    meta: { dark: mode, auth: true, name: 'User List' },
-    component: UserList
   }
 ]
 
@@ -673,6 +675,58 @@ const pluginsChildRoute = (prop, mode = false) => [
   }
 ]
 
+const casesChildRoute = (prop, mode = false) => [
+  {
+    path: 'create-case',
+    name: prop + '.add',
+    meta: { dark: mode, auth: true, name: 'Crear Caso' },
+    component: AddCase
+  },
+  {
+    path: 'my-cases',
+    name: prop + '.mylist',
+    meta: { dark: mode, auth: true, name: 'Mis Casos' },
+    component: MyCases
+  },
+  {
+    path: 'cases-show/:caso_id/',
+    name: prop + '.show',
+    meta: { dark: mode, auth: true, name: 'Ver Caso' },
+    component: ShowCase
+  },
+  {
+    path: 'cases-to-assing',
+    name: prop + '.toassing',
+    meta: { dark: mode, auth: true, name: 'Casos Por Assignar' },
+    component: CasesToAssing
+  },
+  {
+    path: 'add-cases-abogado',
+    name: prop + '.addabogado',
+    meta: { dark: mode, auth: true, name: 'Crear Caso Abogado' },
+    component: AddCaseAbogado
+  },
+  {
+    path: 'assigned-cases',
+    name: prop + '.assigned',
+    meta: { dark: mode, auth: true, name: 'Casos Asignados' },
+    component: AssignedCases
+  },
+  {
+    path: 'all-cases',
+    name: prop + '.all',
+    meta: { dark: mode, auth: true, name: 'Todos los Casos' },
+    component: AllCases
+  },
+  {
+    path: 'cases-reports',
+    name: prop + '.reports',
+    meta: { dark: mode, auth: true, name: 'Graficas y Reportes' },
+    component: GraphsAndReports
+  }
+
+]
+
 const routes = [
   {
     path: '/',
@@ -738,11 +792,11 @@ const routes = [
     children: appChildRoute('app')
   },
   {
-    path: '/doctor',
-    name: 'doctor',
+    path: '/usuarios',
+    name: 'usuarios',
     component: Layout1,
     meta: { auth: true },
-    children: userChildRoute('doctor')
+    children: usuariosChildRoute('usuarios')
   },
   {
     path: '/process',
@@ -798,6 +852,13 @@ const routes = [
     name: 'callback',
     meta: { auth: false },
     component: Callback
+  },
+  {
+    path: '/cases',
+    name: 'cases',
+    component: Layout1,
+    meta: { auth: true },
+    children: casesChildRoute('cases')
   }
 ]
 
@@ -809,16 +870,24 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const rutaAuth = to.matched.some((record) => record.meta.auth)
-  const token = axios.defaults.headers.common['Authorization']
-  next()
-  if (rutaAuth && token == null) {
+  const token = localStorage.getItem('access_token')
+  verificarRedireccion(to, from)
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+  if (rutaAuth && token === null) {
     next({ name: 'auth1.sign-in1' })
-    // this.$router.push({ name: 'auth1.sign-in1' })
   } else {
-    next()
+    if (to.name === 'dashboard') {
+      next({ name: 'auth1.sign-in1' })
+    } else {
+      next()
+    }
   }
-  // if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
-  // else next()
 })
+
+function verificarRedireccion (to, from) {
+  if (from.name === null && to.fullPath !== '/auth/sign-in1') {
+    localStorage.setItem('redirect', to.fullPath)
+  }
+}
 
 export default router

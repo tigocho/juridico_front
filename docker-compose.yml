@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  juridico-front:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: juridico-front
+    restart: always
+    ports:
+      - "8081:80"
+    networks:
+      - juridico_api_juridico-network
+networks:
+  juridico_api_juridico-network:
+    external: true

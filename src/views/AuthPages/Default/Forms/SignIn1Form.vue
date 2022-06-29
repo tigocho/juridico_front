@@ -32,18 +32,17 @@
       <div class="d-flex justify-content-end">
         <button type="submit" class="btn btn-primary mt-3" :class="estado">{{ texto }}</button>
       </div>
-      <!--<div class="sign-info">
-          <span class="dark-color d-inline-block line-height-2">
-            No tienes una cuenta?
-            <router-link to="/dark/auth/sign-up1" class="iq-waves-effect pr-4" v-if="$route.meta.dark">
-              Registrate
-            </router-link>
-            <router-link to="/auth/sign-up1" class="iq-waves-effect pr-4" v-else>
-              Registrate
-            </router-link>
-          </span>
-        <social-login-form></social-login-form>
-      </div>-->
+      <!-- <div class="sign-info d-flex justify-content-center">
+        <span class="dark-color d-inline-block line-height-2">
+          ¿No tienes cuenta?
+          <router-link to="/dark/auth/sign-up1" class="iq-waves-effect pr-4" v-if="$route.meta.dark">
+            Crear una cuenta
+          </router-link>
+          <router-link to="/auth/sign-up1" class="iq-waves-effect pr-4" v-else>
+            Crear una cuenta
+          </router-link>
+        </span>
+      </div> -->
     </form>
   </ValidationObserver>
 </template>
@@ -69,6 +68,8 @@ export default {
     texto: 'Iniciar Sesión',
     estado: '',
     intentos: '',
+    perfilAdministrativo: [1, 2],
+    perfilCliente: 11,
     errores: []
   }),
   mounted () {
@@ -134,9 +135,19 @@ export default {
             this.setCookie('pass-jur', '')
           }
           localStorage.setItem('access_token', token)
+          const redirect = localStorage.getItem('redirect')
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
           auth.setUserLogged(res.data.user)
-          this.$router.push({ name: 'process.list' })
+          if (redirect) {
+            localStorage.removeItem('redirect')
+            this.$router.push({ path: redirect })
+          } else if (this.perfilAdministrativo.includes(res.data.user.user_profile)) {
+            this.$router.push({ name: 'process.list' })
+          } else if (this.perfilCliente === res.data.user.user_profile) {
+            this.$router.push({ name: 'cases.mylist' })
+          } else {
+            this.$router.push({ name: 'dashboard.home-2' })
+          }
         } else {
           this.texto = 'Iniciar Sesión'
           this.estado = ''

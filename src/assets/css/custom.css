@@ -34,6 +34,17 @@ import Css
   color: #343a40!important;
 }
 
+.pagina-detalle-caso b, .pagina-detalle-caso p {
+  color: #1a1b1d;
+}
+
+.pagina-detalle-caso h4 {
+  color: #ffffff!important;
+}
+
+.card-border{
+  border-radius: 20px!important;
+}
 .notificacion{
   padding: 15px;
   border-radius: 10px;
@@ -48,3 +59,43 @@ import Css
 .swal2-container .swal2-confirm{
   margin-right: 20px;
 } 
+
+/* SIDEBAR */
+.iq-sidebar {
+  background-color: #089bab !important;
+  background: #089bab !important;
+}
+.iq-sidebar-menu .iq-menu li.active > a {
+  color: #089bab !important;
+}
+
+.iq-sidebar-menu .iq-menu li.active .iq-submenu li.active > a {
+  background: #666666 !important;
+  color: #fff !important;
+  border-radius: 0;
+}
+.iq-sidebar-menu .iq-menu li ul a:hover {
+  color: #089bab !important;
+}
+
+.fecha-archivo-caso label{
+  line-height: 20px!important;
+}
+
+.table-devolucion{
+  background-color: #FFC300
+}
+
+.b-form-btn-label-control.form-control > .form-control {
+  height: auto;
+  min-height: calc(calc(1.5em + 0.75rem + 2px) - 2px);
+  padding-left: 0.25rem;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  word-break: break-word;
+  font-size: inherit;
+  white-space: normal;
+  cursor: pointer;
+}

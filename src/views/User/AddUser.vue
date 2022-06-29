@@ -17,7 +17,7 @@
                       <ValidationProvider name="Primer Nombre" rules="required" v-slot="{ errors }">
                         <b-form-input v-model="user.usr_name_first" type="text" placeholder="Primer Nombre" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                         <div class="invalid-feedback">
-                          <span>Nombre invalido</span>
+                          <span>Nombre inválido</span>
                         </div>
                       </ValidationProvider>
                     </b-form-group>
@@ -28,7 +28,7 @@
                       <ValidationProvider name="Primer Apellido" rules="required" v-slot="{ errors }">
                         <b-form-input v-model="user.usr_lastname_first" type="text" placeholder="Primer Apellido" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                         <div class="invalid-feedback">
-                          <span>Primer Apellido invalido</span>
+                          <span>Primer Apellido inválido</span>
                         </div>
                       </ValidationProvider>
                     </b-form-group>
@@ -37,12 +37,27 @@
                     </b-form-group>
                   </b-row>
                   <hr>
-                  <b-row>
+                <b-row>
+                  <b-form-group class="col-md-6" label="Tipo de identificación:" label-for="selectypeid">
+                    <b-form-select plain v-model="user.usr_identification_type" :options="ids" id="selectypeid">
+                      <template v-slot:first>
+                        <b-form-select-option :value="null" disabled>Seleccione un tipo de id</b-form-select-option>
+                      </template>
+                    </b-form-select>
+                  </b-form-group>
+                  <b-form-group class="col-md-6" label="Identificación:" label-for="mobno">
+                    <ValidationProvider name="Identificación" rules="required|numeric" v-slot="{ errors }">
+                      <b-form-input v-model="user.usr_identification" type="number" placeholder="Identificación" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                      <div class="invalid-feedback">
+                        <span>Número de identificación inválido</span>
+                      </div>
+                    </ValidationProvider>
+                  </b-form-group>
                   <b-form-group class="col-md-6" label="Fecha de Nacimiento" label-for="usr_birthday">
                     <ValidationProvider name="Fecha de nacimiento" rules="required" v-slot="{ errors }">
                       <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                       <div class="invalid-feedback">
-                        <span>Fecha de nacimiento invalida</span>
+                        <span>Fecha de nacimiento inválida</span>
                       </div>
                     </ValidationProvider>
                   </b-form-group>
@@ -50,11 +65,11 @@
                     <ValidationProvider name="Correo Electronico" rules="required|email" v-slot="{ errors }">
                       <b-form-input v-model="user.usr_email" type="text" placeholder="Correo Electronico" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                       <div class="invalid-feedback">
-                        <span>Correo electrónico invalido</span>
+                        <span>Correo electrónico inválido</span>
                       </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Perfil de Usuario:" label-for="usr_role_id">
+                  <b-form-group class="col-md-4" label="Perfil de Usuario:" label-for="usr_role_id">
                     <ValidationProvider name="Perfil de Usuario" rules="required" v-slot="{ errors }">
                       <b-form-select plain v-model="user.usr_role_id" :options="roles" id="usr_role_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
                         <template v-slot:first>
@@ -66,7 +81,19 @@
                       </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Color para el usuario" label-for="usr_color">
+                  <b-form-group label="Clínicas para el usuario" label-for="clinicas" class="col-md-4">
+                    <v-select
+                      multiple
+                      v-model="user.clinicas"
+                      :options="clinicaOptions"
+                      :reduce="label => label.code"
+                      label="label"
+                      id="clinica_id"
+                      >
+                      <span slot="no-options">No hay clínicas.</span>
+                    </v-select>
+                  </b-form-group>
+                  <b-form-group class="col-md-4" label="Color para el usuario" label-for="usr_color">
                     <ValidationProvider name="Color para el usuario" rules="required" v-slot="{ errors }">
                       <b-form-input v-model="user.usr_color" type="color" placeholder="Color" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                       <div class="invalid-feedback">
@@ -74,36 +101,21 @@
                       </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Tipo de identificación:" label-for="selectypeid">
-                    <b-form-select plain v-model="user.usr_identification_type" :options="ids" id="selectypeid">
-                      <template v-slot:first>
-                        <b-form-select-option :value="null" disabled>Seleccione un tipo de id</b-form-select-option>
-                      </template>
-                    </b-form-select>
-                  </b-form-group>
-                  <b-form-group class="col-md-6" label="Identificación:" label-for="mobno">
-                    <ValidationProvider name="Identificación" rules="required" v-slot="{ errors }">
-                      <b-form-input v-model="user.usr_identification" type="text" placeholder="Identificación" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                      <div class="invalid-feedback">
-                        <span>{{ errors[0] }}</span>
-                      </div>
-                    </ValidationProvider>
-                  </b-form-group>
-                  <b-form-group class="col-md-6" label="Genero del usuario" label-for="pro_gender">
+                  <b-form-group class="col-md-6" label="Genero del usuario" label-for="usr_gender">
                     <ValidationProvider name="Genero del usuario" rules="required" v-slot="{ errors }">
                       <template v-for="(item,index) in state">
-                        <b-form-radio inline v-model="user.pro_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="(errors.length > 0 ? ' is-invalid' : '')">{{ item.label }}</b-form-radio>
+                        <b-form-radio inline v-model="user.usr_gender" :name="item.name" :key="index" :value="item.value" :disabled="item.disabled" :class="(errors.length > 0 ? ' is-invalid' : '')">{{ item.label }}</b-form-radio>
                       </template>
                       <div class="invalid-feedback">
                         <span>{{ errors[0] }}</span>
                       </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Teléfono/Celular" label-for="pro_cell_phone">
+                  <b-form-group class="col-md-6" label="Teléfono/Celular" label-for="usr_cell_phone">
                     <ValidationProvider name="Teléfono/Celular" rules="required" v-slot="{ errors }">
-                      <b-form-input v-model="user.pro_cell_phone" type="number" placeholder="ej: 3019972139" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                      <b-form-input v-model="user.usr_cell_phone" type="number" placeholder="ej: 3019972139" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                         <div class="invalid-feedback">
-                          <span>{{ errors[0] }}</span>
+                          <span>Número inválido</span>
                         </div>
                     </ValidationProvider>
                   </b-form-group>
@@ -124,14 +136,18 @@
                     </ValidationProvider>
                   </b-form-group>
                 </b-row>
-                <div class="form-group row align-items-center">
-                  <label class="col-auto" for="user.usr_is_active">Usuario activo:</label>
-                  <div class="col-auto custom-control custom-switch" style="min-height:33px;">
-                    <input type="checkbox" class="custom-control-input" id="user.usr_is_active" v-model="user.usr_is_active" :value="user.usr_is_active" >
-                    <label class="custom-control-label" for="user.usr_is_active"></label>
+                <div class="form-group row mt-3">
+                  <div class="col-6 d-flex">
+                    <label class="col-auto" for="user.usr_is_active">Usuario activo:</label>
+                    <div class="col-auto custom-control custom-switch" style="min-height:33px;">
+                      <input type="checkbox" class="custom-control-input" id="user.usr_is_active" v-model="user.usr_is_active" :value="user.usr_is_active" >
+                      <label class="custom-control-label" for="user.usr_is_active"></label>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <b-button variant="primary" type="submit" class="d-flex float-right" :class="estadoBoton">{{ textoBoton }}</b-button>
                   </div>
                 </div>
-                <b-button variant="primary" type="submit" :class="estadoBoton">{{ textoBoton }}</b-button>
               </div>
               </template>
             </iq-card>
@@ -145,6 +161,7 @@
 
 </template>
 <script>
+import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
@@ -153,11 +170,14 @@ export default {
   name: 'AddUser',
   mounted () {
     xray.index()
+    this.fetchClinicaOptions()
+    this.fetchPerfilesPlataformaOptions()
   },
   data () {
     return {
       estadoBoton: '',
-      textoBoton: 'Agregar Usuario',
+      textoBoton: 'Crear Usuario',
+      errors: [],
       user: {
         usr_name_first: '',
         usr_lastname_first: '',
@@ -167,18 +187,20 @@ export default {
         usr_identification: '',
         usr_birthday: '',
         usr_username: '',
+        clinicas: '',
         usr_email: '',
         profile_image: require('../../assets/images/user/11.png'),
         city: '',
         usr_role_id: '',
         usr_accept_terms: 1,
-        pro_gender: '',
-        pro_cell_phone: '',
+        usr_gender: '',
+        usr_cell_phone: '',
         usr_is_active: 1,
-        usr_color: '',
+        usr_color: '#000000',
         usr_password: '',
         newPassword2: ''
       },
+      clinicaOptions: [],
       state: [
         {
           name: 'genero',
@@ -193,10 +215,7 @@ export default {
           disabled: false
         }
       ],
-      roles: [
-        { text: 'Administrador', value: 1 },
-        { text: 'Abogado', value: 2 }
-      ],
+      roles: {},
       ids: [
         { text: 'CC.', value: 1 },
         { text: 'TI.', value: 2 },
@@ -206,6 +225,9 @@ export default {
     }
   },
   computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    },
     fullName: function () {
       return this.user.usr_name_first + ' ' + this.user.usr_lastname_first
     }
@@ -224,18 +246,60 @@ export default {
         reader.readAsDataURL(input.files[0])
       }
     },
+    fetchPerfilesPlataformaOptions () {
+      axios.get('/profiles/perfiles-plataforma').then(response => {
+        this.roles = response.data.profiles
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchPerfilesPlataformaOptions()
+            this.intentos++
+          }
+        })
+    },
+    fetchClinicaOptions () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/clinicas/obtener-clinicas/' + this.userLogged.usr_id).then(response => {
+          this.clinicaOptions = response.data.clinicas
+          this.clinicaOptions.push({ code: 0, label: 'Todas' })
+          if (this.clinicaOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
+            if (this.clinicaOptions.length === 1) {
+              this.clinicaId = this.clinicaOptions[0].code
+            }
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchClinicaOptions()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
     onSubmit () {
-      this.estadoBoton = 'disabled'
-      this.addUser()
+      if (this.user.clinicas != null && this.user.clinicas.length > 0) {
+        this.estadoBoton = 'disabled'
+        this.addUser()
+      } else {
+        Vue.swal('Por favor seleccione al menos una clínica para el usuario.')
+      }
     },
     addUser () {
       this.textoBoton = 'Creando usuario...'
       axios.post('/register', this.user).then(res => {
         if (res.data.status_code === 200) {
-          Vue.swal('Usuario agregado correctamente')
-          this.$router.push({ name: 'doctor.list' })
+          Vue.swal(res.data.message)
+          this.$router.push({ name: 'usuarios.listar' })
         } else {
-          Vue.swal('Datos no validos')
+          Vue.swal(res.data.message)
+          this.estadoBoton = ''
+          this.textoBoton = 'Guardar'
         }
       })
     }

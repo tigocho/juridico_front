@@ -6,11 +6,12 @@
     "is_active": false,
     "class_name": "",
     "is_icon_class": true,
-    "icon": ""
+    "icon": "",
+    "roles": [1, 2, 12]
   },
   {
     "title": "Dashboard Gerencial",
-    "name": "Panel Gerencial",
+    "name": "sidebar.dashboard2",
     "is_heading": false,
     "is_active": false,
     "link": {
@@ -18,7 +19,8 @@
     },
     "class_name": "",
     "is_icon_class": true,
-    "icon": "ri-user-star-line"
+    "icon": "ri-user-star-line",
+    "roles": [1, 12]
   },
   {
     "title": "Doctor Dashboard",
@@ -30,7 +32,55 @@
     },
     "class_name": "",
     "is_icon_class": true,
-    "icon": "ri-hospital-fill"
+    "icon": "ri-hospital-fill",
+    "roles": [1, 12]
+  },
+  {
+    "title": "Administrar",
+    "name": "sidebar.administrar",
+    "is_heading": true,
+    "is_active": false,
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "",
+    "roles": [1, 12]
+  },
+  {
+    "title": "Usuarios",
+    "name": "sidebar.gestionUsuarios",
+    "is_heading": false,
+    "is_active": false,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-user-settings-line",
+    "roles": [1, 12],
+    "children": [
+      {
+        "title": "Crear Usuario",
+        "name": "sidebar.crearUsuario",
+        "is_active": false,
+        "link": {
+          "name" : "usuarios.crear"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-user-add-line",
+        "roles": [1, 12]
+      },
+      {
+        "title": "Listar usuarios",
+        "name": "sidebar.listaUsuarios",
+        "is_active": false,
+        "link": {
+          "name" : "usuarios.listar"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-list-unordered",
+        "roles": [1, 12]
+      }    
+    ]
   },
   {
     "title": "Apps",
@@ -39,7 +89,8 @@
     "is_active": false,
     "class_name": "",
     "is_icon_class": true,
-    "icon": ""
+    "icon": "",
+    "roles": [1, 2, 12]
   },
   {
     "title": "Process",
@@ -50,6 +101,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-file-list-fill",
+    "roles": [1, 2, 12],
     "children": [
       {
         "title": "Process List",
@@ -60,7 +112,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-book-mark-line"
+        "icon": "ri-book-mark-line",
+        "roles": [1, 2 , 12]
       },
       {
         "title": "Add Proces",
@@ -71,7 +124,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-folder-add-line"
+        "icon": "ri-folder-add-line",
+        "roles": [1, 2, 12]
       },
       {
         "title": "Process Archived",
@@ -82,7 +136,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-inbox-archive-fill"
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 2, 12]
       }      
     ]
   },
@@ -95,6 +150,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-government-fill",
+    "roles": [1, 2, 12],
     "children": [
       {
         "title": "Process List Laborales",
@@ -105,7 +161,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-book-mark-line"
+        "icon": "ri-book-mark-line",
+        "roles": [1, 2, 12]
       },
       {
         "title": "Add Proces",
@@ -127,7 +184,45 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-inbox-archive-fill"
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 2, 12]
+      }
+    ]
+  },
+  {
+    "title": "otrosProcesos",
+    "name": "sidebar.otrosProcesos",
+    "is_heading": false,
+    "is_active": false,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "fas fa-bars",
+    "roles": [1, 2, 12],
+    "children": [
+      {
+        "title": "otrosProcesosList",
+        "name": "sidebar.ListaOtrosProcesos",
+        "is_active": false,
+        "link": {
+          "name" : "process-otros.list"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-book-mark-line",
+        "roles": [1, 2, 12]
+      },
+      {
+        "title": "otrosProcesosArchivados",
+        "name": "sidebar.otrosProcesosArchivados",
+        "is_active": false,
+        "link": {
+          "name" : "process-otros.archivados"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "fas fa-archive",
+        "roles": [1, 2, 12]
       }
     ]
   },
@@ -140,6 +235,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-shield-flash-fill",
+    "roles": [1, 2, 12],
     "children": [
       {
         "title": "Policies List",
@@ -150,7 +246,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-shield-fill"
+        "icon": "ri-shield-fill",
+        "roles": [1, 2, 12]
       },
       {
         "title": "Add Policy",
@@ -161,7 +258,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-shield-cross-fill"
+        "icon": "ri-shield-cross-fill",
+        "roles": [1, 2, 12]
       },
       {
         "title": "Policies Archived",
@@ -172,7 +270,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-shield-flash-fill"
+        "icon": "ri-shield-flash-fill",
+        "roles": [1, 2, 12]
       }      
     ]
   },
@@ -186,6 +285,126 @@
     },
     "class_name": "",
     "is_icon_class": true,
-    "icon": "ri-calendar-event-fill"
+    "icon": "ri-calendar-event-fill",
+    "roles": [1, 2, 12]
+  },
+  {
+    "title": "ANS",
+    "name": "sidebar.ans",
+    "is_heading": true,
+    "is_active": false,
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "",
+    "roles": [1, 2, 11, 12, 13]
+  },
+  {
+    "title": "Casos Jurídicos",
+    "name": "sidebar.casos",
+    "is_heading": false,
+    "is_active": false,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-file-list-fill",
+    "roles": [1, 2, 11, 12, 13],
+    "children": [
+      {
+        "title": "Casos por asignar",
+        "name": "sidebar.casosPorAsignar",
+        "is_active": false,
+        "link": {
+          "name" : "cases.toassing"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 12]
+      },
+      {
+        "title": "Crear Caso Abogado",
+        "name": "sidebar.crearCaso",
+        "is_active": false,
+        "link": {
+          "name" : "cases.addabogado"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-book-mark-line",
+        "roles": [1, 2, 12]
+      },
+      {
+        "title": "Crear Caso Cliente",
+        "name": "sidebar.crearCaso",
+        "is_active": false,
+        "link": {
+          "name" : "cases.add"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-book-mark-line",
+        "roles": [11]
+      },
+      {
+        "title": "Mis Casos",
+        "name": "sidebar.misCasos",
+        "is_active": false,
+        "link": {
+          "name" : "cases.mylist"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-folder-add-line",
+        "roles": [11]
+      },
+      {
+        "title": "Mis Asignaciones",
+        "name": "sidebar.misAsignaciones",
+        "is_active": false,
+        "link": {
+          "name" : "cases.assigned"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [2, 12]
+      },
+      {
+        "title": "Mis casos",
+        "name": "sidebar.miListaCasos",
+        "is_active": false,
+        "link": {
+          "name" : "cases.mylist"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 12, 13]
+      },
+      {
+        "title": "Todos los casos",
+        "name": "sidebar.todosLosCasos",
+        "is_active": false,
+        "link": {
+          "name" : "cases.all"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 12, 13]
+      },
+      {
+        "title": "Gráficas y reportes",
+        "name": "sidebar.graficasReportesAns",
+        "is_active": false,
+        "link": {
+          "name" : "cases.reports"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 12, 13]
+      }
+    ]
   }
 ]

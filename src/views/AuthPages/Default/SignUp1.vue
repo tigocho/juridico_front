@@ -1,8 +1,9 @@
 <template>
   <div>
-    <h1 class="mb-0">Sign Up</h1>
-    <p>Enter your email address and password to access admin panel.</p>
-    <sign-up1-form formType="jwt"></sign-up1-form>
+    <h1 class="mb-0">Crear cuenta</h1>
+    <p class="pl-1">Ingrese los datos solicitados.</p>
+    <p class="pl-1">Los campos con símbolo (*) son obligatorios.</p>
+    <sign-up1-form></sign-up1-form>
   </div>
 </template>
 <script>
