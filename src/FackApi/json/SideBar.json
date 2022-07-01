@@ -173,7 +173,8 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "icon": "ri-folder-add-line"
+        "icon": "ri-folder-add-line",
+        "roles": [1, 2, 12]
       },
       {
         "title": "Process Archived Laborales",
