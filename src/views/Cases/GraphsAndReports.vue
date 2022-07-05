@@ -22,6 +22,21 @@
             <b-col lg="12">
               <iq-card>
                 <template v-slot:headerTitle>
+                  <h4>Porcentaje de Cumplimento de los Casos</h4>
+                   <h6>Selecione un periodo de tiempo</h6>
+                </template>
+                <template v-slot:body>
+                  <GraficaCumplimiento
+                    element="GraficasCumplimiento"
+                  />
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+           <b-row>
+             <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
                   <h4>Casos por Abogado</h4>
                   <h6>Total de casos asignados {{ totalAbogado }}</h6>
                   <b-form-select
@@ -54,7 +69,7 @@
                 </template>
               </iq-card>
             </b-col>
-          </b-row>
+           </b-row>
           <b-row>
             <b-col lg="6">
               <iq-card>
@@ -134,6 +149,7 @@
 </template>
 <script>
 import { xray } from '../../config/pluginInit'
+import GraficaCumplimiento from './components/CumplimientoCasos.vue'
 import CasosPorAbogado from './components/CasosPorAbogado.vue'
 import CasosPorClinicas from './components/CasosPorClinilca.vue'
 import CasosPorSubactividad from './components/CasosPorSubactividad.vue'
@@ -145,7 +161,8 @@ export default {
   components: {
     CasosPorAbogado,
     CasosPorClinicas,
-    CasosPorSubactividad
+    CasosPorSubactividad,
+    GraficaCumplimiento
   },
   mounted () {
     xray.index()
