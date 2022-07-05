@@ -147,6 +147,27 @@
       </b-modal>
     </div>
     <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
+    <!-- MODAL PARA ELIMINAR PROCESO-->
+    <b-modal id="modal-eliminar-proceso" size="lg" title="Eliminar Procesos" hide-footer>
+       <b-row>
+    <b-col sm="2">
+      <label for="textarea-small">Motivo de eliminación:</label>
+    </b-col>
+    <b-col sm="10">
+      <b-form-textarea
+        id="textarea-small"
+        :state="
+            comentario_eliminacion.length >= 5
+          "
+      ></b-form-textarea>
+       <b-button
+          variant="primary"
+          @click="deleteProcess"
+          style="margin-top:10px;">Eliminar
+          </b-button>
+    </b-col>
+  </b-row>
+    </b-modal>
     <!-- MODAL PARA TERMINAR UN PROCESO -->
     <ModalTerminarProceso v-on:actualizarListaProcesos="actualizarLista" :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso"  />
     <!-- User Interface controls -->
@@ -262,6 +283,7 @@
                   <b-dropdown-item @click="edit(row.item.prore_id)">Editar</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
                   ">+ Actuación</b-dropdown-item>
+                  <b-dropdown-item  v-if="eliminarPerfiles.includes(user_profile)" @click="eliminar(row.item.prore_id)">Eliminar Proceso</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
                   <hr>
                   <b-dropdown-item v-if="row.item.prore_status_process_id != 16" v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(row.item.prore_id, row.item)"><span class="text-danger">Terminar Proceso</span></b-dropdown-item>
@@ -403,7 +425,11 @@ export default {
       clinicaOptions: [],
       links: {},
       intentos: 0,
-      errores: {}
+      errores: {},
+      eliminarPerfiles: [1],
+      comentario_eliminacion: '',
+      proreIdDelete: '',
+      user_profile: null
     }
   },
   created () {
@@ -514,6 +540,7 @@ export default {
     getProcess () {
       var user = JSON.parse(auth.getUserLogged())
       this.user_id = user.usr_id
+      this.user_profile = this.userLogged.user_profile
       axios.get('/process/process-medicos/' + this.user_id).then(response => {
         this.process = response.data.process
         // Set the initial number of items
@@ -749,6 +776,26 @@ export default {
     limpiarNuevoLinkProceeding () {
       this.nuevoLinkProceeding.link_name = null
       this.nuevoLinkProceeding.link_url = null
+    },
+    eliminar (id) {
+      this.proreIdDelete = id
+      this.$bvModal.show('modal-eliminar-proceso')
+    },
+    deleteProcess () {
+      this.$bvModal.hide('modal-eliminar-proceso')
+
+      const dataDelete = {
+        prore_id: this.proreIdDelete,
+        comentario: this.comentario_eliminacion
+      }
+
+      axios.post('/process/delete', dataDelete).then((res) => {
+        if (res.status === 200) {
+          this.actualizarLista()
+        }
+
+        Vue.swal(res.data.message)
+      })
     }
   }
 }
