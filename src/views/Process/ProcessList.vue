@@ -149,25 +149,25 @@
     <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
     <!-- MODAL PARA ELIMINAR PROCESO-->
     <b-modal id="modal-eliminar-proceso" size="lg" title="Eliminar Procesos" hide-footer>
-       <b-row>
-    <b-col sm="2">
-      <label for="textarea-small">Motivo de eliminación:</label>
-    </b-col>
-    <b-col sm="10">
-      <b-form-textarea
-        id="textarea-small"
-        :state="
-            comentario_eliminacion.length >= 5
-          "
-      ></b-form-textarea>
-       <b-button
-          variant="primary"
-          @click="deleteProcess"
-          style="margin-top:10px;">Eliminar
+      <b-row>
+        <b-col sm="2">
+          <label for="textarea-small">Motivo de eliminación:</label>
+        </b-col>
+        <b-col sm="10">
+          <b-form-textarea
+            id="textarea-small"
+            :state="comentario_eliminacion.length >= 5"
+            v-model="comentario_eliminacion"
+          ></b-form-textarea>
+          <b-button
+            variant="primary"
+            @click="deleteProcess"
+            style="margin-top:10px;">Eliminar
           </b-button>
-    </b-col>
-  </b-row>
+        </b-col>
+      </b-row>
     </b-modal>
+    <!-- FIN MODAL PARA ELIMINAR PROCESO-->
     <!-- MODAL PARA TERMINAR UN PROCESO -->
     <ModalTerminarProceso v-on:actualizarListaProcesos="actualizarLista" :num_radicado="numRadicadoProcesoTerminar" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso"  />
     <!-- User Interface controls -->
@@ -782,20 +782,24 @@ export default {
       this.$bvModal.show('modal-eliminar-proceso')
     },
     deleteProcess () {
-      this.$bvModal.hide('modal-eliminar-proceso')
-
-      const dataDelete = {
-        prore_id: this.proreIdDelete,
-        comentario: this.comentario_eliminacion
-      }
-
-      axios.post('/process/delete', dataDelete).then((res) => {
-        if (res.status === 200) {
-          this.actualizarLista()
+      if (this.comentario_eliminacion !== null && this.comentario_eliminacion.length > 4) {
+        this.$bvModal.hide('modal-eliminar-proceso')
+        const dataDelete = {
+          prore_id: this.proreIdDelete,
+          comentario: this.comentario_eliminacion
         }
-
-        Vue.swal(res.data.message)
-      })
+        axios.post('/process/delete', dataDelete).then((res) => {
+          if (res.status === 200) {
+            this.actualizarLista()
+          }
+          Vue.swal(res.data.message)
+        })
+          .catch((err) => {
+            Vue.swal('Ocurrió un error', err.response.data.message, 'error')
+          })
+      } else {
+        Vue.swal('Falta información', 'Por favor ingrese la descripción del porqué se elimina el caso', 'error')
+      }
     }
   }
 }
