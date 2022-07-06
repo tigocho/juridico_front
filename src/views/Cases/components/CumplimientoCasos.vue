@@ -131,7 +131,7 @@ export default {
         },
         legend: {
           tooltipHoverFormatter: function (val, opts) {
-            return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + ''
+            return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '%'
           }
         },
         markers: {
@@ -142,6 +142,29 @@ export default {
         },
         xaxis: {
           categories: []
+        },
+        yaxis: {
+          title: {
+            text: 'Porcentaje de Cumplimiento (%)'
+          }
+        },
+        tooltip: {
+          y: [
+            {
+              title: {
+                formatter: function (val, opts) {
+                  return val + ' %'
+                }
+              }
+            },
+            {
+              title: {
+                formatter: function (val, opts) {
+                  return val + ' %'
+                }
+              }
+            }
+          ]
         },
         grid: {
           borderColor: '#f1f1f1'
