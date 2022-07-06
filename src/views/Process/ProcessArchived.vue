@@ -46,6 +46,27 @@
       </b-modal>
     </div>
     <!-- FIN MODAL DE AUDIENCIA -->
+    <!-- MODAL PARA ELIMINAR PROCESO-->
+    <b-modal id="modal-eliminar-proceso" size="lg" title="Eliminar Procesos" hide-footer>
+      <b-row>
+        <b-col sm="2">
+          <label for="textarea-small">Motivo de eliminación:</label>
+        </b-col>
+        <b-col sm="10">
+          <b-form-textarea
+            id="textarea-small"
+            :state="comentario_eliminacion.length >= 5"
+            v-model="comentario_eliminacion"
+          ></b-form-textarea>
+          <b-button
+            variant="primary"
+            @click="deleteProcess"
+            style="margin-top:10px;">Eliminar
+          </b-button>
+        </b-col>
+      </b-row>
+    </b-modal>
+    <!-- FIN MODAL PARA ELIMINAR PROCESO-->
     <!-- INICIAL DE MODAL DE ACTUACIÓN -->
     <div>
       <b-modal id="modal-nueva-actuacion" size="lg" title="Agregar actuación" hide-footer>
@@ -147,7 +168,7 @@
     <!-- User Interface controls -->
     <b-row>
       <b-col lg="12">
-        <iq-card>
+        <iq-card :key="tableKey">
           <template v-slot:headerTitle>
             <h4 class="card-title">Litigios/Solicitudes</h4>
           </template>
@@ -225,6 +246,7 @@
               <template #cell(actions)="row">
                 <b-dropdown variant="primary" text="Acciones">
                   <b-dropdown-item @click="verDetalle(row.item.prore_id)">Abrir</b-dropdown-item>
+                  <b-dropdown-item  v-if="eliminarPerfiles.includes(user_profile)" @click="eliminar(row.item.prore_id)">Eliminar Proceso</b-dropdown-item>
                 </b-dropdown>
               </template>
             </b-table>
@@ -261,6 +283,7 @@ const FileDownload = require('js-file-download')
 export default {
   data () {
     return {
+      tableKey: 1,
       estadoBotonEliminarLinkProceeding: '',
       botonDescargarInforme: 'Descargar Informe',
       estadoBotonDescargarInforme: '',
@@ -361,7 +384,11 @@ export default {
       },
       links: {},
       intentos: 0,
-      errores: {}
+      errores: {},
+      eliminarPerfiles: [1],
+      comentario_eliminacion: '',
+      proreIdDelete: '',
+      user_profile: null
     }
   },
   created () {
@@ -397,6 +424,7 @@ export default {
   },
   mounted () {
     xray.index()
+    this.user_profile = this.userLogged.user_profile
     this.getProcess()
     this.fetchOptionsAbogados()
     this.getTypeNotifications()
@@ -405,6 +433,10 @@ export default {
     }, 500)
   },
   methods: {
+    actualizarLista () {
+      this.getProcess()
+      this.tableKey++
+    },
     importarArchivo () {
       this.$router.push({ path: `/process/process-import` })
     },
@@ -656,6 +688,30 @@ export default {
     limpiarNuevoLinkProceeding () {
       this.nuevoLinkProceeding.link_name = null
       this.nuevoLinkProceeding.link_url = null
+    },
+    eliminar (id) {
+      this.proreIdDelete = id
+      this.$bvModal.show('modal-eliminar-proceso')
+    },
+    deleteProcess () {
+      if (this.comentario_eliminacion !== null && this.comentario_eliminacion.length > 4) {
+        this.$bvModal.hide('modal-eliminar-proceso')
+        const dataDelete = {
+          prore_id: this.proreIdDelete,
+          comentario: this.comentario_eliminacion
+        }
+        axios.post('/process/delete', dataDelete).then((res) => {
+          if (res.status === 200) {
+            this.actualizarLista()
+          }
+          Vue.swal(res.data.message)
+        })
+          .catch((err) => {
+            Vue.swal('Ocurrió un error', err.response.data.message, 'error')
+          })
+      } else {
+        Vue.swal('Falta información', 'Por favor ingrese la descripción del porqué se elimina el caso', 'error')
+      }
     }
   }
 }
