@@ -21,17 +21,6 @@
           <b-row>
             <b-col lg="12">
               <iq-card>
-                 <template v-slot:headerTitle>
-                  <h4>Tabla Cumplimento de los Casos</h4>
-                </template>
-                <template v-slot:body>
-                  <CumplimientoTabla
-                  />
-                </template>
-                </iq-card>
-            </b-col>
-            <b-col lg="12">
-              <iq-card>
                 <template v-slot:headerTitle>
                   <h4>Porcentaje de Cumplimento de los Casos</h4>
                    <h6>Selecione un periodo de tiempo</h6>
@@ -44,6 +33,19 @@
               </iq-card>
             </b-col>
           </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                 <template v-slot:headerTitle>
+                  <h4>Tabla de Procentaje de Cumplimento de Casos por Clínica</h4>
+                </template>
+                <template v-slot:body>
+                  <CumplimientoTabla
+                  />
+                </template>
+                </iq-card>
+            </b-col>
+            </b-row>
            <b-row>
              <b-col lg="12">
               <iq-card>

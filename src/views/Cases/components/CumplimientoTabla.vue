@@ -57,7 +57,7 @@
     <div v-if="loadingTable" class="text-center">
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
-    <b-table v-else :items="datosTabla"></b-table>
+    <b-table v-else :bordered="true" :items="datosTabla"></b-table>
   </b-container>
 </template>
 
