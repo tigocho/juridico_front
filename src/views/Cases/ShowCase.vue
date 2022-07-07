@@ -162,6 +162,7 @@
                       </h4>
                       <b-button
                         variant="primary"
+                        v-if="caso.est_id !== 4"
                         style="margin-left: 5px"
                         @click="editarCaso"
                         >Editar Caso</b-button
@@ -226,6 +227,7 @@
                       </div>
                       <div v-else>
                         <b-button
+                        v-if="caso.est_id !== 4"
                           style="margin-left: 25px; margin-bottom: 20px"
                           variant="primary"
                           @click="addSeguimiento = true"

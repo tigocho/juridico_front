@@ -135,9 +135,13 @@ export default {
             this.setCookie('pass-jur', '')
           }
           localStorage.setItem('access_token', token)
+          const redirect = localStorage.getItem('redirect')
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
           auth.setUserLogged(res.data.user)
-          if (this.perfilAdministrativo.includes(res.data.user.user_profile)) {
+          if (redirect) {
+            localStorage.removeItem('redirect')
+            this.$router.push({ path: redirect })
+          } else if (this.perfilAdministrativo.includes(res.data.user.user_profile)) {
             this.$router.push({ name: 'process.list' })
           } else if (this.perfilCliente === res.data.user.user_profile) {
             this.$router.push({ name: 'cases.mylist' })

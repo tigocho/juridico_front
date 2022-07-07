@@ -23,9 +23,13 @@ export default {
   },
   mounted () {
     const loggedIn = localStorage.getItem('access_token')
+    const redirect = localStorage.getItem('redirect')
     if (loggedIn !== undefined && loggedIn !== null) {
       if (this.userLogged.profiles.length > 0) {
-        if (this.userLogged.profiles.length > 0 && this.userLogged.profiles[0].prof_id === 11) {
+        if (redirect) {
+          localStorage.removeItem('redirect')
+          this.$router.push({ path: redirect })
+        } else if (this.userLogged.profiles.length > 0 && this.userLogged.profiles[0].prof_id === 11) {
           this.$router.push({ name: 'cases.mylist' })
         } else {
           this.$router.push({ name: 'dashboard.home-1' })

@@ -593,6 +593,12 @@ const processLaboralOrdinarioChildRoute = (prop, mode = false) => [
     component: ProcessLaboralesList
   },
   {
+    path: 'process-laboral',
+    name: prop + '.add',
+    meta: { dark: mode, auth: true, name: 'Add Porcess' },
+    component: AddProcess
+  },
+  {
     path: 'process-laborales-ordinario-archivados',
     name: prop + '.archivados',
     meta: { dark: mode, auth: true, name: 'Process Laborales Archivados' },
@@ -865,10 +871,10 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const rutaAuth = to.matched.some((record) => record.meta.auth)
   const token = localStorage.getItem('access_token')
+  verificarRedireccion(to, from)
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   if (rutaAuth && token === null) {
     next({ name: 'auth1.sign-in1' })
-    // this.$router.push({ name: 'auth1.sign-in1' })
   } else {
     if (to.name === 'dashboard') {
       next({ name: 'auth1.sign-in1' })
@@ -876,8 +882,12 @@ router.beforeEach((to, from, next) => {
       next()
     }
   }
-  // if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
-  // else next()
 })
+
+function verificarRedireccion (to, from) {
+  if (from.name === null && to.fullPath !== '/auth/sign-in1') {
+    localStorage.setItem('redirect', to.fullPath)
+  }
+}
 
 export default router
