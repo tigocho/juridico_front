@@ -33,6 +33,19 @@
               </iq-card>
             </b-col>
           </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                 <template v-slot:headerTitle>
+                  <h4>Tabla de Procentaje de Cumplimento de Casos por Clínica</h4>
+                </template>
+                <template v-slot:body>
+                  <CumplimientoTabla
+                  />
+                </template>
+                </iq-card>
+            </b-col>
+            </b-row>
            <b-row>
              <b-col lg="12">
               <iq-card>
@@ -153,6 +166,7 @@ import GraficaCumplimiento from './components/CumplimientoCasos.vue'
 import CasosPorAbogado from './components/CasosPorAbogado.vue'
 import CasosPorClinicas from './components/CasosPorClinilca.vue'
 import CasosPorSubactividad from './components/CasosPorSubactividad.vue'
+import CumplimientoTabla from './components/CumplimientoTabla.vue'
 import Vue from 'vue'
 import axios from 'axios'
 
@@ -162,7 +176,8 @@ export default {
     CasosPorAbogado,
     CasosPorClinicas,
     CasosPorSubactividad,
-    GraficaCumplimiento
+    GraficaCumplimiento,
+    CumplimientoTabla
   },
   mounted () {
     xray.index()
