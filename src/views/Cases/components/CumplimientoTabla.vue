@@ -19,7 +19,7 @@
                 >
                   <v-select
                     v-model="actividad_id"
-                    :options="actividadesOptions"
+                    :options="actividades"
                     :reduce="(label) => label.code"
                     label="label"
                     id="clinica_select"
@@ -63,11 +63,14 @@
 
 <script>
 import axios from 'axios'
-import auth from '@/logic/auth'
-import Vue from 'vue'
 import moment from 'moment'
 export default {
   name: 'TablaCumplimiento',
+  props: {
+    actividades: Array,
+    actividad_id: String,
+    clinicasUser: Array
+  },
   data () {
     return {
       fechaInicio: moment(new Date()).subtract(3, 'months').format('YYYY-MM-DD'),
@@ -75,26 +78,21 @@ export default {
       loadingTable: true,
       datosCumplimiento: [],
       meses: [],
-      clinicasUser: [],
       clinicasCode: [],
       datosTabla: [],
-      actividad_id: '0',
       actividadesOptions: [],
       subactividadesOptions: [],
       subactividad_id: '0'
     }
   },
-  computed: {
-    userLogged () {
-      return JSON.parse(auth.getUserLogged())
-    }
-  },
   mounted () {
-    this.getUserClinicas()
-    this.getActividades()
+    this.getData()
   },
   methods: {
     getData () {
+      for (let clinica of this.clinicasUser) {
+        this.clinicasCode.push(clinica.code)
+      }
       const dataCumplimiento = {
         fecha_inicio: this.fechaInicio,
         fecha_fin: this.fechaFin,
@@ -106,21 +104,7 @@ export default {
           this.datosCumplimiento = res.data.tabla_cumplimiento
           this.meses = res.data.meses
           this.setDataTable()
-        }
-      })
-    },
-    getUserClinicas () {
-      this.loadingTable = true
-      this.datosTabla = []
-      axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
-        if (res.status === 200) {
-          this.clinicasUser = res.data.clinicas
-          for (let clinica of this.clinicasUser) {
-            this.clinicasCode.push(clinica.code)
-          }
-          this.getData()
-        } else {
-          Vue.swal(res.data.message)
+          this.subactividadesOptions.push({ code: '0', label: 'Todas' })
         }
       })
     },
@@ -136,13 +120,6 @@ export default {
         this.datosTabla.push(fila)
       }
       this.loadingTable = false
-    },
-    getActividades () {
-      axios.get('/actividades/fetch').then((response) => {
-        this.actividadesOptions = response.data.actividades
-        this.actividadesOptions.push({ code: '0', label: 'Todas' })
-        this.subactividadesOptions.push({ code: '0', label: 'Todas' })
-      })
     },
     getSubactividades () {
       this.subactividad_id = ''

@@ -18,7 +18,7 @@
                   class="mb-0"
                 >
                   <v-select
-                    v-model="selectedClinica"
+                    v-model="clinica_id"
                     :options="clinicasUser"
                     :reduce="(label) => label.code"
                     label="label"
@@ -74,23 +74,22 @@
                 </b-form-group>
               </b-col>
               <b-col lg="2">
-            <b-button variant="primary"  @click="getCumplimentoCasos">Filtrar</b-button>
+            <b-button variant="primary" @click="getDataGrafico" >Filtrar</b-button>
         </b-col>
     </b-row>
-     <div v-if="loadingGraph" class="text-center">
+    <div v-if="loadingGraph" class="text-center">
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
-    <div  :id="element"></div>
-  </div>
+    <div :id="element"></div>
+</div>
 </template>
 <script>
 import ApexCharts from 'apexcharts'
-import Vue from 'vue'
 import axios from 'axios'
 import moment from 'moment'
-import auth from '@/logic/auth'
+
 export default {
-  name: 'GraficaCumplimiento',
+  name: 'GraficoTotalSubactividad',
   props: {
     element: String,
     actividades: Array,
@@ -99,107 +98,97 @@ export default {
   },
   data () {
     return {
-      loadingGraph: true,
       fechaInicio: moment(new Date()).subtract(3, 'months').format('YYYY-MM-DD'),
       fechaFin: moment(new Date()).format('YYYY-MM-DD'),
-      cumplimientos: [],
       meses: [],
+      cantidad: [],
+      clinica_id: '0',
       clinicasOptions: [],
-      selectedClinica: '0',
-      actividadesOptions: [],
+      subactividad_id: 5,
       subactividadesOptions: [],
-      subactividad_id: '0',
+      loadingGraph: true,
       chartOptions: {
         series: [
           {
-            name: 'Cumplimiento de Casos',
-            data: []
-          },
-          {
-            name: 'Meta',
+            name: 'Num. de Casos',
             data: []
           }
         ],
         chart: {
-          height: 350,
-          type: 'line',
-          zoom: {
-            enabled: false
+          height: 500,
+          type: 'bar'
+        },
+        colors: ['#0880ab'],
+        plotOptions: {
+          bar: {
+            dataLabels: {
+              position: 'top'
+            },
+            borderRadius: 5,
+            columnWidth: '80%',
+            endingShape: 'rounded'
           }
         },
         dataLabels: {
-          enabled: false
+          enabled: true,
+          position: 'top',
+          style: {
+            colors: ['#089bab']
+          },
+          offsetY: -25
         },
         stroke: {
-          width: [5, 5],
-          curve: 'straight',
-          dashArray: [0, 8]
+          width: 2
         },
-        legend: {
-          tooltipHoverFormatter: function (val, opts) {
-            return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '%'
-          }
-        },
-        markers: {
-          size: 0,
-          hover: {
-            sizeOffset: 6
+        grid: {
+          row: {
+            colors: ['#fff', '#cccccc']
           }
         },
         xaxis: {
-          categories: []
+          type: 'category',
+          labels: {
+            rotateAlways: true,
+            minHeight: 150,
+            maxHeight: 1000,
+            trim: true
+          },
+          categories: [],
+          tickPlacement: 'on'
         },
         yaxis: {
           title: {
-            text: 'Porcentaje de Cumplimiento (%)'
+            text: 'Número de Casos'
           }
         },
-        tooltip: {
-          y: [
-            {
-              title: {
-                formatter: function (val, opts) {
-                  return val + ' %'
-                }
-              }
-            },
-            {
-              title: {
-                formatter: function (val, opts) {
-                  return val + ' %'
-                }
-              }
-            }
-          ]
-        },
-        grid: {
-          borderColor: '#f1f1f1'
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shade: 'light',
+            type: 'horizontal',
+            shadeIntensity: 0.25,
+            gradientToColors: undefined,
+            inverseColors: true,
+            opacityFrom: 0.85,
+            opacityTo: 0.85,
+            stops: [50, 0, 100]
+          }
         }
       }
     }
   },
-  computed: {
-    userLogged () {
-      return JSON.parse(auth.getUserLogged())
-    }
-  },
   mounted () {
-    this.getCumplimentoCasos()
+    this.getDataGrafico()
+    this.getSubactividades()
   },
   methods: {
     crearGrafico () {
-      this.loadingGraph = false
       const selector = '#' + this.element
-      const totales = []
+      const max = Math.max(...this.cantidad)
+      this.chartOptions.yaxis.max = max + 2
 
-      for (let i = 0; i < this.cumplimientos.length; i++) {
-        totales.push(100)
-      }
-
-      this.chartOptions.xaxis.categories = this.graficoMeses
-      this.chartOptions.series[0].data = this.cumplimientos
-      this.chartOptions.series[1].data = totales
-
+      this.chartOptions.xaxis.categories = this.meses
+      this.chartOptions.series[0].data = this.cantidad
       const chart = new ApexCharts(
         document.querySelector(selector),
         this.chartOptions
@@ -207,36 +196,42 @@ export default {
 
       chart.render()
     },
-    getCumplimentoCasos () {
+    getDataGrafico () {
       this.loadingGraph = true
-      const dataCasos = {
+      const dataSend = {
         fecha_inicio: this.fechaInicio,
         fecha_fin: this.fechaFin,
-        clinica_id: this.selectedClinica,
+        clinica_id: this.clinica_id,
         subactividad_id: this.subactividad_id
       }
-
-      axios.post('/casos-cumplimiento', dataCasos).then((res) => {
-        if (res.status === 200) {
-          this.graficoMeses = res.data.meses
-          this.cumplimientos = res.data.cumplimientos
-          this.crearGrafico()
-          this.subactividadesOptions.push({ code: '0', label: 'Todas' })
-        } else {
-          Vue.swal('Ocurrió un error tratando de obtener los datos')
-        }
-      })
+      axios
+        .post('/casos-cantidad/subactividad', dataSend)
+        .then((res) => {
+          if (res.status === 200) {
+            this.meses = res.data.meses
+            this.cantidad = res.data.cantidad
+            this.loadingGraph = false
+            this.crearGrafico()
+            this.intentos = 0
+            this.errors = {}
+          }
+        })
+        .catch((err) => {
+          this.errors = err
+          if (this.intentos < 2) {
+            this.getDataGrafico()
+            this.intentos++
+          }
+        })
     },
     getSubactividades () {
-      if (this.actividad_id !== 0) {
+      // this.subactividad_id = ''
+      if (this.actividad_id !== '0') {
         axios
           .get('/subactividades/fetch/' + this.actividad_id)
           .then((response) => {
             this.subactividadesOptions = response.data.subactividades
           })
-      } else {
-        this.subactividadesOptions = []
-        this.subactividadesOptions.push({ code: 0, label: 'Todas' })
       }
     }
   }
