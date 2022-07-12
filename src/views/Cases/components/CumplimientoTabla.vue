@@ -51,7 +51,7 @@
                 </b-form-group>
               </b-col>
               <b-col lg="1">
-            <b-button variant="primary"  @click="getUserClinicas">Filtrar</b-button>
+            <b-button variant="primary"  @click="getData">Filtrar</b-button>
         </b-col>
     </b-row>
     <div v-if="loadingTable" class="text-center">
@@ -68,7 +68,7 @@ export default {
   name: 'TablaCumplimiento',
   props: {
     actividades: Array,
-    actividad_id: String,
+    actividad_id: Number,
     clinicasUser: Array
   },
   data () {
@@ -109,6 +109,7 @@ export default {
       })
     },
     setDataTable () {
+      this.datosTabla = []
       for (let i = 0; i < this.clinicasUser.length; i++) {
         const fila = {
           Clinica: this.clinicasUser[i].label }

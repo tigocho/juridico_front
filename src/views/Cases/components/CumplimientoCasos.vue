@@ -94,7 +94,7 @@ export default {
   props: {
     element: String,
     actividades: Array,
-    actividad_id: String,
+    actividad_id: Number,
     clinicasUser: Array
   },
   data () {
@@ -109,6 +109,7 @@ export default {
       actividadesOptions: [],
       subactividadesOptions: [],
       subactividad_id: '0',
+      chart: null,
       chartOptions: {
         series: [
           {
@@ -181,6 +182,9 @@ export default {
   computed: {
     userLogged () {
       return JSON.parse(auth.getUserLogged())
+    },
+    chartData: function () {
+      return this.data
     }
   },
   mounted () {
@@ -188,7 +192,6 @@ export default {
   },
   methods: {
     crearGrafico () {
-      this.loadingGraph = false
       const selector = '#' + this.element
       const totales = []
 
@@ -200,12 +203,11 @@ export default {
       this.chartOptions.series[0].data = this.cumplimientos
       this.chartOptions.series[1].data = totales
 
-      const chart = new ApexCharts(
+      this.chart = new ApexCharts(
         document.querySelector(selector),
         this.chartOptions
       )
-
-      chart.render()
+      this.chart.render()
     },
     getCumplimentoCasos () {
       this.loadingGraph = true
@@ -218,9 +220,14 @@ export default {
 
       axios.post('/casos-cumplimiento', dataCasos).then((res) => {
         if (res.status === 200) {
+          this.loadingGraph = false
           this.graficoMeses = res.data.meses
           this.cumplimientos = res.data.cumplimientos
-          this.crearGrafico()
+          if (this.chart != null && this.chart !== undefined) {
+            this.updateGrafico()
+          } else {
+            this.crearGrafico()
+          }
           this.subactividadesOptions.push({ code: '0', label: 'Todas' })
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
@@ -238,6 +245,24 @@ export default {
         this.subactividadesOptions = []
         this.subactividadesOptions.push({ code: 0, label: 'Todas' })
       }
+    },
+    updateGrafico () {
+      const totales = []
+
+      for (let i = 0; i < this.cumplimientos.length; i++) {
+        totales.push(100)
+      }
+      this.chart.updateOptions({
+        xaxis: {
+          categories: this.graficoMeses
+        },
+        series: [{
+          data: this.cumplimientos
+        },
+        {
+          data: totales
+        }]
+      })
     }
   }
 }

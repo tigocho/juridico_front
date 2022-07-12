@@ -93,7 +93,7 @@ export default {
   props: {
     element: String,
     actividades: Array,
-    actividad_id: String,
+    actividad_id: Number,
     clinicasUser: Array
   },
   data () {
@@ -107,6 +107,7 @@ export default {
       subactividad_id: 8,
       subactividadesOptions: [],
       loadingGraph: true,
+      chart: null,
       chartOptions: {
         series: [
           {
@@ -177,6 +178,11 @@ export default {
       }
     }
   },
+  computed: {
+    chartData: function () {
+      return this.data
+    }
+  },
   mounted () {
     this.getDataGrafico()
     this.getSubactividades()
@@ -189,12 +195,11 @@ export default {
 
       this.chartOptions.xaxis.categories = this.meses
       this.chartOptions.series[0].data = this.cantidad
-      const chart = new ApexCharts(
+      this.chart = new ApexCharts(
         document.querySelector(selector),
         this.chartOptions
       )
-
-      chart.render()
+      this.chart.render()
     },
     getDataGrafico () {
       this.loadingGraph = true
@@ -211,7 +216,11 @@ export default {
             this.meses = res.data.meses
             this.cantidad = res.data.cantidad
             this.loadingGraph = false
-            this.crearGrafico()
+            if (this.chart != null && this.chart !== undefined) {
+              this.updateGrafico()
+            } else {
+              this.crearGrafico()
+            }
             this.intentos = 0
             this.errors = {}
           }
@@ -232,6 +241,16 @@ export default {
             this.subactividadesOptions = response.data.subactividades
           })
       }
+    },
+    updateGrafico () {
+      this.chart.updateOptions({
+        xaxis: {
+          categories: this.meses
+        },
+        series: [{
+          data: this.cantidad
+        }]
+      })
     }
   }
 }
