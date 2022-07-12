@@ -46,7 +46,7 @@
                     :reduce="(label) => label.code"
                     label="label"
                     id="clinica_select"
-                    @input="getSubactividades"
+                    @input="getSubactividades($event, false)"
                   >
                     <span slot="no-options">No hay Actividades.</span>
                   </v-select>
@@ -61,6 +61,7 @@
                   label-align-sm="left"
                   label-size="sm"
                   class="mb-0"
+                  :key="selectKey"
                 >
                   <v-select
                     v-model="subactividad_id"
@@ -106,6 +107,7 @@ export default {
       clinicasOptions: [],
       subactividad_id: 5,
       subactividadesOptions: [],
+      selectKey: 1,
       loadingGraph: true,
       chart: null,
       chartOptions: {
@@ -180,7 +182,7 @@ export default {
   },
   mounted () {
     this.getDataGrafico()
-    this.getSubactividades()
+    this.getSubactividades(null, true)
   },
   computed: {
     chartData: function () {
@@ -223,6 +225,7 @@ export default {
             }
             this.intentos = 0
             this.errors = {}
+            this.selectKey++
           }
         })
         .catch((err) => {
@@ -243,8 +246,10 @@ export default {
         }]
       })
     },
-    getSubactividades () {
-      // this.subactividad_id = ''
+    getSubactividades (e, firstTime = false) {
+      if (!firstTime) {
+        this.subactividad_id = null
+      }
       if (this.actividad_id !== '0') {
         axios
           .get('/subactividades/fetch/' + this.actividad_id)
