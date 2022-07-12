@@ -73,6 +73,21 @@
           <b-row>
             <b-col lg="12">
               <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Distribucion de Servicios Juridicos</h4>
+               </template>
+                <template v-slot:body>
+                  <DistribucionServicios
+                    element="GraficoDistribucionServicios"
+                    :clinicasUser="clinicasUser"
+                  />
+                  </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
                  <template v-slot:headerTitle>
                   <h4>Tabla de Procentaje de Cumplimento de Casos por Clínica</h4>
                 </template>
@@ -209,6 +224,7 @@ import CasosPorSubactividad from './components/CasosPorSubactividad.vue'
 import CumplimientoTabla from './components/CumplimientoTabla.vue'
 import GraficoTotalSubactividad from './components/GraficoTotalSubactividad.vue'
 import GraficoOportunidadDias from './components/OportunidadDias.vue'
+import DistribucionServicios from './components/DistribucionServicios.vue'
 import Vue from 'vue'
 import axios from 'axios'
 import auth from '@/logic/auth'
@@ -221,7 +237,8 @@ export default {
     GraficaCumplimiento,
     CumplimientoTabla,
     GraficoTotalSubactividad,
-    GraficoOportunidadDias
+    GraficoOportunidadDias,
+    DistribucionServicios
   },
   computed: {
     userLogged () {
