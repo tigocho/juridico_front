@@ -22,6 +22,66 @@
             <b-col lg="12">
               <iq-card>
                 <template v-slot:headerTitle>
+                  <h4>Porcentaje de Cumplimento de los Casos</h4>
+                   <h6>Selecione un periodo de tiempo</h6>
+                </template>
+                <template v-slot:body>
+                  <GraficaCumplimiento
+                    element="GraficasCumplimiento"
+                    :actividades="actividadesOptions"
+                    :actividad_id="0"
+                    :clinicasUser="clinicasUser"
+                  />
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Cantidades Totales de ANS</h4>
+               </template>
+                <template v-slot:body>
+                  <GraficoTotalSubactividad
+                    v-if="loadClinica"
+                    element="GraficasTotalSubactividad"
+                    :actividades="actividadesOptions"
+                    :actividad_id="3"
+                    :clinicasUser="clinicasUser"
+                  />
+                  <div class="text-center" v-else>
+                    <b-spinner
+                      style="width: 3rem; height: 3rem"
+                      variant="primary"
+                      type="grow"
+                      label="Spinning"
+                    ></b-spinner>
+                  </div>
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                 <template v-slot:headerTitle>
+                  <h4>Tabla de Procentaje de Cumplimento de Casos por Clínica</h4>
+                </template>
+                <template v-slot:body>
+                  <CumplimientoTabla
+                  :actividades="actividadesOptions"
+                    :actividad_id="0"
+                    :clinicasUser="clinicasUser"
+                  />
+                </template>
+                </iq-card>
+            </b-col>
+            </b-row>
+            <b-row>
+             <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
                   <h4>Casos por Abogado</h4>
                   <h6>Total de casos asignados {{ totalAbogado }}</h6>
                   <b-form-select
@@ -54,7 +114,7 @@
                 </template>
               </iq-card>
             </b-col>
-          </b-row>
+           </b-row>
           <b-row>
             <b-col lg="6">
               <iq-card>
@@ -134,18 +194,29 @@
 </template>
 <script>
 import { xray } from '../../config/pluginInit'
+import GraficaCumplimiento from './components/CumplimientoCasos.vue'
 import CasosPorAbogado from './components/CasosPorAbogado.vue'
 import CasosPorClinicas from './components/CasosPorClinilca.vue'
 import CasosPorSubactividad from './components/CasosPorSubactividad.vue'
+import CumplimientoTabla from './components/CumplimientoTabla.vue'
+import GraficoTotalSubactividad from './components/GraficoTotalSubactividad.vue'
 import Vue from 'vue'
 import axios from 'axios'
-
+import auth from '@/logic/auth'
 export default {
   name: 'GraphsAndReports',
   components: {
     CasosPorAbogado,
     CasosPorClinicas,
-    CasosPorSubactividad
+    CasosPorSubactividad,
+    GraficaCumplimiento,
+    CumplimientoTabla,
+    GraficoTotalSubactividad
+  },
+  computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    }
   },
   mounted () {
     xray.index()
@@ -153,6 +224,8 @@ export default {
     this.obtenerCasosPorAbogado()
     this.obtenerCasosPorClinica()
     this.obtenerCasosPorSubactividad()
+    this.getActividades()
+    this.getUserClinicas()
   },
   data: function () {
     return {
@@ -178,7 +251,11 @@ export default {
       ],
       totalAbogado: '',
       totalClinica: '',
-      totalSubactividades: ''
+      totalSubactividades: '',
+      actividad_id: '',
+      actividadesOptions: [],
+      subactividadesOptions: [],
+      clinicasUser: []
     }
   },
   methods: {
@@ -285,6 +362,23 @@ export default {
           this.loadSubactividad = true
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
+        }
+      })
+    },
+    getActividades () {
+      axios.get('/actividades/fetch').then((response) => {
+        this.actividadesOptions = response.data.actividades
+        this.actividadesOptions.push({ code: 0, label: 'Todas' })
+        this.subactividadesOptions.push({ code: '0', label: 'Todas' })
+      })
+    },
+    getUserClinicas () {
+      axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
+        if (res.status === 200) {
+          this.clinicasUser = res.data.clinicas
+          this.clinicasUser.push({ code: '0', label: 'Todas' })
+        } else {
+          Vue.swal(res.data.message)
         }
       })
     }
