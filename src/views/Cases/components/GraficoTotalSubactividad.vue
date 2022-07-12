@@ -1,87 +1,95 @@
 <template>
   <div>
     <b-row>
-        <b-col lg="2">
-            <b-form-input id="fechaInicio" v-model="fechaInicio" type="date" ></b-form-input>
-        </b-col>
-         <b-col lg="2">
-            <b-form-input id="fechaFin" v-model="fechaFin" type="date" ></b-form-input>
-        </b-col>
-         <b-col sm="4" md="4" class="my-1">
-                <b-form-group
-                  label="Clinica"
-                  label-cols-sm="2"
-                  label-cols-md="2"
-                  label-cols-lg="2"
-                  label-align-sm="left"
-                  label-size="sm"
-                  class="mb-0"
-                >
-                  <v-select
-                    v-model="clinica_id"
-                    :options="clinicasUser"
-                    :reduce="(label) => label.code"
-                    label="label"
-                    id="clinica_select"
-                  >
-                    <span slot="no-options">No hay Clinicas.</span>
-                  </v-select>
-                </b-form-group>
-              </b-col>
+      <b-col lg="2">
+        <b-form-input
+          id="fechaInicio"
+          v-model="fechaInicio"
+          type="date"
+        ></b-form-input>
+      </b-col>
+      <b-col lg="2">
+        <b-form-input
+          id="fechaFin"
+          v-model="fechaFin"
+          type="date"
+        ></b-form-input>
+      </b-col>
+      <b-col sm="4" md="4" class="my-1">
+        <b-form-group
+          label="Clinica ss"
+          label-cols-sm="2"
+          label-cols-md="2"
+          label-cols-lg="2"
+          label-align-sm="left"
+          label-size="sm"
+          class="mb-0"
+        >
+          <v-select
+            v-model="clinica_id"
+            :options="clinicasUser"
+            :reduce="(label) => label.code"
+            label="label"
+            id="clinica_select"
+          >
+            <span slot="no-options">No hay Clinicas.</span>
+          </v-select>
+        </b-form-group>
+      </b-col>
     </b-row>
-    <b-row style="margin-top:10px;">
-         <b-col sm="4" md="4" class="my-1">
-                <b-form-group
-                  label="Actividad"
-                  label-cols-sm="2"
-                  label-cols-md="2"
-                  label-cols-lg="3"
-                  label-align-sm="left"
-                  label-size="sm"
-                  class="mb-0"
-                >
-                  <v-select
-                    v-model="actividad_id"
-                    :options="actividades"
-                    :reduce="(label) => label.code"
-                    label="label"
-                    id="clinica_select"
-                    @input="getSubactividades"
-                  >
-                    <span slot="no-options">No hay Actividades.</span>
-                  </v-select>
-                </b-form-group>
-              </b-col>
-               <b-col sm="4" md="4" class="my-1">
-                <b-form-group
-                  label="Subactividad"
-                  label-cols-sm="2"
-                  label-cols-md="2"
-                  label-cols-lg="4"
-                  label-align-sm="left"
-                  label-size="sm"
-                  class="mb-0"
-                >
-                  <v-select
-                    v-model="subactividad_id"
-                    :options="subactividadesOptions"
-                    :reduce="(label) => label.code"
-                    label="label"
-                    id="clinica_select"
-                  >
-                    <span slot="no-options">No hay Subactividades.</span>
-                  </v-select>
-                </b-form-group>
-              </b-col>
-              <b-col lg="2">
-            <b-button variant="primary" @click="getDataGrafico" >Filtrar</b-button>
-        </b-col>
+    <b-row style="margin-top: 10px">
+      <b-col sm="4" md="4" class="my-1">
+        <b-form-group
+          label="Actividad"
+          label-cols-sm="2"
+          label-cols-md="2"
+          label-cols-lg="3"
+          label-align-sm="left"
+          label-size="sm"
+          class="mb-0"
+        >
+          <v-select
+            v-model="actividad_id"
+            :options="actividades"
+            :reduce="(label) => label.code"
+            label="label"
+            id="clinica_select"
+            @input="getSubactividades"
+          >
+            <span slot="no-options">No hay Actividades.</span>
+          </v-select>
+        </b-form-group>
+      </b-col>
+      <b-col sm="4" md="4" class="my-1">
+        <b-form-group
+          label="Subactividad"
+          label-cols-sm="2"
+          label-cols-md="2"
+          label-cols-lg="4"
+          label-align-sm="left"
+          label-size="sm"
+          class="mb-0"
+        >
+          <v-select
+            v-model="subactividad_id"
+            :options="subactividadesOptions"
+            :reduce="(label) => label.code"
+            label="label"
+            id="clinica_select"
+          >
+            <span slot="no-options">No hay Subactividades.</span>
+          </v-select>
+        </b-form-group>
+      </b-col>
+      <b-col lg="2">
+        <b-button variant="primary" @click="getDataGrafico">Filtrar</b-button>
+      </b-col>
     </b-row>
     <div v-if="loadingGraph" class="text-center">
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
     <div :id="element"></div>
-</div>
+  </div>
 </template>
 <script>
 import ApexCharts from 'apexcharts'
@@ -107,6 +115,7 @@ export default {
       subactividad_id: 5,
       subactividadesOptions: [],
       loadingGraph: true,
+      chart: null,
       chartOptions: {
         series: [
           {
@@ -181,6 +190,11 @@ export default {
     this.getDataGrafico()
     this.getSubactividades()
   },
+  computed: {
+    chartData: function () {
+      return this.data
+    }
+  },
   methods: {
     crearGrafico () {
       const selector = '#' + this.element
@@ -189,12 +203,11 @@ export default {
 
       this.chartOptions.xaxis.categories = this.meses
       this.chartOptions.series[0].data = this.cantidad
-      const chart = new ApexCharts(
+      this.chart = new ApexCharts(
         document.querySelector(selector),
         this.chartOptions
       )
-
-      chart.render()
+      this.chart.render()
     },
     getDataGrafico () {
       this.loadingGraph = true
@@ -211,7 +224,11 @@ export default {
             this.meses = res.data.meses
             this.cantidad = res.data.cantidad
             this.loadingGraph = false
-            this.crearGrafico()
+            if (this.chart != null && this.chart !== undefined) {
+              this.updateGrafico()
+            } else {
+              this.crearGrafico()
+            }
             this.intentos = 0
             this.errors = {}
           }
@@ -224,8 +241,17 @@ export default {
           }
         })
     },
+    updateGrafico () {
+      this.chart.updateOptions({
+        xaxis: {
+          categories: this.meses
+        },
+        series: [{
+          data: this.cantidad
+        }]
+      })
+    },
     getSubactividades () {
-      // this.subactividad_id = ''
       if (this.actividad_id !== '0') {
         axios
           .get('/subactividades/fetch/' + this.actividad_id)
