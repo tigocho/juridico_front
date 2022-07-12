@@ -44,21 +44,29 @@
                </template>
                 <template v-slot:body>
                   <GraficoTotalSubactividad
-                    v-if="loadClinica"
                     element="GraficasTotalSubactividad"
                     :actividades="actividadesOptions"
                     :actividad_id="3"
                     :clinicasUser="clinicasUser"
                   />
-                  <div class="text-center" v-else>
-                    <b-spinner
-                      style="width: 3rem; height: 3rem"
-                      variant="primary"
-                      type="grow"
-                      label="Spinning"
-                    ></b-spinner>
-                  </div>
                 </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Oportunidad de días</h4>
+               </template>
+                <template v-slot:body>
+                  <GraficoOportunidadDias
+                    element="GraficoOportunidadDias"
+                    :actividades="actividadesOptions"
+                    :actividad_id="4"
+                    :clinicasUser="clinicasUser"
+                  />
+                  </template>
               </iq-card>
             </b-col>
           </b-row>
@@ -200,6 +208,7 @@ import CasosPorClinicas from './components/CasosPorClinilca.vue'
 import CasosPorSubactividad from './components/CasosPorSubactividad.vue'
 import CumplimientoTabla from './components/CumplimientoTabla.vue'
 import GraficoTotalSubactividad from './components/GraficoTotalSubactividad.vue'
+import GraficoOportunidadDias from './components/OportunidadDias.vue'
 import Vue from 'vue'
 import axios from 'axios'
 import auth from '@/logic/auth'
@@ -211,7 +220,8 @@ export default {
     CasosPorSubactividad,
     GraficaCumplimiento,
     CumplimientoTabla,
-    GraficoTotalSubactividad
+    GraficoTotalSubactividad,
+    GraficoOportunidadDias
   },
   computed: {
     userLogged () {
