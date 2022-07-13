@@ -396,7 +396,6 @@ export default {
       axios.get('/actividades/fetch').then((response) => {
         this.actividadesOptions = response.data.actividades
         this.actividadesOptions.push({ code: 0, label: 'Todas' })
-        this.subactividadesOptions.push({ code: '0', label: 'Todas' })
       })
     },
     getUserClinicas () {

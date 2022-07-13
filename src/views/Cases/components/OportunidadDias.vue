@@ -46,7 +46,7 @@
                     :reduce="(label) => label.code"
                     label="label"
                     id="clinica_select"
-                    @input="getSubactividades"
+                    @input="getSubactividades(false)"
                   >
                     <span slot="no-options">No hay Actividades.</span>
                   </v-select>
@@ -77,6 +77,9 @@
             <b-button variant="primary" @click="getDataGrafico" >Filtrar</b-button>
         </b-col>
     </b-row>
+    <b-alert v-model="showSubactividadAlert" variant="danger" dismissible>
+      ¡¡Error!! No seleccionaste una Subactividad
+    </b-alert>
     <div v-if="loadingGraph" class="text-center">
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
@@ -108,6 +111,7 @@ export default {
       subactividadesOptions: [],
       loadingGraph: true,
       chart: null,
+      showSubactividadAlert: false,
       chartOptions: {
         series: [
           {
@@ -185,13 +189,13 @@ export default {
   },
   mounted () {
     this.getDataGrafico()
-    this.getSubactividades()
+    this.getSubactividades(true)
   },
   methods: {
     crearGrafico () {
       const selector = '#' + this.element
       const max = Math.max(...this.cantidad)
-      this.chartOptions.yaxis.max = max + 2
+      this.chartOptions.yaxis.max = max + 1
 
       this.chartOptions.xaxis.categories = this.meses
       this.chartOptions.series[0].data = this.cantidad
@@ -202,38 +206,47 @@ export default {
       this.chart.render()
     },
     getDataGrafico () {
-      this.loadingGraph = true
-      const dataSend = {
-        fecha_inicio: this.fechaInicio,
-        fecha_fin: this.fechaFin,
-        clinica_id: this.clinica_id,
-        subactividad_id: this.subactividad_id
-      }
-      axios
-        .post('/casos/oportunidad-dias', dataSend)
-        .then((res) => {
-          if (res.status === 200) {
-            this.meses = res.data.meses
-            this.cantidad = res.data.cantidad
-            this.loadingGraph = false
-            if (this.chart != null && this.chart !== undefined) {
-              this.updateGrafico()
-            } else {
-              this.crearGrafico()
+      if (this.actividad_id !== '0' && this.subactividad_id === null) {
+        this.showSubactividadAlert = true
+        this.loadingGraph = false
+      } else {
+        this.showSubactividadAlert = false
+        this.loadingGraph = true
+        const dataSend = {
+          fecha_inicio: this.fechaInicio,
+          fecha_fin: this.fechaFin,
+          clinica_id: this.clinica_id,
+          subactividad_id: this.subactividad_id
+        }
+        axios
+          .post('/casos/oportunidad-dias', dataSend)
+          .then((res) => {
+            if (res.status === 200) {
+              this.meses = res.data.meses
+              this.cantidad = res.data.cantidad
+              this.loadingGraph = false
+              if (this.chart != null && this.chart !== undefined) {
+                this.updateGrafico()
+              } else {
+                this.crearGrafico()
+              }
+              this.intentos = 0
+              this.errors = {}
             }
-            this.intentos = 0
-            this.errors = {}
-          }
-        })
-        .catch((err) => {
-          this.errors = err
-          if (this.intentos < 2) {
-            this.getDataGrafico()
-            this.intentos++
-          }
-        })
+          })
+          .catch((err) => {
+            this.errors = err
+            if (this.intentos < 2) {
+              this.getDataGrafico()
+              this.intentos++
+            }
+          })
+      }
     },
-    getSubactividades () {
+    getSubactividades (firstTime = false) {
+      if (!firstTime) {
+        this.subactividad_id = null
+      }
       if (this.actividad_id !== '0') {
         axios
           .get('/subactividades/fetch/' + this.actividad_id)
@@ -243,13 +256,21 @@ export default {
       }
     },
     updateGrafico () {
+      const max = Math.max(...this.cantidad)
+
       this.chart.updateOptions({
         xaxis: {
           categories: this.meses
         },
         series: [{
           data: this.cantidad
-        }]
+        }],
+        yaxis: {
+          max: max + 1,
+          title: {
+            text: 'Promedio Oportunidad Dias'
+          }
+        }
       })
     }
   }

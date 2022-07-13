@@ -77,6 +77,9 @@
             <b-button variant="primary"  @click="getCumplimentoCasos">Filtrar</b-button>
         </b-col>
     </b-row>
+    <b-alert v-model="showSubactividadAlert" variant="danger" >
+      ¡¡Error!! No seleccionaste una Subactividad
+    </b-alert>
      <div v-if="loadingGraph" class="text-center">
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
@@ -110,6 +113,7 @@ export default {
       subactividadesOptions: [],
       subactividad_id: '0',
       chart: null,
+      showSubactividadAlert: false,
       chartOptions: {
         series: [
           {
@@ -211,30 +215,37 @@ export default {
     },
     getCumplimentoCasos () {
       this.loadingGraph = true
-      const dataCasos = {
-        fecha_inicio: this.fechaInicio,
-        fecha_fin: this.fechaFin,
-        clinica_id: this.selectedClinica,
-        subactividad_id: this.subactividad_id
-      }
-
-      axios.post('/casos-cumplimiento', dataCasos).then((res) => {
-        if (res.status === 200) {
-          this.loadingGraph = false
-          this.graficoMeses = res.data.meses
-          this.cumplimientos = res.data.cumplimientos
-          if (this.chart != null && this.chart !== undefined) {
-            this.updateGrafico()
-          } else {
-            this.crearGrafico()
-          }
-          this.subactividadesOptions.push({ code: '0', label: 'Todas' })
-        } else {
-          Vue.swal('Ocurrió un error tratando de obtener los datos')
+      if (this.actividad_id !== 0 && this.subactividad_id === null) {
+        this.showSubactividadAlert = true
+        this.loadingGraph = false
+      } else {
+        this.showSubactividadAlert = false
+        const dataCasos = {
+          fecha_inicio: this.fechaInicio,
+          fecha_fin: this.fechaFin,
+          clinica_id: this.selectedClinica,
+          subactividad_id: this.subactividad_id
         }
-      })
+
+        axios.post('/casos-cumplimiento', dataCasos).then((res) => {
+          if (res.status === 200) {
+            this.loadingGraph = false
+            this.graficoMeses = res.data.meses
+            this.cumplimientos = res.data.cumplimientos
+            if (this.chart != null && this.chart !== undefined) {
+              this.updateGrafico()
+            } else {
+              this.crearGrafico()
+            }
+            this.subactividadesOptions.push({ code: '0', label: 'Todas' })
+          } else {
+            Vue.swal('Ocurrió un error tratando de obtener los datos')
+          }
+        })
+      }
     },
     getSubactividades () {
+      this.subactividad_id = null
       if (this.actividad_id !== 0) {
         axios
           .get('/subactividades/fetch/' + this.actividad_id)
@@ -243,7 +254,6 @@ export default {
           })
       } else {
         this.subactividadesOptions = []
-        this.subactividadesOptions.push({ code: 0, label: 'Todas' })
       }
     },
     updateGrafico () {

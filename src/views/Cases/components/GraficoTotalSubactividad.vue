@@ -78,6 +78,9 @@
             <b-button variant="primary" @click="getDataGrafico" >Filtrar</b-button>
         </b-col>
     </b-row>
+    <b-alert v-model="showSubactividadAlert" variant="danger" dismissible>
+      ¡¡Error!! No seleccionaste una Subactividad
+    </b-alert>
     <div v-if="loadingGraph" class="text-center">
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
@@ -110,6 +113,7 @@ export default {
       selectKey: 1,
       loadingGraph: true,
       chart: null,
+      showSubactividadAlert: false,
       chartOptions: {
         series: [
           {
@@ -205,45 +209,59 @@ export default {
     },
     getDataGrafico () {
       this.loadingGraph = true
-      const dataSend = {
-        fecha_inicio: this.fechaInicio,
-        fecha_fin: this.fechaFin,
-        clinica_id: this.clinica_id,
-        subactividad_id: this.subactividad_id
-      }
-      axios
-        .post('/casos-cantidad/subactividad', dataSend)
-        .then((res) => {
-          if (res.status === 200) {
-            this.meses = res.data.meses
-            this.cantidad = res.data.cantidad
-            this.loadingGraph = false
-            if (this.chart != null && this.chart !== undefined) {
-              this.updateGrafico()
-            } else {
-              this.crearGrafico()
+      if (this.actividad_id !== '0' && this.subactividad_id === null) {
+        this.showSubactividadAlert = true
+        this.loadingGraph = false
+      } else {
+        this.showSubactividadAlert = false
+        const dataSend = {
+          fecha_inicio: this.fechaInicio,
+          fecha_fin: this.fechaFin,
+          clinica_id: this.clinica_id,
+          subactividad_id: this.subactividad_id
+        }
+        axios
+          .post('/casos-cantidad/subactividad', dataSend)
+          .then((res) => {
+            if (res.status === 200) {
+              this.meses = res.data.meses
+              this.cantidad = res.data.cantidad
+              this.loadingGraph = false
+              if (this.chart != null && this.chart !== undefined) {
+                this.updateGrafico()
+              } else {
+                this.crearGrafico()
+              }
+              this.intentos = 0
+              this.errors = {}
+              this.selectKey++
             }
-            this.intentos = 0
-            this.errors = {}
-            this.selectKey++
-          }
-        })
-        .catch((err) => {
-          this.errors = err
-          if (this.intentos < 2) {
-            this.getDataGrafico()
-            this.intentos++
-          }
-        })
+          })
+          .catch((err) => {
+            this.errors = err
+            if (this.intentos < 2) {
+              this.getDataGrafico()
+              this.intentos++
+            }
+          })
+      }
     },
     updateGrafico () {
+      const max = Math.max(...this.cantidad)
+
       this.chart.updateOptions({
         xaxis: {
           categories: this.meses
         },
         series: [{
           data: this.cantidad
-        }]
+        }],
+        yaxis: {
+          max: max + 2,
+          title: {
+            text: 'Número de Casos'
+          }
+        }
       })
     },
     getSubactividades (e, firstTime = false) {
