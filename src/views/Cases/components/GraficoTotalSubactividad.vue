@@ -1,33 +1,41 @@
 <template>
   <div>
     <b-row>
-        <b-col lg="2">
-            <b-form-input id="fechaInicio" v-model="fechaInicio" type="date" ></b-form-input>
-        </b-col>
-         <b-col lg="2">
-            <b-form-input id="fechaFin" v-model="fechaFin" type="date" ></b-form-input>
-        </b-col>
-         <b-col sm="4" md="4" class="my-1">
-                <b-form-group
-                  label="Clinica"
-                  label-cols-sm="2"
-                  label-cols-md="2"
-                  label-cols-lg="2"
-                  label-align-sm="left"
-                  label-size="sm"
-                  class="mb-0"
-                >
-                  <v-select
-                    v-model="clinica_id"
-                    :options="clinicasUser"
-                    :reduce="(label) => label.code"
-                    label="label"
-                    id="clinica_select"
-                  >
-                    <span slot="no-options">No hay Clinicas.</span>
-                  </v-select>
-                </b-form-group>
-              </b-col>
+      <b-col lg="2">
+        <b-form-input
+          id="fechaInicio"
+          v-model="fechaInicio"
+          type="date"
+        ></b-form-input>
+      </b-col>
+      <b-col lg="2">
+        <b-form-input
+          id="fechaFin"
+          v-model="fechaFin"
+          type="date"
+        ></b-form-input>
+      </b-col>
+      <b-col sm="4" md="4" class="my-1">
+        <b-form-group
+          label="Clinica ss"
+          label-cols-sm="2"
+          label-cols-md="2"
+          label-cols-lg="2"
+          label-align-sm="left"
+          label-size="sm"
+          class="mb-0"
+        >
+          <v-select
+            v-model="clinica_id"
+            :options="clinicasUser"
+            :reduce="(label) => label.code"
+            label="label"
+            id="clinica_select"
+          >
+            <span slot="no-options">No hay Clinicas.</span>
+          </v-select>
+        </b-form-group>
+      </b-col>
     </b-row>
     <b-row style="margin-top:10px;">
          <b-col sm="4" md="4" class="my-1">
@@ -85,7 +93,7 @@
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
     <div :id="element"></div>
-</div>
+  </div>
 </template>
 <script>
 import ApexCharts from 'apexcharts'
@@ -187,6 +195,11 @@ export default {
   mounted () {
     this.getDataGrafico()
     this.getSubactividades(null, true)
+  },
+  computed: {
+    chartData: function () {
+      return this.data
+    }
   },
   computed: {
     chartData: function () {
