@@ -16,10 +16,10 @@
       <hr>
       <b-row>
         <b-col md="6">
-          <b-form-group label="Abogada/o*" label-for="agen_pro_id">
-            <b-form-select plain v-model="proceeding.proce_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
+          <b-form-group label="Estado" label-for="proce_estado_terminado">
+            <b-form-select plain v-model="proceeding.proce_estado_terminado" :options="optionsEstados" id="proce_estado_terminado">
               <template v-slot:first>
-                <b-form-select-option :value="null" disabled>Seleccione abogado</b-form-select-option>
+                <b-form-select-option :value="null" disabled>Seleccione un Estado</b-form-select-option>
               </template>
             </b-form-select>
           </b-form-group>
@@ -30,6 +30,15 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <b-col md="13">
+          <b-form-group label="Abogada/o*" label-for="agen_pro_id">
+            <b-form-select plain v-model="proceeding.proce_pro_id" :options="abogadoOptions" @search="fetchOptionsAbogados" id="selectuserrole">
+              <template v-slot:first>
+                <b-form-select-option :value="null" disabled>Seleccione abogado</b-form-select-option>
+              </template>
+            </b-form-select>
+          </b-form-group>
+        </b-col>
       <b-row>
         <b-col md="12">
           <b-form-textarea v-model="proceeding.proce_descripcion" type="text" placeholder="Descripción*"></b-form-textarea>
@@ -60,6 +69,10 @@ export default {
       errors: [],
       error: {},
       abogadoOptions: [],
+      optionsEstados: [
+        { value: 0, text: 'En contra' },
+        { value: 1, text: 'A favor' }
+      ],
       botonGuardarModal: '',
       textoConfirmacion: 'mensaje de testeo',
       mostrarConfirmacion: false,
@@ -73,7 +86,8 @@ export default {
         proce_fecha_actualizacion: null,
         proce_descripcion: null,
         proce_fecha_siguiente_audiencia: null,
-        proce_hora_siguiente_audiencia: null
+        proce_hora_siguiente_audiencia: null,
+        proce_estado_terminado: null
       }
     }
   },
@@ -155,8 +169,8 @@ export default {
       if (!this.proceeding.proce_fecha_ingreso) {
         this.errors.push('La fecha de ingreso es obligatoria.')
       }
-      if (!this.proceeding.proce_descripcion) {
-        this.errors.push('La descripción es obligatoria.')
+      if (!this.proceeding.proce_estado_terminado) {
+        this.errors.push('El estado es obligatorio.')
       }
     },
     limpiarModalActuacion () {
