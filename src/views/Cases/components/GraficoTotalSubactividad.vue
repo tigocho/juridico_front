@@ -201,11 +201,6 @@ export default {
       return this.data
     }
   },
-  computed: {
-    chartData: function () {
-      return this.data
-    }
-  },
   methods: {
     crearGrafico () {
       const selector = '#' + this.element
