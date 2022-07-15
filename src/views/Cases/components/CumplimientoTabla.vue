@@ -51,9 +51,12 @@
                 </b-form-group>
               </b-col>
               <b-col lg="1">
-            <b-button variant="primary"  @click="getUserClinicas">Filtrar</b-button>
+            <b-button variant="primary"  @click="getData">Filtrar</b-button>
         </b-col>
     </b-row>
+    <b-alert v-model="showSubactividadAlert" variant="danger" >
+      ¡¡Error!! No seleccionaste una Subactividad
+    </b-alert>
     <div v-if="loadingTable" class="text-center">
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
@@ -68,7 +71,7 @@ export default {
   name: 'TablaCumplimiento',
   props: {
     actividades: Array,
-    actividad_id: String,
+    actividad_id: Number,
     clinicasUser: Array
   },
   data () {
@@ -82,7 +85,8 @@ export default {
       datosTabla: [],
       actividadesOptions: [],
       subactividadesOptions: [],
-      subactividad_id: '0'
+      subactividad_id: '0',
+      showSubactividadAlert: false
     }
   },
   mounted () {
@@ -90,25 +94,31 @@ export default {
   },
   methods: {
     getData () {
-      for (let clinica of this.clinicasUser) {
-        this.clinicasCode.push(clinica.code)
-      }
-      const dataCumplimiento = {
-        fecha_inicio: this.fechaInicio,
-        fecha_fin: this.fechaFin,
-        clinicas: this.clinicasCode,
-        subactividad_id: this.subactividad_id
-      }
-      axios.post('/casos-cumplimiento/clinica', dataCumplimiento).then((res) => {
-        if (res.status === 200) {
-          this.datosCumplimiento = res.data.tabla_cumplimiento
-          this.meses = res.data.meses
-          this.setDataTable()
-          this.subactividadesOptions.push({ code: '0', label: 'Todas' })
+      if (this.actividad_id !== 0 && this.subactividad_id === null) {
+        this.showSubactividadAlert = true
+      } else {
+        this.showSubactividadAlert = false
+        for (let clinica of this.clinicasUser) {
+          this.clinicasCode.push(clinica.code)
         }
-      })
+        const dataCumplimiento = {
+          fecha_inicio: this.fechaInicio,
+          fecha_fin: this.fechaFin,
+          clinicas: this.clinicasCode,
+          subactividad_id: this.subactividad_id
+        }
+        axios.post('/casos-cumplimiento/clinica', dataCumplimiento).then((res) => {
+          if (res.status === 200) {
+            this.datosCumplimiento = res.data.tabla_cumplimiento
+            this.meses = res.data.meses
+            this.setDataTable()
+            this.subactividadesOptions.push({ code: '0', label: 'Todas' })
+          }
+        })
+      }
     },
     setDataTable () {
+      this.datosTabla = []
       for (let i = 0; i < this.clinicasUser.length; i++) {
         const fila = {
           Clinica: this.clinicasUser[i].label }
@@ -122,7 +132,7 @@ export default {
       this.loadingTable = false
     },
     getSubactividades () {
-      this.subactividad_id = ''
+      this.subactividad_id = null
       if (this.actividad_id !== '0') {
         axios
           .get('/subactividades/fetch/' + this.actividad_id)
@@ -131,7 +141,6 @@ export default {
           })
       } else {
         this.subactividadesOptions = []
-        this.subactividadesOptions.push({ code: '0', label: 'Todas' })
       }
     }
   }

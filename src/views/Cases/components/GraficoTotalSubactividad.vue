@@ -37,54 +37,58 @@
         </b-form-group>
       </b-col>
     </b-row>
-    <b-row style="margin-top: 10px">
-      <b-col sm="4" md="4" class="my-1">
-        <b-form-group
-          label="Actividad"
-          label-cols-sm="2"
-          label-cols-md="2"
-          label-cols-lg="3"
-          label-align-sm="left"
-          label-size="sm"
-          class="mb-0"
-        >
-          <v-select
-            v-model="actividad_id"
-            :options="actividades"
-            :reduce="(label) => label.code"
-            label="label"
-            id="clinica_select"
-            @input="getSubactividades"
-          >
-            <span slot="no-options">No hay Actividades.</span>
-          </v-select>
-        </b-form-group>
-      </b-col>
-      <b-col sm="4" md="4" class="my-1">
-        <b-form-group
-          label="Subactividad"
-          label-cols-sm="2"
-          label-cols-md="2"
-          label-cols-lg="4"
-          label-align-sm="left"
-          label-size="sm"
-          class="mb-0"
-        >
-          <v-select
-            v-model="subactividad_id"
-            :options="subactividadesOptions"
-            :reduce="(label) => label.code"
-            label="label"
-            id="clinica_select"
-          >
-            <span slot="no-options">No hay Subactividades.</span>
-          </v-select>
-        </b-form-group>
-      </b-col>
-      <b-col lg="2">
-        <b-button variant="primary" @click="getDataGrafico">Filtrar</b-button>
-      </b-col>
+    <b-row style="margin-top:10px;">
+         <b-col sm="4" md="4" class="my-1">
+                <b-form-group
+                  label="Actividad"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="3"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="actividad_id"
+                    :options="actividades"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="clinica_select"
+                    @input="getSubactividades($event, false)"
+                  >
+                    <span slot="no-options">No hay Actividades.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+               <b-col sm="4" md="4" class="my-1">
+                <b-form-group
+                  label="Subactividad"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="4"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                  :key="selectKey"
+                >
+                  <v-select
+                    v-model="subactividad_id"
+                    :options="subactividadesOptions"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="clinica_select"
+                  >
+                    <span slot="no-options">No hay Subactividades.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+              <b-col lg="2">
+            <b-button variant="primary" @click="getDataGrafico" >Filtrar</b-button>
+        </b-col>
     </b-row>
+    <b-alert v-model="showSubactividadAlert" variant="danger" dismissible>
+      ¡¡Error!! No seleccionaste una Subactividad
+    </b-alert>
     <div v-if="loadingGraph" class="text-center">
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
@@ -101,7 +105,7 @@ export default {
   props: {
     element: String,
     actividades: Array,
-    actividad_id: String,
+    actividad_id: Number,
     clinicasUser: Array
   },
   data () {
@@ -114,8 +118,10 @@ export default {
       clinicasOptions: [],
       subactividad_id: 5,
       subactividadesOptions: [],
+      selectKey: 1,
       loadingGraph: true,
       chart: null,
+      showSubactividadAlert: false,
       chartOptions: {
         series: [
           {
@@ -188,7 +194,12 @@ export default {
   },
   mounted () {
     this.getDataGrafico()
-    this.getSubactividades()
+    this.getSubactividades(null, true)
+  },
+  computed: {
+    chartData: function () {
+      return this.data
+    }
   },
   computed: {
     chartData: function () {
@@ -211,47 +222,65 @@ export default {
     },
     getDataGrafico () {
       this.loadingGraph = true
-      const dataSend = {
-        fecha_inicio: this.fechaInicio,
-        fecha_fin: this.fechaFin,
-        clinica_id: this.clinica_id,
-        subactividad_id: this.subactividad_id
-      }
-      axios
-        .post('/casos-cantidad/subactividad', dataSend)
-        .then((res) => {
-          if (res.status === 200) {
-            this.meses = res.data.meses
-            this.cantidad = res.data.cantidad
-            this.loadingGraph = false
-            if (this.chart != null && this.chart !== undefined) {
-              this.updateGrafico()
-            } else {
-              this.crearGrafico()
+      if (this.actividad_id !== '0' && this.subactividad_id === null) {
+        this.showSubactividadAlert = true
+        this.loadingGraph = false
+      } else {
+        this.showSubactividadAlert = false
+        const dataSend = {
+          fecha_inicio: this.fechaInicio,
+          fecha_fin: this.fechaFin,
+          clinica_id: this.clinica_id,
+          subactividad_id: this.subactividad_id
+        }
+        axios
+          .post('/casos-cantidad/subactividad', dataSend)
+          .then((res) => {
+            if (res.status === 200) {
+              this.meses = res.data.meses
+              this.cantidad = res.data.cantidad
+              this.loadingGraph = false
+              if (this.chart != null && this.chart !== undefined) {
+                this.updateGrafico()
+              } else {
+                this.crearGrafico()
+              }
+              this.intentos = 0
+              this.errors = {}
+              this.selectKey++
             }
-            this.intentos = 0
-            this.errors = {}
-          }
-        })
-        .catch((err) => {
-          this.errors = err
-          if (this.intentos < 2) {
-            this.getDataGrafico()
-            this.intentos++
-          }
-        })
+          })
+          .catch((err) => {
+            this.errors = err
+            if (this.intentos < 2) {
+              this.getDataGrafico()
+              this.intentos++
+            }
+          })
+      }
     },
     updateGrafico () {
+      const max = Math.max(...this.cantidad)
+
       this.chart.updateOptions({
         xaxis: {
           categories: this.meses
         },
         series: [{
           data: this.cantidad
-        }]
+        }],
+        yaxis: {
+          max: max + 2,
+          title: {
+            text: 'Número de Casos'
+          }
+        }
       })
     },
-    getSubactividades () {
+    getSubactividades (e, firstTime = false) {
+      if (!firstTime) {
+        this.subactividad_id = null
+      }
       if (this.actividad_id !== '0') {
         axios
           .get('/subactividades/fetch/' + this.actividad_id)
