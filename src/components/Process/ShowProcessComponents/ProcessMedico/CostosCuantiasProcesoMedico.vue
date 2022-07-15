@@ -40,6 +40,16 @@
         <b-row>
           <b-card-text class="ml-4 mt-2 pt-3 text-left w-100"><h3><strong class="text-danger">TOTAL GENERAL:</strong><span v-if="process.prore_cuantia_pretenciones == null"> $ 0 </span><span v-else> {{ formatPrice(process.prore_cuantia_pretenciones)}}  </span></h3></b-card-text>
         </b-row>
+        <hr>
+        <b-row>
+          <b-col class="text-center" md="6">
+            <b-card-text><strong>Estimación pago perjucios inmateriales:</strong> <span v-if="process.prore_estimacion_pago_perju_inmateriales != null">{{ formatPrice(process.prore_estimacion_pago_perju_inmateriales) }}</span><span v-else> $ 0</span></b-card-text>
+            </b-col>
+            <b-col class="text-center" md="6">
+            <b-card-text><strong>Estimación pago perjucios materiales:</strong> <span v-if="process.prore_estimacion_pago_perju_materiales != null">{{ formatPrice(process.prore_estimacion_pago_perju_materiales) }}</span><span v-else> $ 0</span></b-card-text>
+            </b-col>
+            <b-card-text class="mt-2 pt-3 text-left w-100"><h3><strong class="text-danger">TOTAL ESTIMACIONES:</strong><span> {{ formatPrice(totalEstimaciones(process.prore_estimacion_pago_perju_materiales,process.prore_estimacion_pago_perju_inmateriales))}}  </span></h3></b-card-text>
+        </b-row>
       </div>
       <div v-else>
         <!-- editando -->
@@ -76,6 +86,16 @@
           </b-form-group>
           <b-form-group class="col-md-6" label="Daño a los bienes constitucionales y convencionales" label-for="tempProreValDanoBienesConstConv">
             <vue-autonumeric class="form-control" v-model="tempProreValDanoBienesConstConv"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Estimaciones Materiales" label-for="temProreEstimacionPagoPerjuMateriales">
+            <vue-autonumeric class="form-control" v-model="temProreEstimacionPagoPerjuMateriales"
+              :options="optionNumeric"
+            ></vue-autonumeric>
+          </b-form-group>
+          <b-form-group class="col-md-6" label="Estimaciones Inateriales" label-for="temProreEstimacionPagoPerjuInmateriales">
+            <vue-autonumeric class="form-control" v-model="temProreEstimacionPagoPerjuInmateriales"
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
@@ -126,6 +146,8 @@ export default {
       tempProreValDanoBienesConstConv: 0,
       tempProreValDanoEmergente: 0,
       tempProreValOtrosValores: 0,
+      temProreEstimacionPagoPerjuMateriales: 0,
+      temProreEstimacionPagoPerjuInmateriales: 0,
       estadoBotonActualizarCuantias: '',
       estadoBotonActualizarProceso: '',
       editando: false,
@@ -166,6 +188,8 @@ export default {
       this.tempProreValDanoBienesConstConv = this.process.prore_val_dano_bienes_constitucionales_convencionales
       this.tempProreValDanoEmergente = this.process.prore_val_dano_emergente
       this.tempProreValOtrosValores = this.process.prore_otros_valores
+      this.temProreEstimacionPagoPerjuMateriales = this.process.prore_estimacion_pago_perju_materiales
+      this.temProreEstimacionPagoPerjuInmateriales = this.process.prore_estimacion_pago_perju_inmateriales
     },
     editarProceso () {
       if (this.editando) {
@@ -244,6 +268,7 @@ export default {
       this.process.prore_val_dano_emergente = this.tempProreValDanoEmergente > 0 ? this.tempProreValDanoEmergente : 0
       this.process.prore_otros_valores = this.tempProreValOtrosValores > 0 ? this.tempProreValOtrosValores : 0
       this.process.prore_total_perjuicios_materiales = this.process.prore_val_luc_cesante + this.process.prore_val_dano_emergente + this.process.prore_otros_valores
+      this.process.prore_estimacion_pago_perju_materiales = this.temProreEstimacionPagoPerjuMateriales > 0 ? this.temProreEstimacionPagoPerjuMateriales : 0
       this.cuantiaPretensiones()
     },
     totalPerjuiciosInmateriales () {
@@ -252,6 +277,7 @@ export default {
       this.process.prore_val_dano_salud = this.tempProreValDanoSalud > 0 ? this.tempProreValDanoSalud : 0
       this.process.prore_val_dano_bienes_constitucionales_convencionales = this.tempProreValDanoBienesConstConv > 0 ? this.tempProreValDanoBienesConstConv : 0
       this.process.prore_total_perjuicios_inmateriales = this.process.prore_val_dano_moral + this.process.prore_val_dano_vida + this.process.prore_val_dano_salud + this.process.prore_val_dano_bienes_constitucionales_convencionales
+      this.process.prore_estimacion_pago_perju_inmateriales = this.temProreEstimacionPagoPerjuInmateriales > 0 ? this.temProreEstimacionPagoPerjuInmateriales : 0
       this.cuantiaPretensiones()
     },
     cuantiaPretensiones () {
@@ -265,6 +291,17 @@ export default {
     formatPrice (value) {
       let val = (value / 1).toFixed(0).replace('.', ',')
       return '$' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+    },
+    totalEstimaciones (valor1, valor2) {
+      if (valor1 === null && valor2 === null) {
+        return 0
+      } else if (valor1 === null) {
+        return valor2
+      } else if (valor2 === null) {
+        return valor1
+      } else {
+        return valor1 + valor2
+      }
     }
   }
 }
