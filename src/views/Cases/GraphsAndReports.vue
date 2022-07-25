@@ -28,8 +28,60 @@
                 <template v-slot:body>
                   <GraficaCumplimiento
                     element="GraficasCumplimiento"
+                    :actividades="actividadesOptions"
+                    :actividad_id="0"
+                    :clinicasUser="clinicasUser"
                   />
                 </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Cantidades Totales de ANS</h4>
+               </template>
+                <template v-slot:body>
+                  <GraficoTotalSubactividad
+                    element="GraficasTotalSubactividad"
+                    :actividades="actividadesOptions"
+                    :actividad_id="3"
+                    :clinicasUser="clinicasUser"
+                  />
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Oportunidad de días</h4>
+               </template>
+                <template v-slot:body>
+                  <GraficoOportunidadDias
+                    element="GraficoOportunidadDias"
+                    :actividades="actividadesOptions"
+                    :actividad_id="4"
+                    :clinicasUser="clinicasUser"
+                  />
+                  </template>
+              </iq-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Distribucion de Servicios Juridicos</h4>
+               </template>
+                <template v-slot:body>
+                  <DistribucionServicios
+                    element="GraficoDistribucionServicios"
+                    :clinicasUser="clinicasUser"
+                  />
+                  </template>
               </iq-card>
             </b-col>
           </b-row>
@@ -41,12 +93,15 @@
                 </template>
                 <template v-slot:body>
                   <CumplimientoTabla
+                  :actividades="actividadesOptions"
+                    :actividad_id="0"
+                    :clinicasUser="clinicasUser"
                   />
                 </template>
                 </iq-card>
             </b-col>
             </b-row>
-           <b-row>
+            <b-row>
              <b-col lg="12">
               <iq-card>
                 <template v-slot:headerTitle>
@@ -167,9 +222,12 @@ import CasosPorAbogado from './components/CasosPorAbogado.vue'
 import CasosPorClinicas from './components/CasosPorClinilca.vue'
 import CasosPorSubactividad from './components/CasosPorSubactividad.vue'
 import CumplimientoTabla from './components/CumplimientoTabla.vue'
+import GraficoTotalSubactividad from './components/GraficoTotalSubactividad.vue'
+import GraficoOportunidadDias from './components/OportunidadDias.vue'
+import DistribucionServicios from './components/DistribucionServicios.vue'
 import Vue from 'vue'
 import axios from 'axios'
-
+import auth from '@/logic/auth'
 export default {
   name: 'GraphsAndReports',
   components: {
@@ -177,7 +235,15 @@ export default {
     CasosPorClinicas,
     CasosPorSubactividad,
     GraficaCumplimiento,
-    CumplimientoTabla
+    CumplimientoTabla,
+    GraficoTotalSubactividad,
+    GraficoOportunidadDias,
+    DistribucionServicios
+  },
+  computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    }
   },
   mounted () {
     xray.index()
@@ -185,6 +251,8 @@ export default {
     this.obtenerCasosPorAbogado()
     this.obtenerCasosPorClinica()
     this.obtenerCasosPorSubactividad()
+    this.getActividades()
+    this.getUserClinicas()
   },
   data: function () {
     return {
@@ -210,7 +278,11 @@ export default {
       ],
       totalAbogado: '',
       totalClinica: '',
-      totalSubactividades: ''
+      totalSubactividades: '',
+      actividad_id: '',
+      actividadesOptions: [],
+      subactividadesOptions: [],
+      clinicasUser: []
     }
   },
   methods: {
@@ -317,6 +389,22 @@ export default {
           this.loadSubactividad = true
         } else {
           Vue.swal('Ocurrió un error tratando de obtener los datos')
+        }
+      })
+    },
+    getActividades () {
+      axios.get('/actividades/fetch').then((response) => {
+        this.actividadesOptions = response.data.actividades
+        this.actividadesOptions.push({ code: 0, label: 'Todas' })
+      })
+    },
+    getUserClinicas () {
+      axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
+        if (res.status === 200) {
+          this.clinicasUser = res.data.clinicas
+          this.clinicasUser.push({ code: '0', label: 'Todas' })
+        } else {
+          Vue.swal(res.data.message)
         }
       })
     }

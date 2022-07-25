@@ -19,7 +19,7 @@
                 >
                   <v-select
                     v-model="actividad_id"
-                    :options="actividadesOptions"
+                    :options="actividades"
                     :reduce="(label) => label.code"
                     label="label"
                     id="clinica_select"
@@ -51,9 +51,12 @@
                 </b-form-group>
               </b-col>
               <b-col lg="1">
-            <b-button variant="primary"  @click="getUserClinicas">Filtrar</b-button>
+            <b-button variant="primary"  @click="getData">Filtrar</b-button>
         </b-col>
     </b-row>
+    <b-alert v-model="showSubactividadAlert" variant="danger" >
+      ¡¡Error!! No seleccionaste una Subactividad
+    </b-alert>
     <div v-if="loadingTable" class="text-center">
       <b-spinner variant="primary" type="grow" label="Loading..."></b-spinner>
     </div>
@@ -63,11 +66,14 @@
 
 <script>
 import axios from 'axios'
-import auth from '@/logic/auth'
-import Vue from 'vue'
 import moment from 'moment'
 export default {
   name: 'TablaCumplimiento',
+  props: {
+    actividades: Array,
+    actividad_id: Number,
+    clinicasUser: Array
+  },
   data () {
     return {
       fechaInicio: moment(new Date()).subtract(3, 'months').format('YYYY-MM-DD'),
@@ -75,56 +81,44 @@ export default {
       loadingTable: true,
       datosCumplimiento: [],
       meses: [],
-      clinicasUser: [],
       clinicasCode: [],
       datosTabla: [],
-      actividad_id: '0',
       actividadesOptions: [],
       subactividadesOptions: [],
-      subactividad_id: '0'
-    }
-  },
-  computed: {
-    userLogged () {
-      return JSON.parse(auth.getUserLogged())
+      subactividad_id: '0',
+      showSubactividadAlert: false
     }
   },
   mounted () {
-    this.getUserClinicas()
-    this.getActividades()
+    this.getData()
   },
   methods: {
     getData () {
-      const dataCumplimiento = {
-        fecha_inicio: this.fechaInicio,
-        fecha_fin: this.fechaFin,
-        clinicas: this.clinicasCode,
-        subactividad_id: this.subactividad_id
-      }
-      axios.post('/casos-cumplimiento/clinica', dataCumplimiento).then((res) => {
-        if (res.status === 200) {
-          this.datosCumplimiento = res.data.tabla_cumplimiento
-          this.meses = res.data.meses
-          this.setDataTable()
+      if (this.actividad_id !== 0 && this.subactividad_id === null) {
+        this.showSubactividadAlert = true
+      } else {
+        this.showSubactividadAlert = false
+        for (let clinica of this.clinicasUser) {
+          this.clinicasCode.push(clinica.code)
         }
-      })
-    },
-    getUserClinicas () {
-      this.loadingTable = true
-      this.datosTabla = []
-      axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
-        if (res.status === 200) {
-          this.clinicasUser = res.data.clinicas
-          for (let clinica of this.clinicasUser) {
-            this.clinicasCode.push(clinica.code)
+        const dataCumplimiento = {
+          fecha_inicio: this.fechaInicio,
+          fecha_fin: this.fechaFin,
+          clinicas: this.clinicasCode,
+          subactividad_id: this.subactividad_id
+        }
+        axios.post('/casos-cumplimiento/clinica', dataCumplimiento).then((res) => {
+          if (res.status === 200) {
+            this.datosCumplimiento = res.data.tabla_cumplimiento
+            this.meses = res.data.meses
+            this.setDataTable()
+            this.subactividadesOptions.push({ code: '0', label: 'Todas' })
           }
-          this.getData()
-        } else {
-          Vue.swal(res.data.message)
-        }
-      })
+        })
+      }
     },
     setDataTable () {
+      this.datosTabla = []
       for (let i = 0; i < this.clinicasUser.length; i++) {
         const fila = {
           Clinica: this.clinicasUser[i].label }
@@ -137,15 +131,8 @@ export default {
       }
       this.loadingTable = false
     },
-    getActividades () {
-      axios.get('/actividades/fetch').then((response) => {
-        this.actividadesOptions = response.data.actividades
-        this.actividadesOptions.push({ code: '0', label: 'Todas' })
-        this.subactividadesOptions.push({ code: '0', label: 'Todas' })
-      })
-    },
     getSubactividades () {
-      this.subactividad_id = ''
+      this.subactividad_id = null
       if (this.actividad_id !== '0') {
         axios
           .get('/subactividades/fetch/' + this.actividad_id)
@@ -154,7 +141,6 @@ export default {
           })
       } else {
         this.subactividadesOptions = []
-        this.subactividadesOptions.push({ code: '0', label: 'Todas' })
       }
     }
   }
