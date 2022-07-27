@@ -93,18 +93,18 @@
                         <h5 class="mb-0 text-white line-height">Hola {{ userLogged.usr_name_first }} {{ userLogged.usr_lastname_first }}</h5>
                         <span class="text-white font-size-12">{{ /*$t('nav.user.available')*/ }}Disponible</span>
                       </div>
-                      <!--<a href="#" class="iq-sub-card iq-bg-primary-hover">
+                      <a href="#" class="iq-sub-card iq-bg-primary-hover">
                         <div class="media align-items-center">
                           <div class="rounded iq-card-icon iq-bg-primary">
-                            <i class="ri-file-line"></i>
+                            <i class="ri-account-box-line"></i>
                           </div>
                           <div class="media-body ml-3">
-                            <h6 class="mb-0 ">{{ $t('nav.user.profileTitle') }}</h6>
-                            <p class="mb-0 font-size-12">{{ $t('nav.user.profileSub') }}</p>
+                            <h6 class="mb-0 ">{{ /*$t('nav.user.profileTitle')*/ }} Cambiar Foto de Perfil</h6>
+                            <!--<p class="mb-0 font-size-12">{{ $t('nav.user.profileSub') }}</p>-->
                           </div>
                         </div>
                       </a>
-                      <a href="#" class="iq-sub-card iq-bg-primary-success-hover">
+                      <!--<a href="#" class="iq-sub-card iq-bg-primary-success-hover">
                         <div class="media align-items-center">
                           <div class="rounded iq-card-icon iq-bg-success">
                             <i class="ri-profile-line"></i>
@@ -165,6 +165,10 @@
                           </form>
                         </b-modal>
                       </ValidationObserver>
+                      <b-modal id="modal-upload-photo"
+                      title="Subir Foto">
+
+                      </b-modal>
                       <div class="d-inline-block w-100 text-center p-3">
                         <a class="iq-bg-danger iq-sign-btn" href="javascript:void(0)" @click="logout" role="button">{{ /*$t('nav.user.signout')*/ }}Cerrar Sesión<i class="ri-login-box-line ml-2"></i></a>
                       </div>
