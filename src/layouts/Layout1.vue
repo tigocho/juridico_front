@@ -93,7 +93,7 @@
                         <h5 class="mb-0 text-white line-height">Hola {{ userLogged.usr_name_first }} {{ userLogged.usr_lastname_first }}</h5>
                         <span class="text-white font-size-12">{{ /*$t('nav.user.available')*/ }}Disponible</span>
                       </div>
-                      <a href="#" class="iq-sub-card iq-bg-primary-hover">
+                      <a href="#" v-b-modal.modal-upload-photo class="iq-sub-card iq-bg-primary-hover">
                         <div class="media align-items-center">
                           <div class="rounded iq-card-icon iq-bg-primary">
                             <i class="ri-account-box-line"></i>
@@ -166,8 +166,15 @@
                         </b-modal>
                       </ValidationObserver>
                       <b-modal id="modal-upload-photo"
-                      title="Subir Foto">
-
+                      ref="modal"
+                      title="Subir Foto"
+                       @ok="uploadPhotoProfile">
+                      <b-form-file
+                        v-model="uploadPhoto"
+                        name="photho-file"
+                        placeholder="Subir Foto"
+                        accept="image/*"
+                            ></b-form-file>
                       </b-modal>
                       <div class="d-inline-block w-100 text-center p-3">
                         <a class="iq-bg-danger iq-sign-btn" href="javascript:void(0)" @click="logout" role="button">{{ /*$t('nav.user.signout')*/ }}Cerrar Sesión<i class="ri-login-box-line ml-2"></i></a>
@@ -258,6 +265,8 @@ export default {
       userProfileWomen: profileWomen,
       logo: loader,
       usersList: Users,
+      uploadPhoto: null,
+      urlPhoto: '',
       modelValidations: {
         email: {
           required: true,
@@ -330,11 +339,17 @@ export default {
       }
     },
     definirAvatarPerfil () {
-      if (this.userLogged.usr_gender === '1') {
-        this.userProfile = this.userProfileWomen
-      } else {
-        this.userProfile = this.userProfileMen
-      }
+      axios.get('/user/photo-profile/' + this.userLogged.usr_id).then((res) => {
+        if (res.status === 200) {
+          if (res.data.dataimg !== null) {
+            this.userProfile = 'data:image/png;base64, ' + res.data.dataimg
+          } else if (this.userLogged.usr_gender === '1') {
+            this.userProfile = this.userProfileWomen
+          } else {
+            this.userProfile = this.userProfileMen
+          }
+        }
+      })
     },
     logout () {
       localStorage.removeItem('user')
@@ -350,6 +365,17 @@ export default {
       } else {
         this.rtlRemove(lang)
       }
+    },
+    uploadPhotoProfile () {
+      const data = new FormData()
+
+      data.append('photo_file', this.uploadPhoto, this.uploadPhoto.name)
+      axios.post('/users/update-photo/' + this.userLogged.usr_id, data).then((res) => {
+        if (res.status === 200) {
+          this.definirAvatarPerfil()
+        }
+        Vue.swal(res.data.message)
+      })
     },
     ...mapActions({
       langChangeState: 'Setting/setLangAction',
