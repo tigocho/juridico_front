@@ -222,6 +222,14 @@
                       </ValidationProvider>
                       <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-juzagado>Crear juzgado</b-card-text>
                     </b-form-group>
+                    <b-form-group class="col-md-6" label="Provisiones constituidas" label-for="prore_prov_constituidas">
+                      <ValidationProvider name="Provisiones constituidas" v-slot="{ errors }">
+                        <b-form-input v-model="formData.prore_prov_constituidas" type="number" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                        <div class="invalid-feedback">
+                          <span>Por favor verifique la información</span>
+                        </div>
+                      </ValidationProvider>
+                    </b-form-group>
                     <b-modal
                       id="modal-crear-juzagado"
                       ref="modal"
@@ -344,7 +352,8 @@ export default {
         prore_fec_ingreso_cli: '',
         prore_sinies_description: '',
         prore_status_process_id: '',
-        prore_user_id: ''
+        prore_user_id: '',
+        prore_prov_constituidas: ''
       },
       process: [],
       clinicaOptions: [{
