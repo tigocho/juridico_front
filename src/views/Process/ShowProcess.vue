@@ -639,6 +639,9 @@
                             <b-form-group class="col-md-6" label="Total Costas" label-for="prore_total_costas">
                               <b-form-input id="prore_total_costas" v-model="process.prore_total_costas" type="number" placeholder="$"></b-form-input>
                             </b-form-group>
+                            <b-form-group class="col-md-6" label="Provisiones constituidas" label-for="prore_prov_constituidas">
+                              <b-form-input v-model="process.prore_prov_constituidas" type="number" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                            </b-form-group>
                           </b-row>
                           </form>
                         </ValidationObserver>
