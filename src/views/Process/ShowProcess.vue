@@ -477,7 +477,7 @@
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Descripción del proceso*" label-for="prore_sinies_description">
                               <ValidationProvider name="Descripción del proceso" rules="required" v-slot="{ errors }">
-                                <b-form-textarea v-model="process.prore_sinies_description" type="text" placeholder="Descripción" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-textarea>
+                              <vue-editor v-model="process.prore_sinies_description" :editorToolbar="customToolbar" :class="(errors.length > 0 ? ' is-invalid' : '')"></vue-editor>
                                 <div class="invalid-feedback">
                                   <span>Por favor verifique la información</span>
                                 </div>
@@ -922,9 +922,10 @@ import Vue from 'vue'
 import axios from 'axios'
 import auth from '@/logic/auth'
 import iqCard from '../../components/xray/cards/iq-card.vue'
+import { VueEditor } from 'vue2-editor'
 
 export default {
-  components: { iqCard },
+  components: { iqCard, VueEditor },
   name: 'ProfileEdit',
   mounted () {
     xray.index()
@@ -958,6 +959,7 @@ export default {
   },
   data () {
     return {
+      customToolbar: [['bold', 'italic', 'underline']],
       nocloseonbackdrop: true,
       estadoBotonActualizarProceso: '',
       textoEditarProceso: 'Editar Proceso',
