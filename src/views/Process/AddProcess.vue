@@ -26,7 +26,7 @@
                     </b-form-group>
                     <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
                       <ValidationProvider name="Número de radicado" rules="required" v-slot="{ errors }">
-                        <b-form-input v-model="formData.prore_num_radicado" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                        <b-form-input v-model="formData.prore_num_radicado" @change="existeProceso" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                         <div class="invalid-feedback">
                           <span>Por favor verifique la información</span>
                         </div>
@@ -645,6 +645,23 @@ export default {
         vm.progress_total += 4
         if (vm.progress_total > 99) clearInterval(timer)
       }, 100)
+    },
+    existeProceso () {
+      axios.get('/process/getprocess-radicado/' + this.formData.prore_num_radicado).then(response => {
+        if (response.status === 200) {
+          Vue.swal({
+            icon: 'info',
+            title: 'El proceso ya existe ',
+            text: 'Ya hay registrado un proceso con este número de radicado, ¿Deseas verlo?',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, quiero verlo!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.$router.push({ path: `/process/process-show/${response.data.proceso.prore_id}/${false}` })
+            }
+          })
+        }
+      })
     }
   }
 }
