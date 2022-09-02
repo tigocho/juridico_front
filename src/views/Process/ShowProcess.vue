@@ -249,7 +249,7 @@
                     </template>
                     <template v-slot:headerAction>
                       <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
-                      <b-button variant="primary" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
+                      <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
                       <b-button variant="danger" v-if="process.prore_estado != 1" :class="estadoBotonTerminarProceso" class="ml-3" v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(prore_id)">Terminar Proceso</b-button>
                     </template>
                     <template v-slot:body>
