@@ -805,6 +805,54 @@
                               <b-card-text class="pr-3 my-0"><b>Provisiones Constituidas:</b> <span v-if="poliza.pol_provisiones != null">{{ formatPrice(poliza.pol_provisiones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                               <b-card-text class="pr-3 my-0"><b>Estado:</b> <span v-if="poliza.pol_estado">Poliza Activa</span><span class="text-danger" v-else>Poliza Inactiva</span></b-card-text>
                             </b-row>
+                            <button class="btn btn-primary" v-if="poliza.pol_estado == 1" @click="agregarAfectacion(index)"><i class="ri-add-line mr-2" ></i>Agregar afectación</button>
+                            <!-- INICIAL DE MODAL DE AFECTACIÓN -->
+                            <div>
+                              <b-modal :id="'modal-nueva-afectacion-'+index" size="lg" title="Agregar Afectación" hide-footer>
+                                <form ref="form" @submit.stop.prevent="handleSubmit">
+                                  <p v-if="errors.length">
+                                    <b>Por favor, corrija el(los) siguiente(s) error(es):</b>
+                                    <ul>
+                                      <li v-for="error in errors" :key="error">{{ error }}</li>
+                                    </ul>
+                                  </p>
+                                  <b-form-group label="Proceso que afectó la poliza*" label-for="pol_affe_prore_id">
+                                    <v-select v-model="afectacionPoliza.pol_affe_prore_id" :options="processOptions" :reduce="label => label.code" label="label" id="pol_ase_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                      <span slot="no-options">No hay procesos.</span>
+                                    </v-select>
+                                  </b-form-group>
+                                  <b-row>
+                                    <b-col md="6">
+                                      <b-form-group label="Valor bruto de la afectación (Sin deducible)" label-for="pol_affe_valor_bruto">
+                                        <b-form-input id="pol_affe_valor_bruto" @change="valorNetoAfectacion" v-model="afectacionPoliza.pol_affe_valor_bruto" type="number"></b-form-input>
+                                      </b-form-group>
+                                    </b-col>
+                                    <b-col md="6">
+                                      <b-form-group label="Deducible" label-for="pol_affe_valor_deducible">
+                                        <b-form-input id="pol_affe_valor_bruto" @change="valorNetoAfectacion" v-model="afectacionPoliza.pol_affe_valor_deducible" type="number"></b-form-input>
+                                      </b-form-group>
+                                    </b-col>
+                                  </b-row>
+                                  <b-row>
+                                    <b-col md="6">
+                                      <b-form-group label="Valor neto de la afectación" label-for="pol_affe_valor_neto">
+                                      <b-form-input id="pol_affe_valor_neto" v-model="afectacionPoliza.pol_affe_valor_neto" type="number"></b-form-input>
+                                    </b-form-group>
+                                    </b-col>
+                                    <b-col md="6">
+                                      <b-form-group label="Fecha de afectación" label-for="pol_affe_fecha">
+                                      <b-form-input id="pol_affe_fecha" v-model="afectacionPoliza.pol_affe_fecha" type="date"></b-form-input>
+                                    </b-form-group>
+                                    </b-col>
+                                  </b-row>
+                                  <div class="text-right pt-1">
+                                    <b-button class="sm-3 mr-1" variant="secondary" @click="canceladoAfectacion(index)">Cancelar</b-button>
+                                    <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="guardarAfectacion(poliza.pol_id)">{{ textoGuardarAfectacion }}</b-button>
+                                  </div>
+                                </form>
+                              </b-modal>
+                            </div>
+                            <!-- FIN DE MODAL DE AFECTACIÓN -->
                           </li>
                         </ul>
                       </b-row>
@@ -895,6 +943,7 @@ export default {
         this.fetchRisks()
         this.fetchTypeProcess()
         this.fetchCity()
+        this.fetchProcessOptions()
       }, 800)
     }, 500)
   },
@@ -921,6 +970,7 @@ export default {
       mostrarModalTerminarProceso: false,
       implicateds: [],
       process: [],
+      processOptions: [],
       loading: true,
       progress_total: 4,
       max: 100,
@@ -965,6 +1015,16 @@ export default {
       proceedingKey: 1,
       tableLinkKey: 1,
       implicatedKey: 1,
+      afectacionPoliza: {
+        pol_affe_pol_id: '',
+        pol_affe_prore_id: '',
+        pol_affe_valor_bruto: '',
+        pol_affe_valor_deducible: '',
+        pol_affe_valor_neto: '',
+        pol_affe_fecha: '',
+        pol_affe_user_id: ''
+      },
+      textoGuardarAfectacion: 'Guardar',
       agenda: {
         agen_name: '',
         agen_pro_id: '',
@@ -1158,6 +1218,26 @@ export default {
               this.fetchOptionsClinicas()
             }
             this.intentos++
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
+    fetchProcessOptions () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtenerProcesosParaLista/' + this.userLogged.usr_id).then(response => {
+          this.processOptions = response.data.process
+          if (this.processOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchProcessOptions()
+              this.intentos++
+            }
           })
       } else {
         Vue.swal('Usuario no logueado o inactivo')
@@ -1994,6 +2074,129 @@ export default {
       let valTotalAsegurado = this.process.prore_val_total_asegurado > 0 ? this.process.prore_val_total_asegurado : 0
       let valAfectadoPoliza = this.process.prore_val_afectado_poliza > 0 ? this.process.prore_val_afectado_poliza : 0
       this.process.prore_val_cobertura_poliza = parseInt(valTotalAsegurado) - parseInt(valAfectadoPoliza)
+    },
+    guardarAfectacion (polId) {
+      // bvModalEvt.preventDefault()
+      this.afectacionPoliza.pol_affe_pol_id = polId
+      if (this.checkFormAfectacion()) {
+        this.botonGuardarModal = 'disabled'
+        this.textoGuardarModal = 'Guardando...'
+        if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+          this.afectacionPoliza.pol_affe_user_id = this.userLogged.usr_id
+        }
+        if (this.afectacionPoliza.pol_affe_id != null) {
+          axios.post('/policyAffectation/actualizar-afectacion/' + this.afectacionPoliza.pol_affe_id, this.afectacionPoliza).then(res => {
+            this.textoGuardarModal = 'Guardar'
+            this.botonGuardarModal = ''
+            if (res.data.status_code === 200) {
+              Vue.swal(res.data.message)
+              this.$bvModal.hide('modal-nueva-afectacion')
+              this.limpiarModalAfectacion()
+              this.getPolicy()
+            } else {
+              Vue.swal(res.data.message)
+            }
+          })
+            .catch((err) => {
+              this.textoGuardarModal = 'Guardar'
+              this.botonGuardarModal = ''
+              Vue.swal('Ups, ocurrió un error ' + err)
+            })
+        } else {
+          axios.post('/policyAffectation/registrar-afectacion', this.afectacionPoliza).then(res => {
+            this.textoGuardarModal = 'Guardar'
+            this.botonGuardarModal = ''
+            if (res.data.status_code === 200) {
+              Vue.swal(res.data.message)
+              this.$bvModal.hide('modal-nueva-afectacion')
+              this.limpiarModalAfectacion()
+              this.getPolicy()
+            } else {
+              Vue.swal(res.data.message)
+            }
+          })
+            .catch((err) => {
+              this.textoGuardarModal = 'Guardar'
+              this.botonGuardarModal = ''
+              Vue.swal('Ups, ocurrió un error ' + err)
+            })
+        }
+      } else {
+        return false
+      }
+    },
+    limpiarModalAfectacion () {
+      this.afectacionPoliza.pol_affe_id = null
+      this.afectacionPoliza.pol_affe_pol_id = null
+      this.afectacionPoliza.pol_affe_prore_id = null
+      this.afectacionPoliza.pol_affe_valor_bruto = null
+      this.afectacionPoliza.pol_affe_valor_deducible = null
+      this.afectacionPoliza.pol_affe_valor_neto = null
+      this.afectacionPoliza.pol_affe_fecha = null
+      this.afectacionPoliza.pol_affe_user_id = null
+    },
+    getPolicy () {
+      if (this.pol_id != null) {
+        axios.get('/policy/' + this.pol_id).then(res => {
+          setTimeout(() => {
+            if (res.data.poliza != null) {
+              this.poliza = res.data.poliza[0]
+              this.afectacionesPoliza = this.poliza.afectaciones
+              this.afectacionesKey++
+              if (this.poliza.pol_estado) {
+                this.poliza.pol_estado = 1
+              } else {
+                this.poliza.pol_estado = 0
+              }
+              if (this.poliza.process_requests != null && this.poliza.process_requests !== '') {
+                this.process = this.poliza.process_requests
+              }
+            } else {
+              Vue.swal('Ocurrió un error tratando de obtener los datos de la poliza')
+            }
+          }, 1000)
+        })
+          .catch(this.errored = true)
+          .finally(setTimeout(() => {
+            this.loading = false
+          }, 3500))
+      }
+    },
+    agregarAfectacion (index) {
+      this.limpiarModalAfectacion()
+      this.$bvModal.show('modal-nueva-afectacion-' + index)
+    },
+    canceladoAfectacion (index) {
+      this.$bvModal.hide('modal-nueva-afectacion-' + index)
+    },
+    valorNetoAfectacion () {
+      let valorBruto = this.afectacionPoliza.pol_affe_valor_bruto > 0 ? this.afectacionPoliza.pol_affe_valor_bruto : 0
+      let deducible = this.afectacionPoliza.pol_affe_valor_deducible > 0 ? this.afectacionPoliza.pol_affe_valor_deducible : 0
+      this.afectacionPoliza.pol_affe_valor_neto = parseInt(valorBruto) - parseInt(deducible)
+    },
+    checkFormAfectacion () {
+      if (this.afectacionPoliza.pol_affe_pol_id && this.afectacionPoliza.pol_affe_prore_id &&
+        this.afectacionPoliza.pol_affe_valor_bruto && this.afectacionPoliza.pol_affe_valor_deducible &&
+        this.afectacionPoliza.pol_affe_valor_neto && this.afectacionPoliza.pol_affe_fecha) {
+        this.errors = []
+        return true
+      }
+      this.errors = []
+      if (!this.afectacionPoliza.pol_affe_prore_id) {
+        this.errors.push('El proceso es obligatorio.')
+      }
+      if (!this.afectacionPoliza.pol_affe_valor_bruto) {
+        this.errors.push('El valor bruto es obligatorio.')
+      }
+      if (!this.afectacionPoliza.pol_affe_valor_deducible) {
+        this.errors.push('El valor deducido es obligatoria.')
+      }
+      if (!this.afectacionPoliza.pol_affe_valor_neto) {
+        this.errors.push('El valor neto es obligatorio.')
+      }
+      if (!this.afectacionPoliza.pol_affe_fecha) {
+        this.errors.push('La fecha es obligatoria.')
+      }
     }
   }
 }
