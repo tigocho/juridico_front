@@ -120,8 +120,8 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
-                    <b-form-group class="col-md-6" label="Descripción del siniestro*" label-for="prore_sinies_description">
-                      <ValidationProvider name="Descripción del siniestro" rules="required" v-slot="{ errors }">
+                    <b-form-group class="col-md-6" label="Descripción del Proceso*" label-for="prore_sinies_description">
+                      <ValidationProvider name="Descripción del Proceso" rules="required" v-slot="{ errors }">
                         <b-form-textarea v-model="formData.prore_sinies_description" type="text" placeholder="Descripción" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-textarea>
                         <div class="invalid-feedback">
                           <span>Por favor verifique la información</span>
