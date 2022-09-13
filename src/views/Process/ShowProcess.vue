@@ -501,7 +501,7 @@
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Colaborador de IPS que recibe notificación" label-for="prore_responsable">
                               <ValidationProvider name="Colaborador de IPS que recibe notificación" v-slot="{ errors }">
-                                <b-form-input v-model="process.prore_responsable" type="text" placeholder="Nombre completo colaborador" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                <b-form-input v-model="process.prore_colaborador_ips" type="text" placeholder="Nombre completo colaborador" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                                 <div class="invalid-feedback">
                                   <span>Por favor verifique la información</span>
                                 </div>
