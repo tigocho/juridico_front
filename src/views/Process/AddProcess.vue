@@ -24,6 +24,17 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
+                    <b-form-group label="Abogado Lider" class="col-md-6" label-for="profesional_id">
+                    <v-select
+                      v-model="formData.prore_pro_id"
+                      :options="profesionalesOptions"
+                      :reduce="(label) => label.code"
+                      label="label"
+                      id="profesional_id"
+                    >
+                    <span slot="no-options">No hay Abogados.</span>
+                  </v-select>
+                </b-form-group>
                     <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
                       <ValidationProvider name="Número de radicado" rules="required" v-slot="{ errors }">
                         <b-form-input v-model="formData.prore_num_radicado" @change="existeProceso" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
@@ -282,6 +293,7 @@ export default {
     xray.index()
     this.fetchProfileProcessOptions()
     this.fetchOptionsClinicas()
+    this.getProfesionals()
     setTimeout(() => {
       this.fetchEstadosProceso()
       this.fetchEspecialidades()
@@ -398,6 +410,7 @@ export default {
         'label': 'No hay ningún dato'
       }],
       intentos: 0,
+      profesionalesOptions: [],
       errores: ''
     }
   },
@@ -657,6 +670,22 @@ export default {
           })
         }
       })
+    },
+    getProfesionals () {
+      axios.get('/professionals/fetch').then((response) => {
+        this.profesionalesOptions = response.data.professionals
+        if (this.profesionalesOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchProfiles()
+            this.intentos++
+          }
+        })
     }
   }
 }

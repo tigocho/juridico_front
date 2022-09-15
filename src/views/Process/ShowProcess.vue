@@ -379,6 +379,17 @@
                                 </div>
                               </ValidationProvider>
                             </b-form-group>
+                            <b-form-group label="Abogado Lider" class="col-md-6" label-for="profesional_id">
+                              <v-select
+                                v-model="process.prore_pro_id"
+                                :options="profesionalesOptions"
+                                :reduce="(label) => label.code"
+                                label="label"
+                                id="profesional_id"
+                              >
+                              <span slot="no-options">No hay Abogados.</span>
+                            </v-select>
+                          </b-form-group>
                             <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
                               <ValidationProvider name="Número de radicado" rules="required" v-slot="{ errors }">
                                 <b-form-input v-model="process.prore_num_radicado" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
@@ -950,6 +961,7 @@ export default {
       this.fetchOptionsAbogados()
       this.fetchProfiles()
       this.fetchProfileProcessOptions()
+      this.getProfesionals()
       setTimeout(() => {
         this.fetchEspecialidades()
         this.fetchOptionsClinicas()
@@ -992,6 +1004,7 @@ export default {
       botonGuardarModal: '',
       textoGuardarModal: 'Guardar',
       errors: [],
+      profesionalesOptions: [],
       validationRules: [
         {
           prore_num_radicado: { required },
@@ -2222,6 +2235,22 @@ export default {
       this.process.prore_total_sentencia = parseInt(perjuciosInmat) + parseInt(perjuciosMat) +
       parseInt(pagoClinica) + parseInt(pagoAseguradora) +
       parseInt(pagoTerceros)
+    },
+    getProfesionals () {
+      axios.get('/professionals/fetch').then((response) => {
+        this.profesionalesOptions = response.data.professionals
+        if (this.profesionalesOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchProfiles()
+            this.intentos++
+          }
+        })
     }
   }
 }
