@@ -103,15 +103,10 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
-                    <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial*" label-for="prore_fec_audi_conci_preju">
-                      <ValidationProvider name="Fecha de la audiencia de conciliación prejudicial" rules="required" v-slot="{ errors }">
-                        <b-form-input v-model="formData.prore_fec_audi_conci_preju" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                    <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial" label-for="prore_fec_audi_conci_preju">
+                      <b-form-input v-model="formData.prore_fec_audi_conci_preju" type="date">
                         </b-form-input>
-                        <div class="invalid-feedback">
-                          <span>Por favor verifique la información</span>
-                        </div>
-                      </ValidationProvider>
-                    </b-form-group>
+                      </b-form-group>
                     <b-form-group class="col-md-6" label="Fecha aviso del siniestro" label-for="prore_fec_sinies_aviso">
                       <ValidationProvider name="Fecha de notificación prejudicial">
                         <b-form-input v-model="formData.prore_fec_sinies_aviso" type="date"></b-form-input>
