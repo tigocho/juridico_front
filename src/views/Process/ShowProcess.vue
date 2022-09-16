@@ -639,6 +639,24 @@
                             <b-form-group class="col-md-6" label="Total Costas" label-for="prore_total_costas">
                               <b-form-input id="prore_total_costas" v-model="process.prore_total_costas" type="number" placeholder="$"></b-form-input>
                             </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Sentencia Perjuicios Inmateriales" label-for="prore_total_sentencia_perjuicios_inmat">
+                              <b-form-input id="prore_total_sentencia_perjuicios_inmat" v-model="process.prore_total_sentencia_perjuicios_inmat" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Sentencia Perjuicios Materiales" label-for="prore_total_sentencia_perjuicios_mat">
+                              <b-form-input id="prore_total_sentencia_perjuicios_mat" v-model="process.prore_total_sentencia_perjuicios_mat" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Pagado Clinica" label-for="prore_total_pagado_clinica">
+                              <b-form-input id="prore_total_pagado_clinica" v-model="process.prore_total_pagado_clinica" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Pagado Aseguradora" label-for="prore_total_pagado_aseguradora">
+                              <b-form-input id="Total Pagado Aseguradora" v-model="process.prore_total_pagado_aseguradora" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Pagado Tercero" label-for="prore_total_pagado_tercero">
+                              <b-form-input id="prore_total_pagado_tercero" v-model="process.prore_total_pagado_tercero" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Sentencia" label-for="prore_total_sentencia">
+                              <b-form-input id="prore_total_sentencia" v-model="process.prore_total_sentencia" type="number" ></b-form-input>
+                            </b-form-group>
                             <b-form-group class="col-md-6" label="Provisiones constituidas" label-for="prore_prov_constituidas">
                               <b-form-input v-model="process.prore_prov_constituidas" type="number" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                             </b-form-group>
@@ -2199,6 +2217,16 @@ export default {
       if (!this.afectacionPoliza.pol_affe_fecha) {
         this.errors.push('La fecha es obligatoria.')
       }
+    },
+    totalSentencia () {
+      let perjuciosInmat = this.process.prore_total_sentencia_perjuicios_inmat
+      let perjuciosMat = this.process.prore_total_sentencia_perjuicios_mat
+      let pagoClinica = this.process.prore_total_pagado_clinica
+      let pagoAseguradora = this.process.prore_total_pagado_aseguradora
+      let pagoTerceros = this.process.prore_total_pagado_tercero
+      this.process.prore_total_sentencia = parseInt(perjuciosInmat) + parseInt(perjuciosMat) +
+      parseInt(pagoClinica) + parseInt(pagoAseguradora) +
+      parseInt(pagoTerceros)
     }
   }
 }
