@@ -618,6 +618,9 @@
                                   <b-form-select-option :value="'Ninguna'">Ninguna</b-form-select-option>
                                   <b-form-select-option :value="'A Favor'" >A Favor</b-form-select-option>
                                   <b-form-select-option :value="'En Contra'">En Contra</b-form-select-option>
+                                  <b-form-select-option :value="'Desistimiento'">Desistimiento</b-form-select-option>
+                                  <b-form-select-option :value="'Rechazado'">Rechazado</b-form-select-option>
+                                  <b-form-select-option :value="'Conciliado'">Conciliado</b-form-select-option>
                                 </template>
                               </b-form-select>
                             </b-form-group>
