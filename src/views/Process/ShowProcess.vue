@@ -2219,11 +2219,11 @@ export default {
       }
     },
     totalSentencia () {
-      let perjuciosInmat = this.process.prore_total_sentencia_perjuicios_inmat
-      let perjuciosMat = this.process.prore_total_sentencia_perjuicios_mat
-      let pagoClinica = this.process.prore_total_pagado_clinica
-      let pagoAseguradora = this.process.prore_total_pagado_aseguradora
-      let pagoTerceros = this.process.prore_total_pagado_tercero
+      let perjuciosInmat = this.process.prore_total_sentencia_perjuicios_inmat > 0 ? this.process.prore_total_sentencia_perjuicios_inmat : 0
+      let perjuciosMat = this.process.prore_total_sentencia_perjuicios_mat > 0 ? this.process.prore_total_sentencia_perjuicios_mat : 0
+      let pagoClinica = this.process.prore_total_pagado_clinica > 0 ? this.process.prore_total_pagado_clinica : 0
+      let pagoAseguradora = this.process.prore_total_pagado_aseguradora > 0 ? this.process.prore_total_pagado_aseguradora : 0
+      let pagoTerceros = this.process.prore_total_pagado_tercero > 0 ? this.process.prore_total_pagado_tercero : 0
       this.process.prore_total_sentencia = parseInt(perjuciosInmat) + parseInt(perjuciosMat) +
       parseInt(pagoClinica) + parseInt(pagoAseguradora) +
       parseInt(pagoTerceros)
