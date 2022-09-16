@@ -349,6 +349,11 @@
                         </b-row>
                         <hr>
                         <b-row class="col-md-12 pt-1">
+                          <b-card-text class="pr-3 my-0"><b>Prescrito:</b> {{ process.prore_prescritas ? 'Sí' : 'No' }}</b-card-text>
+                          <h6 class="float-left mb-1 font-weight-bolder"><button class="btn btn-link pt-0" @click="modificarPrescrito" ><i class="ri-edit-2-fill"></i>Modificar</button> </h6>
+                        </b-row>
+                        <hr>
+                        <b-row class="col-md-12 pt-1">
                           <b-card-text><b>Descripción del Proceso: </b>{{ process.prore_sinies_description }}</b-card-text>
                         </b-row>
                         <hr>
@@ -2254,6 +2259,27 @@ export default {
             this.intentos++
           }
         })
+    },
+    modificarPrescrito () {
+      const pregunta = this.process.prore_prescritas ? '¿Deseas modificar a no prescrito?' : '¿Deseas modificar a prescrito?'
+      Vue.swal({
+        icon: 'info',
+        title: pregunta,
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const data = { prore_id: this.process.prore_id, prore_prescrito: this.process.prore_prescritas ? !this.process.prore_prescritas : true }
+          axios.post('/process/update-prescrito', data).then((res) => {
+            if (res.status === 200) {
+              Vue.swal(res.data.message)
+              this.getProcess()
+            } else {
+              Vue.swal(res.data.message)
+            }
+          })
+        }
+      })
     }
   }
 }
