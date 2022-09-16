@@ -987,7 +987,12 @@ export default {
     },
     years () {
       const year = new Date().getFullYear()
-      return Array.from({ length: year - 1995 }, (value, index) => 2000 + index)
+      let length = (year - 1995)
+      let yearsOptions = []
+      for (let index = 0; index < length; index++) {
+        yearsOptions.push({ 'code': (2000 + index), 'label': (2000 + index) })
+      }
+      return yearsOptions
     }
   },
   data () {
