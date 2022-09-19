@@ -249,7 +249,7 @@
                     </template>
                     <template v-slot:headerAction>
                       <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
-                      <b-button variant="primary" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
+                      <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarProceso" @click="editarProceso">{{ textoEditarProceso }}</b-button>
                       <b-button variant="danger" v-if="process.prore_estado != 1" :class="estadoBotonTerminarProceso" class="ml-3" v-b-modal.modal-terminar-proceso @click="verModalTerminarProceso(prore_id)">Terminar Proceso</b-button>
                     </template>
                     <template v-slot:body>
@@ -349,7 +349,12 @@
                         </b-row>
                         <hr>
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text><b>Descripción del siniestro: </b>{{ process.prore_sinies_description }}</b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Prescrito:</b> {{ process.prore_prescritas ? 'Sí' : 'No' }}</b-card-text>
+                          <h6 class="float-left mb-1 font-weight-bolder"><button class="btn btn-link pt-0" @click="modificarPrescrito" ><i class="ri-edit-2-fill"></i>Modificar</button> </h6>
+                        </b-row>
+                        <hr>
+                        <b-row class="col-md-12 pt-1">
+                          <b-card-text><b>Descripción del Proceso: </b>{{ process.prore_sinies_description }}</b-card-text>
                         </b-row>
                         <hr>
                         <b style="text-decoration:underline;">Conclusiones:</b>
@@ -379,6 +384,17 @@
                                 </div>
                               </ValidationProvider>
                             </b-form-group>
+                            <b-form-group label="Abogado Lider" class="col-md-6" label-for="profesional_id">
+                              <v-select
+                                v-model="process.prore_pro_id"
+                                :options="profesionalesOptions"
+                                :reduce="(label) => label.code"
+                                label="label"
+                                id="profesional_id"
+                              >
+                              <span slot="no-options">No hay Abogados.</span>
+                            </v-select>
+                          </b-form-group>
                             <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
                               <ValidationProvider name="Número de radicado" rules="required" v-slot="{ errors }">
                                 <b-form-input v-model="process.prore_num_radicado" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
@@ -459,13 +475,8 @@
                               </ValidationProvider>
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial*" label-for="prore_fec_audi_conci_preju">
-                              <ValidationProvider name="Fecha de la audiencia de conciliación prejudicial" rules="required" v-slot="{ errors }">
-                                <b-form-input v-model="process.prore_fec_audi_conci_preju" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                <b-form-input v-model="process.prore_fec_audi_conci_preju" type="date" >
                                 </b-form-input>
-                                <div class="invalid-feedback">
-                                  <span>Por favor verifique la información</span>
-                                </div>
-                              </ValidationProvider>
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Fecha aviso del siniestro" label-for="prore_fec_sinies_aviso">
                               <ValidationProvider name="Fecha de notificación prejudicial">
@@ -475,9 +486,9 @@
                                 </div>
                               </ValidationProvider>
                             </b-form-group>
-                            <b-form-group class="col-md-6" label="Descripción del siniestro*" label-for="prore_sinies_description">
-                              <ValidationProvider name="Descripción del siniestro" rules="required" v-slot="{ errors }">
-                                <b-form-textarea v-model="process.prore_sinies_description" type="text" placeholder="Descripción" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-textarea>
+                            <b-form-group class="col-md-6" label="Descripción del proceso*" label-for="prore_sinies_description">
+                              <ValidationProvider name="Descripción del proceso" rules="required" v-slot="{ errors }">
+                              <vue-editor v-model="process.prore_sinies_description" :editorToolbar="customToolbar" :class="(errors.length > 0 ? ' is-invalid' : '')"></vue-editor>
                                 <div class="invalid-feedback">
                                   <span>Por favor verifique la información</span>
                                 </div>
@@ -501,7 +512,7 @@
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Colaborador de IPS que recibe notificación" label-for="prore_responsable">
                               <ValidationProvider name="Colaborador de IPS que recibe notificación" v-slot="{ errors }">
-                                <b-form-input v-model="process.prore_responsable" type="text" placeholder="Nombre completo colaborador" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                <b-form-input v-model="process.prore_colaborador_ips" type="text" placeholder="Nombre completo colaborador" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                                 <div class="invalid-feedback">
                                   <span>Por favor verifique la información</span>
                                 </div>
@@ -618,6 +629,9 @@
                                   <b-form-select-option :value="'Ninguna'">Ninguna</b-form-select-option>
                                   <b-form-select-option :value="'A Favor'" >A Favor</b-form-select-option>
                                   <b-form-select-option :value="'En Contra'">En Contra</b-form-select-option>
+                                  <b-form-select-option :value="'Desistimiento'">Desistimiento</b-form-select-option>
+                                  <b-form-select-option :value="'Rechazado'">Rechazado</b-form-select-option>
+                                  <b-form-select-option :value="'Conciliado'">Conciliado</b-form-select-option>
                                 </template>
                               </b-form-select>
                             </b-form-group>
@@ -638,6 +652,24 @@
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Total Costas" label-for="prore_total_costas">
                               <b-form-input id="prore_total_costas" v-model="process.prore_total_costas" type="number" placeholder="$"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Sentencia Perjuicios Inmateriales" label-for="prore_total_sentencia_perjuicios_inmat">
+                              <b-form-input id="prore_total_sentencia_perjuicios_inmat" v-model="process.prore_total_sentencia_perjuicios_inmat" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Sentencia Perjuicios Materiales" label-for="prore_total_sentencia_perjuicios_mat">
+                              <b-form-input id="prore_total_sentencia_perjuicios_mat" v-model="process.prore_total_sentencia_perjuicios_mat" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Pagado Clinica" label-for="prore_total_pagado_clinica">
+                              <b-form-input id="prore_total_pagado_clinica" v-model="process.prore_total_pagado_clinica" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Pagado Aseguradora" label-for="prore_total_pagado_aseguradora">
+                              <b-form-input id="Total Pagado Aseguradora" v-model="process.prore_total_pagado_aseguradora" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Pagado Tercero" label-for="prore_total_pagado_tercero">
+                              <b-form-input id="prore_total_pagado_tercero" v-model="process.prore_total_pagado_tercero" type="number" placeholder="$" @change="totalSentencia"></b-form-input>
+                            </b-form-group>
+                            <b-form-group class="col-md-6" label="Total Sentencia" label-for="prore_total_sentencia">
+                              <b-form-input id="prore_total_sentencia" v-model="process.prore_total_sentencia" type="number" ></b-form-input>
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Provisiones constituidas" label-for="prore_prov_constituidas">
                               <b-form-input v-model="process.prore_prov_constituidas" type="number" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
@@ -805,6 +837,54 @@
                               <b-card-text class="pr-3 my-0"><b>Provisiones Constituidas:</b> <span v-if="poliza.pol_provisiones != null">{{ formatPrice(poliza.pol_provisiones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                               <b-card-text class="pr-3 my-0"><b>Estado:</b> <span v-if="poliza.pol_estado">Poliza Activa</span><span class="text-danger" v-else>Poliza Inactiva</span></b-card-text>
                             </b-row>
+                            <button class="btn btn-primary" v-if="poliza.pol_estado == 1" @click="agregarAfectacion(index)"><i class="ri-add-line mr-2" ></i>Agregar afectación</button>
+                            <!-- INICIAL DE MODAL DE AFECTACIÓN -->
+                            <div>
+                              <b-modal :id="'modal-nueva-afectacion-'+index" size="lg" title="Agregar Afectación" hide-footer>
+                                <form ref="form" @submit.stop.prevent="handleSubmit">
+                                  <p v-if="errors.length">
+                                    <b>Por favor, corrija el(los) siguiente(s) error(es):</b>
+                                    <ul>
+                                      <li v-for="error in errors" :key="error">{{ error }}</li>
+                                    </ul>
+                                  </p>
+                                  <b-form-group label="Proceso que afectó la poliza*" label-for="pol_affe_prore_id">
+                                    <v-select v-model="afectacionPoliza.pol_affe_prore_id" :options="processOptions" :reduce="label => label.code" label="label" id="pol_ase_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                      <span slot="no-options">No hay procesos.</span>
+                                    </v-select>
+                                  </b-form-group>
+                                  <b-row>
+                                    <b-col md="6">
+                                      <b-form-group label="Valor bruto de la afectación (Sin deducible)" label-for="pol_affe_valor_bruto">
+                                        <b-form-input id="pol_affe_valor_bruto" @change="valorNetoAfectacion" v-model="afectacionPoliza.pol_affe_valor_bruto" type="number"></b-form-input>
+                                      </b-form-group>
+                                    </b-col>
+                                    <b-col md="6">
+                                      <b-form-group label="Deducible" label-for="pol_affe_valor_deducible">
+                                        <b-form-input id="pol_affe_valor_bruto" @change="valorNetoAfectacion" v-model="afectacionPoliza.pol_affe_valor_deducible" type="number"></b-form-input>
+                                      </b-form-group>
+                                    </b-col>
+                                  </b-row>
+                                  <b-row>
+                                    <b-col md="6">
+                                      <b-form-group label="Valor neto de la afectación" label-for="pol_affe_valor_neto">
+                                      <b-form-input id="pol_affe_valor_neto" v-model="afectacionPoliza.pol_affe_valor_neto" type="number"></b-form-input>
+                                    </b-form-group>
+                                    </b-col>
+                                    <b-col md="6">
+                                      <b-form-group label="Fecha de afectación" label-for="pol_affe_fecha">
+                                      <b-form-input id="pol_affe_fecha" v-model="afectacionPoliza.pol_affe_fecha" type="date"></b-form-input>
+                                    </b-form-group>
+                                    </b-col>
+                                  </b-row>
+                                  <div class="text-right pt-1">
+                                    <b-button class="sm-3 mr-1" variant="secondary" @click="canceladoAfectacion(index)">Cancelar</b-button>
+                                    <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="guardarAfectacion(poliza.pol_id)">{{ textoGuardarAfectacion }}</b-button>
+                                  </div>
+                                </form>
+                              </b-modal>
+                            </div>
+                            <!-- FIN DE MODAL DE AFECTACIÓN -->
                           </li>
                         </ul>
                       </b-row>
@@ -874,9 +954,10 @@ import Vue from 'vue'
 import axios from 'axios'
 import auth from '@/logic/auth'
 import iqCard from '../../components/xray/cards/iq-card.vue'
+import { VueEditor } from 'vue2-editor'
 
 export default {
-  components: { iqCard },
+  components: { iqCard, VueEditor },
   name: 'ProfileEdit',
   mounted () {
     xray.index()
@@ -888,6 +969,7 @@ export default {
       this.fetchOptionsAbogados()
       this.fetchProfiles()
       this.fetchProfileProcessOptions()
+      this.getProfesionals()
       setTimeout(() => {
         this.fetchEspecialidades()
         this.fetchOptionsClinicas()
@@ -895,6 +977,7 @@ export default {
         this.fetchRisks()
         this.fetchTypeProcess()
         this.fetchCity()
+        this.fetchProcessOptions()
       }, 800)
     }, 500)
   },
@@ -909,6 +992,7 @@ export default {
   },
   data () {
     return {
+      customToolbar: [['bold', 'italic', 'underline']],
       nocloseonbackdrop: true,
       estadoBotonActualizarProceso: '',
       textoEditarProceso: 'Editar Proceso',
@@ -921,12 +1005,14 @@ export default {
       mostrarModalTerminarProceso: false,
       implicateds: [],
       process: [],
+      processOptions: [],
       loading: true,
       progress_total: 4,
       max: 100,
       botonGuardarModal: '',
       textoGuardarModal: 'Guardar',
       errors: [],
+      profesionalesOptions: [],
       validationRules: [
         {
           prore_num_radicado: { required },
@@ -965,6 +1051,16 @@ export default {
       proceedingKey: 1,
       tableLinkKey: 1,
       implicatedKey: 1,
+      afectacionPoliza: {
+        pol_affe_pol_id: '',
+        pol_affe_prore_id: '',
+        pol_affe_valor_bruto: '',
+        pol_affe_valor_deducible: '',
+        pol_affe_valor_neto: '',
+        pol_affe_fecha: '',
+        pol_affe_user_id: ''
+      },
+      textoGuardarAfectacion: 'Guardar',
       agenda: {
         agen_name: '',
         agen_pro_id: '',
@@ -1158,6 +1254,26 @@ export default {
               this.fetchOptionsClinicas()
             }
             this.intentos++
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
+    fetchProcessOptions () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtenerProcesosParaLista/' + this.userLogged.usr_id).then(response => {
+          this.processOptions = response.data.process
+          if (this.processOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchProcessOptions()
+              this.intentos++
+            }
           })
       } else {
         Vue.swal('Usuario no logueado o inactivo')
@@ -1994,6 +2110,176 @@ export default {
       let valTotalAsegurado = this.process.prore_val_total_asegurado > 0 ? this.process.prore_val_total_asegurado : 0
       let valAfectadoPoliza = this.process.prore_val_afectado_poliza > 0 ? this.process.prore_val_afectado_poliza : 0
       this.process.prore_val_cobertura_poliza = parseInt(valTotalAsegurado) - parseInt(valAfectadoPoliza)
+    },
+    guardarAfectacion (polId) {
+      // bvModalEvt.preventDefault()
+      this.afectacionPoliza.pol_affe_pol_id = polId
+      if (this.checkFormAfectacion()) {
+        this.botonGuardarModal = 'disabled'
+        this.textoGuardarModal = 'Guardando...'
+        if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+          this.afectacionPoliza.pol_affe_user_id = this.userLogged.usr_id
+        }
+        if (this.afectacionPoliza.pol_affe_id != null) {
+          axios.post('/policyAffectation/actualizar-afectacion/' + this.afectacionPoliza.pol_affe_id, this.afectacionPoliza).then(res => {
+            this.textoGuardarModal = 'Guardar'
+            this.botonGuardarModal = ''
+            if (res.data.status_code === 200) {
+              Vue.swal(res.data.message)
+              this.$bvModal.hide('modal-nueva-afectacion')
+              this.limpiarModalAfectacion()
+              this.getPolicy()
+            } else {
+              Vue.swal(res.data.message)
+            }
+          })
+            .catch((err) => {
+              this.textoGuardarModal = 'Guardar'
+              this.botonGuardarModal = ''
+              Vue.swal('Ups, ocurrió un error ' + err)
+            })
+        } else {
+          axios.post('/policyAffectation/registrar-afectacion', this.afectacionPoliza).then(res => {
+            this.textoGuardarModal = 'Guardar'
+            this.botonGuardarModal = ''
+            if (res.data.status_code === 200) {
+              Vue.swal(res.data.message)
+              this.$bvModal.hide('modal-nueva-afectacion')
+              this.limpiarModalAfectacion()
+              this.getPolicy()
+            } else {
+              Vue.swal(res.data.message)
+            }
+          })
+            .catch((err) => {
+              this.textoGuardarModal = 'Guardar'
+              this.botonGuardarModal = ''
+              Vue.swal('Ups, ocurrió un error ' + err)
+            })
+        }
+      } else {
+        return false
+      }
+    },
+    limpiarModalAfectacion () {
+      this.afectacionPoliza.pol_affe_id = null
+      this.afectacionPoliza.pol_affe_pol_id = null
+      this.afectacionPoliza.pol_affe_prore_id = null
+      this.afectacionPoliza.pol_affe_valor_bruto = null
+      this.afectacionPoliza.pol_affe_valor_deducible = null
+      this.afectacionPoliza.pol_affe_valor_neto = null
+      this.afectacionPoliza.pol_affe_fecha = null
+      this.afectacionPoliza.pol_affe_user_id = null
+    },
+    getPolicy () {
+      if (this.pol_id != null) {
+        axios.get('/policy/' + this.pol_id).then(res => {
+          setTimeout(() => {
+            if (res.data.poliza != null) {
+              this.poliza = res.data.poliza[0]
+              this.afectacionesPoliza = this.poliza.afectaciones
+              this.afectacionesKey++
+              if (this.poliza.pol_estado) {
+                this.poliza.pol_estado = 1
+              } else {
+                this.poliza.pol_estado = 0
+              }
+              if (this.poliza.process_requests != null && this.poliza.process_requests !== '') {
+                this.process = this.poliza.process_requests
+              }
+            } else {
+              Vue.swal('Ocurrió un error tratando de obtener los datos de la poliza')
+            }
+          }, 1000)
+        })
+          .catch(this.errored = true)
+          .finally(setTimeout(() => {
+            this.loading = false
+          }, 3500))
+      }
+    },
+    agregarAfectacion (index) {
+      this.limpiarModalAfectacion()
+      this.$bvModal.show('modal-nueva-afectacion-' + index)
+    },
+    canceladoAfectacion (index) {
+      this.$bvModal.hide('modal-nueva-afectacion-' + index)
+    },
+    valorNetoAfectacion () {
+      let valorBruto = this.afectacionPoliza.pol_affe_valor_bruto > 0 ? this.afectacionPoliza.pol_affe_valor_bruto : 0
+      let deducible = this.afectacionPoliza.pol_affe_valor_deducible > 0 ? this.afectacionPoliza.pol_affe_valor_deducible : 0
+      this.afectacionPoliza.pol_affe_valor_neto = parseInt(valorBruto) - parseInt(deducible)
+    },
+    checkFormAfectacion () {
+      if (this.afectacionPoliza.pol_affe_pol_id && this.afectacionPoliza.pol_affe_prore_id &&
+        this.afectacionPoliza.pol_affe_valor_bruto && this.afectacionPoliza.pol_affe_valor_deducible &&
+        this.afectacionPoliza.pol_affe_valor_neto && this.afectacionPoliza.pol_affe_fecha) {
+        this.errors = []
+        return true
+      }
+      this.errors = []
+      if (!this.afectacionPoliza.pol_affe_prore_id) {
+        this.errors.push('El proceso es obligatorio.')
+      }
+      if (!this.afectacionPoliza.pol_affe_valor_bruto) {
+        this.errors.push('El valor bruto es obligatorio.')
+      }
+      if (!this.afectacionPoliza.pol_affe_valor_deducible) {
+        this.errors.push('El valor deducido es obligatoria.')
+      }
+      if (!this.afectacionPoliza.pol_affe_valor_neto) {
+        this.errors.push('El valor neto es obligatorio.')
+      }
+      if (!this.afectacionPoliza.pol_affe_fecha) {
+        this.errors.push('La fecha es obligatoria.')
+      }
+    },
+    totalSentencia () {
+      let perjuciosInmat = this.process.prore_total_sentencia_perjuicios_inmat > 0 ? this.process.prore_total_sentencia_perjuicios_inmat : 0
+      let perjuciosMat = this.process.prore_total_sentencia_perjuicios_mat > 0 ? this.process.prore_total_sentencia_perjuicios_mat : 0
+      let pagoClinica = this.process.prore_total_pagado_clinica > 0 ? this.process.prore_total_pagado_clinica : 0
+      let pagoAseguradora = this.process.prore_total_pagado_aseguradora > 0 ? this.process.prore_total_pagado_aseguradora : 0
+      let pagoTerceros = this.process.prore_total_pagado_tercero > 0 ? this.process.prore_total_pagado_tercero : 0
+      this.process.prore_total_sentencia = parseInt(perjuciosInmat) + parseInt(perjuciosMat) +
+      parseInt(pagoClinica) + parseInt(pagoAseguradora) +
+      parseInt(pagoTerceros)
+    },
+    getProfesionals () {
+      axios.get('/professionals/fetch').then((response) => {
+        this.profesionalesOptions = response.data.professionals
+        if (this.profesionalesOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchProfiles()
+            this.intentos++
+          }
+        })
+    },
+    modificarPrescrito () {
+      const pregunta = this.process.prore_prescritas ? '¿Deseas modificar a no prescrito?' : '¿Deseas modificar a prescrito?'
+      Vue.swal({
+        icon: 'info',
+        title: pregunta,
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const data = { prore_id: this.process.prore_id, prore_prescrito: this.process.prore_prescritas ? !this.process.prore_prescritas : true }
+          axios.post('/process/update-prescrito', data).then((res) => {
+            if (res.status === 200) {
+              Vue.swal(res.data.message)
+              this.getProcess()
+            } else {
+              Vue.swal(res.data.message)
+            }
+          })
+        }
+      })
     }
   }
 }

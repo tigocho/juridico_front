@@ -70,8 +70,11 @@ export default {
       error: {},
       abogadoOptions: [],
       optionsEstados: [
-        { value: 0, text: 'En contra' },
-        { value: 1, text: 'A favor' }
+        { value: 'En contra', text: 'En contra' },
+        { value: 'A favor', text: 'A favor' },
+        { value: 'Desistimiento', text: 'Desistimiento' },
+        { value: 'Rechazado', text: 'Rechazado' },
+        { value: 'Conciliado', text: 'Conciliado' }
       ],
       botonGuardarModal: '',
       textoConfirmacion: 'mensaje de testeo',

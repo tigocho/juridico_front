@@ -24,9 +24,20 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
+                    <b-form-group label="Abogado Lider" class="col-md-6" label-for="profesional_id">
+                    <v-select
+                      v-model="formData.prore_pro_id"
+                      :options="profesionalesOptions"
+                      :reduce="(label) => label.code"
+                      label="label"
+                      id="profesional_id"
+                    >
+                    <span slot="no-options">No hay Abogados.</span>
+                  </v-select>
+                </b-form-group>
                     <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
                       <ValidationProvider name="Número de radicado" rules="required" v-slot="{ errors }">
-                        <b-form-input v-model="formData.prore_num_radicado" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                        <b-form-input v-model="formData.prore_num_radicado" @change="existeProceso" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                         <div class="invalid-feedback">
                           <span>Por favor verifique la información</span>
                         </div>
@@ -103,15 +114,10 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
-                    <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial*" label-for="prore_fec_audi_conci_preju">
-                      <ValidationProvider name="Fecha de la audiencia de conciliación prejudicial" rules="required" v-slot="{ errors }">
-                        <b-form-input v-model="formData.prore_fec_audi_conci_preju" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                    <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial" label-for="prore_fec_audi_conci_preju">
+                      <b-form-input v-model="formData.prore_fec_audi_conci_preju" type="date">
                         </b-form-input>
-                        <div class="invalid-feedback">
-                          <span>Por favor verifique la información</span>
-                        </div>
-                      </ValidationProvider>
-                    </b-form-group>
+                      </b-form-group>
                     <b-form-group class="col-md-6" label="Fecha aviso del siniestro" label-for="prore_fec_sinies_aviso">
                       <ValidationProvider name="Fecha de notificación prejudicial">
                         <b-form-input v-model="formData.prore_fec_sinies_aviso" type="date"></b-form-input>
@@ -120,9 +126,9 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
-                    <b-form-group class="col-md-6" label="Descripción del siniestro*" label-for="prore_sinies_description">
-                      <ValidationProvider name="Descripción del siniestro" rules="required" v-slot="{ errors }">
-                        <b-form-textarea v-model="formData.prore_sinies_description" type="text" placeholder="Descripción" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-textarea>
+                    <b-form-group class="col-md-6" label="Descripción del Proceso*" label-for="prore_sinies_description">
+                      <ValidationProvider name="Descripción del Proceso" rules="required" v-slot="{ errors }">
+                      <vue-editor v-model="formData.prore_sinies_description" :editorToolbar="customToolbar" :class="(errors.length > 0 ? ' is-invalid' : '')"></vue-editor>
                         <div class="invalid-feedback">
                           <span>Por favor verifique la información</span>
                         </div>
@@ -146,7 +152,7 @@
                     </b-form-group>
                     <b-form-group class="col-md-6" label="Colaborador de IPS que recibe notificación" label-for="prore_responsable">
                       <ValidationProvider name="Colaborador de IPS que recibe notificación" v-slot="{ errors }">
-                        <b-form-input v-model="formData.prore_responsable" type="text" placeholder="Nombre completo colaborador" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                        <b-form-input v-model="formData.prore_colaborador_ips" type="text" placeholder="Nombre completo colaborador" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                         <div class="invalid-feedback">
                           <span>Por favor verifique la información</span>
                         </div>
@@ -276,13 +282,18 @@ import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
 import auth from '@/logic/auth'
+import { VueEditor } from 'vue2-editor'
 
 export default {
+  components: {
+    VueEditor
+  },
   name: 'AddUser',
   mounted () {
     xray.index()
     this.fetchProfileProcessOptions()
     this.fetchOptionsClinicas()
+    this.getProfesionals()
     setTimeout(() => {
       this.fetchEstadosProceso()
       this.fetchEspecialidades()
@@ -300,6 +311,7 @@ export default {
   },
   data () {
     return {
+      customToolbar: [['bold', 'italic', 'underline']],
       textoBoton: 'Guardar',
       estadoBoton: '',
       botonGuardarModal: '',
@@ -398,6 +410,7 @@ export default {
         'label': 'No hay ningún dato'
       }],
       intentos: 0,
+      profesionalesOptions: [],
       errores: ''
     }
   },
@@ -640,6 +653,39 @@ export default {
         vm.progress_total += 4
         if (vm.progress_total > 99) clearInterval(timer)
       }, 100)
+    },
+    existeProceso () {
+      axios.get('/process/getprocess-radicado/' + this.formData.prore_num_radicado).then(response => {
+        if (response.status === 200) {
+          Vue.swal({
+            icon: 'info',
+            title: 'El proceso ya existe ',
+            text: 'Ya hay registrado un proceso con este número de radicado, ¿Deseas verlo?',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, quiero verlo!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.$router.push({ path: `/process/process-show/${response.data.proceso.prore_id}/${false}` })
+            }
+          })
+        }
+      })
+    },
+    getProfesionals () {
+      axios.get('/professionals/fetch').then((response) => {
+        this.profesionalesOptions = response.data.professionals
+        if (this.profesionalesOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchProfiles()
+            this.intentos++
+          }
+        })
     }
   }
 }

@@ -279,7 +279,27 @@
                                   <b-card-text class="text-white">{{
                                     seguimiento.seg_descripcion
                                   }}</b-card-text
-                                  ><b-card-text
+                                  ><div
+                        style="margin-top: 10px"
+                        v-for="(archivo, index) in archivosSeguimiento"
+                        :key="archivo.arch_seg_id + index"
+                      >
+                        <b-card-text class="text-white" v-if="archivo.arch_seg_seg_id === seguimiento.seg_id">
+                          <b-col>
+                            <span
+                              :style="'text-decoration: underline;cursor: pointer;'"
+                              @click="
+                                descargarArchivoSeguimiento(
+                                  archivo.arch_seg_nombre,
+                                  archivo.arch_seg_id
+                                )
+                              "
+                              v-b-tooltip.hover
+                              title="Descargar archivo"
+                              >{{ archivo.arch_seg_nombre }}</span>
+                          </b-col>
+                        </b-card-text>
+                      </div><b-card-text
                                     class="text-right text-white font-italic"
                                     >{{
                                       seguimiento.tipo_seg_nombre
@@ -309,7 +329,27 @@
                                 >
                                   <b-card-text class="text-white">{{
                                     seguimiento.seg_descripcion
-                                  }}</b-card-text>
+                                  }}</b-card-text><div
+                        style="margin-top: 10px"
+                        v-for="(archivo, index) in archivosSeguimiento"
+                        :key="archivo.arch_seg_id + index"
+                      >
+                        <b-card-text class="text-white" v-if="archivo.arch_seg_seg_id === seguimiento.seg_id">
+                          <b-col>
+                            <span
+                              :style="'text-decoration: underline;cursor: pointer;'"
+                              @click="
+                                descargarArchivoSeguimiento(
+                                  archivo.arch_seg_nombre,
+                                  archivo.arch_seg_id
+                                )
+                              "
+                              v-b-tooltip.hover
+                              title="Descargar archivo"
+                              >{{ archivo.arch_seg_nombre }}</span>
+                          </b-col>
+                        </b-card-text>
+                      </div>
                                   <b-card-text
                                     class="text-right text-white font-italic"
                                     >{{
