@@ -80,10 +80,9 @@ import VueAutonumeric from '../../../VueAutonumeric.vue'
 export default {
   components: { iqCard, VueAutonumeric },
   name: 'CostosCuantiasProcesoEjecutivo',
-  props: ['prore_id', 'usr_id'],
+  props: ['prore_id', 'usr_id', 'process'],
   mounted () {
     xray.index()
-    this.getProcess()
   },
   data () {
     return {
@@ -93,7 +92,6 @@ export default {
         currencySymbolPlacement: 'p',
         decimalPlaces: 0
       },
-      process: [],
       tempProreValCapital: 0,
       tempProreValInteresesCorrientes: 0,
       tempProreValInteresesMora: 0,
