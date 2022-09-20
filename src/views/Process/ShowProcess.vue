@@ -220,10 +220,10 @@
               <template v-slot:body>
                 <div class="iq-edit-list">
                   <tab-nav :pills="true" class="iq-edit-profile d-flex">
-                    <tab-nav-items class="col-auto p-0" :active="true" href="#personal-information" title="Info proceso" />
+                    <tab-nav-items class="col-auto p-0" :active="true"  href="#personal-information" title="Info proceso" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#involucrados" title="Involucrados" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#actuaciones" title="Actuaciones" />
-                    <tab-nav-items class="col-auto p-0" :active="false" href="#costos-cuantias" title="Costos/Cuantías" />
+                    <tab-nav-items class="col-auto p-0" :active="false" href="#costos-cuantias" title="Costos/Cuantías"/>
                     <tab-nav-items class="col-auto p-0" :active="false" href="#poliza" title="Poliza" />
                     <!-- <tab-nav-items class="col-auto p-0" :active="false" href="#comentarios" title="Comentarios" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#notas" title="Notas" /> -->
@@ -759,13 +759,13 @@
                 </tab-content-item>
                 <tab-content-item :active="false" id="costos-cuantias">
                   <iq-card v-if="process.prore_typro_id != 11 && process.prore_typro_id != 8 && process.prore_typro_id != 10">
-                    <CostosCuantiasProcesoMedico :prore_id="prore_id" :usr_id="userLogged.usr_id"/>
+                    <CostosCuantiasProcesoMedico :prore_id="prore_id" :usr_id="userLogged.usr_id" :process="process"/>
                   </iq-card>
                   <iq-card v-else-if="process.prore_typro_id == 11">
-                    <CostosCuantiasProcesoLaboral :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id"/>
+                    <CostosCuantiasProcesoLaboral :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id" :process="process"/>
                   </iq-card>
                   <iq-card v-else>
-                    <CostosCuantiasProcesoEjecutivo :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id"/>
+                    <CostosCuantiasProcesoEjecutivo :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id" :process="process"/>
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="poliza">

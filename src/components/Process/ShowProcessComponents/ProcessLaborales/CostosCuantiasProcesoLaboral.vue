@@ -93,10 +93,9 @@ export default {
   components: {
     VueAutonumeric
   },
-  props: ['prore_id', 'usr_id'],
+  props: ['prore_id', 'usr_id', 'process'],
   mounted () {
     xray.index()
-    this.getProcess()
   },
   data () {
     return {
@@ -106,7 +105,6 @@ export default {
         currencySymbolPlacement: 'p',
         decimalPlaces: 0
       },
-      process: [],
       tempProrePrestacionesSociales: 0,
       tempProrePretencionesVacaciones: 0,
       tempProrePretencionesIndemnizacion: 0,
