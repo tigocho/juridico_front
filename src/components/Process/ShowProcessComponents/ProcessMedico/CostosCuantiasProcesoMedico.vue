@@ -31,10 +31,10 @@
         <hr>
         <b-row>
           <b-col class="text-center" md="6">
-            <b-card-text><strong>TOTAL PRETENCIONES INMATERIALES:</strong> <span v-if="totalInmateriales != null">{{ formatPrice(totalInmateriales) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>TOTAL PRETENSIONES INMATERIALES:</strong> <span v-if="totalInmateriales != null">{{ formatPrice(totalInmateriales) }}</span><span v-else> $ 0</span></b-card-text>
           </b-col>
           <b-col class="text-center" md="6">
-            <b-card-text><strong>TOTAL PRETENCIONES MATERIALES:</strong> <span v-if="totalMateriales != null">{{ formatPrice(totalMateriales) }}</span><span v-else> $ 0</span></b-card-text>
+            <b-card-text><strong>TOTAL PRETENSIONES MATERIALES:</strong> <span v-if="totalMateriales != null">{{ formatPrice(totalMateriales) }}</span><span v-else> $ 0</span></b-card-text>
           </b-col>
         </b-row>
         <b-row>
@@ -122,10 +122,9 @@ export default {
   components: {
     VueAutonumeric
   },
-  props: ['prore_id', 'usr_id'],
+  props: ['prore_id', 'usr_id', 'process'],
   mounted () {
     xray.index()
-    this.getProcess()
   },
   data () {
     return {
@@ -135,7 +134,6 @@ export default {
         currencySymbolPlacement: 'p',
         decimalPlaces: 0
       },
-      process: [],
       textoEditarCuantias: 'Editar Costos/Cuantías',
       totalMateriales: 0,
       totalInmateriales: 0,
