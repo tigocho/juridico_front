@@ -622,6 +622,9 @@
                             <b-form-group class="col-md-6" label="Ejecutante" label-for="prore_ejecutante">
                               <b-form-input v-model="process.prore_ejecutante" type="text" placeholder="Ejecutante"></b-form-input>
                             </b-form-group>
+                            <b-form-group class="col-md-6" label="Medida Cautelar" label-for="prore_medida_cautelar">
+                              <b-form-input v-model="process.prore_medida_cautelar" type="text" placeholder="Medida Cautelar"></b-form-input>
+                            </b-form-group>
                             <b-form-group class="col-md-6" label="Sentencia Final" label-for="prore_sentencia_final">
                               <b-form-select plain v-model="process.prore_sentencia_final" id="prore_sentencia_final">
                                 <template v-slot:first>
@@ -1965,7 +1968,7 @@ export default {
       } else if (generoId === 2) {
         return 'Masculino'
       } else {
-        return 'Sin asignar'
+        return 'No aplica'
       }
     },
     guardarJuzgado (bvModalEvt) {
