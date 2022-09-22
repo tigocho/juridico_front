@@ -349,7 +349,7 @@
                         </b-row>
                         <hr>
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="pr-3 my-0"><b>Prescrito:</b> {{ process.prore_prescritas ? 'Sí' : 'No' }}</b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Póliza Prescrita:</b> {{ process.prore_prescritas ? 'Sí' : 'No' }}</b-card-text>
                           <h6 class="float-left mb-1 font-weight-bolder"><button class="btn btn-link pt-0" @click="modificarPrescrito" ><i class="ri-edit-2-fill"></i>Modificar</button> </h6>
                         </b-row>
                         <hr>
@@ -474,7 +474,7 @@
                                 </div>
                               </ValidationProvider>
                             </b-form-group>
-                            <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial*" label-for="prore_fec_audi_conci_preju">
+                            <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial" label-for="prore_fec_audi_conci_preju">
                                 <b-form-input v-model="process.prore_fec_audi_conci_preju" type="date" >
                                 </b-form-input>
                             </b-form-group>
@@ -1391,14 +1391,47 @@ export default {
     onSubmit: function () {
       this.editarProceso()
     },
+    checkDataProcess () {
+      if (!this.process.prore_num_radicado) {
+        return false
+      } else if (!this.process.prore_litigando_id) {
+        return false
+      } else if (!this.process.prore_fec_ingreso_jur) {
+        return false
+      } else if (!this.process.prore_defendant_clin) {
+        return false
+      } else if (!this.process.prore_fec_sinister) {
+        return false
+      } else if (!this.process.prore_year_notify) {
+        return false
+      } else if (!this.process.prore_process_year) {
+        return false
+      } else if (!this.process.prore_sinies_description) {
+        return false
+      } else if (!this.process.prore_fec_ingreso_cli) {
+        return false
+      } else if (!this.process.prore_city_id) {
+        return false
+      } else if (!this.process.prore_status_process_id) {
+        return false
+      } else if (!this.process.prore_profile_id) {
+        return false
+      } else {
+        return true
+      }
+    },
     editarProceso () {
       // this.$router.push({ path: `/process/process-edit/` + this.prore_id })
       if (this.editando) {
-        this.guardarProceso()
-        this.estadoBotonActualizarProceso = 'disabled'
-        this.textoEditarProceso = 'Actualizando Proceso...'
-        this.estadoBotonActualizarCuantias = 'disabled'
-        this.textoEditarCuantias = 'Actualizando...'
+        if (this.checkDataProcess()) {
+          this.guardarProceso()
+          this.estadoBotonActualizarProceso = 'disabled'
+          this.textoEditarProceso = 'Actualizando Proceso...'
+          this.estadoBotonActualizarCuantias = 'disabled'
+          this.textoEditarCuantias = 'Actualizando...'
+        } else {
+          Vue.swal('Por favor llena todos los campos marcados con *')
+        }
       } else {
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
           this.fetchProfileProcessOptions()
