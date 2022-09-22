@@ -156,7 +156,7 @@
               </b-row>
               <b-row>
                 <b-col md="4">
-                  <b-form-group label="Rango de edad" label-for="imp_rango_edad">
+                  <b-form-group label="Rango de edad*" label-for="imp_rango_edad">
                     <b-form-select plain v-model="nuevoImplicated.imp_rango_edad" :options="rangoEdadOptions" id="imp_rango_edad">
                       <template v-slot:first>
                         <b-form-select-option :value="null">Seleccione una opción</b-form-select-option>
@@ -345,7 +345,7 @@
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Año de notificación: </b>{{ process.prore_year_notify }}</b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial: </b>{{ process.prore_fec_noti_preju }}</b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial:</b> {{ process.prore_fec_audi_conci_preju }}</b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Fecha de audiencia de conciliación  prejudicial:</b> {{ process.prore_fec_audi_conci_preju }}</b-card-text>
                         </b-row>
                         <hr>
                         <b-row class="col-md-12 pt-1">
@@ -359,7 +359,7 @@
                         <hr>
                         <b style="text-decoration:underline;">Conclusiones:</b>
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ formatPrice(process.prore_sentencia_final) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ process.prore_sentencia_final }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ formatPrice(process.prore_val_sentencia_final) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Discriminar Valor De La Condena:</b> <span v-if="process.prore_discriminar_val_condena != null">{{ formatPrice(process.prore_discriminar_val_condena) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-row>
@@ -413,7 +413,7 @@
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Fecha de Ingreso a Juridico*" label-for="prore_fec_ingreso_jur">
                               <ValidationProvider name="Fecha de Ingreso a Juridico" rules="required" v-slot="{ errors }">
-                                <b-form-input v-model="process.prore_fec_ingreso_jur" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                <b-form-input v-model="process.prore_fec_ingreso_jur" type="date" :required="true" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                                 <div class="invalid-feedback">
                                   <span>Por favor verifique la información</span>
                                 </div>
@@ -675,7 +675,7 @@
                               <b-form-input id="prore_total_sentencia" v-model="process.prore_total_sentencia" type="number" ></b-form-input>
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Provisiones constituidas" label-for="prore_prov_constituidas">
-                              <b-form-input v-model="process.prore_prov_constituidas" type="number" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                              <b-form-input v-model="process.prore_prov_constituidas" type="number"></b-form-input>
                             </b-form-group>
                           </b-row>
                           </form>
@@ -1388,6 +1388,9 @@ export default {
       this.textoEditarProceso = 'Editar Proceso'
       this.editando = false
     },
+    onSubmit: function () {
+      this.editarProceso()
+    },
     editarProceso () {
       // this.$router.push({ path: `/process/process-edit/` + this.prore_id })
       if (this.editando) {
@@ -1881,6 +1884,9 @@ export default {
       }
       if (!this.nuevoImplicated.imp_profile_id) {
         this.errors.push('El perfil es obligatorio.')
+      }
+      if (!this.nuevoImplicated.imp_rango_edad) {
+        this.errors.push('El rango de edad es obligatorio.')
       }
     },
     checkFormLink (linkFor) {
