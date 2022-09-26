@@ -156,7 +156,7 @@
               </b-row>
               <b-row>
                 <b-col md="4">
-                  <b-form-group label="Rango de edad" label-for="imp_rango_edad">
+                  <b-form-group label="Rango de edad*" label-for="imp_rango_edad">
                     <b-form-select plain v-model="nuevoImplicated.imp_rango_edad" :options="rangoEdadOptions" id="imp_rango_edad">
                       <template v-slot:first>
                         <b-form-select-option :value="null">Seleccione una opción</b-form-select-option>
@@ -307,7 +307,7 @@
                       <hr>
                       <div v-if="!editando">
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.proceedings != null && process.proceedings[0] != null">{{ process.proceedings[0].status_process.estado_proceso }}</span></b-card-text>
+                          <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.status_process != null">{{ process.status_process.sta_name }}</span></b-card-text>
                           <b-card-text class="my-0 pr-3" v-if="process.proceedings != null && process.proceedings[0] != null && process.proceedings[0].status_process.sta_id ===  16"><b>Fecha terminación: </b><span >{{ process.proceedings[0].proce_fecha_ingreso }}</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>ID Litigando: </b><span v-if="process.prore_litigando_id != null">{{ process.prore_litigando_id }} </span><span class="text-danger" v-if="process.prore_litigando_id == null">Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3"><b>Número de Radicado:</b> <span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -333,7 +333,7 @@
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Ciudad:</b> <span v-if="process.ciudad != null">{{ process.ciudad.city_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Fecha ingreso: </b>{{ process.prore_fec_ingreso }}</b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Fecha ingreso: </b>{{ process.prore_fec_ingreso_jur }}</b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Clinica:</b> <span v-if="process.clinica != null">{{ process.clinica.cli_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Fecha siniestro: </b>{{ process.prore_fec_sinister }}</b-card-text>
                         </b-row>
@@ -345,11 +345,11 @@
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Año de notificación: </b>{{ process.prore_year_notify }}</b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial: </b>{{ process.prore_fec_noti_preju }}</b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Fecha notificación prejudicial:</b> {{ process.prore_fec_audi_conci_preju }}</b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Fecha de audiencia de conciliación  prejudicial:</b> {{ process.prore_fec_audi_conci_preju }}</b-card-text>
                         </b-row>
                         <hr>
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="pr-3 my-0"><b>Prescrito:</b> {{ process.prore_prescritas ? 'Sí' : 'No' }}</b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Póliza Prescrita:</b> {{ process.prore_prescritas ? 'Sí' : 'No' }}</b-card-text>
                           <h6 class="float-left mb-1 font-weight-bolder"><button class="btn btn-link pt-0" @click="modificarPrescrito" ><i class="ri-edit-2-fill"></i>Modificar</button> </h6>
                         </b-row>
                         <hr>
@@ -359,9 +359,9 @@
                         <hr>
                         <b style="text-decoration:underline;">Conclusiones:</b>
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ formatPrice(process.prore_sentencia_final) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ process.prore_sentencia_final }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ formatPrice(process.prore_val_sentencia_final) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Discriminar Valor De La Condena:</b> <span v-if="process.prore_discriminar_val_condena != null">{{ formatPrice(process.prore_discriminar_val_condena) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Valor Total Ahorrado por la Clínica:</b> <span>{{ formatPrice(calculoValorAhorrado()) }}</span></b-card-text>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Costas De La Sentencia: </b><span v-if="process.prore_costas_sentencia != null">{{ formatPrice(process.prore_costas_sentencia) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -413,7 +413,7 @@
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Fecha de Ingreso a Juridico*" label-for="prore_fec_ingreso_jur">
                               <ValidationProvider name="Fecha de Ingreso a Juridico" rules="required" v-slot="{ errors }">
-                                <b-form-input v-model="process.prore_fec_ingreso_jur" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                                <b-form-input v-model="process.prore_fec_ingreso_jur" type="date" :required="true" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
                                 <div class="invalid-feedback">
                                   <span>Por favor verifique la información</span>
                                 </div>
@@ -474,7 +474,7 @@
                                 </div>
                               </ValidationProvider>
                             </b-form-group>
-                            <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial*" label-for="prore_fec_audi_conci_preju">
+                            <b-form-group class="col-md-6" label="Fecha de la audiencia de conciliación prejudicial" label-for="prore_fec_audi_conci_preju">
                                 <b-form-input v-model="process.prore_fec_audi_conci_preju" type="date" >
                                 </b-form-input>
                             </b-form-group>
@@ -675,7 +675,7 @@
                               <b-form-input id="prore_total_sentencia" v-model="process.prore_total_sentencia" type="number" ></b-form-input>
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Provisiones constituidas" label-for="prore_prov_constituidas">
-                              <b-form-input v-model="process.prore_prov_constituidas" type="number" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
+                              <b-form-input v-model="process.prore_prov_constituidas" type="number"></b-form-input>
                             </b-form-group>
                           </b-row>
                           </form>
@@ -851,8 +851,8 @@
                                       <li v-for="error in errors" :key="error">{{ error }}</li>
                                     </ul>
                                   </p>
-                                  <b-form-group label="Proceso que afectó la poliza*" label-for="pol_affe_prore_id">
-                                    <v-select v-model="afectacionPoliza.pol_affe_prore_id" :options="processOptions" :reduce="label => label.code" label="label" id="pol_ase_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <b-form-group label="Proceso que afectó la poliza" label-for="pol_affe_prore_id">
+                                    <v-select v-model="afectacionPoliza.pol_affe_prore_id" :options="processOptions" :reduce="label => label.code" label="label" id="pol_ase_id">
                                       <span slot="no-options">No hay procesos.</span>
                                     </v-select>
                                   </b-form-group>
@@ -1388,14 +1388,50 @@ export default {
       this.textoEditarProceso = 'Editar Proceso'
       this.editando = false
     },
+    onSubmit: function () {
+      this.editarProceso()
+    },
+    checkDataProcess () {
+      if (!this.process.prore_num_radicado) {
+        return false
+      } else if (!this.process.prore_litigando_id) {
+        return false
+      } else if (!this.process.prore_fec_ingreso_jur) {
+        return false
+      } else if (!this.process.prore_defendant_clin) {
+        return false
+      } else if (!this.process.prore_fec_sinister) {
+        return false
+      } else if (!this.process.prore_year_notify) {
+        return false
+      } else if (!this.process.prore_process_year) {
+        return false
+      } else if (!this.process.prore_sinies_description) {
+        return false
+      } else if (!this.process.prore_fec_ingreso_cli) {
+        return false
+      } else if (!this.process.prore_city_id) {
+        return false
+      } else if (!this.process.prore_status_process_id) {
+        return false
+      } else if (!this.process.prore_profile_id) {
+        return false
+      } else {
+        return true
+      }
+    },
     editarProceso () {
       // this.$router.push({ path: `/process/process-edit/` + this.prore_id })
       if (this.editando) {
-        this.guardarProceso()
-        this.estadoBotonActualizarProceso = 'disabled'
-        this.textoEditarProceso = 'Actualizando Proceso...'
-        this.estadoBotonActualizarCuantias = 'disabled'
-        this.textoEditarCuantias = 'Actualizando...'
+        if (this.checkDataProcess()) {
+          this.guardarProceso()
+          this.estadoBotonActualizarProceso = 'disabled'
+          this.textoEditarProceso = 'Actualizando Proceso...'
+          this.estadoBotonActualizarCuantias = 'disabled'
+          this.textoEditarCuantias = 'Actualizando...'
+        } else {
+          Vue.swal('Por favor llena todos los campos marcados con *')
+        }
       } else {
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
           this.fetchProfileProcessOptions()
@@ -1882,6 +1918,9 @@ export default {
       if (!this.nuevoImplicated.imp_profile_id) {
         this.errors.push('El perfil es obligatorio.')
       }
+      if (!this.nuevoImplicated.imp_rango_edad) {
+        this.errors.push('El rango de edad es obligatorio.')
+      }
     },
     checkFormLink (linkFor) {
       if (linkFor.link_name && linkFor.link_url) {
@@ -2219,16 +2258,13 @@ export default {
       this.afectacionPoliza.pol_affe_valor_neto = parseInt(valorBruto) - parseInt(deducible)
     },
     checkFormAfectacion () {
-      if (this.afectacionPoliza.pol_affe_pol_id && this.afectacionPoliza.pol_affe_prore_id &&
+      if (this.afectacionPoliza.pol_affe_pol_id &&
         this.afectacionPoliza.pol_affe_valor_bruto && this.afectacionPoliza.pol_affe_valor_deducible &&
         this.afectacionPoliza.pol_affe_valor_neto && this.afectacionPoliza.pol_affe_fecha) {
         this.errors = []
         return true
       }
       this.errors = []
-      if (!this.afectacionPoliza.pol_affe_prore_id) {
-        this.errors.push('El proceso es obligatorio.')
-      }
       if (!this.afectacionPoliza.pol_affe_valor_bruto) {
         this.errors.push('El valor bruto es obligatorio.')
       }
@@ -2288,6 +2324,15 @@ export default {
           })
         }
       })
+    },
+    calculoValorAhorrado () {
+      if (this.process.prore_cuantia_pretenciones > this.process.prore_total_sentencia) {
+        let pretensiones = this.process.prore_cuantia_pretenciones != null ? this.process.prore_cuantia_pretenciones : 0
+        let sentencia = this.process.prore_total_sentencia != null ? this.process.prore_total_sentencia : 0
+        return parseInt(pretensiones) - parseInt(sentencia)
+      } else {
+        return 0
+      }
     }
   }
 }

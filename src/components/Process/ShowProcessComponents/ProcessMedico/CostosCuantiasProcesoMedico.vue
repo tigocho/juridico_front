@@ -94,7 +94,7 @@
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Estimaciones Inateriales" label-for="temProreEstimacionPagoPerjuInmateriales">
+          <b-form-group class="col-md-6" label="Estimaciones Inmateriales" label-for="temProreEstimacionPagoPerjuInmateriales">
             <vue-autonumeric class="form-control" v-model="temProreEstimacionPagoPerjuInmateriales"
               :options="optionNumeric"
             ></vue-autonumeric>
