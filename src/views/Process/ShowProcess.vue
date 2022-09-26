@@ -2258,16 +2258,13 @@ export default {
       this.afectacionPoliza.pol_affe_valor_neto = parseInt(valorBruto) - parseInt(deducible)
     },
     checkFormAfectacion () {
-      if (this.afectacionPoliza.pol_affe_pol_id && this.afectacionPoliza.pol_affe_prore_id &&
+      if (this.afectacionPoliza.pol_affe_pol_id &&
         this.afectacionPoliza.pol_affe_valor_bruto && this.afectacionPoliza.pol_affe_valor_deducible &&
         this.afectacionPoliza.pol_affe_valor_neto && this.afectacionPoliza.pol_affe_fecha) {
         this.errors = []
         return true
       }
       this.errors = []
-      if (!this.afectacionPoliza.pol_affe_prore_id) {
-        this.errors.push('El proceso es obligatorio.')
-      }
       if (!this.afectacionPoliza.pol_affe_valor_bruto) {
         this.errors.push('El valor bruto es obligatorio.')
       }

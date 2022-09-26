@@ -19,31 +19,31 @@
                   <li v-for="error in errors" :key="error">{{ error }}</li>
                 </ul>
               </p>
-              <b-form-group label="Proceso que afectó la poliza*" label-for="pol_affe_prore_id">
+              <b-form-group label="Proceso que afectó la poliza" label-for="pol_affe_prore_id">
                 <v-select v-model="afectacionPoliza.pol_affe_prore_id" :options="processOptions" :reduce="label => label.code" label="label" id="pol_ase_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
                   <span slot="no-options">No hay procesos.</span>
                 </v-select>
               </b-form-group>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Valor bruto de la afectación (Sin deducible)" label-for="pol_affe_valor_bruto">
+                  <b-form-group label="Valor bruto de la afectación (Sin deducible)*" label-for="pol_affe_valor_bruto">
                     <b-form-input id="pol_affe_valor_bruto" @change="valorNetoAfectacion" v-model="afectacionPoliza.pol_affe_valor_bruto" type="number"></b-form-input>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Deducible" label-for="pol_affe_valor_deducible">
+                  <b-form-group label="Deducible*" label-for="pol_affe_valor_deducible">
                     <b-form-input id="pol_affe_valor_bruto" @change="valorNetoAfectacion" v-model="afectacionPoliza.pol_affe_valor_deducible" type="number"></b-form-input>
                   </b-form-group>
                 </b-col>
               </b-row>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Valor neto de la afectación" label-for="pol_affe_valor_neto">
+                  <b-form-group label="Valor neto de la afectación*" label-for="pol_affe_valor_neto">
                   <b-form-input id="pol_affe_valor_neto" v-model="afectacionPoliza.pol_affe_valor_neto" type="number"></b-form-input>
                 </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Fecha de afectación" label-for="pol_affe_fecha">
+                  <b-form-group label="Fecha de afectación*" label-for="pol_affe_fecha">
                   <b-form-input id="pol_affe_fecha" v-model="afectacionPoliza.pol_affe_fecha" type="date"></b-form-input>
                 </b-form-group>
                 </b-col>
@@ -248,7 +248,7 @@
                         <li class="col-md-12" v-for="(afectacionFor, index) in afectacionesPoliza" :key="index">
                           <div class="timeline-dots border-primary" v-if="index == 0" :class="'border-primary'"></div>
                           <div class="timeline-dots border-primary" v-else :class="'border-warning'"></div>
-                          <h6 class="float-left mb-1 font-weight-bolder">{{ afectacionFor.process_request.prore_num_radicado }} <button v-if="index == 0 && poliza.pol_estado == 1" class="btn btn-link pt-0" @click="editAfectacion(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button v-if="index == 0 && poliza.pol_estado == 1" @click="deleteAfectacion(afectacionFor.pol_affe_id)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
+                          <h6 class="float-left mb-1 font-weight-bolder">{{ afectacionFor.process_request !== null ? afectacionFor.process_request.prore_num_radicado : '' }} <button v-if="index == 0 && poliza.pol_estado == 1" class="btn btn-link pt-0" @click="editAfectacion(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button v-if="index == 0 && poliza.pol_estado == 1" @click="deleteAfectacion(afectacionFor.pol_affe_id)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
                           <b-row class="col-md-12 pt-1">
                             <b-card-text class="my-0"><b>Fecha de afectación: </b><span v-if="afectacionFor.pol_affe_fecha != null">{{ afectacionFor.pol_affe_fecha }}</span></b-card-text>
                             <b-card-text class="pl-3 my-0"><b>Valor bruto afectado: </b><span>{{ formatPrice(afectacionFor.pol_affe_valor_bruto) }}</span></b-card-text>
@@ -646,16 +646,13 @@ export default {
         })
     },
     checkFormAfectacion () {
-      if (this.afectacionPoliza.pol_affe_pol_id && this.afectacionPoliza.pol_affe_prore_id &&
+      if (this.afectacionPoliza.pol_affe_pol_id &&
         this.afectacionPoliza.pol_affe_valor_bruto && this.afectacionPoliza.pol_affe_valor_deducible &&
         this.afectacionPoliza.pol_affe_valor_neto && this.afectacionPoliza.pol_affe_fecha) {
         this.errors = []
         return true
       }
       this.errors = []
-      if (!this.afectacionPoliza.pol_affe_prore_id) {
-        this.errors.push('El proceso es obligatorio.')
-      }
       if (!this.afectacionPoliza.pol_affe_valor_bruto) {
         this.errors.push('El valor bruto es obligatorio.')
       }
