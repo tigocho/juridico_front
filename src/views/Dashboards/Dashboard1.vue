@@ -191,7 +191,6 @@ export default {
           },
           class: 'text-center'
         },
-        { key: 'afectacion_total', label: 'Total pagado aseguradora(s)', class: 'text-left' },
         {
           key: 'total_pagado_tercero',
           label: 'Total pagado por tecero',
