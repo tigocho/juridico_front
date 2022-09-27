@@ -307,7 +307,7 @@
                       <hr>
                       <div v-if="!editando">
                         <b-row class="col-md-12 pt-1">
-                          <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.proceedings != null && process.proceedings[0] != null">{{ process.proceedings[0].status_process.estado_proceso }}</span></b-card-text>
+                          <b-card-text class="my-0 pr-3"><b>Etapa procesal: </b><span v-if="process.status_process != null">{{ process.status_process.sta_name }}</span></b-card-text>
                           <b-card-text class="my-0 pr-3" v-if="process.proceedings != null && process.proceedings[0] != null && process.proceedings[0].status_process.sta_id ===  16"><b>Fecha terminación: </b><span >{{ process.proceedings[0].proce_fecha_ingreso }}</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>ID Litigando: </b><span v-if="process.prore_litigando_id != null">{{ process.prore_litigando_id }} </span><span class="text-danger" v-if="process.prore_litigando_id == null">Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3"><b>Número de Radicado:</b> <span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -333,7 +333,7 @@
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Ciudad:</b> <span v-if="process.ciudad != null">{{ process.ciudad.city_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Fecha ingreso: </b>{{ process.prore_fec_ingreso }}</b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Fecha ingreso: </b>{{ process.prore_fec_ingreso_jur }}</b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Clinica:</b> <span v-if="process.clinica != null">{{ process.clinica.cli_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Fecha siniestro: </b>{{ process.prore_fec_sinister }}</b-card-text>
                         </b-row>
@@ -361,7 +361,7 @@
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ process.prore_sentencia_final }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ formatPrice(process.prore_val_sentencia_final) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Discriminar Valor De La Condena:</b> <span v-if="process.prore_discriminar_val_condena != null">{{ formatPrice(process.prore_discriminar_val_condena) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Valor Total Ahorrado por la Clínica:</b> <span>{{ formatPrice(calculoValorAhorrado()) }}</span></b-card-text>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Costas De La Sentencia: </b><span v-if="process.prore_costas_sentencia != null">{{ formatPrice(process.prore_costas_sentencia) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -851,8 +851,8 @@
                                       <li v-for="error in errors" :key="error">{{ error }}</li>
                                     </ul>
                                   </p>
-                                  <b-form-group label="Proceso que afectó la poliza*" label-for="pol_affe_prore_id">
-                                    <v-select v-model="afectacionPoliza.pol_affe_prore_id" :options="processOptions" :reduce="label => label.code" label="label" id="pol_ase_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <b-form-group label="Proceso que afectó la poliza" label-for="pol_affe_prore_id">
+                                    <v-select v-model="afectacionPoliza.pol_affe_prore_id" :options="processOptions" :reduce="label => label.code" label="label" id="pol_ase_id">
                                       <span slot="no-options">No hay procesos.</span>
                                     </v-select>
                                   </b-form-group>
@@ -2258,16 +2258,13 @@ export default {
       this.afectacionPoliza.pol_affe_valor_neto = parseInt(valorBruto) - parseInt(deducible)
     },
     checkFormAfectacion () {
-      if (this.afectacionPoliza.pol_affe_pol_id && this.afectacionPoliza.pol_affe_prore_id &&
+      if (this.afectacionPoliza.pol_affe_pol_id &&
         this.afectacionPoliza.pol_affe_valor_bruto && this.afectacionPoliza.pol_affe_valor_deducible &&
         this.afectacionPoliza.pol_affe_valor_neto && this.afectacionPoliza.pol_affe_fecha) {
         this.errors = []
         return true
       }
       this.errors = []
-      if (!this.afectacionPoliza.pol_affe_prore_id) {
-        this.errors.push('El proceso es obligatorio.')
-      }
       if (!this.afectacionPoliza.pol_affe_valor_bruto) {
         this.errors.push('El valor bruto es obligatorio.')
       }
@@ -2327,6 +2324,15 @@ export default {
           })
         }
       })
+    },
+    calculoValorAhorrado () {
+      if (this.process.prore_cuantia_pretenciones > this.process.prore_total_sentencia) {
+        let pretensiones = this.process.prore_cuantia_pretenciones != null ? this.process.prore_cuantia_pretenciones : 0
+        let sentencia = this.process.prore_total_sentencia != null ? this.process.prore_total_sentencia : 0
+        return parseInt(pretensiones) - parseInt(sentencia)
+      } else {
+        return 0
+      }
     }
   }
 }
