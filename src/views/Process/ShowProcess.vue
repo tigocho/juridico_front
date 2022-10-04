@@ -729,7 +729,7 @@
                       <h4 class="card-title">Actuaciones</h4>
                     </template>
                     <template v-slot:headerAction>
-                      <button class="btn btn-primary" :disabled="process.prore_estado == 1" @click="agregarActuacion"><i class="ri-add-line mr-2" ></i>Agregar actuación</button>
+                      <button class="btn btn-primary" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1" @click="agregarActuacion"><i class="ri-add-line mr-2" ></i>Agregar actuación</button>
                     </template>
                     <template v-slot:body>
                       <ul class="iq-timeline">
@@ -762,13 +762,13 @@
                 </tab-content-item>
                 <tab-content-item :active="false" id="costos-cuantias">
                   <iq-card v-if="process.prore_typro_id != 11 && process.prore_typro_id != 8 && process.prore_typro_id != 10">
-                    <CostosCuantiasProcesoMedico :prore_id="prore_id" :usr_id="userLogged.usr_id" :process="process"/>
+                    <CostosCuantiasProcesoMedico :prore_id="prore_id" :usr_id="userLogged.usr_id" :process="process" :user_profile = "userLogged.user_profile"/>
                   </iq-card>
                   <iq-card v-else-if="process.prore_typro_id == 11">
-                    <CostosCuantiasProcesoLaboral :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id" :process="process"/>
+                    <CostosCuantiasProcesoLaboral :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id" :process="process" :user_profile = "userLogged.user_profile"/>
                   </iq-card>
                   <iq-card v-else>
-                    <CostosCuantiasProcesoEjecutivo :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id" :process="process"/>
+                    <CostosCuantiasProcesoEjecutivo :prore_id="prore_id" :editando="editando" :usr_id="userLogged.usr_id" :process="process" :user_profile = "userLogged.user_profile"/>
                   </iq-card>
                 </tab-content-item>
                 <tab-content-item :active="false" id="poliza">
