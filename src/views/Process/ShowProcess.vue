@@ -1416,7 +1416,7 @@ export default {
         return false
       } else if (!this.process.prore_profile_id) {
         return false
-      } else if (!process.prore_typro_id) {
+      } else if (!this.process.prore_typro_id) {
         return false
       } else {
         return true
