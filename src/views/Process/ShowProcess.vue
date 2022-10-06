@@ -567,7 +567,7 @@
                                 </div>
                               </ValidationProvider>
                             </b-form-group>
-                            <b-form-group v-if="typeProcessOptions != null" class="col-md-6" label="Tipo de Proceso" label-for="prore_typro_id">
+                            <b-form-group v-if="typeProcessOptions != null" class="col-md-6" label="Tipo de Proceso*" label-for="prore_typro_id">
                               <ValidationProvider name="Tipo de Proceso" v-slot="{ errors }">
                                 <v-select v-model="process.prore_typro_id" :options="typeProcessOptions" :reduce="label => label.code" label="label" id="prore_typro_id" :class="(errors.length > 0 ? ' is-invalid' : '')">
                                   <span slot="no-options">No hay tipos de procesos.</span>
@@ -1415,6 +1415,8 @@ export default {
       } else if (!this.process.prore_status_process_id) {
         return false
       } else if (!this.process.prore_profile_id) {
+        return false
+      } else if (!this.process.prore_typro_id) {
         return false
       } else {
         return true
