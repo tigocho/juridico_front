@@ -159,6 +159,31 @@
                 </b-form-group>
               </b-col>
             </b-col>
+            <b-col lg="6">
+              <b-col sm="5" md="7" class="ml-3 p-2 my-1">
+                <b-form-group
+                  label="Tipo de Proceso"
+                  label-cols-sm="3"
+                  label-cols-md="3"
+                  label-cols-lg="4"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="tipoProceso"
+                    :options="tipoProcesosOptions"
+                    @input="cambioClinica()"
+                    :reduce="label => label.code"
+                    label="label"
+                    id="clinica_id"
+                    :class="(errors.length > 0 ? ' is-invalid' : '') + 'ml-1' "
+                    >
+                    <span slot="no-options">No hay clínicas.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-col>
           </b-row>
           <b-row>
             <b-col lg="6">
@@ -167,7 +192,7 @@
                   <h4>Procesos activos por clínica</h4>
                 </template>
                 <template v-slot:body>
-                  <GraficaProcesosPorClinica ref='chartClinicas' :clinicasIds="clinicasIds" element="patient"/>
+                  <GraficaProcesosPorClinica ref='chartClinicas' :clinicasIds="clinicasIds" element="patient" :tipoProceso="tipoProceso"/>
                 </template>
               </iq-card>
             </b-col>
@@ -252,6 +277,8 @@ export default {
       errors: [],
       clinicasIds: null,
       clinicaOptions: [],
+      tipoProcesosOptions: [{ code: 0, label: 'Todos' }, { code: 1, label: 'Responsabilidad Medica' }, { code: 2, label: 'Laborales' }, { code: 3, label: 'Otros' }],
+      tipoProceso: 0,
       procesosAbiertos: '',
       procesosCerrados: '',
       totalEstimacionesPretensiones: '',
@@ -332,7 +359,7 @@ export default {
     },
     obtenerCantidadProcesosAbiertos: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtenerCantidadProcesosAbiertos/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
+        axios.get('/process/obtenerCantidadProcesosAbiertos/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
           if (res.data.status_code === 200) {
             this.procesosAbiertos = res.data.cantidad_procesos_abiertos
           } else {
