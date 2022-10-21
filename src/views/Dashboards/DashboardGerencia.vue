@@ -134,7 +134,8 @@
           </template>
           <b-row>
             <b-col lg="6">
-              <b-col sm="4" md="6" class="ml-3 p-2 my-1">
+              <b-row style="margin-left:2px;">
+              <b-col sm="4" md="6"  class="my-1" >
                 <b-form-group
                   label="Clínica"
                   label-cols-sm="2"
@@ -158,14 +159,12 @@
                   </v-select>
                 </b-form-group>
               </b-col>
-            </b-col>
-            <b-col lg="6">
-              <b-col sm="5" md="7" class="ml-3 p-2 my-1">
+              <b-col sm="4" md="6" class="my-1">
                 <b-form-group
                   label="Tipo de Proceso"
-                  label-cols-sm="3"
-                  label-cols-md="3"
-                  label-cols-lg="4"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="3"
                   label-align-sm="left"
                   label-size="sm"
                   class="mb-0"
@@ -183,6 +182,7 @@
                   </v-select>
                 </b-form-group>
               </b-col>
+            </b-row>
             </b-col>
           </b-row>
           <b-row>
@@ -372,7 +372,7 @@ export default {
     },
     obtenerCantidadProcesosCerrados: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtenerCantidadProcesosCerrados/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
+        axios.get('/process/obtenerCantidadProcesosCerrados/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
           if (res.data.status_code === 200) {
             this.procesosCerrados = res.data.cantidad_procesos_cerrados
             this.loading = false
