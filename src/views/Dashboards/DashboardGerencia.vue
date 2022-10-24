@@ -175,7 +175,7 @@
                     @input="cambioClinica()"
                     :reduce="label => label.code"
                     label="label"
-                    id="clinica_id"
+                    id="tipo_id"
                     :class="(errors.length > 0 ? ' is-invalid' : '') + 'ml-1' "
                     >
                     <span slot="no-options">No hay clínicas.</span>
