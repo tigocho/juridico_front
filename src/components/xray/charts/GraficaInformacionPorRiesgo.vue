@@ -31,7 +31,7 @@ import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaInformacionPorRiesgo',
-  props: ['clinicasIds'],
+  props: ['clinicasIds', 'tipoProceso'],
   mounted () {
     this.obtenerDatosGraficaInformacionPorRiesgo()
   },
@@ -79,7 +79,7 @@ export default {
           clinicasConsulta = _this.clinicasIds
         }
         axios
-          .get('/process/obtenerProcesosPorRiesgo/' + this.userLogged.usr_id + '/' + clinicasConsulta)
+          .get('/process/obtenerProcesosPorRiesgo/' + this.userLogged.usr_id + '/' + clinicasConsulta + '/' + this.tipoProceso)
           .then(res => {
             if (res.data.status_code === 200) {
               this.intentos = 0

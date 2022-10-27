@@ -197,12 +197,12 @@
               </iq-card>
             </b-col>
             <b-col lg="6">
-              <GraficaInformacionPorRiesgo element="riesgo" :clinicasIds="clinicasIds"/>
+              <GraficaInformacionPorRiesgo element="riesgo" :clinicasIds="clinicasIds" :tipoProceso="tipoProceso"/>
             </b-col>
           </b-row>
           <b-row>
             <b-col lg="6">
-              <GraficaExitoPretensiones :clinicasIds="clinicasIds"/>
+              <GraficaExitoPretensiones :clinicasIds="clinicasIds" />
             </b-col>
             <b-col lg="6">
               <GraficaExitoEstimaciones :clinicasIds="clinicasIds"/>
@@ -215,7 +215,7 @@
                   <h4>Procesos activos por especialidad</h4>
                 </template>
                 <template v-slot:body>
-                  <GraficaProcesosPorEspecialidad ref='chartEspecialidad' element="especialidad" :clinicasIds="clinicasIds"/>
+                  <GraficaProcesosPorEspecialidad ref='chartEspecialidad' element="especialidad" :clinicasIds="clinicasIds" :tipoProceso="tipoProceso"/>
                 </template>
               </iq-card>
             </b-col>
@@ -225,7 +225,7 @@
                   <h4>Procesos por estados</h4>
                 </template>
                 <template>
-                  <GraficaProcesosPorEstados ref='chartEstados' element="estados" :clinicasIds="clinicasIds"/>
+                  <GraficaProcesosPorEstados ref='chartEstados' element="estados" :clinicasIds="clinicasIds" :tipoProceso="tipoProceso"/>
                 </template>
               </iq-card>
             </b-col>
@@ -237,7 +237,7 @@
                   <h4>Procesos por aseguradora</h4>
                 </template>
                 <template v-slot:body>
-                  <GraficaProcesosPorAseguradora ref='chartAseguradora' element="aseguradoraa" :clinicasIds="clinicasIds"/>
+                  <GraficaProcesosPorAseguradora ref='chartAseguradora' element="aseguradoraa" :clinicasIds="clinicasIds" :tipoProceso="tipoProceso"/>
                 </template>
               </iq-card>
             </b-col>
