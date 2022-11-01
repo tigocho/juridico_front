@@ -284,7 +284,7 @@
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
-
+import auth from '@/logic/auth'
 export default {
   name: 'AddCaseAbogado',
   data () {
@@ -316,6 +316,11 @@ export default {
       ]
     }
   },
+  computed: {
+    userLogged () {
+      return JSON.parse(auth.getUserLogged())
+    }
+  },
   mounted () {
     xray.index()
     this.getActividades()
@@ -323,10 +328,11 @@ export default {
     this.getClientes()
     this.getServicios()
     this.getMediosSolicitud()
+    this.getUserClinicas()
   },
   methods: {
     getUserClinicas () {
-      axios.get('/clinicas/' + this.caso.user_id).then((res) => {
+      axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
         if (res.status === 200) {
           this.clinicasOptions = res.data.clinicas
         } else {

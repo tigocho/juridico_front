@@ -5,7 +5,7 @@
     </template>
     <template v-slot:headerAction>
       <b-button variant="secondary" class="mr-2" v-if="editando" @click="cancelarEdicionProceso">Cancelar</b-button>
-      <b-button variant="primary" :disabled="process.prore_estado == 1" :class="estadoBotonActualizarCuantias" @click="editarProceso">{{ textoEditarCuantias }}</b-button>
+      <b-button variant="primary" :disabled="process.prore_estado == 1 && user_profile != 1" :class="estadoBotonActualizarCuantias" @click="editarProceso">{{ textoEditarCuantias }}</b-button>
     </template>
     <template v-slot:body>
       <div v-if="!editando">
@@ -53,7 +53,7 @@
               :options="optionNumeric"
             ></vue-autonumeric>
           </b-form-group>
-          <b-form-group class="col-md-6" label="Estimaciones Inateriales" label-for="temProreEstimacionPagoPerjuInmateriales">
+          <b-form-group class="col-md-6" label="Estimaciones Inmateriales" label-for="temProreEstimacionPagoPerjuInmateriales">
             <vue-autonumeric class="form-control" v-model="temProreEstimacionPagoPerjuInmateriales"
               :options="optionNumeric"
             ></vue-autonumeric>
@@ -80,7 +80,7 @@ import VueAutonumeric from '../../../VueAutonumeric.vue'
 export default {
   components: { iqCard, VueAutonumeric },
   name: 'CostosCuantiasProcesoEjecutivo',
-  props: ['prore_id', 'usr_id', 'process'],
+  props: ['prore_id', 'usr_id', 'process', 'user_profile'],
   mounted () {
     xray.index()
   },

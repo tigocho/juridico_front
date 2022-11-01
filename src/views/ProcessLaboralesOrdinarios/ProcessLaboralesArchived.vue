@@ -351,7 +351,7 @@ export default {
           },
           class: 'text-left text-uppercase'
         },
-        { key: 'prore_fec_ingreso', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
+        { key: 'prore_fec_ingreso_jur', label: 'Fec Ingreso', sortable: true, class: 'text-center' },
         { key: 'proceedings.0.status_process.estado_proceso', label: 'Estado del Proceso', sortable: true, class: 'text-left' },
         { key: 'actions', label: 'Acciones', class: 'text-center' }
       ],
