@@ -359,6 +359,7 @@
                         <hr>
                         <b style="text-decoration:underline;">Conclusiones:</b>
                         <b-row class="col-md-12 pt-1">
+                          <b-card-text class="pr-3 my-0"><b>Provisiones constituidas: </b><span v-if="process.prore_prov_constituidas != null">{{ formatPrice(process.prore_prov_constituidas) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Sentencia Final: </b><span v-if="process.prore_sentencia_final != null">{{ process.prore_sentencia_final }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Valor De La Sentencia Final: </b><span v-if="process.prore_val_sentencia_final != null">{{ formatPrice(process.prore_val_sentencia_final) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Valor Total Ahorrado por la Clínica:</b> <span>{{ formatPrice(calculoValorAhorrado()) }}</span></b-card-text>
