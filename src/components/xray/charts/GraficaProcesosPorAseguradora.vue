@@ -14,7 +14,7 @@ import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaProcesosPorAseguradora',
-  props: ['element', 'clinicasIds'],
+  props: ['element', 'clinicasIds', 'tipoProceso'],
   mounted () {
     this.obtenerDatosProcesosPorAseguradora()
   },
@@ -104,7 +104,7 @@ export default {
         if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
           clinicasConsulta = _this.clinicasIds
         }
-        axios.get('/aseguradora/obtenerCantidadProcesosPorAseguradora/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
+        axios.get('/aseguradora/obtenerCantidadProcesosPorAseguradora/' + this.userLogged.usr_id + '/' + clinicasConsulta + '/' + this.tipoProceso).then(res => {
           if (res.data.status_code === 200) {
             let _this = this
             let selector = '#' + _this.element

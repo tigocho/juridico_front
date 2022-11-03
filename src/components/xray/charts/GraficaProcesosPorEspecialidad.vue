@@ -9,7 +9,7 @@ import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaProcesosPorEspecialidad',
-  props: ['element', 'clinicasIds'],
+  props: ['element', 'clinicasIds', 'tipoProceso'],
   mounted () {
     this.obtenerDatosProcesosPorEspecialidad()
   },
@@ -105,7 +105,7 @@ export default {
         if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
           clinicasConsulta = _this.clinicasIds
         }
-        axios.get('/process/obtener-datos-procesos-por-especialidad/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
+        axios.get('/process/obtener-datos-procesos-por-especialidad/' + this.userLogged.usr_id + '/' + clinicasConsulta + '/' + this.tipoProceso).then(res => {
           if (res.data.status_code === 200) {
             let _this = this
             let selector = '#' + _this.element
