@@ -85,6 +85,57 @@
             </b-col>
           </b-row>
           <b-row>
+            <b-col lg="6">
+              <b-col sm="5" md="7"  class="my-1" >
+                <b-form-group
+                  label="Clínica"
+                  label-cols-sm="3"
+                  label-cols-md="3"
+                  label-cols-lg="4"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    multiple
+                    v-model="clinicasIds"
+                    :options="clinicaOptions"
+                    :reduce="label => label.code"
+                    label="label"
+                    @input="cambioFiltro()"
+                    id="clinica_id"
+                    >
+                    <span slot="no-options">No hay clínicas.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-col>
+            <b-col lg="6">
+              <b-col sm="5" md="7"  class="my-1" >
+                <b-form-group
+                  label="Tipo de Proceso"
+                  label-cols-sm="3"
+                  label-cols-md="3"
+                  label-cols-lg="4"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="tipoProceso"
+                    :options="tipoProcesosOptions"
+                    :reduce="label => label.code"
+                    label="label"
+                    id="tipo_id"
+                    @input="cambioFiltro()"
+                    >
+                    <span slot="no-options">No hay tipos de procesos.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-col>
+          </b-row>
+          <b-row>
             <b-col lg="12">
               <iq-card>
                 <template v-slot:headerTitle>
@@ -146,6 +197,7 @@ export default {
     xray.index()
     this.obtenerDatosGraficaProcesoAnual()
     this.obtenerNumeroUsuarios()
+    this.fetchClinicaOptions()
     setTimeout(() => {
       this.obtenerDatosNivelExito()
       this.obtenerCantidadProcesosAbiertos()
@@ -168,6 +220,10 @@ export default {
       totalesInformePorClinicas: [],
       categoriasClinicas: [],
       heightGraficas: 250,
+      clinicasIds: null,
+      clinicaOptions: [],
+      tipoProcesosOptions: [{ code: 0, label: 'Todos' }, { code: 1, label: 'Responsabilidad Medica' }, { code: 2, label: 'Laborales' }, { code: 3, label: 'Otros' }],
+      tipoProceso: 0,
       ingresoProcesos: {
         type: 'bar',
         bodyData: [],
@@ -292,7 +348,7 @@ export default {
     },
     obtenerCantidadProcesosAbiertos: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtenerCantidadProcesosAbiertos/' + this.userLogged.usr_id).then(res => {
+        axios.get('/process/obtenerCantidadProcesosAbiertos/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
           if (res.data.status_code === 200) {
             this.procesosAbiertos = res.data.cantidad_procesos_abiertos
           } else {
@@ -305,7 +361,7 @@ export default {
     },
     obtenerCantidadProcesosCerrados: function () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtenerCantidadProcesosCerrados/' + this.userLogged.usr_id).then(res => {
+        axios.get('/process/obtenerCantidadProcesosCerrados/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
           if (res.data.status_code === 200) {
             this.procesosCerrados = res.data.cantidad_procesos_cerrados
           } else {
@@ -325,6 +381,32 @@ export default {
             alert('Datos no validos')
           }
         })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
+    fetchClinicaOptions: function () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/clinicas/obtener-clinicas/' + this.userLogged.usr_id).then(response => {
+          this.clinicaOptions = response.data.clinicas
+          if (this.clinicaOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
+            if (this.clinicaOptions.length === 1) {
+              this.clinicaId = this.clinicaOptions[0].code
+            } else {
+              this.clinicaOptions.push({ code: 0, label: 'Todos' })
+              this.clinicasIds = 0
+            }
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchClinicaOptions()
+              this.intentos++
+            }
+          })
       } else {
         Vue.swal('Usuario no logueado o inactivo')
       }
@@ -354,7 +436,7 @@ export default {
     },
     obtenerDatosNivelExito () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtener-datos-nivel-exito/' + this.userLogged.usr_id).then(res => {
+        axios.get('/process/obtener-datos-nivel-exito/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
           if (res.data.status_code === 200) {
             this.intentos = 0
             this.errores = {}
@@ -365,6 +447,8 @@ export default {
             this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
             this.nivelExitoPretensionesKey++
             this.nivelExitoEstimacionesKey++
+          } else if (res.data.status_code === 404) {
+            Vue.swal(res.data.mensaje)
           } else {
             Vue.swal('Ocurrió un error tratando de obtener los datos')
           }
@@ -407,6 +491,15 @@ export default {
     },
     nivelExitoformulaEstimacionesEnContra () {
       return parseFloat(100 - this.nivelExitoformulaEstimacionesAFavor()).toFixed(1)
+    },
+    cambioFiltro () {
+      if (this.clinicasIds.length === 0) {
+        this.clinicasIds = 0
+      }
+      if (this.clinicasIds[0] === 0) {
+        this.clinicasIds.shift()
+      }
+      this.obtenerDatosNivelExito()
     }
   }
 }
