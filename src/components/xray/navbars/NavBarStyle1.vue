@@ -16,9 +16,7 @@
         </div>
       </div>
       <nav class="navbar navbar-expand-lg navbar-light p-0">
-        <b-button variant="link" @click="goBack">
-          <i class="fas fa-arrow-left" style="font-size: 30px; margin-left: 20px;"></i>
-        </b-button>
+          <i class="fas fa-arrow-left" @click="goBack" style="font-size: 30px; margin-left: 20px; cursor: pointer;"></i>
         <!--<div class="iq-search-bar">
           <form action="#" class="searchbox">
             <input type="text" class="text search-input" placeholder="Type here to search...">
