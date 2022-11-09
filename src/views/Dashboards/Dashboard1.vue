@@ -148,7 +148,7 @@
                     stacked="md"
                     show-empty
                     small
-                    style='overflow: auto'
+                    style='overflow: auto; border: 3px solid lightgray;'
                   >
                     <template #cell(name)="row">
                       {{ row.value.first }} {{ row.value.last }}
@@ -238,7 +238,7 @@ export default {
       nivelExitoEstimacionesKey: 0,
       procesosNivelExito: [],
       fields: [
-        { key: 'prore_sentencia_final', label: 'Etiqueta', class: 'text-center' },
+        { key: 'prore_sentencia_final', label: 'Clasificación Sentencia', class: 'text-center' },
         {
           key: 'total_pagado_clinica',
           label: 'Total pagado clínica',
@@ -440,15 +440,18 @@ export default {
           if (res.data.status_code === 200) {
             this.intentos = 0
             this.errores = {}
-            this.procesosNivelExito = res.data.process
+            if (typeof res.data.process === 'undefined') {
+              Vue.swal(res.data.mensaje)
+            } else {
+              this.procesosNivelExito = res.data.process
+            }
+            // this.procesosNivelExito = res.data.process
             this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesAFavor()
             this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = this.nivelExitoformulaPretensionesEnContra()
             this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesAFavor()
             this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
             this.nivelExitoPretensionesKey++
             this.nivelExitoEstimacionesKey++
-          } else if (res.data.status_code === 404) {
-            Vue.swal(res.data.mensaje)
           } else {
             Vue.swal('Ocurrió un error tratando de obtener los datos')
           }
