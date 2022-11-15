@@ -157,6 +157,7 @@
                               v-slot="{ errors }"
                             >
                               <v-select
+                                @input="getTiempoAns"
                                 v-model="caso.subactividad_id"
                                 :options="subactividadOptions"
                                 :reduce="(label) => label.code"
@@ -172,6 +173,14 @@
                                 <span>Debe de seleccionar un Tipo</span>
                               </div>
                             </ValidationProvider>
+                            <p
+                              :key="fechaSolucionKey"
+                              class="text-left"
+                              v-if="fechaSolucion !== null"
+                            >
+                              Fecha apróximada de solución o respuesta:
+                              {{ fechaSolucion }}
+                            </p>
                           </b-form-group>
                         </b-row>
                         <b-row>
@@ -200,6 +209,11 @@
                               </div>
                             </ValidationProvider>
                           </b-form-group>
+                          <b-form-group class="col-md-5" label="Proceso" label-for="ans_caso_prore_id">
+                                    <v-select v-model="caso.ans_caso_prore_id" :options="processOptions" :reduce="label => label.code" label="label" id="ans_caso_prore_id">
+                                      <span slot="no-options">No hay procesos.</span>
+                                    </v-select>
+                           </b-form-group>
                         </b-row>
                       </b-col>
                       <b-col lg="10">
@@ -300,7 +314,8 @@ export default {
         medio_id: '',
         subactividad_id: '',
         case_title: '',
-        case_description: ''
+        case_description: '',
+        ans_caso_prore_id: ''
       },
       clientesOptions: [],
       serviciosOptions: [],
@@ -309,6 +324,9 @@ export default {
       actividadesOptions: [],
       subactividadOptions: [],
       mediosOptions: [],
+      fechaSolucion: null,
+      processOptions: [],
+      fechaSolucionKey: 0,
       caseFiles: [
         {
           file: null
@@ -327,8 +345,11 @@ export default {
     this.getProfesionals()
     this.getClientes()
     this.getServicios()
-    this.getMediosSolicitud()
     this.getUserClinicas()
+    setTimeout(() => {
+      this.getMediosSolicitud()
+      this.fetchProcessOptions()
+    }, 500)
   },
   methods: {
     getUserClinicas () {
@@ -372,6 +393,40 @@ export default {
         this.serviciosOptions = response.data.servicios
       })
     },
+    getTiempoAns () {
+      axios
+        .get('/subactividades/getTiempoAns/' + this.caso.subactividad_id)
+        .then((res) => {
+          this.fechaSolucion = res.data.fechaSolucion
+        })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.getTiempoAns()
+            this.intentos++
+          }
+        })
+    },
+    fetchProcessOptions () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtenerProcesosParaLista/' + this.userLogged.usr_id).then(response => {
+          this.processOptions = response.data.process
+          if (this.processOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchProcessOptions()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
     onSubmit () {
       this.estadoBoton = 'disabled'
       this.guardarCaso()
@@ -397,6 +452,7 @@ export default {
       data.append('profesional_id', this.caso.abogado_id)
       data.append('subactividad_id', this.caso.subactividad_id)
       data.append('medio_id', this.caso.medio_id)
+      data.append('ans_caso_prore_id', this.caso.ans_caso_prore_id)
 
       let index = 0
       for (let casefile of this.caseFiles) {
