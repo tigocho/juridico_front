@@ -54,12 +54,7 @@
                     </ValidationProvider>
                   </b-form-group>
                   <b-form-group class="col-md-6" label="Fecha de Nacimiento" label-for="usr_birthday">
-                    <ValidationProvider name="Fecha de nacimiento" rules="required" v-slot="{ errors }">
-                      <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                      <div class="invalid-feedback">
-                        <span>Fecha de nacimiento inválida</span>
-                      </div>
-                    </ValidationProvider>
+                    <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" ></b-form-input>
                   </b-form-group>
                   <b-form-group class="col-md-6" label="Correo Electronico:" label-for="usr_email">
                     <ValidationProvider name="Correo Electronico" rules="required|email" v-slot="{ errors }">
@@ -185,7 +180,6 @@ export default {
         usr_lastname_second: '',
         usr_identification_type: 1,
         usr_identification: '',
-        usr_birthday: '',
         usr_username: '',
         clinicas: '',
         usr_email: '',
