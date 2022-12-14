@@ -114,22 +114,6 @@
                         </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Nueva contraseña" label-for="pass">
-                    <ValidationProvider name="Password" rules="confirmed:repeat_password" v-slot="{ errors }">
-                      <b-form-input autocomplete="new-password" v-model="user.usr_password" type="password" placeholder="Contraseña" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                      <div class="invalid-feedback">
-                        <span>{{ errors[0] }}</span>
-                      </div>
-                    </ValidationProvider>
-                  </b-form-group>
-                  <b-form-group class="col-md-6" label="Repetir contraseña" label-for="rpass">
-                    <ValidationProvider vid="repeat_password" name="Repetir contraseña" rules="required" v-slot="{ errors }">
-                      <b-form-input v-model="user.newPassword2" type="password" placeholder="Repeat Password" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                      <div class="invalid-feedback">
-                        <span>{{ errors[0] }}</span>
-                      </div>
-                    </ValidationProvider>
-                  </b-form-group>
                 </b-row>
                 <div class="form-group row mt-3">
                   <div class="col-6 d-flex">
@@ -190,9 +174,7 @@ export default {
         usr_gender: '',
         usr_cell_phone: '',
         usr_is_active: 1,
-        usr_color: '#000000',
-        usr_password: '',
-        newPassword2: ''
+        usr_color: '#000000'
       },
       clinicaOptions: [],
       state: [
