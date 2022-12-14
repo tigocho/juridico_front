@@ -54,12 +54,7 @@
                     </ValidationProvider>
                   </b-form-group>
                   <b-form-group class="col-md-6" label="Fecha de Nacimiento" label-for="usr_birthday">
-                    <ValidationProvider name="Fecha de nacimiento" rules="required" v-slot="{ errors }">
-                      <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                      <div class="invalid-feedback">
-                        <span>Fecha de nacimiento inválida</span>
-                      </div>
-                    </ValidationProvider>
+                    <b-form-input id="exampleInputdate" v-model="user.usr_birthday" type="date" ></b-form-input>
                   </b-form-group>
                   <b-form-group class="col-md-6" label="Correo Electronico:" label-for="usr_email">
                     <ValidationProvider name="Correo Electronico" rules="required|email" v-slot="{ errors }">
@@ -119,22 +114,6 @@
                         </div>
                     </ValidationProvider>
                   </b-form-group>
-                  <b-form-group class="col-md-6" label="Nueva contraseña" label-for="pass">
-                    <ValidationProvider name="Password" rules="confirmed:repeat_password" v-slot="{ errors }">
-                      <b-form-input autocomplete="new-password" v-model="user.usr_password" type="password" placeholder="Contraseña" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                      <div class="invalid-feedback">
-                        <span>{{ errors[0] }}</span>
-                      </div>
-                    </ValidationProvider>
-                  </b-form-group>
-                  <b-form-group class="col-md-6" label="Repetir contraseña" label-for="rpass">
-                    <ValidationProvider vid="repeat_password" name="Repetir contraseña" rules="required" v-slot="{ errors }">
-                      <b-form-input v-model="user.newPassword2" type="password" placeholder="Repeat Password" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                      <div class="invalid-feedback">
-                        <span>{{ errors[0] }}</span>
-                      </div>
-                    </ValidationProvider>
-                  </b-form-group>
                 </b-row>
                 <div class="form-group row mt-3">
                   <div class="col-6 d-flex">
@@ -185,7 +164,6 @@ export default {
         usr_lastname_second: '',
         usr_identification_type: 1,
         usr_identification: '',
-        usr_birthday: '',
         usr_username: '',
         clinicas: '',
         usr_email: '',
@@ -196,9 +174,7 @@ export default {
         usr_gender: '',
         usr_cell_phone: '',
         usr_is_active: 1,
-        usr_color: '#000000',
-        usr_password: '',
-        newPassword2: ''
+        usr_color: '#000000'
       },
       clinicaOptions: [],
       state: [
@@ -219,7 +195,8 @@ export default {
       ids: [
         { text: 'CC.', value: 1 },
         { text: 'TI.', value: 2 },
-        { text: 'RC.', value: 3 }
+        { text: 'RC.', value: 3 },
+        { text: 'NIT.', value: 4 }
       ],
       users: []
     }

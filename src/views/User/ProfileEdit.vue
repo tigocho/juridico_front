@@ -260,7 +260,8 @@ export default {
       ids: [
         { text: 'CC.', value: 1 },
         { text: 'TI.', value: 2 },
-        { text: 'RC.', value: 3 }
+        { text: 'RC.', value: 3 },
+        { text: 'NIT', value: 4 }
       ],
       newPassword: '',
       newPassword2: '',

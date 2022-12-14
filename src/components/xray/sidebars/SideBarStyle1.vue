@@ -30,7 +30,7 @@ import auth from '@/logic/auth'
 export default {
   name: 'SideBarStyle1',
   props: {
-    homeURL: { type: Object, default: () => ({ name: 'dashboard.home-1' }) },
+    homeURL: { type: Object, default: () => ({ name: 'dashboard' }) },
     items: { type: Array },
     horizontal: { type: Boolean },
     toggleButton: { type: Boolean, default: true }
