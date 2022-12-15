@@ -874,10 +874,10 @@ router.beforeEach((to, from, next) => {
   verificarRedireccion(to, from)
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   if (rutaAuth && token === null) {
-    next({ name: 'auth1.sign-in1' })
+    router.push({ name: 'auth1.sign-in1' }).catch(() => {})
   } else {
     if (to.name === 'dashboard') {
-      next({ name: 'auth1.sign-in1' })
+      router.push({ name: 'auth1.sign-in1' })
     } else {
       next()
     }

@@ -297,7 +297,11 @@ export default {
         })
     },
     userLogged () {
-      return JSON.parse(auth.getUserLogged())
+      if (auth.getUserLogged() !== undefined) {
+        return JSON.parse(auth.getUserLogged())
+      } else {
+        return null
+      }
     }
   },
   mounted () {
