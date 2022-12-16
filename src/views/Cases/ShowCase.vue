@@ -204,7 +204,7 @@
                             {{ caso.med_sol_nombre }}
                           </b-col>
                           <b-col v-if="caso.caso_process_request_id !== null" cols="6">
-                            <strong>Radicado de caso: </strong>
+                            <strong>Radicado de proceso: </strong>
                             {{ caso.prore_num_radicado }}
                             <span @click="irAProceso" style="text-decoration:underline;cursor:pointer;">ir <i class="ri-arrow-right-line"></i></span>
                           </b-col>
