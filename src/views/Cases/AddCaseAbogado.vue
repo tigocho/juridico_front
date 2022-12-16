@@ -396,6 +396,8 @@ export default {
             }
             this.abogadosOptions = response.data.professionals.filter(profesional => profesional.code !== esAbogado)
             this.abogadosOptions.unshift(abogadoTopList)
+          } else {
+            this.abogadosOptions = response.data.professionals
           }
         } else {
           this.abogadosOptions = response.data.professionals
