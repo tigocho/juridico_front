@@ -193,15 +193,20 @@
                           <b-col>
                             <strong>Clínica: </strong> {{ caso.cli_name }}
                           </b-col>
-                          <b-col cols="6"
-                            ><strong>Tipo de Actividad: </strong>
+                          <b-col cols="6">
+                            <strong>Tipo de Actividad: </strong>
                             {{ caso.subactividad }}
                           </b-col>
                         </b-row>
                         <b-row>
-                          <b-col>
+                          <b-col cols="6">
                             <strong>Medio de Solicitud: </strong>
                             {{ caso.med_sol_nombre }}
+                          </b-col>
+                          <b-col v-if="caso.caso_process_request_id !== null" cols="6">
+                            <strong>Radicado de caso: </strong>
+                            {{ caso.prore_num_radicado }}
+                            <span @click="irAProceso" style="text-decoration:underline;cursor:pointer;">ir <i class="ri-arrow-right-line"></i></span>
                           </b-col>
                         </b-row>
                       </b-card-text>
@@ -729,6 +734,9 @@ export default {
       }
 
       return identificador
+    },
+    irAProceso () {
+      this.$router.push({ path: `/process/process-show/${this.caso.prore_id}/false` })
     }
   }
 }
