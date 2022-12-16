@@ -16,7 +16,7 @@
                       <b-col lg="12">
                         <b-row>
                           <b-form-group
-                            class="col-md-5"
+                            class="col-md-6"
                             label="Solicitante*"
                             label-for="user_id"
                           >
@@ -42,7 +42,7 @@
                             </ValidationProvider>
                           </b-form-group>
                           <b-form-group
-                            class="col-md-5"
+                            class="col-md-6"
                             label="Tipo de servicio*"
                             label-for="servicio_id"
                           >
@@ -69,7 +69,7 @@
                         </b-row>
                         <b-row>
                           <b-form-group
-                            class="col-md-5"
+                            class="col-md-6"
                             label="Clinica*"
                             label-for="clinica_id"
                           >
@@ -94,7 +94,7 @@
                             </ValidationProvider>
                           </b-form-group>
                           <b-form-group
-                            class="col-md-5"
+                            class="col-md-6"
                             label="Asignado a *"
                             label-for="abogado_id"
                           >
@@ -121,7 +121,7 @@
                         </b-row>
                         <b-row>
                           <b-form-group
-                            class="col-md-5"
+                            class="col-md-6"
                             label="Actividad*"
                             label-for="actividad_id"
                           >
@@ -147,7 +147,7 @@
                             </ValidationProvider>
                           </b-form-group>
                           <b-form-group
-                            class="col-md-5"
+                            class="col-md-6"
                             label="Tipo*"
                             label-for="subactividad_id"
                           >
@@ -185,7 +185,7 @@
                         </b-row>
                         <b-row>
                           <b-form-group
-                            class="col-md-5"
+                            class="col-md-6"
                             label="Medio Solicitud*"
                             label-for="medio_id"
                           >
@@ -209,14 +209,19 @@
                               </div>
                             </ValidationProvider>
                           </b-form-group>
-                          <b-form-group class="col-md-5" label="Proceso" label-for="ans_caso_prore_id">
-                                    <v-select v-model="caso.ans_caso_prore_id" :options="processOptions" :reduce="label => label.code" label="label" id="ans_caso_prore_id">
-                                      <span slot="no-options">No hay procesos.</span>
-                                    </v-select>
-                           </b-form-group>
+                          <b-form-group class="col-md-6" label="Proceso" label-for="caso_process_request_id">
+                            <v-select v-model="caso.caso_process_request_id" :options="processOptions" :reduce="label => label.code" label="label" id="caso_process_request_id">
+                              <span slot="no-options">No hay procesos.</span>
+                            </v-select>
+                          </b-form-group>
+                          <b-form-group v-if="caso.caso_process_request_id > 0" class="col-md-6" label="Actuación" label-for="caso_status_process_id">
+                            <v-select v-model="caso.caso_status_process_id" :options="statusProcessOptions" :reduce="label => label.code" label="label" id="caso_status_process_id">
+                              <span slot="no-options">No hay tipo de actuaciones.</span>
+                            </v-select>
+                          </b-form-group>
                         </b-row>
                       </b-col>
-                      <b-col lg="10">
+                      <b-col lg="12">
                         <b-form-group label="Titulo*" label-for="case_title">
                           <b-form-input
                             class="col-md-6"
@@ -248,7 +253,7 @@
                         >
                           <b-form-group>
                             <b-form-file
-                              class="col-md-5"
+                              class="col-md-6"
                               v-model="casefile.file"
                               :name="`file-${index}`"
                               placeholder="Añadir archivo"
@@ -256,7 +261,7 @@
                             <b-button
                               size="sm"
                               variant="danger"
-                              style="margin-left: 10px"
+                              style="margin-left: 10px;margin-top:5px;"
                               v-b-tooltip.hover
                               title="Quitar archivo"
                               @click="removeFile(index)"
@@ -315,7 +320,8 @@ export default {
         subactividad_id: '',
         case_title: '',
         case_description: '',
-        ans_caso_prore_id: ''
+        caso_process_request_id: '',
+        caso_status_process_id: ''
       },
       clientesOptions: [],
       serviciosOptions: [],
@@ -326,6 +332,7 @@ export default {
       mediosOptions: [],
       fechaSolucion: null,
       processOptions: [],
+      statusProcessOptions: [],
       fechaSolucionKey: 0,
       caseFiles: [
         {
@@ -353,6 +360,7 @@ export default {
     setTimeout(() => {
       this.getMediosSolicitud()
       this.fetchProcessOptions()
+      this.fetchStatusProcessOptions()
     }, 500)
   },
   methods: {
@@ -379,7 +387,19 @@ export default {
     },
     getProfesionals () {
       axios.get('/professionals/fetch').then((response) => {
-        this.abogadosOptions = response.data.professionals
+        if (this.userLogged !== undefined) {
+          const esAbogado = this.userLogged.profiles[0].prof_id === 2 ? this.userLogged.user_pro_id : null
+          if (esAbogado) {
+            const abogadoTopList = {
+              'code': this.userLogged.user_pro_id,
+              'label': this.userLogged.usr_name_first + ' ' + this.userLogged.usr_lastname_first
+            }
+            this.abogadosOptions = response.data.professionals.filter(profesional => profesional.code !== esAbogado)
+            this.abogadosOptions.unshift(abogadoTopList)
+          }
+        } else {
+          this.abogadosOptions = response.data.professionals
+        }
       })
     },
     getClientes () {
@@ -415,6 +435,7 @@ export default {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         axios.get('/process/obtenerProcesosParaLista/' + this.userLogged.usr_id).then(response => {
           this.processOptions = response.data.process
+          this.processOptions.unshift({ 'code': 0, 'label': 'Ninguno' })
           if (this.processOptions[0] !== undefined) {
             this.intentos = 0
             this.errores = {}
@@ -424,6 +445,26 @@ export default {
             this.errores = err
             if (this.intentos < 2) {
               this.fetchProcessOptions()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
+    fetchStatusProcessOptions () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/statusProcess/fetch').then(response => {
+          this.statusProcessOptions = response.data.status_process
+          if (this.statusProcessOptions[0] !== undefined) {
+            this.intentos = 0
+            this.errores = {}
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.fetchStatusProcessOptions()
               this.intentos++
             }
           })
@@ -456,7 +497,8 @@ export default {
       data.append('profesional_id', this.caso.abogado_id)
       data.append('subactividad_id', this.caso.subactividad_id)
       data.append('medio_id', this.caso.medio_id)
-      data.append('ans_caso_prore_id', this.caso.ans_caso_prore_id)
+      data.append('caso_process_request_id', this.caso.caso_process_request_id)
+      data.append('caso_status_process_id', this.caso.caso_status_process_id)
 
       let index = 0
       for (let casefile of this.caseFiles) {
@@ -474,10 +516,15 @@ export default {
           this.$router.push({ path: `/cases/cases-show/${res.data.caso_id}` })
         } else {
           this.estadoBoton = ''
-          this.textoGuardar = 'Guardar'
+          this.textoBoton = 'Guardar Caso'
           Vue.swal(res.data.message)
         }
       })
+        .catch(err => {
+          this.estadoBoton = ''
+          this.textoBoton = 'Guardar Caso'
+          Vue.swal('Error al tratar de guardar el caso. Intente más tarde. ' + err)
+        })
     }
   }
 }
