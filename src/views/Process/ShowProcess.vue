@@ -2136,7 +2136,7 @@ export default {
       } else if (tipoIdentificacionId === 2) {
         return 'T.I'
       } else if (tipoIdentificacionId === 3) {
-        return 'C.C'
+        return 'R.C'
       } else if (tipoIdentificacionId === 4) {
         return 'NIT '
       }
