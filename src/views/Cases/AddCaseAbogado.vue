@@ -17,6 +17,32 @@
                         <b-row>
                           <b-form-group
                             class="col-md-6"
+                            label="Clinica*"
+                            label-for="clinica_id"
+                          >
+                            <ValidationProvider
+                              name="clinicas"
+                              rules="required"
+                              v-slot="{ errors }"
+                            >
+                              <v-select
+                                v-model="caso.clinica_id"
+                                :options="clinicasOptions"
+                                :reduce="(label) => label.code"
+                                label="label"
+                                id="clinica_id"
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
+                                @input="getClientes($event)"
+                              >
+                                <span slot="no-options">No hay clinicas.</span>
+                              </v-select>
+                              <div class="invalid-feedback">
+                                <span>Debe de seleccionar una clinicas</span>
+                              </div>
+                            </ValidationProvider>
+                          </b-form-group>
+                          <b-form-group
+                            class="col-md-6"
                             label="Solicitante*"
                             label-for="user_id"
                           >
@@ -63,33 +89,6 @@
                               </v-select>
                               <div class="invalid-feedback">
                                 <span>Debe de seleccionar un Servicio</span>
-                              </div>
-                            </ValidationProvider>
-                          </b-form-group>
-                        </b-row>
-                        <b-row>
-                          <b-form-group
-                            class="col-md-6"
-                            label="Clinica*"
-                            label-for="clinica_id"
-                          >
-                            <ValidationProvider
-                              name="clinicas"
-                              rules="required"
-                              v-slot="{ errors }"
-                            >
-                              <v-select
-                                v-model="caso.clinica_id"
-                                :options="clinicasOptions"
-                                :reduce="(label) => label.code"
-                                label="label"
-                                id="clinica_id"
-                                :class="errors.length > 0 ? ' is-invalid' : ''"
-                              >
-                                <span slot="no-options">No hay clinicas.</span>
-                              </v-select>
-                              <div class="invalid-feedback">
-                                <span>Debe de seleccionar una clinicas</span>
                               </div>
                             </ValidationProvider>
                           </b-form-group>
@@ -354,7 +353,6 @@ export default {
     xray.index()
     this.getActividades()
     this.getProfesionals()
-    this.getClientes()
     this.getServicios()
     this.getUserClinicas()
     setTimeout(() => {
@@ -405,7 +403,8 @@ export default {
       })
     },
     getClientes () {
-      axios.get('/clientes/fetch').then((response) => {
+      this.caso.user_id = null
+      axios.get('/clientes/fetch', { params: { clinica_id: this.caso.clinica_id } }).then((response) => {
         this.clientesOptions = response.data.clientes
       })
     },
