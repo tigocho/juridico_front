@@ -77,6 +77,11 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
+                    <b-form-group v-if="epsOptions != null" class="col-md-6" label="EPS" label-for="prore_eps_id">
+                      <v-select v-model="formData.prore_eps_id" :options="epsOptions" :reduce="label => label.code" label="label" id="prore_eps_id" >
+                        <span slot="no-options">No hay eps.</span>
+                      </v-select>
+                    </b-form-group>
                     <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
                       <ValidationProvider name="Fecha del Siniestro" rules="required" v-slot="{ errors }">
                         <b-form-input v-model="formData.prore_fec_sinister" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')">
@@ -301,6 +306,7 @@ export default {
       setTimeout(() => {
         this.fetchCourts()
         this.fetchProfiles()
+        this.fetchEps()
         setTimeout(() => {
           this.fetchCity()
           this.fetchRisks()
@@ -346,6 +352,7 @@ export default {
         prore_colaborador_ips: '',
         prore_fec_sinister: '',
         prore_defendant_clin: '',
+        prore_eps_id: '',
         prore_year_notify: '',
         prore_process_year: '',
         prore_propse_id: '',
@@ -411,7 +418,12 @@ export default {
       }],
       intentos: 0,
       profesionalesOptions: [],
-      errores: ''
+      errores: '',
+      epsOptions: [],
+      epsOptionEmpty: {
+        'code': null,
+        'label': 'Sin EPS'
+      }
     }
   },
   computed: {
@@ -437,6 +449,7 @@ export default {
       setTimeout(() => {
         this.fetchProfileProcessOptions()
         this.fetchOptionsClinicas()
+        this.fetchEps()
         setTimeout(() => {
           this.fetchEstadosProceso()
           this.fetchEspecialidades()
@@ -687,6 +700,23 @@ export default {
           this.errores = err
           if (this.intentos < 2) {
             this.fetchProfiles()
+            this.intentos++
+          }
+        })
+    },
+    fetchEps () {
+      axios.get('/eps/fetch').then((response) => {
+        this.epsOptions = response.data.eps
+        if (this.epsOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.epsOptions.push(this.epsOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchEps()
             this.intentos++
           }
         })

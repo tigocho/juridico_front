@@ -62,6 +62,18 @@
                                     </div>
                                   </div>
                                 </b-form-group>
+                                <b-form-group class="col-md-6" label="EPS" label-for="prore_eps_id">
+                                  <div v-if="proc_id != null && formData.eps_id != null">
+                                    <span class='text'>{{formData.eps.eps_nombre}}</span>
+                                  </div>
+                                  <div v-if="proc_id == null || formData.prore_eps_id == null">
+                                    <b-form-select plain v-model="formData.prore_eps_id" :options="epsOptions" @search="fetchOptionsEps" id="prore_eps_id">
+                                      <template v-slot:first>
+                                        <b-form-select-option :value="null" disabled>Seleccione una eps</b-form-select-option>
+                                      </template>
+                                    </b-form-select>
+                                  </div>
+                                </b-form-group>
                                 <b-form-group class="col-md-6" label="Año del Siniestro*" label-for="prore_year_sinister">
                                   <div v-if="proc_id != null && formData.prore_year_sinister != null">
                                     <span class='text'>{{formData.prore_year_sinister}}</span>
@@ -1421,7 +1433,12 @@ export default {
           disabled: false
         }
       ],
-      users: []
+      users: [],
+      epsOptions: [],
+      epsOptionEmpty: {
+        'code': null,
+        'label': 'Sin EPS'
+      }
     }
   },
   methods: {
@@ -1435,6 +1452,7 @@ export default {
           setTimeout(() => {
             this.fetchEspecialidades()
             this.fetchTypeProcess()
+            this.fetchEps()
             setTimeout(() => {
               this.fetchCity()
               this.fetchCourts()
@@ -1748,6 +1766,23 @@ export default {
       } else if (tipoIdentificacionId === 4) {
         return 'NIT'
       }
+    },
+    fetchEps () {
+      axios.get('/eps/fetch').then((response) => {
+        this.epsOptions = response.data.eps
+        if (this.epsOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.epsOptions.push(this.epsOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchEps()
+            this.intentos++
+          }
+        })
     }
   }
 }
