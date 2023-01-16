@@ -244,6 +244,10 @@
                           <span v-if="process.prore_profile_id == 7" class='text-success'>(ROL DE CLÍNICA - {{ process.profile.prof_name }})</span>
                           <span v-else-if="process.prore_profile_id == 8" class='text-danger'>(ROL DE CLÍNICA: {{ process.profile.prof_name }})</span>
                           <span v-else class='text-warning'>(ROL DE CLÍNICA - {{ process.profile.prof_name }})</span>
+                          <span v-if="process.eps != undefined">
+                            <span v-if="process.eps.eps_id != null"> EPS: {{ process.eps.eps_alias }} </span>
+                            <span v-if="process.eps.eps_id != null && (process.eps.eps_alias != process.eps.eps_nombre)">({{ process.eps.eps_nombre }})</span>
+                          </span>
                         </span>
                       </h4>
                     </template>
@@ -437,6 +441,11 @@
                                   <span>Debe de seleccionar una opción</span>
                                 </div>
                               </ValidationProvider>
+                            </b-form-group>
+                            <b-form-group v-if="epsOptions != null" class="col-md-6" label="EPS" label-for="prore_eps_id">
+                              <v-select v-model="process.prore_eps_id" :options="epsOptions" :reduce="label => label.code" label="label" id="prore_eps_id">
+                                <span slot="no-options">No hay EPS.</span>
+                              </v-select>
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
                               <ValidationProvider name="Fecha del Siniestro" rules="required" v-slot="{ errors }">
@@ -982,6 +991,9 @@ export default {
         this.fetchTypeProcess()
         this.fetchCity()
         this.fetchProcessOptions()
+        setTimeout(() => {
+          this.fetchEps()
+        }, 500)
       }, 800)
     }, 500)
   },
@@ -1201,7 +1213,12 @@ export default {
       }],
       polizasKey: 0,
       poliza_relacion: '',
-      polizas: []
+      polizas: [],
+      epsOptions: [],
+      epsOptionEmpty: {
+        'code': null,
+        'label': 'Sin EPS'
+      }
     }
   },
   methods: {
@@ -2340,6 +2357,23 @@ export default {
       } else {
         return 0
       }
+    },
+    fetchEps () {
+      axios.get('/eps/fetch').then((response) => {
+        this.epsOptions = response.data.eps
+        if (this.epsOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.epsOptions.push(this.epsOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchEps()
+            this.intentos++
+          }
+        })
     }
   }
 }
