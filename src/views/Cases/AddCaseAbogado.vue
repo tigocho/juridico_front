@@ -220,15 +220,29 @@
                           </b-form-group>
                         </b-row>
                       </b-col>
-                      <b-col lg="12">
-                        <b-form-group label="Titulo*" label-for="case_title">
-                          <b-form-input
+                      <b-col lg="12" md="12">
+                        <b-row>
+                          <b-form-group
                             class="col-md-6"
-                            v-model="caso.case_title"
-                            type="text"
-                            :required="true"
-                          ></b-form-input>
-                        </b-form-group>
+                            label="Titulo*"
+                            label-for="case_title">
+                            <b-form-input
+                              v-model="caso.case_title"
+                              type="text"
+                              :required="true"
+                            ></b-form-input>
+                          </b-form-group>
+                          <b-form-group
+                            class="col-md-6"
+                            label="Fecha de solicitud"
+                            label-for="case_title">
+                            <datetime
+                              class="form-control datetime-formulario"
+                              type="datetime"
+                              v-model="caso.fecha_solicitud" use12-hour>
+                            </datetime>
+                          </b-form-group>
+                        </b-row>
 
                         <b-form-group
                           label="Descripción*"
@@ -303,8 +317,13 @@ import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
 import auth from '@/logic/auth'
+import { Datetime } from 'vue-datetime'
+import 'vue-datetime/dist/vue-datetime.css'
 export default {
   name: 'AddCaseAbogado',
+  components: {
+    datetime: Datetime
+  },
   data () {
     return {
       estadoBoton: '',
@@ -317,6 +336,7 @@ export default {
         abogado_id: '',
         medio_id: '',
         subactividad_id: '',
+        fecha_solicitud: '',
         case_title: '',
         case_description: '',
         caso_process_request_id: '',
@@ -500,6 +520,7 @@ export default {
       data.append('medio_id', this.caso.medio_id)
       data.append('caso_process_request_id', this.caso.caso_process_request_id)
       data.append('caso_status_process_id', this.caso.caso_status_process_id)
+      data.append('fecha_solicitud', this.caso.fecha_solicitud)
 
       let index = 0
       for (let casefile of this.caseFiles) {
