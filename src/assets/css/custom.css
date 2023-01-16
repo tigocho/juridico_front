@@ -99,3 +99,10 @@ import Css
   white-space: normal;
   cursor: pointer;
 }
+
+.datetime-formulario > input.vdatetime-input {
+  width: 100%!important;
+  border: 0px!important;
+  font-size: 14px!important;
+  color: #a09e9e!important;
+}
