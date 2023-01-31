@@ -342,7 +342,7 @@ export default {
       this.getSubactividades()
     }
     this.subactividad_id = this.case_subactividad_id
-    this.caseFechaSolicitud = this.case_fecha_solicitud !== undefined ? this.case_fecha_solicitud.replace(' ', 'T') : ''
+    this.caseFechaSolicitud = (this.case_fecha_solicitud !== undefined && this.case_fecha_solicitud !== null) ? this.case_fecha_solicitud.replace(' ', 'T') : ''
   },
   methods: {
     addFile () {

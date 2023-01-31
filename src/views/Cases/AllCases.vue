@@ -5,10 +5,14 @@
       <b-modal id="modal-editar-caso" size="lg" title="Editar Caso" hide-footer>
         <FormCase
           :case_id="caso.caso_id"
+          :case_clinica_id="caso.caso_clinica_id"
           :case_title="caso.caso_titulo"
           :case_description="caso.caso_descripcion"
+          :case_actividad_id="caso.act_id"
+          :case_subactividad_id="caso.caso_subact_id"
+          :case_fecha_solicitud="caso.caso_fecha_solicitud"
           :onEdit="true"
-          :reloadFunciont="this.getAllCases"
+          :reloadFunciont="this.getCases"
         />
       </b-modal>
     </div>
