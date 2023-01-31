@@ -14,8 +14,8 @@ import VueSweetalert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import axios from 'axios'
 axios.defaults.baseURL = process.env.NODE_ENV === 'production'
-  ? 'http://181.129.171.26:9898/juridico_api/public/api'
-  : 'http://localhost/ospedale/juridico_api/public/api'
+  ? process.env.VUE_APP_API_ENDPOINT
+  : process.env.VUE_APP_API_ENDPOINT_DEV
 // axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
 var token = localStorage.getItem('token')
 if (token) {
