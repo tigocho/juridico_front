@@ -9,7 +9,31 @@
                 class="justify-content-center text-center align-items-center"
               >
                 <b-col lg="10">
-                  <b-row v-if="!onEdit">
+                  <b-row>
+                    <b-col v-if="clinicasUser.length > 1" xs="12">
+                      <b-form-group label="Clinica*" label-for="user_id">
+                        <v-select
+                          v-model="caseClinicaId"
+                          :options="clinicasUser"
+                          :reduce="(label) => label.code"
+                          label="label"
+                          id="user_id"
+                        >
+                          <span slot="no-options">No hay Clinicas.</span>
+                        </v-select>
+                      </b-form-group>
+                    </b-col>
+                    <b-col xs="12">
+                      <b-form-group label="Asunto*" label-for="case_title">
+                        <b-form-input
+                          v-model="caseTitle"
+                          type="text"
+                          :required="true"
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                  <b-row>
                     <b-form-group
                       class="col-md-6"
                       label="Actividad*"
@@ -21,7 +45,7 @@
                               v-slot="{ errors }"
                             >
                       <v-select
-                        v-model="actividad_id"
+                        v-model="caseActividadId"
                         :options="actividadesOptions"
                         :reduce="(label) => label.code"
                         label="label"
@@ -72,26 +96,26 @@
                     </b-form-group>
                   </b-row>
                   <b-row>
-                    <b-col v-if="clinicasUser.length > 1" xs="12">
-                      <b-form-group label="Clinica*" label-for="user_id">
-                        <v-select
-                          v-model="caseClinicaId"
-                          :options="clinicasUser"
-                          :reduce="(label) => label.code"
-                          label="label"
-                          id="user_id"
-                        >
-                          <span slot="no-options">No hay Clinicas.</span>
-                        </v-select>
-                      </b-form-group>
-                    </b-col>
                     <b-col xs="12">
-                      <b-form-group label="Asunto*" label-for="case_title">
-                        <b-form-input
-                          v-model="caseTitle"
-                          type="text"
-                          :required="true"
-                        ></b-form-input>
+                      <b-form-group
+                        label="Fecha de solicitud*"
+                        label-for="case_title">
+                        <ValidationProvider
+                          name="Solicitud"
+                          rules="required"
+                          v-slot="{ errors }"
+                        >
+                          <datetime
+                            class="form-control datetime-formulario"
+                            type="datetime"
+                            v-model="caseFechaSolicitud" use12-hour
+                            :class="errors.length > 0 ? ' is-invalid' : ''"
+                          >
+                          </datetime>
+                          <div class="invalid-feedback">
+                            <span>Debe de seleccionar una fecha</span>
+                          </div>
+                        </ValidationProvider>
                       </b-form-group>
                     </b-col>
                   </b-row>
@@ -250,6 +274,7 @@
 import axios from 'axios'
 import Vue from 'vue'
 import auth from '@/logic/auth'
+import { Datetime } from 'vue-datetime'
 import fileDownload from 'js-file-download'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 export default {
@@ -259,10 +284,17 @@ export default {
     case_title: String,
     case_description: String,
     case_clinica_id: Number,
+    act_id: Number,
+    case_actividad_id: Number,
+    case_subactividad_id: Number,
+    case_fecha_solicitud: String,
     onEdit: Boolean,
     reloadFunciont: Function,
     archivosCaso: Array,
     archivosSeguimiento: Array
+  },
+  components: {
+    datetime: Datetime
   },
   data () {
     return {
@@ -271,9 +303,11 @@ export default {
       caseTitle: '',
       caseDescription: '',
       caseClinicaId: null,
+      caseActividadId: null,
+      subactividad_id: null,
+      caseFechaSolicitud: null,
       actividad_id: '',
       subactividadesOptions: [],
-      subactividad_id: '',
       textoBoton: 'Guardar Caso',
       estadoBoton: '',
       caseFiles: [
@@ -303,6 +337,12 @@ export default {
     this.caseTitle = this.case_title
     this.caseDescription = this.case_description
     this.caseClinicaId = this.case_clinica_id
+    this.caseActividadId = this.case_actividad_id
+    if (this.caseActividadId !== undefined) {
+      this.getSubactividades()
+    }
+    this.subactividad_id = this.case_subactividad_id
+    this.caseFechaSolicitud = this.case_fecha_solicitud !== undefined ? this.case_fecha_solicitud.replace(' ', 'T') : ''
   },
   methods: {
     addFile () {
@@ -329,6 +369,8 @@ export default {
       data.append('case_title', this.caseTitle)
       data.append('case_description', this.caseDescription)
       data.append('case_clinica_id', this.caseClinicaId)
+      data.append('case_subactividad_id', this.subactividad_id)
+      data.append('case_fecha_solicitud', this.caseFechaSolicitud)
 
       let index = 0
       for (let casefile of this.caseFiles) {
@@ -352,6 +394,12 @@ export default {
           }
           Vue.swal(res.data.message)
         })
+          .catch((e) => {
+            Vue.swal('Error al tratar de actualizar el caso.')
+            this.estadoBoton = ''
+            this.textoBoton = 'Guardar Caso'
+            this.validData = true
+          })
       } else {
         this.estadoBoton = ''
         this.textoBoton = 'Guardar Caso'
@@ -421,7 +469,7 @@ export default {
       this.fechaSolucion = null
       this.fechaSolucionKey++
       axios
-        .get('/subactividades/fetch/' + this.actividad_id)
+        .get('/subactividades/fetch/' + this.caseActividadId)
         .then((response) => {
           this.subactividadesOptions = response.data.subactividades
         })
