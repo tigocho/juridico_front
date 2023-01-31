@@ -234,13 +234,24 @@
                           </b-form-group>
                           <b-form-group
                             class="col-md-6"
-                            label="Fecha de solicitud"
+                            label="Fecha de solicitud*"
                             label-for="case_title">
-                            <datetime
-                              class="form-control datetime-formulario"
-                              type="datetime"
-                              v-model="caso.fecha_solicitud" use12-hour>
-                            </datetime>
+                            <ValidationProvider
+                              name="Solicitud"
+                              rules="required"
+                              v-slot="{ errors }"
+                            >
+                              <datetime
+                                class="form-control datetime-formulario"
+                                type="datetime"
+                                v-model="caso.fecha_solicitud" use12-hour
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
+                              >
+                              </datetime>
+                              <div class="invalid-feedback">
+                                <span>Debe de seleccionar una fecha</span>
+                              </div>
+                            </ValidationProvider>
                           </b-form-group>
                         </b-row>
 
