@@ -15,7 +15,7 @@ import auth from '@/logic/auth'
 
 export default {
   name: 'GraficaExitoEstimaciones',
-  props: ['element', 'clinicasIds'],
+  props: ['element', 'clinicasIds', 'tipoProceso'],
   mounted () {
     this.obtenerDatosNivelExito()
   },
@@ -32,7 +32,7 @@ export default {
     return {
       procesosNivelExito: [],
       nivelExitoEstimacionesKey: 0,
-      heightGrafica: 250,
+      heightGrafica: 150,
       intentos: 0,
       errores: {},
       GraficaExitoEstimaciones: {
@@ -44,13 +44,21 @@ export default {
           category: ['resultado'],
           data: [
             {
-              resultado: 'A Favor',
+              resultado: 'Pretensiones Totales',
               porcentajes: 0
             },
             {
-              resultado: 'En Contra',
+              resultado: 'Pagado clínica',
               porcentajes: 0
             }
+            // {
+            //   resultado: 'A Favor',
+            //   porcentajes: 0
+            // },
+            // {
+            //   resultado: 'En Contra',
+            //   porcentajes: 0
+            // }
           ]
         }
       }
@@ -61,16 +69,22 @@ export default {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
         let _this = this
         let clinicasConsulta = null
+        let tipoProcesoConsulta = null
         if (_this.clinicasIds != null && _this.clinicasIds !== undefined) {
           clinicasConsulta = _this.clinicasIds
         }
-        axios.get('/process/obtener-datos-nivel-exito/' + this.userLogged.usr_id + '/' + clinicasConsulta).then(res => {
+        if (_this.tipoProceso != null && _this.tipoProceso !== undefined) {
+          tipoProcesoConsulta = _this.tipoProceso
+        }
+        axios.get('/process/obtener-datos-nivel-exito/' + this.userLogged.usr_id + '/' + clinicasConsulta + '/' + tipoProcesoConsulta).then(res => {
           if (res.data.status_code === 200) {
             this.intentos = 0
             this.errores = {}
             this.procesosNivelExito = res.data.process
-            this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesAFavor()
-            this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
+            this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesTotal()
+            this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesPagadoClinica()
+            // this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesAFavor()
+            // this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
             this.nivelExitoEstimacionesKey++
           } else {
             Vue.swal('Ocurrió un error tratando de obtener los datos')
@@ -85,6 +99,20 @@ export default {
           })
       } else {
         Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
+    nivelExitoformulaEstimacionesTotal () {
+      if (this.procesosNivelExito != null) {
+        return (parseInt(this.procesosNivelExito[6].total_estimaciones))
+      } else {
+        return 0
+      }
+    },
+    nivelExitoformulaEstimacionesPagadoClinica () {
+      if (this.procesosNivelExito != null) {
+        return (parseInt(this.procesosNivelExito[6].total_pagado_clinica))
+      } else {
+        return 0
       }
     },
     nivelExitoformulaEstimacionesAFavor () {

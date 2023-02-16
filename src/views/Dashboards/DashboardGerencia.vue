@@ -200,10 +200,12 @@
           </b-row>
           <b-row>
             <b-col lg="6">
-              <GraficaExitoPretensiones :clinicasIds="clinicasIds" />
+              <GraficaExitoPretensiones :clinicasIds="clinicasIds"
+              :tipoProceso="tipoProceso" />
             </b-col>
             <b-col lg="6">
-              <GraficaExitoEstimaciones :clinicasIds="clinicasIds"/>
+              <GraficaExitoEstimaciones :clinicasIds="clinicasIds"
+              :tipoProceso="tipoProceso"/>
             </b-col>
           </b-row>
           <b-row>
