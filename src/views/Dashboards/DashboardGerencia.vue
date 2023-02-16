@@ -10,7 +10,7 @@
       </b-col>
     </b-row>
     <b-row v-else>
-      <b-col lg="12">
+      <b-col lg="12" :key="graficaValoresPorClinicaKey">
         <b-row>
           <b-col md="6" lg="4">
             <iq-card
@@ -92,11 +92,10 @@
                   <div class="text-right">
                     <h2 class="mb-0">
                       <span class="counter">{{
-                        formatoEnMillones(formatPrice(totalPretensiones))
+                        formatPrice(totalPretensiones)
                       }}</span>
                     </h2>
                     <h5 class="">Total pretensiones</h5>
-                    <small>en millones</small>
                   </div>
                 </div>
               </template>
@@ -115,11 +114,10 @@
                   <div class="text-right">
                     <h2 class="mb-0">
                       <span class="counter">{{
-                        formatoEnMillones(formatPrice(totalEstimacionesPretensiones))
+                        formatPrice(totalEstimacionesPretensiones)
                       }}</span>
                     </h2>
                     <h5 class="">Total estimación pretensiones</h5>
-                    <small>en millones</small>
                   </div>
                 </div>
               </template>
@@ -278,6 +276,7 @@ export default {
   data: function () {
     return {
       graficaProcesosPorClinicaKey: 0,
+      graficaValoresPorClinicaKey: 0,
       errors: [],
       clinicasIds: null,
       clinicaOptions: [],
@@ -334,6 +333,7 @@ export default {
         this.obtenerTotalEstimacionesPretensiones()
         this.obtenerTotalPretensiones()
         this.graficaProcesosPorClinicaKey++
+        this.graficaValoresPorClinicaKey++
       }, 800)
     },
     barraCargando () {
@@ -344,7 +344,7 @@ export default {
       }, 100)
     },
     obtenerTotalEstimacionesPretensiones: function () {
-      axios.get('/process/obtenerTotalEstimacionesPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
+      axios.get('/process/obtenerTotalEstimacionesPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
         if (res.data.status_code === 200) {
           this.totalEstimacionesPretensiones = res.data.estimaciones_pretensiones
         } else {
@@ -353,7 +353,7 @@ export default {
       })
     },
     obtenerTotalPretensiones: function () {
-      axios.get('/process/obtenerTotalPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds).then(res => {
+      axios.get('/process/obtenerTotalPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
         if (res.data.status_code === 200) {
           this.totalPretensiones = res.data.pretensiones
         } else {
@@ -390,6 +390,9 @@ export default {
     },
     formatPrice (value) {
       let val = (value / 1).toFixed(0).replace('.', ',')
+      if (value === 0) {
+        return '$0'
+      }
       return '$' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     },
     formatoEnMillones (value) {
