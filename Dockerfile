@@ -1,22 +1,44 @@
-FROM node:14.16.1-alpine3.13 as build-stage
+# FROM node:14.16.1-alpine3.13 as build-stage
+# # make the 'app' folder the current working directory
+# WORKDIR /app
+# # copy 'package.json' to install dependencies
+# COPY package*.json ./
+# # install dependencies
+# RUN npm cache clean --force
+# RUN apk add --no-cache git
+# RUN npm install
+# # copy files and folders to the current working directory (i.e. 'app' folder)
+# COPY . .
+# # build app for production with minification
+# RUN npm run build
+
+# FROM nginx:1.13.12-alpine as production-stage
+
+# ## Remove default nginx index page
+# RUN rm -rf /usr/share/nginx/html/*
+
+# COPY --from=build-stage /app/dist /usr/share/nginx/html
+# EXPOSE 80
+# CMD ["nginx", "-g", "daemon off;"]
+# FROM node:lts-alpine
+FROM node:14.16.1-alpine3.13
+# install simple http server for serving static content
+RUN npm install -g http-server
+
 # make the 'app' folder the current working directory
 WORKDIR /app
-# copy 'package.json' to install dependencies
+
+# copy both 'package.json' and 'package-lock.json' (if available)
 COPY package*.json ./
-# install dependencies
-RUN npm cache clean --force
-RUN apk add --no-cache git
+
+# install project dependencies
 RUN npm install
-# copy files and folders to the current working directory (i.e. 'app' folder)
+
+# copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
+
 # build app for production with minification
 RUN npm run build
 
-FROM nginx:1.13.12-alpine as production-stage
-
-## Remove default nginx index page
-RUN rm -rf /usr/share/nginx/html/*
-
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 8080
+CMD [ "http-server", "dist" ]

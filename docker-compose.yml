@@ -13,4 +13,4 @@ services:
       - juridico_api_juridico-network
 networks:
   juridico_api_juridico-network:
-    external: true
+    external: false

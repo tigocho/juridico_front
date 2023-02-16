@@ -315,6 +315,22 @@ export default {
             {
               resultado: 'En Contra',
               porcentajes: 0
+            },
+            {
+              resultado: 'Desistimiento',
+              porcentajes: 0
+            },
+            {
+              resultado: 'Rechazado',
+              porcentajes: 0
+            },
+            {
+              resultado: 'Conciliado',
+              porcentajes: 0
+            },
+            {
+              resultado: 'Sin asignar',
+              porcentajes: 0
             }
           ]
         }
@@ -333,6 +349,22 @@ export default {
             },
             {
               resultado: 'En Contra',
+              porcentajes: 0
+            },
+            {
+              resultado: 'Desistimiento',
+              porcentajes: 0
+            },
+            {
+              resultado: 'Rechazado',
+              porcentajes: 0
+            },
+            {
+              resultado: 'Conciliado',
+              porcentajes: 0
+            },
+            {
+              resultado: 'Sin asignar',
               porcentajes: 0
             }
           ]
@@ -452,6 +484,10 @@ export default {
             // this.procesosNivelExito = res.data.process
             this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesAFavor()
             this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = this.nivelExitoformulaPretensionesEnContra()
+            this.GraficaExitoPretensiones.bodyData.data[2].porcentajes = this.nivelExitoformulaPretensionesDesistimiento()
+            this.GraficaExitoPretensiones.bodyData.data[3].porcentajes = this.nivelExitoformulaPretensionesRechazado()
+            this.GraficaExitoPretensiones.bodyData.data[4].porcentajes = this.nivelExitoformulaPretensionesConciliado()
+            this.GraficaExitoPretensiones.bodyData.data[5].porcentajes = this.nivelExitoformulaPretensionesSinAsignar()
             this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesAFavor()
             this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
             this.nivelExitoPretensionesKey++
