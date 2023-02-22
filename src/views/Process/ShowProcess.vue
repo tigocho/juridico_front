@@ -635,16 +635,20 @@
                             <b-form-group class="col-md-6" label="Medida Cautelar" label-for="prore_medida_cautelar">
                               <b-form-input v-model="process.prore_medida_cautelar" type="text" placeholder="Medida Cautelar"></b-form-input>
                             </b-form-group>
+                            <b-form-group v-if="process.prore_estado === true" class="col-md-6" label="Fecha terminado del proceso" label-for="fecha_fin_proceso">
+                              <b-form-input v-model="process.prore_fecha_fin" type="date" placeholder="Fecha fin del proceso"></b-form-input>
+                            </b-form-group>
                             <b-form-group class="col-md-6" label="Sentencia Final" label-for="prore_sentencia_final">
                               <b-form-select plain v-model="process.prore_sentencia_final" id="prore_sentencia_final">
                                 <template v-slot:first>
                                   <b-form-select-option :value="null" disabled>Seleccione una opción</b-form-select-option>
-                                  <b-form-select-option :value="'Ninguna'">Ninguna</b-form-select-option>
                                   <b-form-select-option :value="'A Favor'" >A Favor</b-form-select-option>
                                   <b-form-select-option :value="'En Contra'">En Contra</b-form-select-option>
                                   <b-form-select-option :value="'Desistimiento'">Desistimiento</b-form-select-option>
                                   <b-form-select-option :value="'Rechazado'">Rechazado</b-form-select-option>
                                   <b-form-select-option :value="'Conciliado'">Conciliado</b-form-select-option>
+                                  <b-form-select-option :value="'Conciliado a favor'">Conciliado a favor</b-form-select-option>
+                                  <b-form-select-option :value="'Conciliado en contra'">Conciliado en contra</b-form-select-option>
                                 </template>
                               </b-form-select>
                             </b-form-group>
