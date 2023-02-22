@@ -394,7 +394,6 @@ export default {
           .catch((err) => {
             this.errores = err
             if (this.intentos < 2) {
-              console.log('jebjebaje')
               this.obtenerDatosNivelExito()
               this.intentos++
             }
