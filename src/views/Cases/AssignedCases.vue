@@ -118,12 +118,6 @@
                     Editar
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="row.item.caso_estado_id != 3"
-                    @click="cambiarEstado(row.item.caso_id, 3)"
-                  >
-                    En Espera
-                  </b-dropdown-item>
-                  <b-dropdown-item
                     v-if="row.item.caso_estado_id != 2"
                     @click="cambiarEstado(row.item.caso_id, 2)"
                   >
