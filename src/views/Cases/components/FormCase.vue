@@ -429,6 +429,7 @@ export default {
       data.append('user_id', this.userLogged.usr_id)
       data.append('clinica_id', this.caseClinicaId)
       data.append('subactividad_id', this.subactividad_id)
+      data.append('case_fecha_solicitud', this.caseFechaSolicitud)
 
       let index = 0
       for (let casefile of this.caseFiles) {
