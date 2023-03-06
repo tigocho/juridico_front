@@ -389,10 +389,11 @@ export default {
       data.append('cantidad_archivos', index)
       if (this.validData) {
         axios.post('/casos/update/' + this.case_id, data).then((res) => {
-          if (res.status === 200) {
-            this.reloadFunciont()
-          }
+          this.reloadFunciont()
           Vue.swal(res.data.message)
+          this.estadoBoton = ''
+          this.textoBoton = 'Guardar Caso'
+          this.validData = true
         })
           .catch((e) => {
             Vue.swal('Error al tratar de actualizar el caso.')

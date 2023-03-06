@@ -25,7 +25,7 @@
           </template>
           <template v-slot:body>
             <b-row>
-              <b-col sm="3" md="3" class="my-1">
+              <b-col sm="2" md="2" class="my-1">
                 <b-form-group
                   label="Por página"
                   label-for="per-page-select"
@@ -48,7 +48,29 @@
 
               <b-col sm="3" md="3" class="my-1">
                 <b-form-group
-                  label="Filtrar"
+                  label="Estado"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="2"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="filtros.estado_id"
+                    :options="estadosOptions"
+                    @input="getCasosAssignados()"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="estado_select"
+                  >
+                    <span slot="no-options">No hay Estados.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+              <b-col sm="3" md="3" class="my-1">
+                <b-form-group
+                  label="Clinicas"
                   label-cols-sm="2"
                   label-cols-md="2"
                   label-cols-lg="3"
@@ -56,17 +78,24 @@
                   label-size="sm"
                   class="mb-0"
                 >
-                  <v-select>
-                    <span slot="no-options">No hay estados.</span>
+                  <v-select
+                    v-model="filtros.clinica_id"
+                    :options="clinicasOptions"
+                    @input="getCasosAssignados()"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="clinica_select"
+                  >
+                    <span slot="no-options">No hay Clinicas.</span>
                   </v-select>
                 </b-form-group>
               </b-col>
 
-              <b-col sm="6" md="6" class="my-1">
+              <b-col sm="4" md="4" class="my-1">
                 <b-form-group
                   label="Buscar"
                   label-for="filter-input"
-                  label-cols-sm="3"
+                  label-cols-sm="2"
                   label-align-sm="right"
                   label-size="sm"
                   class="mb-0"
@@ -106,32 +135,81 @@
               @filtered="onFiltered"
               :tbody-tr-class="rowClass"
             >
-              <template #cell(name)="row">
-                {{ row.value.first }} {{ row.value.last }}
+              <template #cell(show_details)="row">
+                <b-button
+                  variant="primary"
+                  size="sm"
+                  @click="row.toggleDetails"
+                  class="mr-2"
+                >
+                  {{ row.detailsShowing ? '-' : '+' }}
+                </b-button>
               </template>
-              <template #cell(actions)="row">
+              <template #row-details="data">
+                <b-card>
+                  <b-row class="mb-12">
+                    <b-col sm="12" class="text-sm-left"
+                      ><strong>Descripción: </strong>{{ data.item.caso_descripcion }}</b-col
+                    >
+                  </b-row>
+                  <b-row>
+                    <!-- <b-col>{{ data.item.caso_descripcion }}</b-col> -->
+                    <b-col sm="2" class="text-sm-left"
+                      ><strong>Servicio: </strong>{{ data.item.servicio }}</b-col
+                    >
+                    <b-col sm="3" class="text-sm-left"
+                      ><strong>Subactividad: </strong>{{ data.item.subactividad }}</b-col
+                    >
+                  </b-row>
+                </b-card>
+              </template>
+              <template #cell(radicado)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.radicado }} <img :src="newCase" width="25px" class="img-fluid" alt="logo"></b>
+                <span v-else>{{ data.item.radicado }}</span>
+              </template>
+              <template #cell(caso_titulo)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.caso_titulo }}</b>
+                <span v-else>{{ data.item.caso_titulo }}</span>
+              </template>
+              <template #cell(estado)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.estado }}</b>
+                <span v-else>{{ data.item.estado }}</span>
+              </template>
+              <template #cell(caso_fecha_apertura)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.caso_fecha_apertura }}</b>
+                <span v-else>{{ data.item.caso_fecha_apertura }}</span>
+              </template>
+              <template #cell(caso_fecha_estimada_solucion)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.caso_fecha_estimada_solucion }}</b>
+                <span v-else>{{ data.item.caso_fecha_estimada_solucion }}</span>
+              </template>
+              <template #cell(solicitante)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.solicitante }}</b>
+                <span v-else>{{ data.item.solicitante }}</span>
+              </template>
+              <template #cell(actions)="data">
                 <b-dropdown variant="primary" text="Acciones">
-                  <b-dropdown-item @click="verCaso(row.item.caso_id)">
+                  <b-dropdown-item @click="verCaso(data.item.caso_id)">
                     Ver
                   </b-dropdown-item>
-                  <b-dropdown-item @click="editarCaso(row.item)">
+                  <b-dropdown-item @click="editarCaso(data.item)">
                     Editar
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="row.item.caso_estado_id != 2"
-                    @click="cambiarEstado(row.item.caso_id, 2)"
+                    v-if="data.item.caso_estado_id != 2"
+                    @click="cambiarEstado(data.item, 2)"
                   >
                     En Proceso
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="row.item.caso_estado_id != 4"
-                    @click="cambiarEstado(row.item.caso_id, 4)"
+                    v-if="data.item.caso_estado_id != 4"
+                    @click="cambiarEstado(data.item, 4)"
                   >
                     Cerrar
                   </b-dropdown-item>
                   <b-dropdown-item
                     v-if="deletedProfiles.includes(user_profile)"
-                    @click="eliminarCaso(row.item.caso_id)"
+                    @click="eliminarCaso(data.item)"
                   >
                     Eliminar
                   </b-dropdown-item>
@@ -171,14 +249,22 @@ export default {
   },
   data () {
     return {
+      newCase: require('@/assets/images/page-img/new-case-blue.png'),
       casos: [],
       caso: {},
       estado: 'd-none',
       deletedProfiles: [1, 12],
+      filtros: {
+        clinica_id: '',
+        estados_id: ''
+      },
+      clinicasOptions: [],
+      estadosOptions: [],
       bRowLast: {},
       fields: [
+        { label: 'Ver Más', key: 'show_details', class: 'text-left' },
+        { label: 'Radicado', key: 'radicado' },
         { label: 'Título', key: 'caso_titulo', class: 'text-left' },
-        { label: 'Descripción', key: 'caso_descripcion', class: 'text-left' },
         { label: 'Estado', key: 'estado', class: 'text-left' },
         {
           label: 'Fecha de Apertura',
@@ -225,6 +311,8 @@ export default {
   mounted () {
     xray.index()
     this.getCasosAssignados()
+    this.getUserClinicas()
+    this.getEstados()
   },
   methods: {
     onFiltered (filteredItems) {
@@ -235,17 +323,33 @@ export default {
     getCasosAssignados () {
       this.$bvModal.hide('modal-editar-caso')
       axios
-        .get('/casos-asignados/' + this.userLogged.usr_id)
+        .post('/casos-asignados', this.filtros)
         .then((response) => {
           this.casos = response.data.casos
           this.totalRows = this.casos.length
           this.user_profile = this.userLogged.user_profile
         })
     },
+    getUserClinicas () {
+      axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
+        if (res.status === 200) {
+          this.clinicasOptions = res.data.clinicas
+        } else {
+          Vue.swal(res.data.message)
+        }
+      })
+    },
+    getEstados () {
+      axios.get('/estados/fetch').then((response) => {
+        this.estadosOptions = response.data.estados
+      })
+    },
     verCaso (casoId) {
+      this.casoVisto(casoId)
       this.$router.push({ path: `/cases/cases-show/${casoId}` })
     },
     editarCaso (caso) {
+      this.casoVisto(caso.caso_id)
       this.caso = caso
       this.$bvModal.show('modal-editar-caso')
     },
@@ -262,6 +366,7 @@ export default {
             .get('/casos/delete/' + casoId)
             .then((res) => {
               if (res.status === 200) {
+                this.casoVisto(casoId)
                 this.getCasosAssignados()
               }
               Vue.swal(res.data.message)
@@ -293,6 +398,7 @@ export default {
             .get('/casos-estado/' + casoId + '/' + estadoId)
             .then((res) => {
               if (res.status === 200) {
+                this.casoVisto(casoId)
                 this.getCasosAssignados()
               }
 
@@ -308,7 +414,17 @@ export default {
       })
     },
     rowClass (item) {
-      if (item.caso_estado_id === 3) return 'table-devolucion'
+      if (item !== null && item.caso_estado_id === 3) return 'table-devolucion'
+    },
+    casoVisto (casoId) {
+      axios.post('/casos/leido/' + casoId)
+        .then((res) => {
+          this.casos.map(function (dato) {
+            if (dato.caso_id === casoId) {
+              dato.lei_leido = true
+            }
+          })
+        })
     }
   }
 }
