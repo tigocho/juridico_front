@@ -353,7 +353,7 @@ export default {
       this.caso = caso
       this.$bvModal.show('modal-editar-caso')
     },
-    eliminarCaso (casoId) {
+    eliminarCaso (caso) {
       Swal.fire({
         icon: 'warning',
         title: '¿Estás seguro?',
@@ -363,10 +363,10 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           axios
-            .get('/casos/delete/' + casoId)
+            .get('/casos/delete/' + caso.caso_id)
             .then((res) => {
               if (res.status === 200) {
-                this.casoVisto(casoId)
+                this.casoVisto(caso.caso_id)
                 this.getCasosAssignados()
               }
               Vue.swal(res.data.message)
@@ -380,7 +380,7 @@ export default {
         }
       })
     },
-    cambiarEstado (casoId, estadoId) {
+    cambiarEstado (caso, estadoId) {
       Swal.fire({
         icon: 'warning',
         title: '¿Estás seguro?',
@@ -395,10 +395,10 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           axios
-            .get('/casos-estado/' + casoId + '/' + estadoId)
+            .get('/casos-estado/' + caso.caso_id + '/' + estadoId)
             .then((res) => {
               if (res.status === 200) {
-                this.casoVisto(casoId)
+                this.casoVisto(caso.caso_id)
                 this.getCasosAssignados()
               }
 
