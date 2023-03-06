@@ -138,13 +138,21 @@
                   {{ row.detailsShowing ? '-' : '+' }}
                 </b-button>
               </template>
-              <template #row-details="row">
+              <template #row-details="data">
                 <b-card>
-                  <b-row class="mb-2">
-                    <b-col sm="3" class="text-sm-right"
-                      ><strong>Id:</strong></b-col
+                  <b-row class="mb-12">
+                    <b-col sm="12" class="text-sm-left"
+                      ><strong>Descripción: </strong>{{ data.item.caso_descripcion }}</b-col
                     >
-                    <b-col>{{ row.item.caso_id }}</b-col>
+                  </b-row>
+                  <b-row>
+                    <!-- <b-col>{{ data.item.caso_descripcion }}</b-col> -->
+                    <b-col sm="2" class="text-sm-left"
+                      ><strong>Servicio: </strong>{{ data.item.servicio }}</b-col
+                    >
+                    <b-col sm="3" class="text-sm-left"
+                      ><strong>Subactividad: </strong>{{ data.item.subactividad }}</b-col
+                    >
                   </b-row>
                 </b-card>
               </template>
@@ -182,6 +190,7 @@ export default {
   },
   data () {
     return {
+      newCase: require('@/assets/images/page-img/new-case-blue.png'),
       casos: [],
       caso: {},
       estadoId: '',
@@ -191,8 +200,8 @@ export default {
       bRowLast: {},
       fields: [
         { label: 'Ver Más', key: 'show_details', class: 'text-left' },
+        { label: 'Radicado', key: 'radicado' },
         { label: 'Título', key: 'caso_titulo', class: 'text-left' },
-        { label: 'Descripción', key: 'caso_descripcion', class: 'text-left' },
         { label: 'Estado', key: 'estado', class: 'text-left' },
         {
           label: 'Fecha de Apertura',
@@ -301,7 +310,7 @@ export default {
       })
     },
     rowClass (item) {
-      if (item.est_id === 3) return 'table-devolucion'
+      if (item !== null && item.caso_estado_id === 3) return 'table-devolucion'
     }
   }
 }
