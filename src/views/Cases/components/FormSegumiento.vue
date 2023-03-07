@@ -24,26 +24,24 @@
                     <b-col>
                       <b-form-group label="Tipo" label-for="tipo_id">
                         <ValidationProvider
-                              name="Seguimiento"
-                              rules="required"
-                              v-slot="{ errors }"
-                            >
-                        <v-select
-                          v-model="tiposSegumientoId"
-                          :options="tiposSegumientoOptions"
-                          :reduce="(label) => label.code"
-                          label="label"
-                          id="tipo_id"
-                          :class="errors.length > 0 ? ' is-invalid' : ''"
+                          name="Seguimiento"
+                          rules="required"
+                          v-slot="{ errors }"
                         >
-                          <span slot="no-options"
-                            >No hay Tipos de Actividad.</span
+                          <v-select
+                            v-model="tiposSegumientoId"
+                            :options="tiposSegumientoOptions"
+                            :reduce="(label) => label.code"
+                            label="label"
+                            id="tipo_id"
+                            :class="errors.length > 0 ? ' is-invalid' : ''"
                           >
-                        </v-select>
-                        <div class="invalid-feedback">
-                                <span>Debe de seleccionar un tipo de Seguimiento</span>
-                              </div>
-                            </ValidationProvider>
+                            <span slot="no-options">No hay Tipos de Actividad.</span>
+                          </v-select>
+                          <div class="invalid-feedback">
+                            <span>Debe de seleccionar un tipo de Seguimiento</span>
+                          </div>
+                        </ValidationProvider>
                       </b-form-group>
                     </b-col>
                   </b-row>
@@ -133,7 +131,7 @@ import auth from '@/logic/auth'
 export default {
   name: 'FormSegumiento',
   props: {
-    case_id: String,
+    case_id: Number,
     onCreate: Function,
     onCancel: Function
   },
@@ -187,7 +185,7 @@ export default {
     },
     crearSeguimiento () {
       const data = new FormData()
-
+      this.validData = true
       data.append('seguimiento_title', this.seguimiento_title)
       data.append('seguimiento_description', this.seguimiento_description)
       data.append('case_id', this.case_id)
