@@ -241,6 +241,7 @@ export default {
       if (auth.getUserLogged() !== undefined) {
         return JSON.parse(auth.getUserLogged())
       } else {
+        this.logout()
         return null
       }
     }
