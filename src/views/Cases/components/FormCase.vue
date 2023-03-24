@@ -306,7 +306,6 @@ export default {
       caseActividadId: null,
       subactividad_id: null,
       caseFechaSolicitud: null,
-      caseFechaRadicacion: null,
       actividad_id: '',
       subactividadesOptions: [],
       textoBoton: 'Guardar Caso',
@@ -432,7 +431,6 @@ export default {
       data.append('clinica_id', this.caseClinicaId)
       data.append('subactividad_id', this.subactividad_id)
       data.append('case_fecha_solicitud', this.caseFechaSolicitud)
-      data.append('case_fecha_radicacion', this.caseFechaRadicacion)
 
       let index = 0
       for (let casefile of this.caseFiles) {
