@@ -139,30 +139,36 @@
                   <iq-card>
                     <template v-slot:headerTitle>
                       <h5 class="card-title">
-                        Radicado
+                        Radicado interno
                         {{
                           new Date(caso.caso_fecha_apertura).getFullYear() +
                           '-' +
                           formatId(String(caso.caso_id))
                         }}
-                      </h5>
-                    </template>
-                    <template v-slot:headerAction>
-                      <b-button
+                        <b-button
                         v-if="
                           asignarProfiles.includes(user_profile) &&
                           caso.abogado === 'Por Asignar'
                         "
                         variant="secondary"
-                        style="margin-left: 5px"
                         @click="asignarCaso(caso)"
                         >Asignar Caso</b-button
                       >
-                      <h4 v-else>
-                        <b-badge variant="secondary">
+                      <span v-else>
+                        <b-badge variant="warning" class="mr-1">
+                          <i class="ri-time-fill"></i>
                           {{ caso.estado }}</b-badge
                         >
-                      </h4>
+                      </span>
+                      </h5>
+                    </template>
+                    <template v-slot:headerAction>
+                      <b-button
+                        variant="success"
+                        style="margin-right: 5px"
+                      >
+                        <i class="ri-printer-line"></i>Imprimir
+                      </b-button>
                       <b-button
                         variant="primary"
                         v-if="caso.est_id !== 4"
@@ -194,7 +200,7 @@
                         </b-row>
                         <b-row>
                           <b-col>
-                            <strong>Clínica: </strong> {{ caso.cli_name }}
+                            <strong>Cliente: </strong> {{ caso.cli_name }}
                           </b-col>
                           <b-col cols="6">
                             <strong>Tipo de Actividad: </strong>
