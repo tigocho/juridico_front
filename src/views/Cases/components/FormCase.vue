@@ -95,7 +95,7 @@
                       </p>
                     </b-form-group>
                   </b-row>
-                  <b-row>
+                  <b-row v-if="!esCliente()">
                     <b-col xs="12">
                       <b-form-group
                         label="Fecha de solicitud*"
@@ -557,6 +557,18 @@ export default {
             })
         }
       })
+    },
+    esCliente () {
+      if (this.userLogged.user_profile === 11) {
+        return true
+      }
+      return false
+    },
+    redimensionCliente () {
+      if (this.userLogged.user_profile === 11) {
+        return '12'
+      }
+      return '6'
     }
   }
 }
