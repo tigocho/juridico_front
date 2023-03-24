@@ -290,7 +290,7 @@
     "roles": [1, 2, 12]
   },
   {
-    "title": "ANS",
+    "title": "Solicitudes",
     "name": "sidebar.ans",
     "is_heading": true,
     "is_active": false,
