@@ -87,7 +87,7 @@ import DataTable from '../views/Tables/DataTable'
 import EditableTable from '../views/Tables/EditableTable'
 import ApexCharts from '../views/Charts/ApexCharts'
 import AmCharts from '../views/Charts/AmCharts'
-import MorrisCharts from '../views/Charts/MorrisCharts'
+// import MorrisCharts from '../views/Charts/MorrisCharts'
 import HighCharts from '../views/Charts/HighCharts'
 import GoogleMaps from '../views/Maps/GoogleMaps'
 import VectorMaps from '../views/Maps/VectorMaps'
@@ -377,13 +377,13 @@ const chartChildRoutes = (prop, mode = false) => [
     name: prop + '.high',
     meta: { dark: mode, auth: true, name: 'High Chart' },
     component: HighCharts
-  },
-  {
-    path: 'morris-charts',
-    name: prop + '.morris',
-    meta: { dark: mode, auth: true, name: 'Mirris Chart' },
-    component: MorrisCharts
   }
+  // {
+  //   path: 'morris-charts',
+  //   name: prop + '.morris',
+  //   meta: { dark: mode, auth: true, name: 'Mirris Chart' },
+  //   component: MorrisCharts
+  // }
 ]
 
 const appChildRoute = (prop, mode = false) => [

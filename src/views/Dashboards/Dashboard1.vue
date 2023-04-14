@@ -68,9 +68,6 @@
                 <template v-slot:headerTitle>
                   <h4>Ingreso de procesos (activos) en los últimos años 6 años</h4>
                 </template>
-                <template v-slot:body>
-                  <MorrisChart :element="ingresoProcesos.type+0" :type="ingresoProcesos.type" :xKeys="ingresoProcesos.xKeys" :data="ingresoProcesos.bodyData" :colors="ingresoProcesos.colors" :yKeys="ingresoProcesos.yKeys" :labels="ingresoProcesos.labels"/>
-                </template>
               </iq-card>
             </b-col>
             <b-col lg="6">
