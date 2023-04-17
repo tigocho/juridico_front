@@ -1,30 +1,53 @@
-# FROM node:14.16.1-alpine3.13 as build-stage
+# # develop stage
+# FROM node:14.17-alpine as develop-stage
+
+# # install simple http server for serving static content
+# RUN npm cache clean --force
+# RUN npm config set strict-ssl false
+# RUN npm install -g http-server
+# RUN apk update && apk add nano
 # # make the 'app' folder the current working directory
 # WORKDIR /app
-# # copy 'package.json' to install dependencies
+
+# # copy both 'package.json' and 'package-lock.json' (if available)
 # COPY package*.json ./
-# # install dependencies
-# RUN npm cache clean --force
-# RUN apk add --no-cache git
+
+# # install project dependencies
 # RUN npm install
-# # copy files and folders to the current working directory (i.e. 'app' folder)
+
+# # copy project files and folders to the current working directory (i.e. 'app' folder)
 # COPY . .
-# # build app for production with minification
+
+# # build app for production with minifications
 # RUN npm run build
 
-# FROM nginx:1.13.12-alpine as production-stage
+# EXPOSE 8082
+# CMD [ "http-server", "app/app" ]
+# # CMD ["npm", "run", "serve"]
 
-# ## Remove default nginx index page
-# RUN rm -rf /usr/share/nginx/html/*
+# Queda como pendiente para ensayar más adelante
+# # develop stage
+# FROM node:14.17-alpine as develop-stage
+# WORKDIR /usr/src/app
+# COPY . ./
+# RUN npm cache clean --force
+# RUN npm config set strict-ssl false
+# RUN npm install
+# RUN npm run build
+# FROM nginx:alpine
+# COPY --from=develop-stage /usr/src/app /var/www
+# COPY nginx/nginx.conf /etc/nginx/nginx.conf
+# EXPOSE 8080
+# ENTRYPOINT ["nginx","-g","daemon off;"]
 
-# COPY --from=build-stage /app/dist /usr/share/nginx/html
-# EXPOSE 80
-# CMD ["nginx", "-g", "daemon off;"]
-# FROM node:lts-alpine
-FROM node:14.16.1-alpine3.13
+
+
+# develop stage
+FROM node:14.17-alpine as develop-stage
+
 # install simple http server for serving static content
-RUN npm install -g http-server
-
+RUN npm cache clean --force
+RUN npm config set strict-ssl false
 # make the 'app' folder the current working directory
 WORKDIR /app
 
@@ -37,8 +60,12 @@ RUN npm install
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
 
-# build app for production with minification
+# build app for production with minifications
 RUN npm run build
-
+FROM nginx:alpine
+RUN apk update && apk add nano
+COPY --from=develop-stage /app /var/www
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+# COPY .htaccess /etc/nginx/nginx.conf
 EXPOSE 8080
-CMD [ "http-server", "dist" ]
+ENTRYPOINT ["nginx","-g","daemon off;"]

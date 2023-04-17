@@ -13,7 +13,7 @@ import VueSweetalert2 from 'vue-sweetalert2'
 // import VueFormWizard from 'vue-form-wizard'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import axios from 'axios'
-axios.defaults.baseURL = process.env.NODE_ENV === 'production'
+axios.defaults.baseURL = process.env.VUE_APP_NODE_ENV === 'production'
   ? process.env.VUE_APP_API_ENDPOINT
   : process.env.VUE_APP_API_ENDPOINT_DEV
 // axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
