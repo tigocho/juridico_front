@@ -26,3 +26,5 @@ services:
     container_name: juridico-front
     ports:
       - "${PORTDOCKER}:8080"
+    # volumes:
+    #   - .htaccess:/app/app
