@@ -4,7 +4,7 @@
 # # install simple http server for serving static content
 # RUN npm cache clean --force
 # RUN npm config set strict-ssl false
-# RUN npm install -g http-server
+# # RUN npm install -g http-server
 # RUN apk update && apk add nano
 # # make the 'app' folder the current working directory
 # WORKDIR /app
@@ -19,11 +19,11 @@
 # COPY . .
 
 # # build app for production with minifications
-# RUN npm run build
+# # RUN npm run build
 
 # EXPOSE 8082
-# CMD [ "http-server", "app/app" ]
-# # CMD ["npm", "run", "serve"]
+# # CMD [ "http-server", "app/app" ]
+# CMD ["npm", "run", "serve"]
 
 # Queda como pendiente para ensayar más adelante
 # # develop stage
