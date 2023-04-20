@@ -68,6 +68,9 @@
                 <template v-slot:headerTitle>
                   <h4>Ingreso de procesos (activos) en los últimos años 6 años</h4>
                 </template>
+                <template v-slot:body>
+                  <IngresosProcesos ref='chartIngresosProcesos' element="ingresosprocesos"/>
+                </template>
               </iq-card>
             </b-col>
             <b-col lg="6">
@@ -170,7 +173,6 @@ export default {
   name: 'Dashboard1',
   mounted () {
     xray.index()
-    this.obtenerDatosGraficaProcesoAnual()
     this.obtenerNumeroUsuarios()
     this.fetchClinicaOptions()
     setTimeout(() => {
@@ -343,29 +345,6 @@ export default {
             this.errores = err
             if (this.intentos < 2) {
               this.fetchClinicaOptions()
-              this.intentos++
-            }
-          })
-      } else {
-        Vue.swal('Usuario no logueado o inactivo')
-      }
-    },
-    obtenerDatosGraficaProcesoAnual () {
-      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtener-datos-grafica-procesos-anual/' + this.userLogged.usr_id).then(res => {
-          if (res.data.status_code === 200) {
-            this.intentos = 0
-            this.errores = {}
-            let procesosAnual = res.data.process
-            this.ingresoProcesos.bodyData = procesosAnual
-          } else {
-            Vue.swal('Ocurrió un error tratando de obtener los datos')
-          }
-        })
-          .catch((err) => {
-            this.errores = err
-            if (this.intentos < 2) {
-              this.obtenerDatosGraficaProcesoAnual()
               this.intentos++
             }
           })
