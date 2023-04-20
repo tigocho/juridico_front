@@ -96,8 +96,6 @@ export default {
             this.intentos = 0
             this.errores = {}
             this.procesosNivelExito = res.data.process
-            console.log(this.procesosNivelExito[7].total_pagado_clinica)
-            console.log(this.procesosNivelExito[7].cuantia_pretensiones)
             let pagadoClinica = ((this.nivelExitoformulaPretensionesTotalPagadoClinica() / this.nivelExitoformulaPretensionesTotal()) * 100)
             let pretensiones = 100 - pagadoClinica
             // this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesTotal()
