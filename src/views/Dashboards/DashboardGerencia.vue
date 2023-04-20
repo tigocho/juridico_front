@@ -79,7 +79,7 @@
           </b-col>
         </b-row>
         <b-row>
-          <b-col md="6" lg="6">
+          <b-col md="4" lg="4">
             <iq-card
               class-name="iq-card-block iq-card-stretch iq-card-height"
               body-class="iq-bg-warning rounded"
@@ -92,16 +92,16 @@
                   <div class="text-right">
                     <h2 class="mb-0">
                       <span class="counter">{{
-                        formatPrice(totalPretensiones)
+                        formatoEnMillones(totalPretensiones)
                       }}</span>
                     </h2>
-                    <h5 class="">Total pretensiones</h5>
+                    <h5 class="">Total pretensiones en millones</h5>
                   </div>
                 </div>
               </template>
             </iq-card>
           </b-col>
-          <b-col md="6" lg="6">
+          <b-col md="4" lg="4">
             <iq-card
               class-name="iq-card-block iq-card-stretch iq-card-height"
               body-class="iq-bg-info rounded"
@@ -114,10 +114,32 @@
                   <div class="text-right">
                     <h2 class="mb-0">
                       <span class="counter">{{
-                        formatPrice(totalEstimacionesPretensiones)
+                        formatoEnMillones(totalEstimacionesPretensiones)
                       }}</span>
                     </h2>
-                    <h5 class="">Total estimación pretensiones</h5>
+                    <h5 class="">Total estimación pretensiones en millones</h5>
+                  </div>
+                </div>
+              </template>
+            </iq-card>
+          </b-col>
+          <b-col md="4" lg="4">
+            <iq-card
+              class-name="iq-card-block iq-card-stretch iq-card-height"
+              body-class="iq-bg-info rounded"
+            >
+              <template v-slot:body>
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="rounded-circle iq-card-icon bg-info">
+                    <i class="fas fa-chart-bar"></i>
+                  </div>
+                  <div class="text-right">
+                    <h2 class="mb-0">
+                      <span class="counter">{{
+                        formatoEnMillones(totalProvisiones)
+                      }}</span>
+                    </h2>
+                    <h5 class="">Total provisiones en millones</h5>
                   </div>
                 </div>
               </template>
@@ -242,6 +264,80 @@
               </iq-card>
             </b-col>
           </b-row>
+          <!-- <b-row>
+            <b-col lg="6">
+              <b-col sm="5" md="7"  class="my-1" >
+                <b-form-group
+                  label="Clínica"
+                  label-cols-sm="3"
+                  label-cols-md="3"
+                  label-cols-lg="4"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    multiple
+                    v-model="clinicasIds"
+                    :options="clinicaOptions"
+                    :reduce="label => label.code"
+                    label="label"
+                    @input="cambioFiltro()"
+                    id="clinica_id"
+                    >
+                    <span slot="no-options">No hay clínicas.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-col>
+            <b-col lg="6">
+              <b-col sm="5" md="7"  class="my-1" >
+                <b-form-group
+                  label="Tipo de Proceso"
+                  label-cols-sm="3"
+                  label-cols-md="3"
+                  label-cols-lg="4"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="tipoProceso"
+                    :options="tipoProcesosOptions"
+                    :reduce="label => label.code"
+                    label="label"
+                    id="tipo_id"
+                    @input="cambioFiltro()"
+                    >
+                    <span slot="no-options">No hay tipos de procesos.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-col>
+          </b-row> -->
+          <b-row>
+            <b-col lg="12">
+              <iq-card>
+                <template v-slot:headerTitle>
+                  <h4>Nivel de éxito</h4>
+                </template>
+                <template v-slot:body>
+                  <b-table
+                    :items="procesosNivelExito"
+                    :fields="fields"
+                    stacked="md"
+                    show-empty
+                    small
+                    style='overflow: auto; border: 3px solid lightgray;'
+                  >
+                    <template #cell(name)="row">
+                      {{ row.value.first }} {{ row.value.last }}
+                    </template>
+                  </b-table>
+                </template>
+              </iq-card>
+            </b-col>
+          </b-row>
         </iq-card>
       </b-col>
     </b-row>
@@ -260,10 +356,12 @@ export default {
     this.barraCargando()
     this.obtenerTotalEstimacionesPretensiones()
     this.obtenerTotalPretensiones()
+    this.obtenerTotalProvisiones()
     this.fetchClinicaOptions()
     setTimeout(() => {
       this.obtenerCantidadProcesosAbiertos()
       this.obtenerCantidadProcesosCerrados()
+      this.obtenerDatosNivelExito()
     }, 800)
   },
   computed: {
@@ -288,11 +386,76 @@ export default {
       procesosCerrados: '',
       totalEstimacionesPretensiones: '',
       totalPretensiones: '',
+      totalProvisiones: '',
       progress_total: 4,
       max: 100,
       loading: true,
       intentos: 0,
-      errores: {}
+      errores: {},
+      procesosNivelExito: [],
+      fields: [
+        {
+          key: 'prore_sentencia_final',
+          label: 'Clasificación Sentencia',
+          class: 'text-center'
+        },
+        {
+          key: 'total_pagado_clinica',
+          label: 'Total pagado clínica',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'total_pagado_tercero',
+          label: 'Total pagado por tecero',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'total_sentencia',
+          label: 'Total sentencia',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'cuantia_pretensiones',
+          label: 'Cuantía de las pretensiones',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'estimacion_pago_perju_materiales',
+          label: 'Suma de estimación perjuicios Mat.',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'estimacion_pago_perju_inmateriales',
+          label: 'Suma de estimación perjuicios Inmat.',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        },
+        {
+          key: 'total_estimaciones',
+          label: 'Total estimaciones',
+          formatter: (value, key, item) => {
+            return this.formatPrice(value, key, item)
+          },
+          class: 'text-center'
+        }
+      ]
     }
   },
   methods: {
@@ -334,6 +497,8 @@ export default {
       setTimeout(() => {
         this.obtenerTotalEstimacionesPretensiones()
         this.obtenerTotalPretensiones()
+        this.obtenerTotalProvisiones()
+        this.obtenerDatosNivelExito()
         this.graficaProcesosPorClinicaKey++
         this.graficaValoresPorClinicaKey++
       }, 800)
@@ -358,6 +523,15 @@ export default {
       axios.get('/process/obtenerTotalPretensiones/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
         if (res.data.status_code === 200) {
           this.totalPretensiones = res.data.pretensiones
+        } else {
+          alert('Datos no validos')
+        }
+      })
+    },
+    obtenerTotalProvisiones: function () {
+      axios.get('/process/obtenerTotalProvisiones/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
+        if (res.data.status_code === 200) {
+          this.totalProvisiones = res.data.provisiones
         } else {
           alert('Datos no validos')
         }
@@ -390,6 +564,32 @@ export default {
         Vue.swal('Usuario no logueado o inactivo')
       }
     },
+    obtenerDatosNivelExito () {
+      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
+        axios.get('/process/obtener-datos-nivel-exito/' + this.userLogged.usr_id + '/' + this.clinicasIds + '/' + this.tipoProceso).then(res => {
+          if (res.data.status_code === 200) {
+            this.intentos = 0
+            this.errores = {}
+            if (typeof res.data.process === 'undefined') {
+              Vue.swal(res.data.mensaje)
+            } else {
+              this.procesosNivelExito = res.data.process
+            }
+          } else {
+            Vue.swal('Ocurrió un error tratando de obtener los datos')
+          }
+        })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos < 2) {
+              this.obtenerDatosNivelExito()
+              this.intentos++
+            }
+          })
+      } else {
+        Vue.swal('Usuario no logueado o inactivo')
+      }
+    },
     formatPrice (value) {
       let val = (value / 1).toFixed(0).replace('.', ',')
       if (value === 0) {
@@ -399,8 +599,8 @@ export default {
     },
     formatoEnMillones (value) {
       let val = value.toString()
-      val = val.slice(0, -8)
-      return val
+      val = val.slice(0, -6)
+      return this.formatPrice(val)
     }
   }
 }
