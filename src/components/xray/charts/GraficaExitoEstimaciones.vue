@@ -81,8 +81,12 @@ export default {
             this.intentos = 0
             this.errores = {}
             this.procesosNivelExito = res.data.process
-            this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesTotal()
-            this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesPagadoClinica()
+            // this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesTotal()
+            // this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesPagadoClinica()
+            let pagadoClinica = ((this.nivelExitoformulaEstimacionesPagadoClinica() / this.nivelExitoformulaEstimacionesTotal()) * 100)
+            let pretensiones = 100 - pagadoClinica
+            this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = pretensiones
+            this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = pagadoClinica
             // this.GraficaExitoEstimaciones.bodyData.data[0].porcentajes = this.nivelExitoformulaEstimacionesAFavor()
             // this.GraficaExitoEstimaciones.bodyData.data[1].porcentajes = this.nivelExitoformulaEstimacionesEnContra()
             this.nivelExitoEstimacionesKey++
@@ -103,14 +107,14 @@ export default {
     },
     nivelExitoformulaEstimacionesTotal () {
       if (this.procesosNivelExito != null) {
-        return (parseInt(this.procesosNivelExito[6].total_estimaciones))
+        return (parseInt(this.procesosNivelExito[7].total_estimaciones))
       } else {
         return 0
       }
     },
     nivelExitoformulaEstimacionesPagadoClinica () {
       if (this.procesosNivelExito != null) {
-        return (parseInt(this.procesosNivelExito[6].total_pagado_clinica))
+        return (parseInt(this.procesosNivelExito[7].total_pagado_clinica))
       } else {
         return 0
       }
