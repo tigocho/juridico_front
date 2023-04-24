@@ -96,8 +96,12 @@ export default {
             this.intentos = 0
             this.errores = {}
             this.procesosNivelExito = res.data.process
-            this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesTotal()
-            this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = this.nivelExitoformulaPretensionesTotalPagadoClinica()
+            let pagadoClinica = ((this.nivelExitoformulaPretensionesTotalPagadoClinica() / this.nivelExitoformulaPretensionesTotal()) * 100)
+            let pretensiones = 100 - pagadoClinica
+            // this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesTotal()
+            // this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = this.nivelExitoformulaPretensionesTotalPagadoClinica()
+            this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = pretensiones
+            this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = pagadoClinica
             // this.GraficaExitoPretensiones.bodyData.data[0].porcentajes = this.nivelExitoformulaPretensionesAFavor()
             // this.GraficaExitoPretensiones.bodyData.data[1].porcentajes = this.nivelExitoformulaPretensionesEnContra()
             // this.GraficaExitoPretensiones.bodyData.data[2].porcentajes = this.nivelExitoformulaPretensionesDesistimiento()
@@ -121,14 +125,14 @@ export default {
     },
     nivelExitoformulaPretensionesTotalPagadoClinica () {
       if (this.procesosNivelExito != null) {
-        return (parseInt(this.procesosNivelExito[6].total_pagado_clinica))
+        return (parseInt(this.procesosNivelExito[7].total_pagado_clinica))
       } else {
         return 0
       }
     },
     nivelExitoformulaPretensionesTotal () {
       if (this.procesosNivelExito != null) {
-        return (parseInt(this.procesosNivelExito[6].cuantia_pretensiones))
+        return (parseInt(this.procesosNivelExito[7].cuantia_pretensiones))
       } else {
         return 0
       }

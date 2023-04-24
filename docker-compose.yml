@@ -26,5 +26,13 @@ services:
     container_name: juridico-front
     ports:
       - "${PORTDOCKER}:8080"
-    # volumes:
-    #   - .htaccess:/app/app
+      - 443:443
+    restart: always
+    volumes:
+      - ./certbot/www:/var/www/certbot/
+      - ./certbot/conf/:/etc/nginx/ssl/
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
