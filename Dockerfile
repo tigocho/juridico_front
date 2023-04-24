@@ -65,9 +65,9 @@ RUN npm run build
 FROM nginx:alpine
 RUN apk update && apk add nano
 COPY --from=develop-stage /app /var/www
-RUN apk update && apk add certbot && apk add certbot-nginx
-#Correr el siguiente comando de manera manual dentro del servidor front y seguir los pasos
-# certbot --nginx certonly -d juridicoapp.gocho.com.co -d www.juridicoapp.gocho.com.co
+#Ejecutar manualmente
+#RUN apk update && apk add certbot && apk add certbot-nginx
+#RUN certbot --nginx -d juridicoapp.gocho.com.co -d www.juridicoapp.gocho.com.co
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 # COPY .htaccess /etc/nginx/nginx.conf
 EXPOSE 8080
