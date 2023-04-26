@@ -73,7 +73,7 @@ export default {
           labels: {
             rotateAlways: true,
             minHeight: 150,
-            maxHeight: 1000,
+            maxHeight: 400,
             trim: true
           },
           categories: [],
@@ -125,7 +125,6 @@ export default {
               aseguradoras.push(procesosPorAseguradora[i].aseguradora)
             }
             this.chartOptions.yaxis.max = procesosPorAseguradora[0].cantidad + 3
-            this.chartOptions.yaxis.tickAmount = procesosPorAseguradora[0].cantidad + 3
             this.chartOptions.xaxis.categories = aseguradoras
             this.chartOptions.series[0].data = cantidad
             let chart = new ApexCharts(document.querySelector(selector), this.chartOptions)

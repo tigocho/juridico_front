@@ -33,7 +33,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-hospital-fill",
-    "roles": [1, 12]
+    "roles": [45]
   },
   {
     "title": "Administrar",
