@@ -195,19 +195,23 @@
                             {{ caso.solicitante }}</b-col
                           >
                           <b-col cols="6"
-                            ><strong>Abogado: </strong> {{ caso.abogado }}
+                            ><strong>Tiempo restante: </strong>
+                            {{ caso.tiempo_faltante_ans }}
                           </b-col>
                         </b-row>
                         <b-row>
                           <b-col>
                             <strong>Cliente: </strong> {{ caso.cli_name }}
                           </b-col>
+                          <b-col cols="6"
+                            ><strong>Abogado: </strong> {{ caso.abogado }}
+                          </b-col>
+                        </b-row>
+                        <b-row>
                           <b-col cols="6">
                             <strong>Tipo de Actividad: </strong>
                             {{ caso.subactividad }}
                           </b-col>
-                        </b-row>
-                        <b-row>
                           <b-col cols="6">
                             <strong>Medio de Solicitud: </strong>
                             {{ caso.med_sol_nombre }}
