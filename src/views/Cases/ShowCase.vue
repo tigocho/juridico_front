@@ -166,6 +166,7 @@
                       <b-button
                         variant="success"
                         style="margin-right: 5px"
+                        @click="imprimirCaso"
                       >
                         <i class="ri-printer-line"></i>Imprimir
                       </b-button>
@@ -746,6 +747,9 @@ export default {
     },
     irAProceso () {
       this.$router.push({ path: `/process/process-show/${this.caso.prore_id}/false` })
+    },
+    imprimirCaso () {
+      console.log('dhdh')
     }
   }
 }
