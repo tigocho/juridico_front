@@ -614,6 +614,12 @@ const processOtrosChildRoute = (prop, mode = false) => [
     component: ProcessOtrosList
   },
   {
+    path: 'process-otros',
+    name: prop + '.add',
+    meta: { dark: mode, auth: true, name: 'Add Porcess' },
+    component: AddProcess
+  },
+  {
     path: 'process-otros-archivados',
     name: prop + '.archivados',
     meta: { dark: mode, auth: true, name: 'Process Otros Archivados' },
