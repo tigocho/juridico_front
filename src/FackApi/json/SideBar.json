@@ -214,6 +214,18 @@
         "icon": "ri-book-mark-line"
       },
       {
+        "title": "Add Proces",
+        "name": "sidebar.agregarProceso",
+        "is_active": false,
+        "link": {
+          "name" : "process-otros.add"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-folder-add-line",
+        "roles": [1, 2, 12]
+      },
+      {
         "title": "otrosProcesosArchivados",
         "name": "sidebar.otrosProcesosArchivados",
         "is_active": false,
