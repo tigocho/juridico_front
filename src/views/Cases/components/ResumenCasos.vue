@@ -68,8 +68,14 @@ export default {
   name: 'ResumenCasos',
   data () {
     return {
-      casos: null,
-      datosKey: 0
+      casos: {
+        abiertos: 0,
+        total: 0,
+        cerrados: 0
+      },
+      datosKey: 0,
+      intentos: 0,
+      errores: null
     }
   },
   mounted () {
@@ -82,6 +88,14 @@ export default {
         .get('/casos/obtenerCantidades')
         .then((response) => {
           this.casos = response.data.casos
+          this.intentos = 0
+        })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos !== 2) {
+            this.obtenerDatos()
+          }
+          this.intentos++
         })
     }
   }
