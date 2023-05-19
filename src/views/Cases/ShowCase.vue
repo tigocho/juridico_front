@@ -179,6 +179,19 @@
                     </template>
                     <template v-slot:body>
                       <b-card-text>
+                        <b-row v-if="
+                          perfilesPermitidosVerHorasInvertidas.includes(user_profile) &&
+                          caso.est_id === 4
+                        ">
+                          <b-col
+                            ><strong>Tiempo invertido: </strong>
+                            <span style="text-decoration: underline;">{{ convertirHorasInvertidas(caso.caso_horas_invertidas) }}</span></b-col
+                          >
+                          <b-col cols="6"
+                            ><strong>Tiempo de Solución: </strong>
+                            {{ caso.fecha_solucion }}
+                          </b-col>
+                        </b-row>
                         <b-row>
                           <b-col
                             ><strong>Título: </strong>
@@ -592,6 +605,7 @@ export default {
       archivosSeguimiento: [],
       cantidadArchivos: 0,
       asignarProfiles: [1, 12],
+      perfilesPermitidosVerHorasInvertidas: [1, 2],
       user_profile: null,
       progress_total: 4,
       max: 100,
@@ -618,6 +632,7 @@ export default {
     this.barraCargando()
     this.getCase()
     this.getSeguimientos()
+    this.user_profile = this.userLogged.user_profile
   },
   methods: {
     getCase () {
@@ -750,6 +765,12 @@ export default {
     },
     irAProceso () {
       this.$router.push({ path: `/process/process-show/${this.caso.prore_id}/false` })
+    },
+    convertirHorasInvertidas () {
+      const horasEnteras = Math.floor(this.caso.caso_horas_invertidas) // Obtener la parte entera de las horas
+      const minutosDecimal = this.caso.caso_horas_invertidas - horasEnteras // Obtener la parte decimal de las horas
+      const minutos = Math.round(minutosDecimal * 60) // Convertir la parte decimal a minutos
+      return horasEnteras + ' horas y ' + minutos + ' minutos.'
     }
   }
 }
