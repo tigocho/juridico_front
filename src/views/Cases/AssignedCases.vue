@@ -17,6 +17,15 @@
       </b-modal>
     </div>
     <!-- FIN DE MODAL-->
+    <!-- DATOS DE CASOS TOTALES, ABIERTOS Y CERRADOS  -->
+    <b-row>
+      <b-col lg="12">
+        <template>
+          <ResumenCasos></ResumenCasos>
+        </template>
+      </b-col>
+    </b-row>
+    <!-- FIN DATOS DE CASOS TOTALES, ABIERTOS Y CERRADOS  -->
     <b-row>
       <b-col lg="12">
         <iq-card>
@@ -242,10 +251,12 @@ import Vue from 'vue'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { xray } from '../../config/pluginInit'
 import FormCase from '../Cases/components/FormCase.vue'
+import ResumenCasos from './components/ResumenCasos.vue'
 export default {
   name: 'AssignedCases',
   components: {
-    FormCase
+    FormCase,
+    ResumenCasos
   },
   data () {
     return {
