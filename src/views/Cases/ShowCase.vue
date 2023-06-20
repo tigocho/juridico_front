@@ -179,6 +179,12 @@
                     </template>
                     <template v-slot:body>
                       <b-card-text>
+                        <b-row>
+                          <b-col
+                            ><strong>Fecha de apertura: </strong>
+                            {{ fechaLegibleUsuario(caso.caso_fecha_solicitud) }}</b-col
+                          >
+                        </b-row>
                         <b-row v-if="
                           perfilesPermitidosVerHorasInvertidas.includes(user_profile) &&
                           caso.est_id === 4
@@ -191,8 +197,12 @@
                             ><strong>Tiempo de Solución: </strong>
                             {{ caso.fecha_solucion }}
                           </b-col>
+                          <b-col
+                            ><strong>Título: </strong>
+                            {{ caso.caso_titulo }}</b-col
+                          >
                         </b-row>
-                        <b-row>
+                        <b-row v-else>
                           <b-col
                             ><strong>Título: </strong>
                             {{ caso.caso_titulo }}</b-col
@@ -590,6 +600,7 @@ import fileDownload from 'js-file-download'
 import FormCase from '../Cases/components/FormCase.vue'
 import FormSegumiento from '../Cases/components/FormSegumiento.vue'
 import moment from 'moment'
+moment.locale('es')
 export default {
   name: 'ShowCase',
   components: {
@@ -771,6 +782,9 @@ export default {
       const minutosDecimal = this.caso.caso_horas_invertidas - horasEnteras // Obtener la parte decimal de las horas
       const minutos = Math.round(minutosDecimal * 60) // Convertir la parte decimal a minutos
       return horasEnteras + ' horas y ' + minutos + ' minutos.'
+    },
+    fechaLegibleUsuario (fecha) {
+      return moment(fecha).format('dddd D [de] MMMM hh:mm A')
     }
   }
 }
