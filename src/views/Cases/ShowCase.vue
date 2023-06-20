@@ -191,8 +191,12 @@
                             ><strong>Tiempo de Solución: </strong>
                             {{ caso.fecha_solucion }}
                           </b-col>
+                          <b-col
+                            ><strong>Título: </strong>
+                            {{ caso.caso_titulo }}</b-col
+                          >
                         </b-row>
-                        <b-row>
+                        <b-row v-else>
                           <b-col
                             ><strong>Título: </strong>
                             {{ caso.caso_titulo }}</b-col

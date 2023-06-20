@@ -29,7 +29,13 @@
                           v-model="caseTitle"
                           type="text"
                           :required="true"
+                          :state="
+                            caseTitle.length <= 100 &&
+                            caseTitle.length >= 5
+                          "
+                          @input="maximaLongitud"
                         ></b-form-input>
+                        <p style="text-align: left;font-size: 12px;color:#000000">Cantidad caracteres (máximo: 100*): {{ caseTitle.length }}</p>
                       </b-form-group>
                     </b-col>
                   </b-row>
@@ -140,7 +146,9 @@
                           caseDescription.length >= 5
                         "
                         :required="true"
+                        @input="maximaLongitud"
                       ></b-form-textarea>
+                      <p style="text-align: left;font-size: 12px;color:#000000">Cantidad caracteres (máximo: 500*): {{ caseDescription.length }}</p>
                     </b-col>
                   </b-row>
                   <div v-if="onEdit" class="text-left" style="margin: 20px">
@@ -257,6 +265,7 @@
                     <b-button
                       variant="primary"
                       type="submit"
+                      :disabled="caracteresExcedidoTitulo || caracteresExcedidoDescripcion"
                       :class="estadoBoton"
                       >{{ textoBoton }}</b-button
                     >
@@ -319,7 +328,9 @@ export default {
       intentos: 0,
       fechaSolucion: null,
       fechaSolucionKey: 0,
-      validData: true
+      validData: true,
+      caracteresExcedidoTitulo: false,
+      caracteresExcedidoDescripcion: false
     }
   },
   computed: {
@@ -569,6 +580,18 @@ export default {
         return '12'
       }
       return '6'
+    },
+    maximaLongitud () {
+      if (this.caseTitle.length > 100) {
+        this.caracteresExcedidoTitulo = true
+      } else {
+        this.caracteresExcedidoTitulo = false
+      }
+      if (this.caseDescription.length > 500) {
+        this.caracteresExcedidoDescripcion = true
+      } else {
+        this.caracteresExcedidoDescripcion = false
+      }
     }
   }
 }
