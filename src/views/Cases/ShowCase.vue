@@ -140,11 +140,7 @@
                     <template v-slot:headerTitle>
                       <h5 class="card-title">
                         Radicado interno
-                        {{
-                          new Date(caso.caso_fecha_apertura).getFullYear() +
-                          '-' +
-                          formatId(String(caso.caso_id))
-                        }}
+                        {{ formatearRadicado() }}
                         <b-button
                         v-if="
                           asignarProfiles.includes(user_profile) &&
@@ -256,7 +252,12 @@
                 <tab-content-item :active="false" id="seguimiento">
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title">Seguimiento</h4>
+                      <h4 class="text-dark">Seguimiento</h4>
+                      <encabezado-caso
+                        :casoId="formatearRadicado()"
+                        :solicitante="caso.solicitante"
+                        :fechaHora="fechaLegibleUsuario(caso.caso_fecha_solicitud)"
+                      ></encabezado-caso>
                     </template>
                     <template v-slot:body>
                       <div v-if="addSeguimiento">
@@ -453,6 +454,14 @@
                 </tab-content-item>
                 <tab-content-item :active="false" id="historial">
                   <iq-card>
+                    <template v-slot:headerTitle>
+                      <h4 class="text-dark">Historial</h4>
+                      <encabezado-caso
+                        :casoId="formatearRadicado()"
+                        :solicitante="caso.solicitante"
+                        :fechaHora="fechaLegibleUsuario(caso.caso_fecha_solicitud)"
+                      ></encabezado-caso>
+                    </template>
                     <template v-slot:body>
                       <section class="timeline">
                         <b-card-text>
@@ -502,9 +511,12 @@
                 <tab-content-item :active="false" id="archivos">
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title">
-                        Archivos Caso - {{ caso.caso_id }}
-                      </h4>
+                      <h4 class="text-dark">Archivos</h4>
+                      <encabezado-caso
+                        :casoId="formatearRadicado()"
+                        :solicitante="caso.solicitante"
+                        :fechaHora="fechaLegibleUsuario(caso.caso_fecha_solicitud)"
+                      ></encabezado-caso>
                     </template>
                     <template v-slot:body>
                       <h5 v-if="archivos.length > 0">Documentos Caso:</h5>
@@ -600,12 +612,14 @@ import fileDownload from 'js-file-download'
 import FormCase from '../Cases/components/FormCase.vue'
 import FormSegumiento from '../Cases/components/FormSegumiento.vue'
 import moment from 'moment'
+import EncabezadoCaso from './components/EncabezadoCaso.vue'
 moment.locale('es')
 export default {
   name: 'ShowCase',
   components: {
     FormCase,
-    FormSegumiento
+    FormSegumiento,
+    EncabezadoCaso
   },
   data () {
     return {
@@ -785,6 +799,11 @@ export default {
     },
     fechaLegibleUsuario (fecha) {
       return moment(fecha).format('dddd D [de] MMMM hh:mm A')
+    },
+    formatearRadicado () {
+      return new Date(this.caso.caso_fecha_apertura).getFullYear() +
+      '-' +
+      this.formatId(String(this.caso.caso_id))
     }
   }
 }
