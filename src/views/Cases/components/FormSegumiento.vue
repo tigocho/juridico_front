@@ -8,9 +8,9 @@
               <b-row
                 class="justify-content-center text-center align-items-center"
               >
-                <b-col lg="8">
+                <b-col lg="10">
                   <b-row>
-                    <b-col cols="8">
+                    <b-col cols="6">
                       <b-form-group label="Titulo:" label-for="seg_title">
                         <b-form-input
                           v-model="seguimiento_title"
@@ -21,7 +21,7 @@
                         ></b-form-input>
                       </b-form-group>
                     </b-col>
-                    <b-col>
+                    <b-col cols="6">
                       <b-form-group label="Tipo" label-for="tipo_id">
                         <ValidationProvider
                           name="Seguimiento"
@@ -132,6 +132,7 @@ export default {
   name: 'FormSegumiento',
   props: {
     case_id: Number,
+    seguimiento_tipo_id: Number,
     onCreate: Function,
     onCancel: Function
   },
@@ -181,6 +182,9 @@ export default {
     getTiposSegumiento () {
       axios.get('/tipos-segumiento/fetch').then((response) => {
         this.tiposSegumientoOptions = response.data.tiposeguimiento
+        if (this.seguimiento_tipo_id !== null) {
+          this.tiposSegumientoId = this.seguimiento_tipo_id
+        }
       })
     },
     crearSeguimiento () {

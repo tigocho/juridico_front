@@ -17,6 +17,18 @@
       </b-modal>
     </div>
     <!-- FIN DE MODAL-->
+    <!-- MODAL DE PAUSAR CASO O ADICIONAR SEGUIMIENTO -->
+    <div>
+      <b-modal id="modal-pausar-caso" size="lg" :title="'Pausar Caso ' + formatearRadicado(this.caso)" hide-footer>
+        <FormSegumiento
+          :case_id="caso.caso_id"
+          :seguimiento_tipo_id="5"
+          :onCreate="null"
+          :onCancel="onCancelSeguimiento"
+        />
+      </b-modal>
+    </div>
+    <!-- FIN DE MODAL-->
     <!-- DATOS DE CASOS TOTALES, ABIERTOS Y CERRADOS  -->
     <b-row>
       <b-col lg="12">
@@ -222,6 +234,11 @@
                   >
                     Eliminar
                   </b-dropdown-item>
+                  <b-dropdown-item
+                    @click="abrirModalPausarCaso(row.item)"
+                  >
+                    Pausar
+                  </b-dropdown-item>
                 </b-dropdown>
               </template>
               <template #cell(show_details)="row">
@@ -280,11 +297,13 @@ import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { xray } from '../../config/pluginInit'
 import FormCase from '../Cases/components/FormCase.vue'
 import ResumenCasos from './components/ResumenCasos.vue'
+import FormSegumiento from './components/FormSegumiento.vue'
 export default {
   name: 'AllCases',
   components: {
     FormCase,
-    ResumenCasos
+    ResumenCasos,
+    FormSegumiento
   },
   data () {
     return {
@@ -477,6 +496,41 @@ export default {
             }
           })
         })
+    },
+    abrirModalPausarCaso (caso) {
+      console.log(caso)
+      this.caso = caso
+      this.$bvModal.show('modal-pausar-caso')
+    },
+    onCancelSeguimiento () {
+      this.$bvModal.hide('modal-pausar-caso')
+    },
+    formatearRadicado (caso) {
+      return new Date(caso.caso_fecha_apertura).getFullYear() +
+      '-' +
+      this.formatId(String(caso.caso_id))
+    },
+    formatId (casoId) {
+      const digitos = casoId.length
+
+      let identificador
+
+      switch (digitos) {
+        case 1:
+          identificador = '000' + casoId
+          break
+        case 2:
+          identificador = '00' + casoId
+          break
+        case 3:
+          identificador = '0' + casoId
+          break
+        default:
+          identificador = casoId
+          break
+      }
+
+      return identificador
     }
   }
 }
