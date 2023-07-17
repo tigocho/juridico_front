@@ -686,10 +686,11 @@ export default {
         responseType: 'blob'
       })
         .then((response) => {
-          if (response.data != null) {
-            fileDownload(response.data, filename)
+          if (response.headers['content-type'] === 'application/json') {
+            Vue.swal('Ups, el archivo no existe')
           } else {
-            Vue.swal('No se encontró archivo')
+            fileDownload(response.data, filename)
+            Vue.swal('Descarga éxitosa')
           }
         })
         .catch((err) => {
@@ -728,10 +729,11 @@ export default {
         responseType: 'blob'
       })
         .then((response) => {
-          if (response.data != null) {
-            fileDownload(response.data, filename)
+          if (response.headers['content-type'] === 'application/json') {
+            Vue.swal('Ups, el archivo no existe')
           } else {
-            Vue.swal('No se encontró archivo')
+            fileDownload(response.data, filename)
+            Vue.swal('Descarga éxitosa')
           }
         })
         .catch((err) => {
