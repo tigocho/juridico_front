@@ -1152,12 +1152,32 @@ export default {
       ],
       rangoEdadOptions: [
         {
+          text: '0-5 años',
+          value: '0-5 años'
+        },
+        {
+          text: '6-11 años',
+          value: '6-11 años'
+        },
+        {
           text: '0-18 años',
           value: '0-18 años'
         },
         {
+          text: '12-18 años',
+          value: '12-18 años'
+        },
+        {
           text: '19- 60 años',
           value: '19- 60 años'
+        },
+        {
+          text: '14-26 años',
+          value: '14-26 años'
+        },
+        {
+          text: '27-59 años',
+          value: '27-59 años'
         },
         {
           text: '+ 60 años',
