@@ -483,11 +483,16 @@ export default {
         method: 'GET',
         responseType: 'blob'
       }).then((response) => {
-        let nombrePoliza = this.poliza.aseguradora.ase_name + '-' + this.poliza.pol_numero + '.pdf'
-        if (response.data != null) {
-          fileDownload(response.data, nombrePoliza)
+        if (response.headers['content-type'] === 'application/json') {
+          Vue.swal('Ups, el archivo no existe')
         } else {
-          Vue.swal('No se encontró archivo')
+          let nombrePoliza = this.poliza.aseguradora.ase_name + '-' + this.poliza.pol_numero + '.pdf'
+          if (response.data != null) {
+            fileDownload(response.data, nombrePoliza)
+            Vue.swal('Descarga éxitosa')
+          } else {
+            Vue.swal('Ups, error desconocido')
+          }
         }
       })
         .catch((err) => {
