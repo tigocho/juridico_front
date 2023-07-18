@@ -225,6 +225,7 @@
                     <tab-nav-items class="col-auto p-0" :active="false" href="#actuaciones" title="Actuaciones" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#costos-cuantias" title="Costos/Cuantías"/>
                     <tab-nav-items class="col-auto p-0" :active="false" href="#poliza" title="Poliza" />
+                    <tab-nav-items class="col-auto p-0" :active="false" href="#analisis" title="Análisis" />
                     <!-- <tab-nav-items class="col-auto p-0" :active="false" href="#comentarios" title="Comentarios" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#notas" title="Notas" /> -->
                     <tab-nav-items class="col-auto p-0" :active="false" href="#links" title="Documentos del proceso" />
@@ -354,7 +355,7 @@
                         <hr>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Póliza Prescrita:</b> {{ process.prore_prescritas ? 'Sí' : 'No' }}</b-card-text>
-                          <h6 class="float-left mb-1 font-weight-bolder"><button class="btn btn-link pt-0" @click="modificarPrescrito" ><i class="ri-edit-2-fill"></i>Modificar</button> </h6>
+                          <h6 class="float-left mb-1 font-weight-bolder"><button class="btn btn-link pt-0" @click="modificarPrescrito" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-edit-2-fill"></i>Modificar</button> </h6>
                         </b-row>
                         <hr>
                         <b-row class="col-md-12 pt-1">
@@ -710,12 +711,12 @@
                       <h4 class="card-title">Involucrados en el proceso</h4>
                     </template>
                     <template v-slot:headerAction>
-                      <button class="btn btn-primary" @click="agregarImplicated"><i class="ri-add-line mr-2" ></i>Añadir nuevo involucrado</button>
+                      <button class="btn btn-primary" @click="agregarImplicated" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-add-line mr-2"></i>Añadir nuevo involucrado</button>
                     </template>
                     <template v-slot:body>
                       <b-row class="col-md-12" v-for="(implicate, index) in implicateds" :key="index">
                         <b-row class="col-md-12 pt-1">
-                          <h6><b class="text-black" style="text-decoration:underline;">{{ implicate.profile.prof_name }}</b><button class="btn btn-link pt-0" @click="editImplicated(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteImplicated(implicate)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6><span v-if="implicate.imp_principal" class="mx-2 px-2" style="color: white; background-color: #089bab; border-radius: 3px; max-height:25px">PRINCIPAL</span>
+                          <h6><b class="text-black" style="text-decoration:underline;">{{ implicate.profile.prof_name }}</b><button class="btn btn-link pt-0" @click="editImplicated(index)" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteImplicated(implicate)" class="btn btn-link pt-0 px-0 text-danger" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6><span v-if="implicate.imp_principal" class="mx-2 px-2" style="color: white; background-color: #089bab; border-radius: 3px; max-height:25px">PRINCIPAL</span>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="px-2 my-0"><b>Tipo identificación: </b>{{ tipoIdentificacion(implicate.imp_tipo_identificacion) }}</b-card-text>
@@ -750,7 +751,7 @@
                         <li class="col-md-12" v-for="(proceeding, index) in proceedings" :key="index">
                           <div class="timeline-dots border-primary" v-if="index == 0" :class="'border-primary'"></div>
                           <div class="timeline-dots border-primary" v-else :class="'border-warning'"></div>
-                          <h6 class="float-left mb-1 font-weight-bolder">{{ proceeding.status_process.estado_proceso }}<button class="btn btn-link pt-0" @click="editProceeding(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteProceeding(proceeding.proce_id)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
+                          <h6 class="float-left mb-1 font-weight-bolder">{{ proceeding.status_process.estado_proceso }}<button class="btn btn-link pt-0" @click="editProceeding(index)" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteProceeding(proceeding.proce_id)" class="btn btn-link pt-0 px-0 text-danger" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
                           <!--<b-row class="col-md-12 pl-0 pt-1">
                             <h6><b class="text-black" style="text-decoration:underline;">{{ proceeding.status_process.sta_name }}</b> <button class="btn btn-link" @click="editProceeding(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button class="btn btn-link px-0 text-danger"><i class="ri-edit-2-fill"></i>Eliminar</button></h6>
                           </b-row>-->
@@ -791,7 +792,7 @@
                       <h4 class="card-title">Datos de la poliza</h4>
                     </template>
                     <template v-slot:headerAction>
-                      <b-button variant="primary" @click="asociarPoliza">Asociar Poliza</b-button>
+                      <b-button variant="primary" @click="asociarPoliza" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1">Asociar Poliza</b-button>
                     </template>
                     <template v-slot:body>
                       <b-row class="col-md-12 pt-1">
@@ -908,6 +909,14 @@
                     </template>
                   </iq-card>
                 </tab-content-item>
+                <tab-content-item :active="false" id="analisis">
+                  <iq-card>
+                    <analisis-procesos
+                    :process="process"
+                    :usr_proffile="userLogged.user_profile"
+                    ></analisis-procesos>
+                  </iq-card>
+                </tab-content-item>
                 <!-- <tab-content-item :active="false" id="comentarios">
                   <iq-card>
                     <template v-slot:headerTitle>
@@ -972,9 +981,10 @@ import axios from 'axios'
 import auth from '@/logic/auth'
 import iqCard from '../../components/xray/cards/iq-card.vue'
 import { VueEditor } from 'vue2-editor'
+import AnalisisProcesos from './include/AnalisisProcesos.vue'
 
 export default {
-  components: { iqCard, VueEditor },
+  components: { iqCard, VueEditor, AnalisisProcesos },
   name: 'ProfileEdit',
   mounted () {
     xray.index()
