@@ -10,7 +10,7 @@
               >
                 <b-col lg="8">
                   <b-row>
-                    <b-col cols="8">
+                    <b-col :cols="getColsSize(user_profile)">
                       <b-form-group label="Titulo:" label-for="seg_title">
                         <b-form-input
                           v-model="seguimiento_title"
@@ -21,7 +21,7 @@
                         ></b-form-input>
                       </b-form-group>
                     </b-col>
-                    <b-col>
+                    <b-col v-if="seleccionarTipoSeguimiento.includes(user_profile)">
                       <b-form-group label="Tipo" label-for="tipo_id">
                         <ValidationProvider
                           name="Seguimiento"
@@ -149,7 +149,10 @@ export default {
           file: null,
           date: null
         }
-      ]
+      ],
+      seleccionarTipoSeguimiento: [1, 2, 12],
+      user_profile: null,
+      errores: null
     }
   },
   computed: {
@@ -162,6 +165,8 @@ export default {
     }
   },
   mounted () {
+    this.user_profile = this.userLogged.user_profile
+    this.tiposSegumientoId = this.seleccionarTipoSeguimiento.includes(this.user_profile) ? null : 2
     this.getTiposSegumiento()
   },
   methods: {
@@ -215,10 +220,19 @@ export default {
           this.estadoBoton = ''
           this.textoBoton = 'Guardar'
         })
+          .catch((error) => {
+            this.estadoBoton = ''
+            this.textoBoton = 'Guardar'
+            this.errores = error
+            Vue.swal('Ups, ocurrió un error, por favor intenta más tarde.')
+          })
       } else {
         this.estadoBoton = ''
         this.textoBoton = 'Guardar'
       }
+    },
+    getColsSize (profile) {
+      return this.seleccionarTipoSeguimiento.includes(profile) ? 8 : 12
     }
   }
 }
