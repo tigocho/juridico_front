@@ -82,6 +82,16 @@
                         <span slot="no-options">No hay eps.</span>
                       </v-select>
                     </b-form-group>
+                    <b-form-group v-if="regimenesOptions != null" class="col-md-6" label="Régimen" label-for="prore_regimen_id">
+                      <v-select v-model="formData.prore_regimen_id" :options="regimenesOptions" :reduce="label => label.code" label="label" id="prore_regimen_id" >
+                        <span slot="no-options">No hay régimen.</span>
+                      </v-select>
+                    </b-form-group>
+                    <b-form-group v-if="casusasLitigioOptions != null" class="col-md-6" label="Causa del litigio" label-for="prore_causa_litigio_id">
+                      <v-select v-model="formData.prore_causa_litigio_id" :options="casusasLitigioOptions" :reduce="label => label.code" label="label" id="prore_causa_litigio_id" >
+                        <span slot="no-options">No hay causas de litigio.</span>
+                      </v-select>
+                    </b-form-group>
                     <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
                       <ValidationProvider name="Fecha del Siniestro" rules="required" v-slot="{ errors }">
                         <b-form-input v-model="formData.prore_fec_sinister" type="date" :class="(errors.length > 0 ? ' is-invalid' : '')">
@@ -307,9 +317,11 @@ export default {
         this.fetchCourts()
         this.fetchProfiles()
         this.fetchEps()
+        this.fetchRegimenes()
         setTimeout(() => {
           this.fetchCity()
           this.fetchRisks()
+          this.fetchCausasLitigio()
           this.barraCargando()
         }, 500)
       }, 500)
@@ -420,9 +432,19 @@ export default {
       profesionalesOptions: [],
       errores: '',
       epsOptions: [],
+      regimenesOptions: [],
+      casusasLitigioOptions: [],
       epsOptionEmpty: {
         'code': null,
         'label': 'Sin EPS'
+      },
+      regimenOptionEmpty: {
+        'code': null,
+        'label': 'Sin régimen'
+      },
+      causasLitigioOptionEmpty: {
+        'code': null,
+        'label': 'Sin causas'
       }
     }
   },
@@ -450,6 +472,7 @@ export default {
         this.fetchProfileProcessOptions()
         this.fetchOptionsClinicas()
         this.fetchEps()
+        this.fetchRegimenes()
         setTimeout(() => {
           this.fetchEstadosProceso()
           this.fetchEspecialidades()
@@ -717,6 +740,40 @@ export default {
           this.errores = err
           if (this.intentos < 2) {
             this.fetchEps()
+            this.intentos++
+          }
+        })
+    },
+    fetchRegimenes () {
+      axios.get('/regimenes/fetch').then((response) => {
+        this.regimenesOptions = response.data.regimenes
+        if (this.regimenesOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.regimenesOptions.push(this.regimenOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchRegimenes()
+            this.intentos++
+          }
+        })
+    },
+    fetchCausasLitigio () {
+      axios.get('/causas_litigio/fetch').then((response) => {
+        this.casusasLitigioOptions = response.data.causas_litigio
+        if (this.casusasLitigioOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.casusasLitigioOptions.push(this.causasLitigioOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchCausasLitigio()
             this.intentos++
           }
         })

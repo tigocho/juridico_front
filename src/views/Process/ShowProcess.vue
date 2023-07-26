@@ -331,6 +331,10 @@
                           <b-card-text class="pr-3 my-0"><b>Juzgado: </b><span v-if="process.juzgado != null">{{ process.juzgado.court_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
+                          <b-card-text class="pr-3 my-0"><b>Regimen: </b><span v-if="process.regimen != null">{{ process.regimen.reg_nombre }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Causa del litigio: </b><span v-if="process.causa_litigio != null">{{ process.causa_litigio.cau_nombre }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        </b-row>
+                        <b-row class="col-md-12 pt-1">
                           <b-card-text class="my-0 pr-3"><b>Número radicado: </b><span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Proceso Ejecutivo:</b> <span v-if="process.prore_proceso_ejecutivo != null">{{ process.prore_proceso_ejecutivo }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Ejecutante:</b> <span v-if="process.prore_ejecutante != null">{{ process.prore_ejecutante }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -446,6 +450,16 @@
                             <b-form-group v-if="epsOptions != null" class="col-md-6" label="EPS" label-for="prore_eps_id">
                               <v-select v-model="process.prore_eps_id" :options="epsOptions" :reduce="label => label.code" label="label" id="prore_eps_id">
                                 <span slot="no-options">No hay EPS.</span>
+                              </v-select>
+                            </b-form-group>
+                            <b-form-group v-if="regimenesOptions != null" class="col-md-6" label="Régimen" label-for="prore_regimen_id">
+                              <v-select v-model="process.prore_regimen_id" :options="regimenesOptions" :reduce="label => label.code" label="label" id="prore_regimen_id">
+                                <span slot="no-options">No hay régimen.</span>
+                              </v-select>
+                            </b-form-group>
+                            <b-form-group v-if="casusasLitigioOptions != null" class="col-md-6" label="Causa del litigio" label-for="prore_causa_litigio_id">
+                              <v-select v-model="process.prore_causa_litigio_id" :options="casusasLitigioOptions" :reduce="label => label.code" label="label" id="prore_causa_litigio_id">
+                                <span slot="no-options">No hay causas de litigio.</span>
                               </v-select>
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
@@ -1007,6 +1021,8 @@ export default {
         this.fetchProcessOptions()
         setTimeout(() => {
           this.fetchEps()
+          this.fetchRegimenes()
+          this.fetchCausasLitigio()
         }, 500)
       }, 800)
     }, 500)
@@ -1252,6 +1268,16 @@ export default {
       epsOptionEmpty: {
         'code': null,
         'label': 'Sin EPS'
+      },
+      regimenesOptions: [],
+      regimenOptionEmpty: {
+        'code': null,
+        'label': 'Sin régimen'
+      },
+      casusasLitigioOptions: [],
+      causasLitigioOptionEmpty: {
+        'code': null,
+        'label': 'Sin causas'
       }
     }
   },
@@ -2405,6 +2431,40 @@ export default {
           this.errores = err
           if (this.intentos < 2) {
             this.fetchEps()
+            this.intentos++
+          }
+        })
+    },
+    fetchRegimenes () {
+      axios.get('/regimenes/fetch').then((response) => {
+        this.regimenesOptions = response.data.regimenes
+        if (this.regimenesOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.regimenesOptions.push(this.regimenOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchRegimenes()
+            this.intentos++
+          }
+        })
+    },
+    fetchCausasLitigio () {
+      axios.get('/causas_litigio/fetch').then((response) => {
+        this.casusasLitigioOptions = response.data.causas_litigio
+        if (this.casusasLitigioOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.casusasLitigioOptions.push(this.causasLitigioOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchCausasLitigio()
             this.intentos++
           }
         })
