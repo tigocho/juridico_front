@@ -225,6 +225,7 @@
                     <tab-nav-items class="col-auto p-0" :active="false" href="#actuaciones" title="Actuaciones" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#costos-cuantias" title="Costos/Cuantías"/>
                     <tab-nav-items class="col-auto p-0" :active="false" href="#poliza" title="Poliza" />
+                    <tab-nav-items class="col-auto p-0" :active="false" href="#analisis" title="Análisis" />
                     <!-- <tab-nav-items class="col-auto p-0" :active="false" href="#comentarios" title="Comentarios" />
                     <tab-nav-items class="col-auto p-0" :active="false" href="#notas" title="Notas" /> -->
                     <tab-nav-items class="col-auto p-0" :active="false" href="#links" title="Documentos del proceso" />
@@ -330,6 +331,10 @@
                           <b-card-text class="pr-3 my-0"><b>Juzgado: </b><span v-if="process.juzgado != null">{{ process.juzgado.court_name }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
+                          <b-card-text class="pr-3 my-0"><b>Regimen: </b><span v-if="process.regimen != null">{{ process.regimen.reg_nombre }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Causa del litigio: </b><span v-if="process.causa_litigio != null">{{ process.causa_litigio.cau_nombre }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                        </b-row>
+                        <b-row class="col-md-12 pt-1">
                           <b-card-text class="my-0 pr-3"><b>Número radicado: </b><span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Proceso Ejecutivo:</b> <span v-if="process.prore_proceso_ejecutivo != null">{{ process.prore_proceso_ejecutivo }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Ejecutante:</b> <span v-if="process.prore_ejecutante != null">{{ process.prore_ejecutante }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -354,7 +359,7 @@
                         <hr>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Póliza Prescrita:</b> {{ process.prore_prescritas ? 'Sí' : 'No' }}</b-card-text>
-                          <h6 class="float-left mb-1 font-weight-bolder"><button class="btn btn-link pt-0" @click="modificarPrescrito" ><i class="ri-edit-2-fill"></i>Modificar</button> </h6>
+                          <h6 class="float-left mb-1 font-weight-bolder"><button class="btn btn-link pt-0" @click="modificarPrescrito" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-edit-2-fill"></i>Modificar</button> </h6>
                         </b-row>
                         <hr>
                         <b-row class="col-md-12 pt-1">
@@ -445,6 +450,16 @@
                             <b-form-group v-if="epsOptions != null" class="col-md-6" label="EPS" label-for="prore_eps_id">
                               <v-select v-model="process.prore_eps_id" :options="epsOptions" :reduce="label => label.code" label="label" id="prore_eps_id">
                                 <span slot="no-options">No hay EPS.</span>
+                              </v-select>
+                            </b-form-group>
+                            <b-form-group v-if="regimenesOptions != null" class="col-md-6" label="Régimen" label-for="prore_regimen_id">
+                              <v-select v-model="process.prore_regimen_id" :options="regimenesOptions" :reduce="label => label.code" label="label" id="prore_regimen_id">
+                                <span slot="no-options">No hay régimen.</span>
+                              </v-select>
+                            </b-form-group>
+                            <b-form-group v-if="casusasLitigioOptions != null" class="col-md-6" label="Causa del litigio" label-for="prore_causa_litigio_id">
+                              <v-select v-model="process.prore_causa_litigio_id" :options="casusasLitigioOptions" :reduce="label => label.code" label="label" id="prore_causa_litigio_id">
+                                <span slot="no-options">No hay causas de litigio.</span>
                               </v-select>
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
@@ -710,12 +725,12 @@
                       <h4 class="card-title">Involucrados en el proceso</h4>
                     </template>
                     <template v-slot:headerAction>
-                      <button class="btn btn-primary" @click="agregarImplicated"><i class="ri-add-line mr-2" ></i>Añadir nuevo involucrado</button>
+                      <button class="btn btn-primary" @click="agregarImplicated" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-add-line mr-2"></i>Añadir nuevo involucrado</button>
                     </template>
                     <template v-slot:body>
                       <b-row class="col-md-12" v-for="(implicate, index) in implicateds" :key="index">
                         <b-row class="col-md-12 pt-1">
-                          <h6><b class="text-black" style="text-decoration:underline;">{{ implicate.profile.prof_name }}</b><button class="btn btn-link pt-0" @click="editImplicated(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteImplicated(implicate)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6><span v-if="implicate.imp_principal" class="mx-2 px-2" style="color: white; background-color: #089bab; border-radius: 3px; max-height:25px">PRINCIPAL</span>
+                          <h6><b class="text-black" style="text-decoration:underline;">{{ implicate.profile.prof_name }}</b><button class="btn btn-link pt-0" @click="editImplicated(index)" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteImplicated(implicate)" class="btn btn-link pt-0 px-0 text-danger" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6><span v-if="implicate.imp_principal" class="mx-2 px-2" style="color: white; background-color: #089bab; border-radius: 3px; max-height:25px">PRINCIPAL</span>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="px-2 my-0"><b>Tipo identificación: </b>{{ tipoIdentificacion(implicate.imp_tipo_identificacion) }}</b-card-text>
@@ -750,7 +765,7 @@
                         <li class="col-md-12" v-for="(proceeding, index) in proceedings" :key="index">
                           <div class="timeline-dots border-primary" v-if="index == 0" :class="'border-primary'"></div>
                           <div class="timeline-dots border-primary" v-else :class="'border-warning'"></div>
-                          <h6 class="float-left mb-1 font-weight-bolder">{{ proceeding.status_process.estado_proceso }}<button class="btn btn-link pt-0" @click="editProceeding(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteProceeding(proceeding.proce_id)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
+                          <h6 class="float-left mb-1 font-weight-bolder">{{ proceeding.status_process.estado_proceso }}<button class="btn btn-link pt-0" @click="editProceeding(index)" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteProceeding(proceeding.proce_id)" class="btn btn-link pt-0 px-0 text-danger" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
                           <!--<b-row class="col-md-12 pl-0 pt-1">
                             <h6><b class="text-black" style="text-decoration:underline;">{{ proceeding.status_process.sta_name }}</b> <button class="btn btn-link" @click="editProceeding(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button class="btn btn-link px-0 text-danger"><i class="ri-edit-2-fill"></i>Eliminar</button></h6>
                           </b-row>-->
@@ -791,7 +806,7 @@
                       <h4 class="card-title">Datos de la poliza</h4>
                     </template>
                     <template v-slot:headerAction>
-                      <b-button variant="primary" @click="asociarPoliza">Asociar Poliza</b-button>
+                      <b-button variant="primary" @click="asociarPoliza" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1">Asociar Poliza</b-button>
                     </template>
                     <template v-slot:body>
                       <b-row class="col-md-12 pt-1">
@@ -908,6 +923,14 @@
                     </template>
                   </iq-card>
                 </tab-content-item>
+                <tab-content-item :active="false" id="analisis">
+                  <iq-card>
+                    <analisis-procesos
+                    :process="process"
+                    :usr_proffile="userLogged.user_profile"
+                    ></analisis-procesos>
+                  </iq-card>
+                </tab-content-item>
                 <!-- <tab-content-item :active="false" id="comentarios">
                   <iq-card>
                     <template v-slot:headerTitle>
@@ -972,9 +995,10 @@ import axios from 'axios'
 import auth from '@/logic/auth'
 import iqCard from '../../components/xray/cards/iq-card.vue'
 import { VueEditor } from 'vue2-editor'
+import AnalisisProcesos from './include/AnalisisProcesos.vue'
 
 export default {
-  components: { iqCard, VueEditor },
+  components: { iqCard, VueEditor, AnalisisProcesos },
   name: 'ProfileEdit',
   mounted () {
     xray.index()
@@ -997,6 +1021,8 @@ export default {
         this.fetchProcessOptions()
         setTimeout(() => {
           this.fetchEps()
+          this.fetchRegimenes()
+          this.fetchCausasLitigio()
         }, 500)
       }, 800)
     }, 500)
@@ -1152,12 +1178,32 @@ export default {
       ],
       rangoEdadOptions: [
         {
+          text: '0-5 años',
+          value: '0-5 años'
+        },
+        {
+          text: '6-11 años',
+          value: '6-11 años'
+        },
+        {
           text: '0-18 años',
           value: '0-18 años'
         },
         {
+          text: '12-18 años',
+          value: '12-18 años'
+        },
+        {
           text: '19- 60 años',
           value: '19- 60 años'
+        },
+        {
+          text: '14-26 años',
+          value: '14-26 años'
+        },
+        {
+          text: '27-59 años',
+          value: '27-59 años'
         },
         {
           text: '+ 60 años',
@@ -1222,6 +1268,16 @@ export default {
       epsOptionEmpty: {
         'code': null,
         'label': 'Sin EPS'
+      },
+      regimenesOptions: [],
+      regimenOptionEmpty: {
+        'code': null,
+        'label': 'Sin régimen'
+      },
+      casusasLitigioOptions: [],
+      causasLitigioOptionEmpty: {
+        'code': null,
+        'label': 'Sin causas'
       }
     }
   },
@@ -2375,6 +2431,40 @@ export default {
           this.errores = err
           if (this.intentos < 2) {
             this.fetchEps()
+            this.intentos++
+          }
+        })
+    },
+    fetchRegimenes () {
+      axios.get('/regimenes/fetch').then((response) => {
+        this.regimenesOptions = response.data.regimenes
+        if (this.regimenesOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.regimenesOptions.push(this.regimenOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchRegimenes()
+            this.intentos++
+          }
+        })
+    },
+    fetchCausasLitigio () {
+      axios.get('/causas_litigio/fetch').then((response) => {
+        this.casusasLitigioOptions = response.data.causas_litigio
+        if (this.casusasLitigioOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.casusasLitigioOptions.push(this.causasLitigioOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchCausasLitigio()
             this.intentos++
           }
         })
