@@ -1186,7 +1186,7 @@ export default {
           value: '6-11 años'
         },
         {
-          text: '0-18 años',
+          text: '0-18 años (YA NO SIRVE)',
           value: '0-18 años'
         },
         {
@@ -1194,12 +1194,12 @@ export default {
           value: '12-18 años'
         },
         {
-          text: '19- 60 años',
+          text: '19- 60 años (YA NO SIRVE)',
           value: '19- 60 años'
         },
         {
-          text: '14-26 años',
-          value: '14-26 años'
+          text: '19-26 años',
+          value: '19-26 años'
         },
         {
           text: '27-59 años',
