@@ -117,7 +117,7 @@
           </b-modal>
         </div>
         <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
-        <ModalTerminarProceso :num_radicado="process.prore_num_radicado" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
+        <ModalTerminarProceso v-on:actualizarProceso="getProcess" :num_radicado="process.prore_num_radicado" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
         <!-- INICIO DE MODAL DE AGREGAR IMPLICADO -->
         <div>
           <b-modal id="modal-nuevo-implicated" size="lg" title="Agregar/Editar involucrado" hide-footer>
@@ -1186,7 +1186,7 @@ export default {
           value: '6-11 años'
         },
         {
-          text: '0-18 años',
+          text: '0-18 años (YA NO SIRVE)',
           value: '0-18 años'
         },
         {
@@ -1194,12 +1194,12 @@ export default {
           value: '12-18 años'
         },
         {
-          text: '19- 60 años',
+          text: '19- 60 años (YA NO SIRVE)',
           value: '19- 60 años'
         },
         {
-          text: '14-26 años',
-          value: '14-26 años'
+          text: '29-26 años (YA NO SIRVE)',
+          value: '29-26 años'
         },
         {
           text: '27-59 años',

@@ -34,7 +34,7 @@
         <hr />
         <b-row class="col-md-12 pt-1">
           <b-card-text class="my-0 pr-12"
-            ><b>Resumen ejecutivo: </b
+            ><b>Resumen ejecutivo (final del litigio): </b
             ><span v-if="processAnalisis.prore_resumen_ejecutivo != null">{{
               processAnalisis.prore_resumen_ejecutivo
             }}</span
@@ -55,8 +55,7 @@
               v-model="analisisJuridico"
               rows="12"
               :state="
-                analisisJuridico.length <= 2500 &&
-                analisisJuridico.length >= 5
+                analisisJuridico.length <= 2500
               "
             ></b-form-textarea>
             <span>Cantidad caracteres (máx 2500): {{ analisisJuridico.length }}</span>
@@ -73,8 +72,7 @@
               v-model="analisisMedico"
               rows="12"
               :state="
-                analisisMedico.length <= 2500 &&
-                analisisMedico.length >= 5
+                analisisMedico.length <= 2500
               "
             ></b-form-textarea>
             <span>Cantidad caracteres (máx 2500): {{ analisisMedico.length }}</span>
@@ -82,7 +80,7 @@
           <hr />
           <b-form-group
             class="col-md-12"
-            label="Resumen ejecutivo"
+            label="Resumen ejecutivo (final del litigio)"
             label-for="textarea-decription"
           >
             <b-form-textarea
@@ -91,8 +89,7 @@
               v-model="resumenEjecutivo"
               rows="12"
               :state="
-                resumenEjecutivo.length <= 1000 &&
-                resumenEjecutivo.length >= 5
+                resumenEjecutivo.length <= 1000
               "
             ></b-form-textarea>
             <span>Cantidad caracteres (máx 1000): {{ resumenEjecutivo.length }}</span>
@@ -144,14 +141,14 @@ export default {
   computed: {
     verificarCampos () {
       return (
-        this.analisisMedico.length > 4 && this.analisisMedico.length <= 2500 && this.analisisJuridico.length > 4 && this.analisisJuridico.length <= 2500 && this.resumenEjecutivo.length > 4 && this.resumenEjecutivo.length <= 1000
+        this.analisisMedico.length <= 2500 && this.analisisJuridico.length <= 2500 && this.resumenEjecutivo.length <= 1000
       )
     }
   },
   methods: {
     editarAnalisis () {
       this.editandoAnalisis = !this.editandoAnalisis
-      this.textoEditarAnalisis = 'Guardar análisis'
+      this.textoEditarAnalisis = !this.editandoAnalisis ? 'Editar análisis' : 'Guardar análisis'
     },
     guardarAnalisis () {
       const body = {
