@@ -25,48 +25,18 @@
         title="Asignar Caso"
         hide-footer
       >
-        <ValidationObserver ref="form-2" v-slot="{ handleSubmit }">
-          <form ref="form-2" @submit.prevent="handleSubmit(SaveAsignacionCaso)">
-            <b-row>
-              <b-col lg="10" class="pagina-detalle-proceso">
-                <b-card-text style="margin-left: 15px">
-                  <b-row>
-                    <strong>Actividad: </strong>&nbsp;
-                    {{ caso.actividad }}&nbsp;
-                    <strong>Subactividad: </strong>&nbsp;
-                    {{ caso.subactividad }} </b-row
-                  ><b-row>
-                    <strong>Asunto: </strong>&nbsp;
-                    {{ caso.caso_titulo }} </b-row
-                  ><b-row>
-                    <strong>Descripcion: </strong>&nbsp;
-                    {{ caso.caso_descripcion }}
-                  </b-row>
-                </b-card-text>
-                <b-form-group label="Abogado*" label-for="profesional_id">
-                  <v-select
-                    v-model="asginarData.profesional_id"
-                    :options="profesionalesOptions"
-                    :reduce="(label) => label.code"
-                    label="label"
-                    id="profesional_id"
-                  >
-                    <span slot="no-options">No hay Abogados.</span>
-                  </v-select>
-                </b-form-group>
-                <b-form-group>
-                  <b-button variant="primary" type="submit"
-                    >Asignar Caso</b-button
-                  >
-                </b-form-group>
-              </b-col>
-            </b-row>
-          </form>
-        </ValidationObserver>
+        <!-- INICIO DE COMPONENTE ASIGNAR CASO-->
+        <asignar-caso
+          :casoInfo="caso"
+          :archivos="archivos"
+          :descargarArchivoCaso="descargarArchivoCaso"
+          :recargarCaso="getCasosToAssing"
+          @cerrar="cerrarModalAsignarCaso"
+        ></asignar-caso>
+        <!-- FIN DE COMPONENTE ASIGNAR CASO-->
       </b-modal>
     </div>
     <!-- FIN DE MODAL-->
-
     <b-row>
       <b-col lg="12">
         <iq-card>
@@ -236,22 +206,22 @@ import Vue from 'vue'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import FormCase from '../Cases/components/FormCase.vue'
 import { xray } from '../../config/pluginInit'
+import fileDownload from 'js-file-download'
+import AsignarCaso from './components/AsignarCaso.vue'
 export default {
   name: 'CasesToAssing',
   components: {
-    FormCase
+    FormCase,
+    AsignarCaso
   },
   data () {
     return {
       newCase: require('@/assets/images/page-img/new-case-blue.png'),
       casos: [],
       caso: {},
+      archivos: [],
       estado: 'd-none',
-      profesionalesOptions: [],
       bRowLast: {},
-      asginarData: {
-        profesional_id: ''
-      },
       fields: [
         { label: 'Ver Más', key: 'show_details', class: 'text-left' },
         { label: 'Radicado', key: 'radicado' },
@@ -325,8 +295,8 @@ export default {
       this.$bvModal.show('modal-editar-caso')
     },
     asignarCaso (caso) {
-      this.getProfesionals()
       this.caso = caso
+      this.archivos = caso.archivos
       this.$bvModal.show('modal-asignar-caso')
     },
     eliminarCaso (casoId) {
@@ -355,25 +325,26 @@ export default {
         }
       })
     },
-    getProfesionals () {
-      axios.get('/professionals/fetch').then((response) => {
-        this.profesionalesOptions = response.data.professionals
-      })
+    cerrarModalAsignarCaso () {
+      this.$bvModal.hide('modal-asignar-caso')
     },
-    SaveAsignacionCaso () {
-      if (this.asginarData.profesional_id !== '') {
-        this.$bvModal.hide('modal-asignar-caso')
-        axios
-          .post('/casos/asignar/' + this.caso.caso_id, this.asginarData)
-          .then((res) => {
-            if (res.status === 200) {
-              this.getCasosToAssing()
-            }
-            Vue.swal(res.data.message)
-          })
-      } else {
-        Vue.swal('Por favor selecione un Abogado')
-      }
+    descargarArchivoCaso (filename, id) {
+      axios({
+        url: '/casos/descargar-archivo/' + id,
+        method: 'GET',
+        responseType: 'blob'
+      })
+        .then((response) => {
+          if (response.headers['content-type'] === 'application/json') {
+            Vue.swal('Ups, el archivo no existe')
+          } else {
+            fileDownload(response.data, filename)
+            Vue.swal('Descarga éxitosa')
+          }
+        })
+        .catch((err) => {
+          Vue.swal('Ups, ocurrió un error ' + err)
+        })
     }
   }
 }

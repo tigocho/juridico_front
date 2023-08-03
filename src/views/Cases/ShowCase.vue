@@ -47,47 +47,15 @@
             title="Asignar Caso"
             hide-footer
           >
-            <ValidationObserver ref="form-2" v-slot="{ handleSubmit }">
-              <form
-                ref="form-2"
-                @submit.prevent="handleSubmit(SaveAsignacionCaso)"
-              >
-                <b-row>
-                  <b-col lg="10" class="pagina-detalle-proceso">
-                    <b-card-text style="margin-left: 15px">
-                      <b-row>
-                        <strong>Actividad: </strong>&nbsp;
-                        {{ caso.actividad }}&nbsp;
-                        <strong>Subactividad: </strong>&nbsp;
-                        {{ caso.subactividad }} </b-row
-                      ><b-row>
-                        <strong>Asunto: </strong>&nbsp;
-                        {{ caso.caso_titulo }} </b-row
-                      ><b-row>
-                        <strong>Descripcion: </strong>&nbsp;
-                        {{ caso.caso_descripcion }}
-                      </b-row>
-                    </b-card-text>
-                    <b-form-group label="Abogado*" label-for="profesional_id">
-                      <v-select
-                        v-model="asginarData.profesional_id"
-                        :options="profesionalesOptions"
-                        :reduce="(label) => label.code"
-                        label="label"
-                        id="profesional_id"
-                      >
-                        <span slot="no-options">No hay Abogados.</span>
-                      </v-select>
-                    </b-form-group>
-                    <b-form-group>
-                      <b-button variant="primary" type="submit"
-                        >Asignar Caso</b-button
-                      >
-                    </b-form-group>
-                  </b-col>
-                </b-row>
-              </form>
-            </ValidationObserver>
+            <!-- INICIO DE COMPONENTE ASIGNAR CASO-->
+            <asignar-caso
+              :casoInfo="caso"
+              :archivos="archivos"
+              :descargarArchivoCaso="descargarArchivoCaso"
+              :recargarCaso="getCase"
+              @cerrar="cerrarModalAsignarCaso"
+            ></asignar-caso>
+            <!-- FIN DE COMPONENTE ASIGNAR CASO-->
           </b-modal>
         </div>
         <!-- FIN DE MODAL-->
@@ -175,6 +143,12 @@
                     </template>
                     <template v-slot:body>
                       <b-card-text>
+                        <b-row v-if="perfilesPermitidosVerHorasInvertidas.includes(user_profile) && caso.caso_observacion_abogado">
+                          <b-col>
+                            <strong>Observación del abogado líder </strong>
+                            <p>{{ caso.caso_observacion_abogado }}</p>
+                          </b-col>
+                        </b-row>
                         <b-row>
                           <b-col
                             ><strong>Fecha de apertura: </strong>
@@ -613,13 +587,15 @@ import FormCase from '../Cases/components/FormCase.vue'
 import FormSegumiento from '../Cases/components/FormSegumiento.vue'
 import moment from 'moment'
 import EncabezadoCaso from './components/EncabezadoCaso.vue'
+import AsignarCaso from './components/AsignarCaso.vue'
 moment.locale('es')
 export default {
   name: 'ShowCase',
   components: {
     FormCase,
     FormSegumiento,
-    EncabezadoCaso
+    EncabezadoCaso,
+    AsignarCaso
   },
   data () {
     return {
@@ -637,10 +613,7 @@ export default {
       loading: true,
       addSeguimiento: false,
       seguimientosCaso: [],
-      profesionalesOptions: [],
-      asginarData: {
-        profesional_id: ''
-      }
+      profesionalesOptions: []
     }
   },
   computed: {
@@ -744,29 +717,16 @@ export default {
       return moment(fecha).format('DD/MM/YYYY')
     },
     asignarCaso (caso) {
-      this.getProfesionals()
       this.caso = caso
       this.$bvModal.show('modal-asignar-caso')
+    },
+    cerrarModalAsignarCaso () {
+      this.$bvModal.hide('modal-asignar-caso')
     },
     getProfesionals () {
       axios.get('/professionals/fetch').then((response) => {
         this.profesionalesOptions = response.data.professionals
       })
-    },
-    SaveAsignacionCaso () {
-      if (this.asginarData.profesional_id !== '') {
-        this.$bvModal.hide('modal-asignar-caso')
-        axios
-          .post('/casos/asignar/' + this.caso.caso_id, this.asginarData)
-          .then((res) => {
-            if (res.status === 200) {
-              this.getCase()
-            }
-            Vue.swal(res.data.message)
-          })
-      } else {
-        Vue.swal('Por favor selecione un Abogado')
-      }
     },
     formatId (casoId) {
       const digitos = casoId.length
