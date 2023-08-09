@@ -1198,8 +1198,8 @@ export default {
           value: '19- 60 años'
         },
         {
-          text: '29-26 años (YA NO SIRVE)',
-          value: '29-26 años'
+          text: '19-26 años',
+          value: '19-26 años'
         },
         {
           text: '27-59 años',
