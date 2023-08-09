@@ -117,7 +117,7 @@
           </b-modal>
         </div>
         <!-- FIN MODAL DE NUEVA ACTUACIÓN -->
-        <ModalTerminarProceso :num_radicado="process.prore_num_radicado" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
+        <ModalTerminarProceso v-on:actualizarProceso="getProcess" :num_radicado="process.prore_num_radicado" :usr_id="userLogged.usr_id" :prore_id="proceeding.proce_prore_id" v-if="mostrarModalTerminarProceso" />
         <!-- INICIO DE MODAL DE AGREGAR IMPLICADO -->
         <div>
           <b-modal id="modal-nuevo-implicated" size="lg" title="Agregar/Editar involucrado" hide-footer>
