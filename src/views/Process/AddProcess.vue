@@ -384,7 +384,9 @@ export default {
         prore_sinies_description: '',
         prore_status_process_id: '',
         prore_user_id: '',
-        prore_prov_constituidas: ''
+        prore_prov_constituidas: '',
+        prore_regimen_id: '',
+        prore_causa_litigio_id: ''
       },
       process: [],
       clinicaOptions: [{
