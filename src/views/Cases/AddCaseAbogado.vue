@@ -278,11 +278,23 @@
                               </div>
                             </ValidationProvider>
                           </b-form-group>
-                          <b-form-group class="col-md-6" label="Proceso" label-for="caso_process_request_id">
+                          <!-- <b-form-group class="col-md-6" label="Proceso" label-for="caso_process_request_id"> -->
+                          <b-form-group class="col-md-6" :label-for="caso.caso_process_request_id">
+                            <label>
+                              Proceso <i class="ri-question-line" id="popover-pregunta-procesos" @mouseover="showPopover = true" @mouseout="showPopover = false"></i>
+                            </label>
                             <v-select v-model="caso.caso_process_request_id" :options="processOptions" :reduce="label => label.code" label="label" id="caso_process_request_id">
                               <span slot="no-options">No hay procesos.</span>
                             </v-select>
                           </b-form-group>
+                          <b-popover
+                            target="popover-pregunta-procesos"
+                            placement="top"
+                            triggers="hover"
+                            :show="showPopover"
+                          >
+                            <span>Los procesos solo se cargarán cuando se elija un cliente.</span>
+                          </b-popover>
                           <b-form-group v-if="caso.caso_process_request_id > 0" class="col-md-6" label="Actuación" label-for="caso_status_process_id">
                             <v-select v-model="caso.caso_status_process_id" :options="statusProcessOptions" :reduce="label => label.code" label="label" id="caso_status_process_id">
                               <span slot="no-options">No hay tipo de actuaciones.</span>
@@ -447,7 +459,8 @@ export default {
         { label: 'NIT.', code: 4 }
       ],
       botonGuardarNuevoCliente: '',
-      textoGuardarModal: 'Guardar'
+      textoGuardarModal: 'Guardar',
+      showPopover: false
     }
   },
   computed: {
@@ -467,7 +480,6 @@ export default {
     this.getUserClinicas()
     setTimeout(() => {
       this.getMediosSolicitud()
-      this.fetchProcessOptions()
       this.fetchStatusProcessOptions()
     }, 500)
   },
@@ -513,6 +525,7 @@ export default {
       })
     },
     getClientes () {
+      this.obtenerProcesosCliente()
       this.caso.user_id = null
       axios.get('/clientes/fetch', { params: { clinica_id: this.caso.clinica_id } }).then((response) => {
         this.clientesOptions = response.data.clientes
@@ -541,27 +554,6 @@ export default {
             this.intentos++
           }
         })
-    },
-    fetchProcessOptions () {
-      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtenerProcesosParaLista/' + this.userLogged.usr_id).then(response => {
-          this.processOptions = response.data.process
-          this.processOptions.unshift({ 'code': 0, 'label': 'Ninguno' })
-          if (this.processOptions[0] !== undefined) {
-            this.intentos = 0
-            this.errores = {}
-          }
-        })
-          .catch((err) => {
-            this.errores = err
-            if (this.intentos < 2) {
-              this.fetchProcessOptions()
-              this.intentos++
-            }
-          })
-      } else {
-        Vue.swal('Usuario no logueado o inactivo')
-      }
     },
     fetchStatusProcessOptions () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
@@ -685,6 +677,23 @@ export default {
           Vue.swal('Error', 'Ocurrió un error tratando de realizar la petición. Intente más tarde ' + err, 'error')
           this.botonGuardarNuevoCliente = ''
           this.textoGuardarModal = 'Guardar'
+        })
+    },
+    obtenerProcesosCliente () {
+      axios.get('/process/obtener-procesos-cliente-para-lista/' + this.caso.clinica_id).then(response => {
+        this.processOptions = response.data.process
+        this.processOptions.unshift({ 'code': 0, 'label': 'Ninguno' })
+        if (this.processOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.obtenerProcesosCliente()
+            this.intentos++
+          }
         })
     }
   }
