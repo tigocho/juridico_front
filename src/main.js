@@ -16,12 +16,6 @@ import axios from 'axios'
 axios.defaults.baseURL = process.env.VUE_APP_NODE_ENV === 'production'
   ? process.env.VUE_APP_API_ENDPOINT
   : process.env.VUE_APP_API_ENDPOINT_DEV
-// axios.defaults.baseURL = 'http://181.129.171.26:9898/juridico_api/public/api'
-var token = localStorage.getItem('token')
-if (token) {
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-}
-
 global.Raphael = Raphael
 Vue.config.productionTip = false
 Vue.use(VueSweetalert2)
