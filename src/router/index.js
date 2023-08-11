@@ -114,6 +114,7 @@ import AddCaseAbogado from '../views/Cases/AddCaseAbogado'
 import AssignedCases from '../views/Cases/AssignedCases'
 import AllCases from '../views/Cases/AllCases'
 import GraphsAndReports from '../views/Cases/GraphsAndReports'
+import Auth from '@/services/auth'
 
 Vue.use(VueRouter)
 
@@ -878,6 +879,7 @@ router.beforeEach((to, from, next) => {
   const rutaAuth = to.matched.some((record) => record.meta.auth)
   const token = localStorage.getItem('access_token')
   verificarRedireccion(to, from)
+  verificarToken()
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   if (rutaAuth && token === null) {
     router.push({ name: 'auth1.sign-in1' }).catch(() => {})
@@ -894,6 +896,12 @@ function verificarRedireccion (to, from) {
   if (from.name === null && to.fullPath !== '/auth/sign-in1') {
     localStorage.setItem('redirect', to.fullPath)
   }
+}
+
+function verificarToken () {
+  setInterval(() => {
+    Auth.checkTokenExpiration()
+  }, 5 * 60 * 1000) // Se verifica cada 5 minutos
 }
 
 export default router
