@@ -173,27 +173,57 @@
                 </b-card>
               </template>
               <template #cell(radicado)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.radicado }} <img :src="newCase" width="25px" class="img-fluid" alt="logo"></b>
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.radicado }} <img :src="newCase" width="25px" class="img-fluid" alt="logo">
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.radicado }} <img :src="actualizacionCaso" width="25px" class="img-fluid" alt="logo">
+                </b>
                 <span v-else>{{ data.item.radicado }}</span>
               </template>
               <template #cell(caso_titulo)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.caso_titulo }}</b>
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.caso_titulo }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.caso_titulo }}
+                </b>
                 <span v-else>{{ data.item.caso_titulo }}</span>
               </template>
               <template #cell(estado)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.estado }}</b>
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.estado }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.estado }}
+                </b>
                 <span v-else>{{ data.item.estado }}</span>
               </template>
               <template #cell(caso_fecha_apertura)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.caso_fecha_apertura }}</b>
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.caso_fecha_apertura }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.caso_fecha_apertura }}
+                </b>
                 <span v-else>{{ data.item.caso_fecha_apertura }}</span>
               </template>
               <template #cell(caso_fecha_estimada_solucion)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.caso_fecha_estimada_solucion }}</b>
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.caso_fecha_estimada_solucion }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.caso_fecha_estimada_solucion }}
+                </b>
                 <span v-else>{{ data.item.caso_fecha_estimada_solucion }}</span>
               </template>
               <template #cell(solicitante)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.solicitante }}</b>
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.solicitante }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.solicitante }}
+                </b>
                 <span v-else>{{ data.item.solicitante }}</span>
               </template>
               <template #cell(actions)="data">
@@ -261,6 +291,7 @@ export default {
   data () {
     return {
       newCase: require('@/assets/images/page-img/new-case-blue.png'),
+      actualizacionCaso: require('@/assets/images/page-img/actualizacion_pendiente_leer.png'),
       casos: [],
       caso: {},
       estado: 'd-none',
