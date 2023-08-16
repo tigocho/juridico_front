@@ -333,6 +333,7 @@
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="pr-3 my-0"><b>Regimen: </b><span v-if="process.regimen != null">{{ process.regimen.reg_nombre }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Causa del litigio: </b><span v-if="process.causa_litigio != null">{{ process.causa_litigio.cau_nombre }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
+                          <b-card-text class="pr-3 my-0"><b>Sub Causa del litigio: </b><span v-if="process.sub_causa_litigio != null">{{ process.sub_causa_litigio.scl_nombre }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                         </b-row>
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="my-0 pr-3"><b>Número radicado: </b><span v-if="process.prore_num_radicado != null">{{ process.prore_num_radicado }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
@@ -458,9 +459,19 @@
                               </v-select>
                             </b-form-group>
                             <b-form-group v-if="casusasLitigioOptions != null" class="col-md-6" label="Causa del litigio" label-for="prore_causa_litigio_id">
-                              <v-select v-model="process.prore_causa_litigio_id" :options="casusasLitigioOptions" :reduce="label => label.code" label="label" id="prore_causa_litigio_id">
+                              <v-select v-model="process.prore_causa_litigio_id" :options="casusasLitigioOptions" @input="fetchSubCausasLitigio(false)" :reduce="label => label.code" label="label" id="prore_causa_litigio_id">
                                 <span slot="no-options">No hay causas de litigio.</span>
                               </v-select>
+                            </b-form-group>
+                            <b-form-group v-if="subCausasLitigioOptions != null" class="col-md-6" label="Subcausa del litigio" label-for="prore_sub_causa_litigio_id">
+                              <ValidationProvider name="Sub Causas litigios" :rules="requiredSubCausaRule" v-slot="{ errors }">
+                                <v-select v-model="process.prore_sub_causa_litigio_id" :options="subCausasLitigioOptions" :reduce="label => label.code" label="label" id="prore_sub_causa_litigio_id"  :class="(errors.length > 0 ? ' is-invalid' : '')">
+                                  <span slot="no-options">No hay sub causas de litigio.</span>
+                                </v-select>
+                                <div class="invalid-feedback">
+                                  <span>Debe de seleccionar una opción</span>
+                                </div>
+                              </ValidationProvider>
                             </b-form-group>
                             <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
                               <ValidationProvider name="Fecha del Siniestro" rules="required" v-slot="{ errors }">
@@ -1043,6 +1054,15 @@ export default {
         yearsOptions.push({ 'code': (2000 + index), 'label': (2000 + index) })
       }
       return yearsOptions
+    },
+    requiredSubCausaRule () {
+      if (this.process.prore_causa_litigio_id) {
+        return {
+          required: value => !!value || 'Debe seleccionar una opción'
+        }
+      } else {
+        return {} // No aplicar ninguna validación si cliente_id es nulo
+      }
     }
   },
   data () {
@@ -1278,7 +1298,13 @@ export default {
       causasLitigioOptionEmpty: {
         'code': null,
         'label': 'Sin causas'
-      }
+      },
+      subCausasLitigioOptions: [],
+      subCausasLitigioOptionEmpty: {
+        'code': null,
+        'label': 'Sin sub causas'
+      },
+      campoMomentoError: ''
     }
   },
   methods: {
@@ -1475,30 +1501,46 @@ export default {
     },
     checkDataProcess () {
       if (!this.process.prore_num_radicado) {
+        this.campoMomentoError = 'Número radicado'
         return false
       } else if (!this.process.prore_litigando_id) {
+        this.campoMomentoError = 'ID litigando'
         return false
       } else if (!this.process.prore_fec_ingreso_jur) {
+        this.campoMomentoError = 'Fecha de ingreso a jurídico'
         return false
       } else if (!this.process.prore_defendant_clin) {
+        this.campoMomentoError = 'Clinica'
         return false
       } else if (!this.process.prore_fec_sinister) {
+        this.campoMomentoError = 'Fecha siniestro'
         return false
       } else if (!this.process.prore_year_notify) {
+        this.campoMomentoError = 'Año de notificación'
         return false
       } else if (!this.process.prore_process_year) {
+        this.campoMomentoError = 'Año de proceso'
         return false
       } else if (!this.process.prore_sinies_description) {
+        this.campoMomentoError = 'Descripción de siniestro'
         return false
       } else if (!this.process.prore_fec_ingreso_cli) {
+        this.campoMomentoError = 'Fecha de ingreso a clínica'
         return false
       } else if (!this.process.prore_city_id) {
+        this.campoMomentoError = 'Ciudad'
         return false
       } else if (!this.process.prore_status_process_id) {
+        this.campoMomentoError = 'Estado del proceso'
         return false
       } else if (!this.process.prore_profile_id) {
+        this.campoMomentoError = 'Perfil/Abogado'
         return false
       } else if (!this.process.prore_typro_id) {
+        this.campoMomentoError = 'Tipo de proceso'
+        return false
+      } else if (this.process.prore_causa_litigio_id !== null && !this.process.prore_sub_causa_litigio_id) {
+        this.campoMomentoError = 'Sub Causa de litigio'
         return false
       } else {
         return true
@@ -1514,7 +1556,7 @@ export default {
           this.estadoBotonActualizarCuantias = 'disabled'
           this.textoEditarCuantias = 'Actualizando...'
         } else {
-          Vue.swal('Por favor llena todos los campos marcados con *')
+          Vue.swal('Por favor llena todos los campos marcados con * (' + this.campoMomentoError + ')')
         }
       } else {
         if (this.profileProcessOptions[0] === '' || this.profileProcessOptions[0] == null) {
@@ -1582,6 +1624,8 @@ export default {
               this.proceedings = this.process.proceedings
               this.tableLinkKey++
               this.polizas = this.process.polizas
+              const primeraVez = true
+              this.fetchSubCausasLitigio(primeraVez)
             } else {
               Vue.swal('Ocurrió un error tratando de obtener los datos del proceso')
             }
@@ -2465,6 +2509,24 @@ export default {
           this.errores = err
           if (this.intentos < 2) {
             this.fetchCausasLitigio()
+            this.intentos++
+          }
+        })
+    },
+    fetchSubCausasLitigio (primeraVez = false) {
+      this.process.prore_sub_causa_litigio_id = primeraVez ? this.process.prore_sub_causa_litigio_id : ''
+      axios.get('/sub_causas_litigio/fetch/' + this.process.prore_causa_litigio_id).then((response) => {
+        this.subCausasLitigioOptions = response.data.sub_causas_litigio
+        if (this.subCausasLitigioOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.subCausasLitigioOptions.push(this.subCausasLitigioOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchSubCausasLitigio()
             this.intentos++
           }
         })

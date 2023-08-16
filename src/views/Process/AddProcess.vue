@@ -87,10 +87,20 @@
                         <span slot="no-options">No hay régimen.</span>
                       </v-select>
                     </b-form-group>
-                    <b-form-group v-if="casusasLitigioOptions != null" class="col-md-6" label="Causa del litigio" label-for="prore_causa_litigio_id">
-                      <v-select v-model="formData.prore_causa_litigio_id" :options="casusasLitigioOptions" :reduce="label => label.code" label="label" id="prore_causa_litigio_id" >
+                    <b-form-group v-if="causasLitigioOptions != null" class="col-md-6" label="Causa del litigio" label-for="prore_causa_litigio_id">
+                      <v-select v-model="formData.prore_causa_litigio_id" :options="causasLitigioOptions" @input="fetchSubCausasLitigio" :reduce="label => label.code" label="label" id="prore_causa_litigio_id" >
                         <span slot="no-options">No hay causas de litigio.</span>
                       </v-select>
+                    </b-form-group>
+                    <b-form-group v-if="subCausasLitigioOptions != null" class="col-md-6" label="Subcausa del litigio" label-for="prore_sub_causa_litigio_id">
+                      <ValidationProvider name="Sub Causas litigios" :rules="requiredSubCausaRule" v-slot="{ errors }">
+                        <v-select v-model="formData.prore_sub_causa_litigio_id" :options="subCausasLitigioOptions" :reduce="label => label.code" label="label" id="prore_sub_causa_litigio_id"  :class="(errors.length > 0 ? ' is-invalid' : '')">
+                          <span slot="no-options">No hay sub causas de litigio.</span>
+                        </v-select>
+                        <div class="invalid-feedback">
+                          <span>Debe de seleccionar una opción</span>
+                        </div>
+                      </ValidationProvider>
                     </b-form-group>
                     <b-form-group class="col-md-6" label="Fecha del Siniestro*" label-for="prore_fec_sinister">
                       <ValidationProvider name="Fecha del Siniestro" rules="required" v-slot="{ errors }">
@@ -386,7 +396,8 @@ export default {
         prore_user_id: '',
         prore_prov_constituidas: '',
         prore_regimen_id: '',
-        prore_causa_litigio_id: ''
+        prore_causa_litigio_id: '',
+        prore_sub_causa_litigio_id: ''
       },
       process: [],
       clinicaOptions: [{
@@ -435,7 +446,8 @@ export default {
       errores: '',
       epsOptions: [],
       regimenesOptions: [],
-      casusasLitigioOptions: [],
+      causasLitigioOptions: [],
+      subCausasLitigioOptions: [],
       epsOptionEmpty: {
         'code': null,
         'label': 'Sin EPS'
@@ -447,6 +459,10 @@ export default {
       causasLitigioOptionEmpty: {
         'code': null,
         'label': 'Sin causas'
+      },
+      subCausasLitigioOptionEmpty: {
+        'code': null,
+        'label': 'Sin subcausas'
       }
     }
   },
@@ -466,6 +482,15 @@ export default {
         yearsOptions.push({ 'code': (2000 + index), 'label': (2000 + index) })
       }
       return yearsOptions
+    },
+    requiredSubCausaRule () {
+      if (this.formData.prore_causa_litigio_id) {
+        return {
+          required: value => !!value || 'Debe seleccionar una opción'
+        }
+      } else {
+        return {} // No aplicar ninguna validación si cliente_id es nulo
+      }
     }
   },
   methods: {
@@ -765,17 +790,35 @@ export default {
     },
     fetchCausasLitigio () {
       axios.get('/causas_litigio/fetch').then((response) => {
-        this.casusasLitigioOptions = response.data.causas_litigio
-        if (this.casusasLitigioOptions[0] !== undefined) {
+        this.causasLitigioOptions = response.data.causas_litigio
+        if (this.causasLitigioOptions[0] !== undefined) {
           this.intentos = 0
           this.errores = {}
         }
-        this.casusasLitigioOptions.push(this.causasLitigioOptionEmpty)
+        this.causasLitigioOptions.push(this.causasLitigioOptionEmpty)
       })
         .catch((err) => {
           this.errores = err
           if (this.intentos < 2) {
             this.fetchCausasLitigio()
+            this.intentos++
+          }
+        })
+    },
+    fetchSubCausasLitigio () {
+      this.formData.prore_sub_causa_litigio_id = ''
+      axios.get('/sub_causas_litigio/fetch/' + this.formData.prore_causa_litigio_id).then((response) => {
+        this.subCausasLitigioOptions = response.data.sub_causas_litigio
+        if (this.subCausasLitigioOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+        this.subCausasLitigioOptions.push(this.subCausasLitigioOptionEmpty)
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.fetchSubCausasLitigio()
             this.intentos++
           }
         })
