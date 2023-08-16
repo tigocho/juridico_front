@@ -25,7 +25,6 @@ const Auth = {
   logoutAndRedirect () {
     localStorage.removeItem('access_token')
     document.cookie = 'mySession=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-    console.log(router.history.current.fullPath)
     if (router.history.current.fullPath !== '/auth/sign-in1') {
       router.push('/auth/sign-in1')
     }
