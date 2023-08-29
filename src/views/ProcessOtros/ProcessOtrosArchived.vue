@@ -77,8 +77,25 @@
               </b-form-group>
             </b-col>
             <b-col md="4">
-              <b-form-group label="Fecha de ingreso*" label-for="proce_fecha_ingreso">
-                <b-form-input id="proce_fecha_ingreso" v-model="proceeding.proce_fecha_ingreso" type="date" ></b-form-input>
+              <b-form-group
+                label="Fecha de ingreso*"
+                label-for="proce_fecha_ingreso">
+                <ValidationProvider
+                  name="Solicitud"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <datetime
+                    class="form-control datetime-formulario"
+                    type="datetime"
+                    v-model="proceeding.proce_fecha_ingreso" use12-hour
+                    :class="errors.length > 0 ? ' is-invalid' : ''"
+                  >
+                  </datetime>
+                  <div class="invalid-feedback">
+                    <span>Debe de seleccionar una fecha</span>
+                  </div>
+                </ValidationProvider>
               </b-form-group>
             </b-col>
           </b-row>
@@ -251,6 +268,8 @@
     </b-container>
 </template>
 <script>
+import { Datetime } from 'vue-datetime'
+import 'vue-datetime/dist/vue-datetime.css'
 import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
@@ -259,6 +278,9 @@ import moment from 'moment'
 const FileDownload = require('js-file-download')
 
 export default {
+  components: {
+    datetime: Datetime
+  },
   data () {
     return {
       estadoBotonEliminarLinkProceeding: '',

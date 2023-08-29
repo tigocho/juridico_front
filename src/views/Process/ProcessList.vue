@@ -1,5 +1,22 @@
 <template>
   <b-container fluid>
+    <!-- MODAL DE CREAR CASO -->
+    <div>
+      <b-modal
+        id="modal-agregar-caso"
+        size="lg"
+        title="Agregar Caso"
+        hide-footer
+      >
+        <!-- INICIO DE COMPONENTE CREAR CASO-->
+        <AddCaseAbogadoDesdeActuacion
+          :process="processRequest"
+          :proceeding="proceedingSend"
+        ></AddCaseAbogadoDesdeActuacion>
+        <!-- FIN DE COMPONENTE CREAR CASO-->
+      </b-modal>
+    </div>
+    <!-- FIN DE MODAL-->
     <div>
       <b-modal id="modal-lg" size="lg" title="Agendar Audiencia" @ok="handleOk">
         <form ref="form" @submit.stop.prevent="handleSubmit">
@@ -80,8 +97,25 @@
               </b-form-group>
             </b-col>
             <b-col md="4">
-              <b-form-group label="Fecha de ingreso*" label-for="proce_fecha_ingreso">
-                <b-form-input id="proce_fecha_ingreso" v-model="proceeding.proce_fecha_ingreso" type="date" ></b-form-input>
+              <b-form-group
+                label="Fecha de ingreso*"
+                label-for="proce_fecha_ingreso">
+                <ValidationProvider
+                  name="Solicitud"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <datetime
+                    class="form-control datetime-formulario"
+                    type="datetime"
+                    v-model="proceeding.proce_fecha_ingreso" use12-hour
+                    :class="errors.length > 0 ? ' is-invalid' : ''"
+                  >
+                  </datetime>
+                  <div class="invalid-feedback">
+                    <span>Debe de seleccionar una fecha</span>
+                  </div>
+                </ValidationProvider>
               </b-form-group>
             </b-col>
           </b-row>
@@ -281,7 +315,7 @@
                 <b-dropdown variant="primary" text="Acciones">
                   <b-dropdown-item @click="verDetalle(row.item.prore_id)">Abrir</b-dropdown-item>
                   <b-dropdown-item @click="edit(row.item.prore_id)">Editar</b-dropdown-item>
-                  <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item.prore_id)
+                  <b-dropdown-item v-b-modal.modal-nueva-actuacion @click="agregarActuacion(row.item)
                   ">+ Actuación</b-dropdown-item>
                   <b-dropdown-item  v-if="eliminarPerfiles.includes(user_profile)" @click="eliminar(row.item.prore_id)">Eliminar Proceso</b-dropdown-item>
                   <b-dropdown-item v-b-modal.modal-lg @click="sendInfo(row.item.prore_id)">Audiencia</b-dropdown-item>
@@ -313,14 +347,20 @@
     </b-container>
 </template>
 <script>
+import { Datetime } from 'vue-datetime'
+import 'vue-datetime/dist/vue-datetime.css'
 import auth from '@/logic/auth'
 import { xray } from '../../config/pluginInit'
 import Vue from 'vue'
 import axios from 'axios'
 import moment from 'moment'
+import AddCaseAbogadoDesdeActuacion from './AddCaseAbogadoDesdeActuacion.vue'
 const FileDownload = require('js-file-download')
 
 export default {
+  components: {
+    datetime: Datetime, AddCaseAbogadoDesdeActuacion
+  },
   data () {
     return {
       tableKey: 1,
@@ -429,7 +469,9 @@ export default {
       eliminarPerfiles: [1],
       comentario_eliminacion: '',
       proreIdDelete: '',
-      user_profile: null
+      user_profile: null,
+      proceedingSend: null,
+      processRequest: null
     }
   },
   created () {
@@ -653,8 +695,10 @@ export default {
         return 'NIT'
       }
     },
-    agregarActuacion (proreId) {
-      this.proceeding.proce_prore_id = proreId
+    agregarActuacion (process) {
+      this.limpiarModalActuacion()
+      this.processRequest = process
+      this.proceeding.proce_prore_id = process.prore_id
     },
     verModalTerminarProceso (proreId, items) {
       this.numRadicadoProcesoTerminar = items.prore_num_radicado
@@ -674,8 +718,9 @@ export default {
           this.botonGuardarModal = ''
           if (res.data.status_code === 200) {
             Vue.swal(res.data.message)
+            this.proceedingSend = this.proceeding
             this.$bvModal.hide('modal-nueva-actuacion')
-            this.limpiarModalActuacion()
+            this.$bvModal.show('modal-agregar-caso')
           } else {
             Vue.swal(res.data.message)
           }
@@ -804,6 +849,10 @@ export default {
       } else {
         Vue.swal('Falta información', 'Por favor ingrese la descripción del porqué se elimina el caso', 'error')
       }
+    },
+    crearCaso (proceedingCrearCaso) {
+      this.proceedingSend = proceedingCrearCaso
+      this.$bvModal.show('modal-agregar-caso')
     }
   }
 }
