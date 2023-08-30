@@ -29,71 +29,15 @@
                           v-model="caseTitle"
                           type="text"
                           :required="true"
+                          :state="
+                            caseTitle.length <= 100 &&
+                            caseTitle.length >= 5
+                          "
+                          @input="maximaLongitud"
                         ></b-form-input>
+                        <p style="text-align: left;font-size: 12px;color:#000000">Cantidad caracteres (máximo: 100*): {{ caseTitle.length }}</p>
                       </b-form-group>
                     </b-col>
-                  </b-row>
-                  <b-row>
-                    <b-form-group
-                      class="col-md-6"
-                      label="Actividad*"
-                      label-for="act_id"
-                    >
-                    <ValidationProvider
-                              name="Actividad"
-                              rules="required"
-                              v-slot="{ errors }"
-                            >
-                      <v-select
-                        v-model="caseActividadId"
-                        :options="actividadesOptions"
-                        :reduce="(label) => label.code"
-                        label="label"
-                        id="act_id"
-                        @input="getSubactividades"
-                        :class="errors.length > 0 ? ' is-invalid' : ''"
-                      >
-                        <span slot="no-options">No hay Actividades.</span>
-                      </v-select>
-                       <div class="invalid-feedback">
-                                <span>Debe de seleccionar una Actividad</span>
-                              </div>
-                            </ValidationProvider>
-                    </b-form-group>
-                    <b-form-group
-                      class="col-md-6"
-                      label="Subactividad*"
-                      label-for="subact_id"
-                    >
-                     <ValidationProvider
-                              name="Subctividad"
-                              rules="required"
-                              v-slot="{ errors }"
-                            >
-                      <v-select
-                        @input="getTiempoAns"
-                        v-model="subactividad_id"
-                        :options="subactividadesOptions"
-                        :reduce="(label) => label.code"
-                        label="label"
-                        id="subact_id"
-                        :class="errors.length > 0 ? ' is-invalid' : ''"
-                      >
-                        <span slot="no-options">No hay Subctividades.</span>
-                      </v-select>
-                       <div class="invalid-feedback">
-                                <span>Debe de seleccionar una Subctividad</span>
-                              </div>
-                            </ValidationProvider>
-                      <p
-                        :key="fechaSolucionKey"
-                        class="text-left"
-                        v-if="fechaSolucion !== null"
-                      >
-                        Fecha apróximada de solución o respuesta:
-                        {{ fechaSolucion }}
-                      </p>
-                    </b-form-group>
                   </b-row>
                   <b-row v-if="!esCliente()">
                     <b-col xs="12">
@@ -140,7 +84,9 @@
                           caseDescription.length >= 5
                         "
                         :required="true"
+                        @input="maximaLongitud"
                       ></b-form-textarea>
+                      <p style="text-align: left;font-size: 12px;color:#000000">Cantidad caracteres (máximo: 500*): {{ caseDescription.length }}</p>
                     </b-col>
                   </b-row>
                   <div v-if="onEdit" class="text-left" style="margin: 20px">
@@ -257,6 +203,7 @@
                     <b-button
                       variant="primary"
                       type="submit"
+                      :disabled="caracteresExcedidoTitulo || caracteresExcedidoDescripcion"
                       :class="estadoBoton"
                       >{{ textoBoton }}</b-button
                     >
@@ -319,7 +266,9 @@ export default {
       intentos: 0,
       fechaSolucion: null,
       fechaSolucionKey: 0,
-      validData: true
+      validData: true,
+      caracteresExcedidoTitulo: false,
+      caracteresExcedidoDescripcion: false
     }
   },
   computed: {
@@ -429,7 +378,6 @@ export default {
       data.append('case_description', this.caseDescription)
       data.append('user_id', this.userLogged.usr_id)
       data.append('clinica_id', this.caseClinicaId)
-      data.append('subactividad_id', this.subactividad_id)
       data.append('case_fecha_solicitud', this.caseFechaSolicitud)
 
       let index = 0
@@ -569,6 +517,18 @@ export default {
         return '12'
       }
       return '6'
+    },
+    maximaLongitud () {
+      if (this.caseTitle.length > 100) {
+        this.caracteresExcedidoTitulo = true
+      } else {
+        this.caracteresExcedidoTitulo = false
+      }
+      if (this.caseDescription.length > 500) {
+        this.caracteresExcedidoDescripcion = true
+      } else {
+        this.caracteresExcedidoDescripcion = false
+      }
     }
   }
 }

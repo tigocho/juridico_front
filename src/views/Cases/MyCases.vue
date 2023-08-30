@@ -16,6 +16,15 @@
       </b-modal>
     </div>
     <!-- FIN DE MODAL-->
+    <!-- DATOS DE CASOS TOTALES, ABIERTOS Y CERRADOS  -->
+     <b-row>
+      <b-col lg="12">
+        <template>
+          <ResumenCasos></ResumenCasos>
+        </template>
+      </b-col>
+    </b-row>
+    <!-- FIN DATOS DE CASOS TOTALES, ABIERTOS Y CERRADOS  -->
     <b-row>
       <b-col lg="12">
         <iq-card>
@@ -112,6 +121,60 @@
               @filtered="onFiltered"
               :tbody-tr-class="rowClass"
             >
+              <template #cell(radicado)="data">
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.radicado }} <img :src="newCase" width="25px" class="img-fluid" alt="logo">
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.radicado }} <img :src="actualizacionCaso" width="25px" class="img-fluid" alt="logo">
+                </b>
+                <span v-else>{{ data.item.radicado }}</span>
+              </template>
+              <template #cell(caso_titulo)="data">
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.caso_titulo }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.caso_titulo }}
+                </b>
+                <span v-else>{{ data.item.caso_titulo }}</span>
+              </template>
+              <template #cell(estado)="data">
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.estado }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.estado }}
+                </b>
+                <span v-else>{{ data.item.estado }}</span>
+              </template>
+              <template #cell(caso_fecha_apertura)="data">
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.caso_fecha_apertura }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.caso_fecha_apertura }}
+                </b>
+                <span v-else>{{ data.item.caso_fecha_apertura }}</span>
+              </template>
+              <template #cell(fecha_solucion)="data">
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.fecha_solucion }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.fecha_solucion }}
+                </b>
+                <span v-else>{{ data.item.fecha_solucion }}</span>
+              </template>
+              <template #cell(abogado)="data">
+                <b v-if="data.item.lei_leido !== true">
+                  {{ data.item.abogado }}
+                </b>
+                <b v-else-if="data.item.lei_leido === true && data.item.lei_actualizacion_leida !== true">
+                  {{ data.item.abogado }}
+                </b>
+                <span v-else>{{ data.item.abogado }}</span>
+              </template>
               <template #cell(actions)="row">
                 <b-dropdown variant="primary" text="Acciones">
                   <b-dropdown-item @click="verCaso(row.item.caso_id)">
@@ -183,14 +246,17 @@ import Vue from 'vue'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { xray } from '../../config/pluginInit'
 import FormCase from '../Cases/components/FormCase.vue'
+import ResumenCasos from './components/ResumenCasos.vue'
 export default {
   name: 'MyCases',
   components: {
-    FormCase
+    FormCase,
+    ResumenCasos
   },
   data () {
     return {
       newCase: require('@/assets/images/page-img/new-case-blue.png'),
+      actualizacionCaso: require('@/assets/images/page-img/actualizacion_pendiente_leer.png'),
       casos: [],
       caso: {},
       estadoId: '',
@@ -258,10 +324,12 @@ export default {
       this.currentPage = 1
     },
     verCaso (casoId) {
+      this.casoVisto(casoId)
       this.$router.push({ path: `/cases/cases-show/${casoId}` })
     },
     editarCaso (caso) {
       this.caso = caso
+      this.casoVisto(this.caso.caso_id)
       this.$bvModal.show('modal-editar-caso')
     },
     eliminarCaso (casoId) {
@@ -311,6 +379,16 @@ export default {
     },
     rowClass (item) {
       if (item !== null && item.caso_estado_id === 3) return 'table-devolucion'
+    },
+    casoVisto (casoId) {
+      axios.post('/casos/leido/' + casoId)
+        .then((res) => {
+          this.casos.map(function (dato) {
+            if (dato.caso_id === casoId) {
+              dato.lei_leido = true
+            }
+          })
+        })
     }
   }
 }

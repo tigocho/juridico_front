@@ -44,9 +44,28 @@
           <b-form-textarea v-model="proceeding.proce_descripcion" type="text" placeholder="Descripción*"></b-form-textarea>
         </b-col>
       </b-row>
+      <b-row>
+        <b-form-group
+          class="col-md-12"
+          label="Resumen ejecutivo (final del litigio)*"
+          label-for="textarea-decription"
+        >
+          <b-form-textarea
+            class="col-md-12"
+            id="textarea-decription"
+            v-model="resumenEjecutivo"
+            rows="12"
+            :state="resumenEjecutivo &&
+              resumenEjecutivo.length >= 5
+              && resumenEjecutivo.length <= 1000
+            "
+          ></b-form-textarea>
+          <span>Cantidad caracteres (máx 1000): </span><span v-if="resumenEjecutivo">{{ resumenEjecutivo.length }}</span>
+        </b-form-group>
+      </b-row>
       <div class="text-right pt-3">
         <b-button class="sm-3 mr-1" variant="secondary" @click="cancelado">Cancelar</b-button>
-        <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="mostrarModalConfirmacion">{{ textoGuardarActuacion }}</b-button>
+        <b-button class="sm-3" variant="primary" :class="botonGuardarModal" @click="mostrarModalConfirmacion" :disabled="!verificarCampos" >{{ textoGuardarActuacion }}</b-button>
       </div>
     </form>
   </b-modal>
@@ -63,6 +82,7 @@ export default {
   mounted () {
     xray.index()
     this.fetchOptionsAbogados()
+    this.consultarProceso()
   },
   data () {
     return {
@@ -91,7 +111,16 @@ export default {
         proce_fecha_siguiente_audiencia: null,
         proce_hora_siguiente_audiencia: null,
         proce_estado_terminado: null
-      }
+      },
+      resumenEjecutivo: '',
+      process: {}
+    }
+  },
+  computed: {
+    verificarCampos () {
+      return (
+        this.resumenEjecutivo && this.resumenEjecutivo.length >= 5 && this.resumenEjecutivo.length <= 1000
+      )
     }
   },
   methods: {
@@ -104,6 +133,26 @@ export default {
       this.$bvModal.hide('modal-terminar-proceso')
       this.limpiarModalActuacion()
     },
+    consultarProceso () {
+      // TODO: Replantear no hacer la consulta, sino que pasar el dato desde el origen
+      let _this = this
+      if (_this.prore_id != null) {
+        axios.get('/process/show/' + _this.prore_id).then(res => {
+          setTimeout(() => {
+            if (res.data.process != null) {
+              this.process = res.data.process[0]
+              this.resumenEjecutivo = this.process.prore_resumen_ejecutivo
+            } else {
+              Vue.swal('Ocurrió un error tratando de obtener los datos del proceso')
+            }
+          }, 1000)
+        })
+          .catch(this.errored = true)
+          .finally(setTimeout(() => {
+            this.loading = false
+          }, 3500))
+      }
+    },
     guardarActuacion () {
       let _this = this
       this.botonGuardarModal = 'disabled'
@@ -112,7 +161,7 @@ export default {
         this.proceeding.proce_user_id = this.usr_id
       }
       this.proceeding.proce_prore_id = _this.prore_id
-      axios.post('/proceedings/store', { formulario_proceeding: this.proceeding, links: [] }).then(res => {
+      axios.post('/proceedings/store', { formulario_proceeding: this.proceeding, links: [], resumenEjecutivo: this.resumenEjecutivo }).then(res => {
         this.textoGuardarActuacion = 'Guardar'
         this.botonGuardarModal = ''
         if (res.data.status_code === 200) {
@@ -125,6 +174,7 @@ export default {
           this.$bvModal.hide('modal-terminar-proceso')
           this.limpiarModalActuacion()
           this.$emit('actualizarListaProcesos')
+          this.$emit('actualizarProceso')
         } else {
           Vue.swal(res.data.message)
         }

@@ -10498,6 +10498,10 @@ a.text-dark:hover {
 	visibility: hidden!important
 }
 
+.text-underline {
+	text-decoration: underline;
+}
+
 @media print {
 	*,
 	::after,

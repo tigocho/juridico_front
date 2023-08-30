@@ -3,6 +3,7 @@
     <h1 class="mb-0">Iniciar Sesión</h1>
     <p>Ingresa tus credenciales.</p>
     <sign-in1-form></sign-in1-form>
+    <p v-if="Auth.checkTokenExpiration()">Tu sesión ha expirado. Por favor, inicia sesión nuevamente.</p>
   </div>
 </template>
 
@@ -11,12 +12,16 @@ import auth0 from 'auth0-js'
 import SignIn1Form from './Forms/SignIn1Form'
 import constant from '../../../config/constant'
 import auth from '@/logic/auth'
+import Auth from '@/services/auth'
 
 export default {
   name: 'SignIn1',
   components: { SignIn1Form },
   data: () => ({}),
   computed: {
+    Auth () {
+      return Auth
+    },
     userLogged () {
       if (auth.getUserLogged() !== undefined) {
         return JSON.parse(auth.getUserLogged())

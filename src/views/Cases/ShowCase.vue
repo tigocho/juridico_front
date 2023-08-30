@@ -47,47 +47,15 @@
             title="Asignar Caso"
             hide-footer
           >
-            <ValidationObserver ref="form-2" v-slot="{ handleSubmit }">
-              <form
-                ref="form-2"
-                @submit.prevent="handleSubmit(SaveAsignacionCaso)"
-              >
-                <b-row>
-                  <b-col lg="10" class="pagina-detalle-proceso">
-                    <b-card-text style="margin-left: 15px">
-                      <b-row>
-                        <strong>Actividad: </strong>&nbsp;
-                        {{ caso.actividad }}&nbsp;
-                        <strong>Subactividad: </strong>&nbsp;
-                        {{ caso.subactividad }} </b-row
-                      ><b-row>
-                        <strong>Asunto: </strong>&nbsp;
-                        {{ caso.caso_titulo }} </b-row
-                      ><b-row>
-                        <strong>Descripcion: </strong>&nbsp;
-                        {{ caso.caso_descripcion }}
-                      </b-row>
-                    </b-card-text>
-                    <b-form-group label="Abogado*" label-for="profesional_id">
-                      <v-select
-                        v-model="asginarData.profesional_id"
-                        :options="profesionalesOptions"
-                        :reduce="(label) => label.code"
-                        label="label"
-                        id="profesional_id"
-                      >
-                        <span slot="no-options">No hay Abogados.</span>
-                      </v-select>
-                    </b-form-group>
-                    <b-form-group>
-                      <b-button variant="primary" type="submit"
-                        >Asignar Caso</b-button
-                      >
-                    </b-form-group>
-                  </b-col>
-                </b-row>
-              </form>
-            </ValidationObserver>
+            <!-- INICIO DE COMPONENTE ASIGNAR CASO-->
+            <asignar-caso
+              :casoInfo="caso"
+              :archivos="archivos"
+              :descargarArchivoCaso="descargarArchivoCaso"
+              :recargarCaso="getCase"
+              @cerrar="cerrarModalAsignarCaso"
+            ></asignar-caso>
+            <!-- FIN DE COMPONENTE ASIGNAR CASO-->
           </b-modal>
         </div>
         <!-- FIN DE MODAL-->
@@ -140,11 +108,7 @@
                     <template v-slot:headerTitle>
                       <h5 class="card-title">
                         Radicado interno
-                        {{
-                          new Date(caso.caso_fecha_apertura).getFullYear() +
-                          '-' +
-                          formatId(String(caso.caso_id))
-                        }}
+                        {{ formatearRadicado() }}
                         <b-button
                         v-if="
                           asignarProfiles.includes(user_profile) &&
@@ -180,7 +144,36 @@
                     </template>
                     <template v-slot:body>
                       <b-card-text>
+                        <b-row v-if="perfilesPermitidosVerHorasInvertidas.includes(user_profile) && caso.caso_observacion_abogado">
+                          <b-col>
+                            <strong>Observación del abogado líder </strong>
+                            <p>{{ caso.caso_observacion_abogado }}</p>
+                          </b-col>
+                        </b-row>
                         <b-row>
+                          <b-col
+                            ><strong>Fecha de apertura: </strong>
+                            {{ fechaLegibleUsuario(caso.caso_fecha_solicitud) }}</b-col
+                          >
+                        </b-row>
+                        <b-row v-if="
+                          perfilesPermitidosVerHorasInvertidas.includes(user_profile) &&
+                          caso.est_id === 4
+                        ">
+                          <b-col
+                            ><strong>Tiempo invertido: </strong>
+                            <span style="text-decoration: underline;">{{ convertirHorasInvertidas(caso.caso_horas_invertidas) }}</span></b-col
+                          >
+                          <b-col cols="6"
+                            ><strong>Tiempo de Solución: </strong>
+                            {{ caso.fecha_solucion }}
+                          </b-col>
+                          <b-col
+                            ><strong>Título: </strong>
+                            {{ caso.caso_titulo }}</b-col
+                          >
+                        </b-row>
+                        <b-row v-else>
                           <b-col
                             ><strong>Título: </strong>
                             {{ caso.caso_titulo }}</b-col
@@ -196,19 +189,23 @@
                             {{ caso.solicitante }}</b-col
                           >
                           <b-col cols="6"
-                            ><strong>Abogado: </strong> {{ caso.abogado }}
+                            ><strong>Tiempo restante: </strong>
+                            {{ caso.tiempo_faltante_ans }}
                           </b-col>
                         </b-row>
                         <b-row>
                           <b-col>
                             <strong>Cliente: </strong> {{ caso.cli_name }}
                           </b-col>
+                          <b-col cols="6"
+                            ><strong>Abogado: </strong> {{ caso.abogado }}
+                          </b-col>
+                        </b-row>
+                        <b-row>
                           <b-col cols="6">
                             <strong>Tipo de Actividad: </strong>
                             {{ caso.subactividad }}
                           </b-col>
-                        </b-row>
-                        <b-row>
                           <b-col cols="6">
                             <strong>Medio de Solicitud: </strong>
                             {{ caso.med_sol_nombre }}
@@ -230,7 +227,12 @@
                 <tab-content-item :active="false" id="seguimiento">
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title">Seguimiento</h4>
+                      <h4 class="text-dark">Seguimiento</h4>
+                      <encabezado-caso
+                        :casoId="formatearRadicado()"
+                        :solicitante="caso.solicitante"
+                        :fechaHora="fechaLegibleUsuario(caso.caso_fecha_solicitud)"
+                      ></encabezado-caso>
                     </template>
                     <template v-slot:body>
                       <div v-if="addSeguimiento">
@@ -427,6 +429,14 @@
                 </tab-content-item>
                 <tab-content-item :active="false" id="historial">
                   <iq-card>
+                    <template v-slot:headerTitle>
+                      <h4 class="text-dark">Historial</h4>
+                      <encabezado-caso
+                        :casoId="formatearRadicado()"
+                        :solicitante="caso.solicitante"
+                        :fechaHora="fechaLegibleUsuario(caso.caso_fecha_solicitud)"
+                      ></encabezado-caso>
+                    </template>
                     <template v-slot:body>
                       <section class="timeline">
                         <b-card-text>
@@ -476,9 +486,12 @@
                 <tab-content-item :active="false" id="archivos">
                   <iq-card>
                     <template v-slot:headerTitle>
-                      <h4 class="card-title">
-                        Archivos Caso - {{ caso.caso_id }}
-                      </h4>
+                      <h4 class="text-dark">Archivos</h4>
+                      <encabezado-caso
+                        :casoId="formatearRadicado()"
+                        :solicitante="caso.solicitante"
+                        :fechaHora="fechaLegibleUsuario(caso.caso_fecha_solicitud)"
+                      ></encabezado-caso>
                     </template>
                     <template v-slot:body>
                       <h5 v-if="archivos.length > 0">Documentos Caso:</h5>
@@ -574,11 +587,16 @@ import fileDownload from 'js-file-download'
 import FormCase from '../Cases/components/FormCase.vue'
 import FormSegumiento from '../Cases/components/FormSegumiento.vue'
 import moment from 'moment'
+import EncabezadoCaso from './components/EncabezadoCaso.vue'
+import AsignarCaso from './components/AsignarCaso.vue'
+moment.locale('es')
 export default {
   name: 'ShowCase',
   components: {
     FormCase,
-    FormSegumiento
+    FormSegumiento,
+    EncabezadoCaso,
+    AsignarCaso
   },
   data () {
     return {
@@ -589,16 +607,14 @@ export default {
       archivosSeguimiento: [],
       cantidadArchivos: 0,
       asignarProfiles: [1, 12],
+      perfilesPermitidosVerHorasInvertidas: [1, 2],
       user_profile: null,
       progress_total: 4,
       max: 100,
       loading: true,
       addSeguimiento: false,
       seguimientosCaso: [],
-      profesionalesOptions: [],
-      asginarData: {
-        profesional_id: ''
-      }
+      profesionalesOptions: []
     }
   },
   computed: {
@@ -615,6 +631,7 @@ export default {
     this.barraCargando()
     this.getCase()
     this.getSeguimientos()
+    this.user_profile = this.userLogged.user_profile
   },
   methods: {
     getCase () {
@@ -643,10 +660,11 @@ export default {
         responseType: 'blob'
       })
         .then((response) => {
-          if (response.data != null) {
-            fileDownload(response.data, filename)
+          if (response.headers['content-type'] === 'application/json') {
+            Vue.swal('Ups, el archivo no existe')
           } else {
-            Vue.swal('No se encontró archivo')
+            fileDownload(response.data, filename)
+            Vue.swal('Descarga éxitosa')
           }
         })
         .catch((err) => {
@@ -685,10 +703,11 @@ export default {
         responseType: 'blob'
       })
         .then((response) => {
-          if (response.data != null) {
-            fileDownload(response.data, filename)
+          if (response.headers['content-type'] === 'application/json') {
+            Vue.swal('Ups, el archivo no existe')
           } else {
-            Vue.swal('No se encontró archivo')
+            fileDownload(response.data, filename)
+            Vue.swal('Descarga éxitosa')
           }
         })
         .catch((err) => {
@@ -699,29 +718,16 @@ export default {
       return moment(fecha).format('DD/MM/YYYY')
     },
     asignarCaso (caso) {
-      this.getProfesionals()
       this.caso = caso
       this.$bvModal.show('modal-asignar-caso')
+    },
+    cerrarModalAsignarCaso () {
+      this.$bvModal.hide('modal-asignar-caso')
     },
     getProfesionals () {
       axios.get('/professionals/fetch').then((response) => {
         this.profesionalesOptions = response.data.professionals
       })
-    },
-    SaveAsignacionCaso () {
-      if (this.asginarData.profesional_id !== '') {
-        this.$bvModal.hide('modal-asignar-caso')
-        axios
-          .post('/casos/asignar/' + this.caso.caso_id, this.asginarData)
-          .then((res) => {
-            if (res.status === 200) {
-              this.getCase()
-            }
-            Vue.swal(res.data.message)
-          })
-      } else {
-        Vue.swal('Por favor selecione un Abogado')
-      }
     },
     formatId (casoId) {
       const digitos = casoId.length
@@ -747,6 +753,20 @@ export default {
     },
     irAProceso () {
       this.$router.push({ path: `/process/process-show/${this.caso.prore_id}/false` })
+    },
+    convertirHorasInvertidas () {
+      const horasEnteras = Math.floor(this.caso.caso_horas_invertidas) // Obtener la parte entera de las horas
+      const minutosDecimal = this.caso.caso_horas_invertidas - horasEnteras // Obtener la parte decimal de las horas
+      const minutos = Math.round(minutosDecimal * 60) // Convertir la parte decimal a minutos
+      return horasEnteras + ' horas y ' + minutos + ' minutos.'
+    },
+    fechaLegibleUsuario (fecha) {
+      return moment(fecha).format('dddd D [de] MMMM hh:mm A')
+    },
+    formatearRadicado () {
+      return new Date(this.caso.caso_fecha_apertura).getFullYear() +
+      '-' +
+      this.formatId(String(this.caso.caso_id))
     },
     imprimirCaso () {
       console.log('dhdh')

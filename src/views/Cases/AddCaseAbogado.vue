@@ -1,6 +1,75 @@
 <template>
   <b-container fluid>
     <b-row>
+      <!-- Sección modal crear nuevo cliente-->
+      <b-modal
+        id="modal-crear-solicitante"
+        ref="modal"
+        title="Crear cliente"
+        hide-footer
+      >
+        <form ref="form" @submit.stop.prevent="handleSubmit">
+          <b-form-group
+            label="Cliente"
+            label-for="name-input"
+          >
+            <v-select v-model="nuevo_solicitante.clinica_id" :options="clinicasOptions" :reduce="label => label.code" label="label" id="nuevo_solicitante_clinica_id">
+              <span slot="no-options">No hay clientes.</span>
+            </v-select>
+          </b-form-group>
+          <b-form-group
+            label="Tipo documento*"
+            label-for="name-input"
+          >
+            <v-select v-model="nuevo_solicitante.tipo_documento" :options="tipoDocumentoOptions" :reduce="label => label.code" label="label" id="nuevo_solicitante_tipo_documento">
+              <span slot="no-options">No hay tipos de documento.</span>
+            </v-select>
+          </b-form-group>
+          <b-form-group
+            label="Número de documento*"
+            label-for="name-input"
+          >
+            <b-form-input
+              type="number"
+              id="name-input"
+              v-model="nuevo_solicitante.documento"
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
+            label="Nombre(s)*"
+            label-for="name-input"
+          >
+            <b-form-input
+              id="name-input"
+              v-model="nuevo_solicitante.nombres"
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
+            label="Apellido(s)*"
+            label-for="name-input"
+          >
+            <b-form-input
+              id="name-input"
+              v-model="nuevo_solicitante.apellidos"
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group label="Celular*">
+            <b-form-input v-model="nuevo_solicitante.celular" type="text" placeholder="ej: 3015456561"></b-form-input>
+          </b-form-group>
+          <b-form-group label="Correo*">
+            <b-form-input
+              v-model="nuevo_solicitante.email"
+              type="email"
+              placeholder="info@example.com">
+            </b-form-input>
+          </b-form-group>
+          <div class="text-right pt-1">
+            <b-button class="sm-3 mr-1" variant="secondary" @click="$bvModal.hide('modal-crear-solicitante')">Cancelar</b-button>
+            <b-button class="sm-3" variant="primary" :class="botonGuardarNuevoCliente" @click="crearCliente">{{ textoGuardarModal }}</b-button>
+          </div>
+        </form>
+      </b-modal>
+      <!-- FIN Sección modal crear nuevo cliente-->
       <b-col md="12">
         <ValidationObserver ref="form" v-slot="{ handleSubmit }">
           <form class="mt-4" @submit.prevent="handleSubmit(onSubmit)">
@@ -17,7 +86,7 @@
                         <b-row>
                           <b-form-group
                             class="col-md-6"
-                            label="Clinica*"
+                            label="Cliente*"
                             label-for="clinica_id"
                           >
                             <ValidationProvider
@@ -66,6 +135,7 @@
                                 <span>Debe de seleccionar un cliente</span>
                               </div>
                             </ValidationProvider>
+                            <b-card-text class="texto-tipo-boton text-dark" v-b-modal.modal-crear-solicitante>Crear nuevo cliente</b-card-text>
                           </b-form-group>
                           <b-form-group
                             class="col-md-6"
@@ -208,11 +278,23 @@
                               </div>
                             </ValidationProvider>
                           </b-form-group>
-                          <b-form-group class="col-md-6" label="Proceso" label-for="caso_process_request_id">
+                          <!-- <b-form-group class="col-md-6" label="Proceso" label-for="caso_process_request_id"> -->
+                          <b-form-group class="col-md-6" :label-for="caso.caso_process_request_id">
+                            <label>
+                              Proceso <i class="ri-question-line" id="popover-pregunta-procesos" @mouseover="showPopover = true" @mouseout="showPopover = false"></i>
+                            </label>
                             <v-select v-model="caso.caso_process_request_id" :options="processOptions" :reduce="label => label.code" label="label" id="caso_process_request_id">
                               <span slot="no-options">No hay procesos.</span>
                             </v-select>
                           </b-form-group>
+                          <b-popover
+                            target="popover-pregunta-procesos"
+                            placement="top"
+                            triggers="hover"
+                            :show="showPopover"
+                          >
+                            <span>Los procesos solo se cargarán cuando se elija un cliente.</span>
+                          </b-popover>
                           <b-form-group v-if="caso.caso_process_request_id > 0" class="col-md-6" label="Actuación" label-for="caso_status_process_id">
                             <v-select v-model="caso.caso_status_process_id" :options="statusProcessOptions" :reduce="label => label.code" label="label" id="caso_status_process_id">
                               <span slot="no-options">No hay tipo de actuaciones.</span>
@@ -368,7 +450,17 @@ export default {
         {
           file: null
         }
-      ]
+      ],
+      nuevo_solicitante: {},
+      tipoDocumentoOptions: [
+        { label: 'CC.', code: 1 },
+        { label: 'TI.', code: 2 },
+        { label: 'RC.', code: 3 },
+        { label: 'NIT.', code: 4 }
+      ],
+      botonGuardarNuevoCliente: '',
+      textoGuardarModal: 'Guardar',
+      showPopover: false
     }
   },
   computed: {
@@ -388,7 +480,6 @@ export default {
     this.getUserClinicas()
     setTimeout(() => {
       this.getMediosSolicitud()
-      this.fetchProcessOptions()
       this.fetchStatusProcessOptions()
     }, 500)
   },
@@ -434,6 +525,7 @@ export default {
       })
     },
     getClientes () {
+      this.obtenerProcesosCliente()
       this.caso.user_id = null
       axios.get('/clientes/fetch', { params: { clinica_id: this.caso.clinica_id } }).then((response) => {
         this.clientesOptions = response.data.clientes
@@ -462,27 +554,6 @@ export default {
             this.intentos++
           }
         })
-    },
-    fetchProcessOptions () {
-      if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
-        axios.get('/process/obtenerProcesosParaLista/' + this.userLogged.usr_id).then(response => {
-          this.processOptions = response.data.process
-          this.processOptions.unshift({ 'code': 0, 'label': 'Ninguno' })
-          if (this.processOptions[0] !== undefined) {
-            this.intentos = 0
-            this.errores = {}
-          }
-        })
-          .catch((err) => {
-            this.errores = err
-            if (this.intentos < 2) {
-              this.fetchProcessOptions()
-              this.intentos++
-            }
-          })
-      } else {
-        Vue.swal('Usuario no logueado o inactivo')
-      }
     },
     fetchStatusProcessOptions () {
       if (this.userLogged.usr_id != null && this.userLogged.usr_id !== '') {
@@ -557,6 +628,72 @@ export default {
           this.estadoBoton = ''
           this.textoBoton = 'Guardar Caso'
           Vue.swal('Error al tratar de guardar el caso. Intente más tarde. ' + err)
+        })
+    },
+    crearCliente (bvModalEvt) {
+      bvModalEvt.preventDefault()
+      if (this.nuevo_solicitante.clinica_id === '' ||
+        this.nuevo_solicitante.tipo_documento === null ||
+        this.nuevo_solicitante.documento === '' ||
+        this.nuevo_solicitante.nombres === null ||
+        this.nuevo_solicitante.apellidos === null ||
+        this.nuevo_solicitante.celular === null ||
+        this.nuevo_solicitante.email === null
+      ) {
+        Vue.swal('Por favor complete los datos.')
+      } else {
+        this.botonGuardarNuevoCliente = 'disabled'
+        this.textoGuardarModal = 'Guardando'
+        this.handleSubmit()
+      }
+    },
+    handleSubmit () {
+      axios.post('/users/guardar-nuevo-solicitante', this.nuevo_solicitante).then(res => {
+        // Hide the modal manually
+        if (res.data.status_code === 200) {
+          this.$nextTick(() => {
+            this.$bvModal.hide('modal-crear-solicitante')
+          })
+          this.botonGuardarNuevoCliente = ''
+          this.textoGuardarModal = 'Guardar'
+          Vue.swal('Solicitante agregado correctamente')
+          if (this.caso.clinica_id === this.nuevo_solicitante.clinica_id) {
+            this.getClientes()
+          }
+          this.nuevo_solicitante.clinica_id = ''
+          this.nuevo_solicitante.tipo_documento = ''
+          this.nuevo_solicitante.documento = ''
+          this.nuevo_solicitante.nombres = ''
+          this.nuevo_solicitante.apellidos = ''
+          this.nuevo_solicitante.celular = ''
+          this.nuevo_solicitante.email = ''
+        } else {
+          this.botonGuardarNuevoCliente = ''
+          this.textoGuardarModal = 'Guardar'
+          Vue.swal('error', 'Datos no validos. ' + res.data.message, 'error')
+        }
+      })
+        .catch((err) => {
+          Vue.swal('Error', 'Ocurrió un error tratando de realizar la petición. Intente más tarde ' + err, 'error')
+          this.botonGuardarNuevoCliente = ''
+          this.textoGuardarModal = 'Guardar'
+        })
+    },
+    obtenerProcesosCliente () {
+      axios.get('/process/obtener-procesos-cliente-para-lista/' + this.caso.clinica_id).then(response => {
+        this.processOptions = response.data.process
+        this.processOptions.unshift({ 'code': 0, 'label': 'Ninguno' })
+        if (this.processOptions[0] !== undefined) {
+          this.intentos = 0
+          this.errores = {}
+        }
+      })
+        .catch((err) => {
+          this.errores = err
+          if (this.intentos < 2) {
+            this.obtenerProcesosCliente()
+            this.intentos++
+          }
         })
     }
   }
