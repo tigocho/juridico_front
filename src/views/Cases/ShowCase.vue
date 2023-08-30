@@ -130,9 +130,10 @@
                       <b-button
                         variant="success"
                         style="margin-right: 5px"
-                        @click="imprimirCaso"
+                        :class="estadoBotonDescargarCaso"
+                        @click="descargarCaso"
                       >
-                        <i class="ri-printer-line"></i>Imprimir
+                        <i class="ri-download-line"></i>{{ textoBotonDescargarCaso }}
                       </b-button>
                       <b-button
                         variant="primary"
@@ -589,6 +590,7 @@ import FormSegumiento from '../Cases/components/FormSegumiento.vue'
 import moment from 'moment'
 import EncabezadoCaso from './components/EncabezadoCaso.vue'
 import AsignarCaso from './components/AsignarCaso.vue'
+const FileDownload = require('js-file-download')
 moment.locale('es')
 export default {
   name: 'ShowCase',
@@ -614,7 +616,9 @@ export default {
       loading: true,
       addSeguimiento: false,
       seguimientosCaso: [],
-      profesionalesOptions: []
+      profesionalesOptions: [],
+      textoBotonDescargarCaso: 'Descargar',
+      estadoBotonDescargarCaso: ''
     }
   },
   computed: {
@@ -768,8 +772,23 @@ export default {
       '-' +
       this.formatId(String(this.caso.caso_id))
     },
-    imprimirCaso () {
-      console.log('dhdh')
+    descargarCaso () {
+      this.botonDescargarCaso = 'Descargando caso...'
+      this.estadoBotonDescargarCaso = 'disabled'
+      axios({
+        url: '/casos/descargar-caso/' + this.caso.caso_id,
+        method: 'GET',
+        responseType: 'blob'
+      }).then((response) => {
+        this.botonDescargarCaso = 'Descargar'
+        this.estadoBotonDescargarCaso = ''
+        FileDownload(response.data, 'caso-' + this.formatearRadicado() + '.pdf')
+      })
+        .catch((err) => {
+          this.botonDescargarCaso = 'Descargar'
+          this.estadoBotonDescargarCaso = ''
+          Vue.swal('Ups, ocurrió un error ' + err)
+        })
     }
   }
 }
