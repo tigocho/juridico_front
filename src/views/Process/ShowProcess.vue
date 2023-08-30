@@ -9,6 +9,23 @@
         </b-progress>
       </div>
       <div v-else>
+        <!-- MODAL DE ASIGNAR CASO -->
+        <div>
+          <b-modal
+            id="modal-agregar-caso"
+            size="lg"
+            title="Agregar Caso"
+            hide-footer
+          >
+            <!-- INICIO DE COMPONENTE ASIGNAR CASO-->
+            <AddCaseAbogadoDesdeActuacion
+              :process="process"
+              :proceeding="proceedingSend"
+            ></AddCaseAbogadoDesdeActuacion>
+            <!-- FIN DE COMPONENTE ASIGNAR CASO-->
+          </b-modal>
+        </div>
+        <!-- FIN DE MODAL-->
         <!-- INICIAL DE MODAL DE ACTUACIÓN -->
         <div>
           <b-modal id="modal-nueva-actuacion" size="lg" title="Agregar actuación" hide-footer>
@@ -55,8 +72,25 @@
                   </b-form-group>
                 </b-col>
                 <b-col md="4">
-                  <b-form-group label="Fecha de ingreso*" label-for="proce_fecha_ingreso">
-                    <b-form-input id="proce_fecha_ingreso" v-model="proceeding.proce_fecha_ingreso" type="date" ></b-form-input>
+                  <b-form-group
+                    label="Fecha de ingreso*"
+                    label-for="proce_fecha_ingreso">
+                    <ValidationProvider
+                      name="Solicitud"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <datetime
+                        class="form-control datetime-formulario"
+                        type="datetime"
+                        v-model="proceeding.proce_fecha_ingreso" use12-hour
+                        :class="errors.length > 0 ? ' is-invalid' : ''"
+                      >
+                      </datetime>
+                      <div class="invalid-feedback">
+                        <span>Debe de seleccionar una fecha</span>
+                      </div>
+                    </ValidationProvider>
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -776,7 +810,26 @@
                         <li class="col-md-12" v-for="(proceeding, index) in proceedings" :key="index">
                           <div class="timeline-dots border-primary" v-if="index == 0" :class="'border-primary'"></div>
                           <div class="timeline-dots border-primary" v-else :class="'border-warning'"></div>
-                          <h6 class="float-left mb-1 font-weight-bolder">{{ proceeding.status_process.estado_proceso }}<button class="btn btn-link pt-0" @click="editProceeding(index)" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-edit-2-fill"></i>Editar</button> <button @click="deleteProceeding(proceeding.proce_id)" class="btn btn-link pt-0 px-0 text-danger" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1"><i class="ri-delete-bin-6-fill"></i>Eliminar</button></h6>
+                          <h6 class="float-left mb-1 font-weight-bolder">
+                            {{ proceeding.status_process.estado_proceso }}
+                            <button class="btn btn-link pt-0" @click="editProceeding(index)" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1">
+                              <i class="ri-edit-2-fill"></i>Editar
+                            </button>
+                            <button @click="deleteProceeding(proceeding.proce_id)" class="btn btn-link pt-0 px-0 text-danger" :disabled="process.prore_estado == 1 && userLogged.user_profile != 1">
+                              <i class="ri-delete-bin-6-fill"></i>Eliminar
+                            </button>
+                            <button class="btn btn-link pt-0" @click="crearCaso(proceeding)" :disabled="process.prore_estado == 1">
+                              <i class="ri-rocket-2-fill"></i>Crear Caso <i class="ri-question-line" id="popover-pregunta-crear-caso" @mouseover="showPopover = true" @mouseout="showPopover = false"></i>
+                              <b-popover
+                                target="popover-pregunta-crear-caso"
+                                placement="top"
+                                triggers="hover"
+                                :show="showPopover"
+                              >
+                                <span>Puedes crear un caso con base en una actuación. NOTA: El caso se marcará como resuelto.</span>
+                              </b-popover>
+                            </button>
+                          </h6>
                           <!--<b-row class="col-md-12 pl-0 pt-1">
                             <h6><b class="text-black" style="text-decoration:underline;">{{ proceeding.status_process.sta_name }}</b> <button class="btn btn-link" @click="editProceeding(index)"><i class="ri-edit-2-fill"></i>Editar</button> <button class="btn btn-link px-0 text-danger"><i class="ri-edit-2-fill"></i>Eliminar</button></h6>
                           </b-row>-->
@@ -999,6 +1052,8 @@
   </b-container>
 </template>
 <script>
+import { Datetime } from 'vue-datetime'
+import 'vue-datetime/dist/vue-datetime.css'
 import { xray } from '../../config/pluginInit'
 import { required } from 'vuelidate/lib/validators'
 import Vue from 'vue'
@@ -1007,9 +1062,10 @@ import auth from '@/logic/auth'
 import iqCard from '../../components/xray/cards/iq-card.vue'
 import { VueEditor } from 'vue2-editor'
 import AnalisisProcesos from './include/AnalisisProcesos.vue'
+import AddCaseAbogadoDesdeActuacion from './AddCaseAbogadoDesdeActuacion.vue'
 
 export default {
-  components: { iqCard, VueEditor, AnalisisProcesos },
+  components: { iqCard, VueEditor, AnalisisProcesos, datetime: Datetime, AddCaseAbogadoDesdeActuacion },
   name: 'ProfileEdit',
   mounted () {
     xray.index()
@@ -1304,7 +1360,9 @@ export default {
         'code': null,
         'label': 'Sin sub causas'
       },
-      campoMomentoError: ''
+      campoMomentoError: '',
+      proceedingSend: null,
+      showPopover: false
     }
   },
   methods: {
@@ -1670,8 +1728,9 @@ export default {
             this.botonGuardarModal = ''
             if (res.data.status_code === 200) {
               Vue.swal(res.data.message)
+              this.proceedingSend = this.proceeding
               this.$bvModal.hide('modal-nueva-actuacion')
-              this.limpiarModalActuacion()
+              this.$bvModal.show('modal-agregar-caso')
               this.getProceedings()
             } else {
               Vue.swal(res.data.message)
@@ -2530,6 +2589,10 @@ export default {
             this.intentos++
           }
         })
+    },
+    crearCaso (proceedingCrearCaso) {
+      this.proceedingSend = proceedingCrearCaso
+      this.$bvModal.show('modal-agregar-caso')
     }
   }
 }
