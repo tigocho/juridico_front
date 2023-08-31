@@ -107,7 +107,6 @@
                         <b-row class="col-md-12 pt-1">
                           <b-card-text class="my-0 pr-3"><b>Deducible: </b><span v-if="poliza.pol_deducible != null">{{ poliza.pol_deducible }}%</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="my-0 pr-3"><b>Deducible Mínimo: </b><span v-if="poliza.pol_deducible_minimo != null">{{ formatPrice(poliza.pol_deducible_minimo) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
-                          <b-card-text class="pr-3 my-0"><b>Provisiones Constituidas:</b> <span v-if="poliza.pol_provisiones != null">{{ formatPrice(poliza.pol_provisiones) }}</span><span class="text-danger" v-else>Sin asignar</span></b-card-text>
                           <b-card-text class="pr-3 my-0"><b>Estado:</b> <span v-if="poliza.pol_estado">Poliza Activa</span><span class="text-danger" v-else>Poliza Inactiva</span></b-card-text>
                         </b-row>
                       </div>
@@ -199,14 +198,6 @@
                                       </b-form-group>
                                       <b-form-group class="col-md-6" label="Deducible Mínimo" label-for="pol_deducible_minimo">
                                         <b-form-input v-model="poliza.pol_deducible_minimo" type="number" placeholder="EJ: 100'000.000" ></b-form-input>
-                                      </b-form-group>
-                                      <b-form-group class="col-md-6" label="Proivisiones Constituidas*" label-for="pol_provisiones">
-                                        <ValidationProvider name="Proivisiones Constituidas" rules="required" v-slot="{ errors }">
-                                          <b-form-input v-model="poliza.pol_provisiones" type="number" placeholder="EJ: 5000000" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
-                                          <div class="invalid-feedback">
-                                            <span>Por favor verifique la información</span>
-                                          </div>
-                                        </ValidationProvider>
                                       </b-form-group>
                                       <b-form-group class="col-md-6" ref="addProcess" label-for="exampleFormControlFile1" label="Subir documento de póliza">
                                         <b-form-file id="input-file-import" name="file_import" ref="import_file" @change="onFileChange"></b-form-file>
@@ -535,7 +526,6 @@ export default {
       formData.append('pol_cobertura_actual', this.poliza.pol_cobertura_actual)
       formData.append('pol_deducible', this.poliza.pol_deducible)
       formData.append('pol_deducible_minimo', this.poliza.pol_deducible_minimo)
-      formData.append('pol_provisiones', this.poliza.pol_provisiones)
       formData.append('pol_estado', this.poliza.pol_estado)
       formData.append('pol_user_id', this.poliza.pol_user_id)
       axios.post('/policy/actualizar-poliza/' + this.poliza.pol_id, formData).then(res => {
