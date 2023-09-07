@@ -123,6 +123,13 @@
                       <label class="custom-control-label" for="user.usr_is_active"></label>
                     </div>
                   </div>
+                  <div class="col-6 d-flex">
+                    <label class="col-auto" for="user.usr_envio_correo">¿Envío de correos?</label>
+                    <div class="col-auto custom-control custom-switch" style="min-height:33px;">
+                      <input type="checkbox" class="custom-control-input" id="user.usr_envio_correo" v-model="user.usr_envio_correo" :value="user.usr_envio_correo" >
+                      <label class="custom-control-label" for="user.usr_envio_correo"></label>
+                    </div>
+                  </div>
                   <div class="col-6">
                     <b-button variant="primary" type="submit" class="d-flex float-right" :class="estadoBoton">{{ textoBoton }}</b-button>
                   </div>
@@ -174,7 +181,8 @@ export default {
         usr_gender: '',
         usr_cell_phone: '',
         usr_is_active: 1,
-        usr_color: '#000000'
+        usr_color: '#000000',
+        usr_envio_correo: ''
       },
       clinicaOptions: [],
       state: [
