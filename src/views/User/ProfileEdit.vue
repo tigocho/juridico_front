@@ -158,6 +158,13 @@
                               <label class="custom-control-label" for="user.usr_is_active"></label>
                             </div>
                           </div>
+                          <div class="col-6 d-flex">
+                            <label class="col-auto" for="user.usr_envio_correo">¿Envío de correos?</label>
+                            <div class="col-auto custom-control custom-switch" style="min-height:33px;">
+                              <input type="checkbox" class="custom-control-input" id="user.usr_envio_correo" v-model="user.usr_envio_correo" :value="user.usr_envio_correo">
+                              <label class="custom-control-label" for="user.usr_envio_correo"></label>
+                            </div>
+                          </div>
                           <div class="col-6">
                             <b-button @click="guardarInformacionPersonal" variant="primary" class="ml-2 d-flex float-right" :class="estadoBoton">{{textoGuardar}}</b-button>
                             <b-button @click="volverListadoUsuarios" variant="none" class="iq-bg-danger d-flex float-right">Cancelar</b-button>
@@ -252,7 +259,8 @@ export default {
         role: '',
         usr_gender: '',
         dob: '',
-        url: ''
+        url: '',
+        usr_envio_correo: ''
       },
       user_clinicas: null,
       clinicaOptions: [],
@@ -382,7 +390,7 @@ export default {
     guardarInformacionPersonal: function () {
       this.estadoBoton = 'disabled'
       this.textoGuardar = 'Guardando...'
-      if (this.user_clinicas.includes(0)) { this.user.clinicas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] } else { this.user.clinicas = this.user_clinicas }
+      if (this.user_clinicas.includes(0)) { this.user.clinicas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] } else { this.user.clinicas = this.user_clinicas }
       axios.post('/users/update/' + this.user_id, this.user).then(res => {
         this.estadoBoton = ''
         if (res.data.status_code === 200) {
