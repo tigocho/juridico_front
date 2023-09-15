@@ -489,7 +489,7 @@ export default {
           required: value => !!value || 'Debe seleccionar una opción'
         }
       } else {
-        return {} // No aplicar ninguna validación si cliente_id es nulo
+        return {} // No aplicar ninguna validación si la causa es nula
       }
     }
   },
