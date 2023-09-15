@@ -898,6 +898,7 @@
                             <b-form-group
                               label="Poliza"
                               label-for="poliza_relacion"
+                              v-if="aseguradoraSeleccionadaId !== aseguradoraNoAplicaId && aseguradoraSeleccionadaId !== aseguradoraSinPolizaId"
                             >
                               <v-select
                                 v-model="poliza_relacion"
@@ -914,7 +915,10 @@
                             </div>
                           </form>
                         </b-modal>
-                        <ul class="iq-timeline">
+                        <div v-if="process.polizas.length == 0">
+                          <h6 class="float-left mb-1 font-weight-bolder text-primary" style="text-decoration:underline">{{ process.aseguradora.ase_name }}</h6>
+                        </div>
+                        <ul v-else class="iq-timeline">
                           <li class="col-md-12" v-for="(poliza, index) in polizas" :key="index">
                             <div class="timeline-dots border-primary border-primary"></div>
                             <h6 class="float-left mb-1 font-weight-bolder text-primary" @click="irPoliza(poliza.pol_id)" style="text-decoration:underline;cursor:pointer">{{ poliza.pol_numero }} - {{ poliza.aseguradora.ase_name }}</h6><button class="btn btn-link pt-0 disabled" @click="editPolizaAsociada(index)"><i class="ri-edit-2-fill"></i>Editar</button> <a @click="deletePolizaAsociada(poliza.pol_id)" class="btn btn-link pt-0 px-0 text-danger"><i class="ri-delete-bin-6-fill"></i>Eliminar</a>
@@ -1362,7 +1366,10 @@ export default {
       },
       campoMomentoError: '',
       proceedingSend: null,
-      showPopover: false
+      showPopover: false,
+      aseguradoraNoAplicaId: null,
+      aseguradoraSinPolizaId: null,
+      aseguradoraSeleccionadaId: null
     }
   },
   methods: {
@@ -1496,8 +1503,19 @@ export default {
         })
     },
     fetchAseguradoras () {
-      axios.get('/aseguradoras/fetch-aseguradoras').then(response => {
+      axios.get('/aseguradoras/fetch-aseguradoras').then((response) => {
         this.aseguradorasOptions = response.data.aseguradoras
+        const asegurardadoraNoAplica = this.aseguradorasOptions.find(objeto => objeto.label === 'No aplica')
+        const asegurardadoraSinPoliza = this.aseguradorasOptions.find(objeto => objeto.label === 'Sin Póliza')
+        // Verificar si se encontró el objeto
+        if (asegurardadoraNoAplica) {
+          // Si se encontró, obtener el valor de la propiedad 'code'
+          this.aseguradoraNoAplicaId = asegurardadoraNoAplica.code
+        }
+        if (asegurardadoraSinPoliza) {
+          // Si se encontró, obtener el valor de la propiedad 'code'
+          this.aseguradoraSinPolizaId = asegurardadoraSinPoliza.code
+        }
         this.intentos = 0
         this.errores = {}
       })
@@ -2231,18 +2249,21 @@ export default {
       })
     },
     buscarPolizas (aseguradoraId) {
-      axios.get('/policy/obtener-polizas-aseguradora/' + aseguradoraId).then(response => {
-        this.polizasOptions = response.data.polizas
-        this.intentos = 0
-        this.errores = {}
-      })
-        .catch((err) => {
-          this.errores = err
-          if (this.intentos !== 2) {
-            this.buscarPolizas(aseguradoraId)
-          }
-          this.intentos++
+      this.aseguradoraSeleccionadaId = aseguradoraId
+      if (aseguradoraId !== this.aseguradoraNoAplicaId && aseguradoraId !== this.aseguradoraSinPolizaId) {
+        axios.get('/policy/obtener-polizas-aseguradora/' + aseguradoraId).then(response => {
+          this.polizasOptions = response.data.polizas
+          this.intentos = 0
+          this.errores = {}
         })
+          .catch((err) => {
+            this.errores = err
+            if (this.intentos !== 2) {
+              this.buscarPolizas(aseguradoraId)
+            }
+            this.intentos++
+          })
+      }
     },
     asociarPoliza () {
       if (this.aseguradorasOptions.length < 2) {
@@ -2251,7 +2272,11 @@ export default {
       this.$bvModal.show('modal-asociar-poliza')
     },
     relacionarPoliza () {
-      if (this.poliza_relacion === '' || this.poliza_relacion === null) {
+      if (this.aseguradoraSeleccionadaId === this.aseguradoraNoAplicaId || this.aseguradoraSeleccionadaId === this.aseguradoraSinPolizaId) {
+        this.botonGuardarModal = 'disabled'
+        this.textoGuardarModal = 'Guardando'
+        this.guardarAusenciaPoliza()
+      } else if (this.poliza_relacion === '' || this.poliza_relacion === null) {
         Vue.swal('Por favor complete los datos.')
       } else {
         this.botonGuardarModal = 'disabled'
@@ -2269,7 +2294,30 @@ export default {
             this.textoGuardarModal = 'Guardar'
             this.poliza_relacion = ''
             Vue.swal(res.data.message)
-            this.obtenerPolizas()
+            this.getProcess()
+          } else {
+            this.botonGuardarModal = ''
+            this.textoGuardarModal = 'Guardar'
+            Vue.swal(res.data.message)
+          }
+        })
+        .catch((err) => {
+          this.errores = err
+          this.botonGuardarModal = ''
+          this.textoGuardarModal = 'Guardar'
+          Vue.swal('Ups, sucedió un error')
+        })
+    },
+    guardarAusenciaPoliza () {
+      axios.post('/process/guardar-ausencia-poliza/' + this.prore_id + '/' + this.aseguradoraSeleccionadaId)
+        .then(res => {
+          if (res.data.status_code === 200) {
+            this.$bvModal.hide('modal-asociar-poliza')
+            this.botonGuardarModal = ''
+            this.textoGuardarModal = 'Guardar'
+            this.poliza_relacion = ''
+            Vue.swal(res.data.message)
+            this.getProcess()
           } else {
             this.botonGuardarModal = ''
             this.textoGuardarModal = 'Guardar'
