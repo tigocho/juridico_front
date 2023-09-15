@@ -279,13 +279,21 @@
                             </ValidationProvider>
                           </b-form-group>
                           <!-- <b-form-group class="col-md-6" label="Proceso" label-for="caso_process_request_id"> -->
-                          <b-form-group class="col-md-6" :label-for="caso.caso_process_request_id">
+                          <b-form-group class="col-md-6">
                             <label>
                               Proceso <i class="ri-question-line" id="popover-pregunta-procesos" @mouseover="showPopover = true" @mouseout="showPopover = false"></i>
                             </label>
-                            <v-select v-model="caso.caso_process_request_id" :options="processOptions" :reduce="label => label.code" label="label" id="caso_process_request_id">
+                            <ValidationProvider name="Procesos" :rules="requiredProcess" v-slot="{ errors }">
+                              <v-select
+                                v-model="caso.caso_process_request_id" :options="processOptions" :reduce="label => label.code" label="label" id="caso_process_request_id"
+                                :class="errors.length > 0 ? ' is-invalid' : ''"
+                              >
                               <span slot="no-options">No hay procesos.</span>
-                            </v-select>
+                              </v-select>
+                            <div class="invalid-feedback">
+                              <span>Debe de seleccionar una opción</span>
+                            </div>
+                            </ValidationProvider>
                           </b-form-group>
                           <b-popover
                             target="popover-pregunta-procesos"
@@ -460,7 +468,8 @@ export default {
       ],
       botonGuardarNuevoCliente: '',
       textoGuardarModal: 'Guardar',
-      showPopover: false
+      showPopover: false,
+      actividadesGestionesJuridicas: [8, 9, 10, 11]
     }
   },
   computed: {
@@ -469,6 +478,15 @@ export default {
         return JSON.parse(auth.getUserLogged())
       } else {
         return null
+      }
+    },
+    requiredProcess () {
+      if (this.actividadesGestionesJuridicas.includes(this.actividad_id)) {
+        return {
+          required: value => !!value || 'Debe seleccionar una opción'
+        }
+      } else {
+        return {} // No aplicar ninguna validación si cliente_id es nulo
       }
     }
   },
@@ -499,6 +517,8 @@ export default {
       })
     },
     getSubactividades () {
+      this.caso.subactividad_id = null
+      this.fechaSolucion = null
       axios
         .get('/subactividades/fetch/' + this.actividad_id)
         .then((response) => {
