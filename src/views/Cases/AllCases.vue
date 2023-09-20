@@ -207,17 +207,25 @@
                   <b-dropdown-item @click="verCaso(row.item.caso_id)">
                     Ver
                   </b-dropdown-item>
-                  <b-dropdown-item @click="editarCaso(row.item)">
+                  <b-dropdown-item
+                    v-if="row.item.caso_estado_id !== estadoIdCerrado"
+                   @click="editarCaso(row.item)">
                     Editar
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="anularPerfiles.includes(user_profile)"
+                    v-if="row.item.caso_estado_id != 2 && perfilesAdministradores.includes(user_profile)"
+                    @click="cambiarEstado(data.item, 2)"
+                  >
+                    En Proceso
+                  </b-dropdown-item>
+                  <b-dropdown-item
+                    v-if="row.item.caso_estado_id !== estadoIdCerrado && perfilesAdministradores.includes(user_profile)"
                     @click="anularCaso(row.item.caso_id)"
                   >
                     Anular
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="user_profile == 1"
+                    v-if="row.item.caso_estado_id !== estadoIdCerrado && user_profile == 1"
                     @click="eliminarCaso(row.item.caso_id)"
                   >
                     Eliminar
@@ -299,7 +307,8 @@ export default {
       abogadosOptions: [],
       clinicasOptions: [],
       estadosOptions: [],
-      anularPerfiles: [1, 12],
+      perfilesAdministradores: [1, 12],
+      estadoIdCerrado: 4,
       textoBoton: 'Guardar Caso',
       estado: 'd-none',
       bRowLast: {},

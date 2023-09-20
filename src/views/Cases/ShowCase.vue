@@ -33,6 +33,7 @@
               :case_fecha_solicitud="caso.caso_fecha_solicitud"
               :onEdit="true"
               :reloadFunciont="this.getCase"
+              :reloadSeguimientos="this.getSeguimientos"
               :archivosCaso="archivos"
               :archivosSeguimiento="archivosSeguimiento"
             />
@@ -289,7 +290,9 @@
                                       ? 'background-color: #EC7063'
                                       : seguimiento.seg_tipo_seg_id === 5
                                       ? 'background-color: #8E44AD'
-                                      : 'background-color: #F1C40F'
+                                      : seguimiento.seg_tipo_seg_id === 6
+                                      ? 'background-color: #F1C40F'
+                                      : 'background-color: #F1580F'
                                   "
                                   class="card-border"
                                   :title="seguimiento.seg_titulo"
@@ -340,7 +343,9 @@
                                       ? 'background-color: #EC7063'
                                       : seguimiento.seg_tipo_seg_id === 5
                                       ? 'background-color: #8E44AD'
-                                      : 'background-color: #F1C40F'
+                                      : seguimiento.seg_tipo_seg_id === 6
+                                      ? 'background-color: #F1C40F'
+                                      : 'background-color: #F1580F'
                                   "
                                   :title="seguimiento.seg_titulo"
                                   class="card-border"
