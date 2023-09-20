@@ -1701,7 +1701,9 @@ export default {
               this.tableLinkKey++
               this.polizas = this.process.polizas
               const primeraVez = true
-              this.fetchSubCausasLitigio(primeraVez)
+              if (this.process.prore_causa_litigio_id !== null) {
+                this.fetchSubCausasLitigio(primeraVez)
+              }
             } else {
               Vue.swal('Ocurrió un error tratando de obtener los datos del proceso')
             }
