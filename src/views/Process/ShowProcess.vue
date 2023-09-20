@@ -915,7 +915,7 @@
                             </div>
                           </form>
                         </b-modal>
-                        <div v-if="process.polizas.length == 0">
+                        <div v-if="process.polizas.length == 0 && process.prore_aseguradora_id !== null">
                           <h6 class="float-left mb-1 font-weight-bolder text-primary" style="text-decoration:underline">{{ process.aseguradora.ase_name }}</h6>
                         </div>
                         <ul v-else class="iq-timeline">
