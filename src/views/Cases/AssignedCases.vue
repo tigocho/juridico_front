@@ -231,23 +231,25 @@
                   <b-dropdown-item @click="verCaso(data.item.caso_id)">
                     Ver
                   </b-dropdown-item>
-                  <b-dropdown-item @click="editarCaso(data.item)">
+                  <b-dropdown-item
+                    v-if="data.item.caso_estado_id !== estadoIdCerrado"
+                    @click="editarCaso(data.item)">
                     Editar
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="data.item.caso_estado_id != 2"
+                    v-if="data.item.caso_estado_id !== estadoIdCerrado && data.item.caso_estado_id != 2"
                     @click="cambiarEstado(data.item, 2)"
                   >
                     En Proceso
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="data.item.caso_estado_id != 4"
+                    v-if="data.item.caso_estado_id !== estadoIdCerrado && data.item.caso_estado_id != 4"
                     @click="cambiarEstado(data.item, 4)"
                   >
                     Cerrar
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="deletedProfiles.includes(user_profile)"
+                    v-if="data.item.caso_estado_id !== estadoIdCerrado && deletedProfiles.includes(user_profile)"
                     @click="eliminarCaso(data.item)"
                   >
                     Eliminar
@@ -296,6 +298,7 @@ export default {
       caso: {},
       estado: 'd-none',
       deletedProfiles: [1, 12],
+      estadoIdCerrado: 4,
       filtros: {
         clinica_id: '',
         estados_id: ''

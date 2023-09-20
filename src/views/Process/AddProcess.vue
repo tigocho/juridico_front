@@ -24,17 +24,23 @@
                         </div>
                       </ValidationProvider>
                     </b-form-group>
-                    <b-form-group label="Abogado Lider" class="col-md-6" label-for="profesional_id">
-                    <v-select
-                      v-model="formData.prore_pro_id"
-                      :options="profesionalesOptions"
-                      :reduce="(label) => label.code"
-                      label="label"
-                      id="profesional_id"
-                    >
-                    <span slot="no-options">No hay Abogados.</span>
-                  </v-select>
-                </b-form-group>
+                    <b-form-group label="Abogado Lider*" class="col-md-6" label-for="profesional_id">
+                      <ValidationProvider name="Abogado lider" rules="required" v-slot="{ errors }">
+                        <v-select
+                          v-model="formData.prore_pro_id"
+                          :options="profesionalesOptions"
+                          :reduce="(label) => label.code"
+                          label="label"
+                          id="profesional_id"
+                          :class="errors.length > 0 ? ' is-invalid' : ''"
+                        >
+                          <span slot="no-options">No hay Abogados.</span>
+                        </v-select>
+                        <div class="invalid-feedback">
+                          <span>Por favor verifique la información</span>
+                        </div>
+                      </ValidationProvider>
+                    </b-form-group>
                     <b-form-group class="col-md-6" label="Número de radicado*" label-for="prore_num_radicado">
                       <ValidationProvider name="Número de radicado" rules="required" v-slot="{ errors }">
                         <b-form-input v-model="formData.prore_num_radicado" @change="existeProceso" type="number" placeholder="9387183671" :class="(errors.length > 0 ? ' is-invalid' : '')"></b-form-input>
@@ -87,10 +93,18 @@
                         <span slot="no-options">No hay régimen.</span>
                       </v-select>
                     </b-form-group>
-                    <b-form-group v-if="causasLitigioOptions != null" class="col-md-6" label="Causa del litigio" label-for="prore_causa_litigio_id">
-                      <v-select v-model="formData.prore_causa_litigio_id" :options="causasLitigioOptions" @input="fetchSubCausasLitigio" :reduce="label => label.code" label="label" id="prore_causa_litigio_id" >
-                        <span slot="no-options">No hay causas de litigio.</span>
-                      </v-select>
+                    <b-form-group v-if="causasLitigioOptions != null" class="col-md-6" label="Causa del litigio*" label-for="prore_causa_litigio_id">
+                      <ValidationProvider name="Causa litigio" rules="required" v-slot="{ errors }">
+                        <v-select
+                          v-model="formData.prore_causa_litigio_id" :options="causasLitigioOptions" @input="fetchSubCausasLitigio" :reduce="label => label.code" label="label" id="prore_causa_litigio_id"
+                          :class="(errors.length > 0 ? ' is-invalid' : '')"
+                        >
+                          <span slot="no-options">No hay causas de litigio.</span>
+                        </v-select>
+                        <div class="invalid-feedback">
+                          <span>Debe de seleccionar una opción</span>
+                        </div>
+                      </ValidationProvider>
                     </b-form-group>
                     <b-form-group v-if="subCausasLitigioOptions != null" class="col-md-6" label="Subcausa del litigio" label-for="prore_sub_causa_litigio_id">
                       <ValidationProvider name="Sub Causas litigios" :rules="requiredSubCausaRule" v-slot="{ errors }">
@@ -489,7 +503,7 @@ export default {
           required: value => !!value || 'Debe seleccionar una opción'
         }
       } else {
-        return {} // No aplicar ninguna validación si cliente_id es nulo
+        return {} // No aplicar ninguna validación si la causa es nula
       }
     }
   },

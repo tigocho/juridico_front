@@ -40,6 +40,35 @@
                     </b-col>
                   </b-row>
                   <b-row v-if="!esCliente()">
+                    <b-col xs="6">
+                      <b-form-group label="Actividad*" label-for="actividad_id">
+                        <v-select
+                          v-model="caseActividadId"
+                          :options="actividadesOptions"
+                          :reduce="(label) => label.code"
+                          label="label"
+                          id="actividad_id"
+                          @input="getSubactividades"
+                        >
+                          <span slot="no-options">No hay actividades.</span>
+                        </v-select>
+                      </b-form-group>
+                    </b-col>
+                    <b-col xs="6">
+                      <b-form-group label="Subactividad*" label-for="subactividad_id">
+                        <v-select
+                          v-model="subactividad_id"
+                          :options="subactividadesOptions"
+                          :reduce="(label) => label.code"
+                          label="label"
+                          id="subactividad_id"
+                        >
+                          <span slot="no-options">No hay subactividades.</span>
+                        </v-select>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                  <b-row>
                     <b-col xs="12">
                       <b-form-group
                         label="Fecha de solicitud*"
@@ -237,6 +266,7 @@ export default {
     case_fecha_solicitud: String,
     onEdit: Boolean,
     reloadFunciont: Function,
+    reloadSeguimientos: Function,
     archivosCaso: Array,
     archivosSeguimiento: Array
   },
@@ -251,9 +281,9 @@ export default {
       caseDescription: '',
       caseClinicaId: null,
       caseActividadId: null,
+      actividad_id: null,
       subactividad_id: null,
       caseFechaSolicitud: null,
-      actividad_id: '',
       subactividadesOptions: [],
       textoBoton: 'Guardar Caso',
       estadoBoton: '',
@@ -338,7 +368,12 @@ export default {
       data.append('cantidad_archivos', index)
       if (this.validData) {
         axios.post('/casos/update/' + this.case_id, data).then((res) => {
-          this.reloadFunciont()
+          if (typeof this.reloadFunciont === 'function') {
+            this.reloadFunciont()
+          }
+          if (typeof this.reloadSeguimientos === 'function') {
+            this.reloadSeguimientos()
+          }
           Vue.swal(res.data.message)
           this.estadoBoton = ''
           this.textoBoton = 'Guardar Caso'
