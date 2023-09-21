@@ -94,7 +94,8 @@ export default {
         { value: 'A favor', text: 'A favor' },
         { value: 'Desistimiento', text: 'Desistimiento' },
         { value: 'Rechazado', text: 'Rechazado' },
-        { value: 'Conciliado', text: 'Conciliado' }
+        { value: 'Conciliado', text: 'Conciliado' },
+        { value: 'Inactivo', text: 'Inactivo' }
       ],
       botonGuardarModal: '',
       textoConfirmacion: 'mensaje de testeo',
