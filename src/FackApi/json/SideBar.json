@@ -23,17 +23,17 @@
     "roles": [1, 12]
   },
   {
-    "title": "Doctor Dashboard",
-    "name": "sidebar.dashboard1",
+    "title": "CMI Jurídico",
+    "name": "sidebar.cmi",
     "is_heading": false,
     "is_active": false,
     "link": {
-      "name": "dashboard.home-1"
+      "name": "dashboard.cmi"
     },
     "class_name": "",
     "is_icon_class": true,
-    "icon": "ri-hospital-fill",
-    "roles": [45]
+    "icon": "ri-bar-chart-2-line",
+    "roles": [1, 12]
   },
   {
     "title": "Administrar",
