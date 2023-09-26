@@ -33,6 +33,7 @@ import DashboardGerencia from '../views/Dashboards/DashboardGerencia.vue'
 import Dashboard3 from '../views/Dashboards/Dashboard3'
 import Dashboard4 from '../views/Dashboards/Dashboard4'
 import Dashboard5 from '../views/Dashboards/Dashboard5'
+import Cmi from '../views/Dashboards/Cmi'
 /* UIElements View */
 import UiAlerts from '../views/core/UiAlerts.vue'
 import UiButtons from '../views/core/UiButtons.vue'
@@ -148,6 +149,12 @@ const childRoutes = (prop, mode) => [
     name: prop + '.home-4',
     meta: { dark: mode, auth: true, name: 'Home 4' },
     component: Dashboard4
+  },
+  {
+    path: '/cmi',
+    name: prop + '.cmi',
+    meta: { dark: mode, auth: true, name: 'Cmi' },
+    component: Cmi
   }
 ]
 
