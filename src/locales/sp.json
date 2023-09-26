@@ -1,10 +1,11 @@
 {
   "sidebar": {
     "dashboard": "Páneles",
-    "dashboard1": "Panel Administrativo",
+    "dashboard1": "CMI Jurídico",
     "dashboard2": "Panel Gerencial",
     "dashboard3": "Panel de control del hospital 2",
     "dashboard4": "Panel del paciente",
+    "cmi": "CMI Jurídico",
     "videoChat": "Chat De Vídeo",
     "app": "Procesos Jurídicos",
     "eCommerce": "E-Commerce",
