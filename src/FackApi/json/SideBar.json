@@ -33,7 +33,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-bar-chart-2-line",
-    "roles": [1, 12]
+    "roles": [1, 2, 12]
   },
   {
     "title": "Administrar",
