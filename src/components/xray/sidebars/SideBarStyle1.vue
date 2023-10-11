@@ -1,9 +1,8 @@
 <template>
   <div class="iq-sidebar">
-    <div class="iq-sidebar-logo d-flex justify-content-between">
-      <router-link :to="homeURL" style="display: flex;align-items: center;">
-        <img :src="logo" class="img-fluid" alt="logo">
-        <h4 class="text-white">Jurídico App</h4>
+    <div class="d-flex justify-content-between">
+      <router-link :to="homeURL" style="display: flex;align-items: center;justify-content: center;">
+        <img :src="logo" class="img-fluid" alt="logo" width="60%">
       </router-link>
       <div class="iq-menu-bt-sidebar" v-if="toggleButton">
         <div class="iq-menu-bt align-self-center">
@@ -54,7 +53,7 @@ export default {
   },
   data () {
     return {
-      logo: require('@/assets/images/solo-logo.png')
+      logo: require('@/assets/images/juridico-logo.png')
     }
   }
 }
