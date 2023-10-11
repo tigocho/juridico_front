@@ -20,7 +20,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-user-star-line",
-    "roles": [1, 12]
+    "roles": [1, 12, 14]
   },
   {
     "title": "CMI Jurídico",
@@ -33,7 +33,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-bar-chart-2-line",
-    "roles": [1, 2, 12]
+    "roles": [1, 2, 12, 14]
   },
   {
     "title": "Administrar",
@@ -43,7 +43,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "",
-    "roles": [1, 12]
+    "roles": [1, 12, 14]
   },
   {
     "title": "Usuarios",
@@ -54,7 +54,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-user-settings-line",
-    "roles": [1, 12],
+    "roles": [1, 12, 14],
     "children": [
       {
         "title": "Crear Usuario",
@@ -66,7 +66,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-user-add-line",
-        "roles": [1, 12]
+        "roles": [1, 12, 14]
       },
       {
         "title": "Listar usuarios",
@@ -78,7 +78,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-list-unordered",
-        "roles": [1, 12]
+        "roles": [1, 12, 14]
       }    
     ]
   },
@@ -90,7 +90,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "",
-    "roles": [1, 2, 12]
+    "roles": [1, 2, 12, 14]
   },
   {
     "title": "Process",
@@ -101,7 +101,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-file-list-fill",
-    "roles": [1, 2, 12],
+    "roles": [1, 2, 12, 14],
     "children": [
       {
         "title": "Process List",
@@ -113,7 +113,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-book-mark-line",
-        "roles": [1, 2 , 12]
+        "roles": [1, 2 , 12, 14]
       },
       {
         "title": "Add Proces",
@@ -125,7 +125,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-folder-add-line",
-        "roles": [1, 2, 12]
+        "roles": [1, 2, 12, 14]
       },
       {
         "title": "Process Archived",
@@ -137,7 +137,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-inbox-archive-fill",
-        "roles": [1, 2, 12]
+        "roles": [1, 2, 12, 14]
       }      
     ]
   },
@@ -150,7 +150,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-government-fill",
-    "roles": [1, 2, 12],
+    "roles": [1, 2, 12, 14],
     "children": [
       {
         "title": "Process List Laborales",
@@ -162,7 +162,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-book-mark-line",
-        "roles": [1, 2, 12]
+        "roles": [1, 2, 12, 14]
       },
       {
         "title": "Add Proces",
@@ -174,7 +174,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-folder-add-line",
-        "roles": [1, 2, 12]
+        "roles": [1, 2, 12, 14]
       },
       {
         "title": "Process Archived Laborales",
@@ -186,7 +186,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-inbox-archive-fill",
-        "roles": [1, 2, 12]
+        "roles": [1, 2, 12, 14]
       }
     ]
   },
@@ -199,7 +199,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "fas fa-bars",
-    "roles": [1, 2, 12],
+    "roles": [1, 2, 12, 14],
     "children": [
       {
         "title": "otrosProcesosList",
@@ -210,7 +210,7 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "roles": [1, 2, 12],
+        "roles": [1, 2, 12, 14],
         "icon": "ri-book-mark-line"
       },
       {
@@ -223,7 +223,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-folder-add-line",
-        "roles": [1, 2, 12]
+        "roles": [1, 2, 12, 14]
       },
       {
         "title": "otrosProcesosArchivados",
@@ -234,7 +234,7 @@
         },
         "class_name": "",
         "is_icon_class": true,
-        "roles": [1, 2, 12],
+        "roles": [1, 2, 12, 14],
         "icon": "fas fa-archive"
       }
     ]
@@ -248,7 +248,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-shield-flash-fill",
-    "roles": [1, 2, 12],
+    "roles": [1, 2, 12, 14],
     "children": [
       {
         "title": "Policies List",
@@ -260,7 +260,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-shield-fill",
-        "roles": [1, 2, 12]
+        "roles": [1, 2, 12, 14]
       },
       {
         "title": "Add Policy",
@@ -272,7 +272,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-shield-cross-fill",
-        "roles": [1, 2, 12]
+        "roles": [1, 2, 12, 14]
       },
       {
         "title": "Policies Archived",
@@ -284,7 +284,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-shield-flash-fill",
-        "roles": [1, 2, 12]
+        "roles": [1, 2, 12, 14]
       }      
     ]
   },
@@ -299,7 +299,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-calendar-event-fill",
-    "roles": [1, 2, 12]
+    "roles": [1, 2, 12, 14]
   },
   {
     "title": "Solicitudes",
@@ -309,7 +309,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "",
-    "roles": [1, 2, 11, 12, 13]
+    "roles": [1, 2, 11, 12, 13, 14]
   },
   {
     "title": "Casos Jurídicos",
@@ -320,7 +320,7 @@
     "class_name": "",
     "is_icon_class": true,
     "icon": "ri-file-list-fill",
-    "roles": [1, 2, 11, 12, 13],
+    "roles": [1, 2, 11, 12, 13, 14],
     "children": [
       {
         "title": "Casos por asignar",
@@ -404,7 +404,7 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-inbox-archive-fill",
-        "roles": [1, 12, 13]
+        "roles": [1, 12, 13, 14]
       },
       {
         "title": "Gráficas y reportes",
@@ -417,6 +417,18 @@
         "is_icon_class": true,
         "icon": "ri-inbox-archive-fill",
         "roles": [1, 12, 13]
+      },
+      {
+        "title": "Crear Caso Moderador",
+        "name": "sidebar.crearCasoModerador",
+        "is_active": false,
+        "link": {
+          "name" : "cases.crearCasoModerador"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 12, 14]
       }
     ]
   }
