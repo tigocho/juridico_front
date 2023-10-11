@@ -115,6 +115,7 @@ import AddCaseAbogado from '../views/Cases/AddCaseAbogado'
 import AssignedCases from '../views/Cases/AssignedCases'
 import AllCases from '../views/Cases/AllCases'
 import GraphsAndReports from '../views/Cases/GraphsAndReports'
+import AgregarCasoModerador from '../views/Cases/AddCaseModerador'
 import Auth from '@/services/auth'
 
 Vue.use(VueRouter)
@@ -737,6 +738,12 @@ const casesChildRoute = (prop, mode = false) => [
     name: prop + '.reports',
     meta: { dark: mode, auth: true, name: 'Graficas y Reportes' },
     component: GraphsAndReports
+  },
+  {
+    path: 'crear-caso-moderador',
+    name: prop + '.crearCasoModerador',
+    meta: { dark: mode, auth: true, name: 'Crear Caso Moderador' },
+    component: AgregarCasoModerador
   }
 
 ]
