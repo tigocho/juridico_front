@@ -5,24 +5,18 @@
       <b-container class="sign-in-page-bg mt-5 p-0">
         <div class="row no-gutters">
           <div class="col-md-6 text-center position-relative">
+            <!-- Colocando el logo "g-ocho por tu bien" en el recuadro rojo -->
+            <div class="logo-top">
+              <a class="sign-in-logo" href="#"><img :src="logo" class="img-fluid logo-gocho" alt="logo"></a>
+            </div>
+            <!-- Fin -->
             <div class="sign-in-detail text-white">
-              <a class="sign-in-logo mb-5" href="#"><img :src="logo" class="img-fluid" alt="logo"></a>
+              <!-- Incrementando el tamaño y dándole más protagonismo al logo grande -->
               <Slick :option="slickOptions">
                 <div class="item">
-                  <img :src="require('../../assets/images/login/juridico-4.jpg')" class="img-fluid mb-4" alt="logo">
-                  <h4 class="mb-1 text-white">Puedes crear tus litigios</h4>
+                  <img :src="require('../../assets/images/login/juridico-logo.png')" class="img-fluid larger-logo" alt="logo">
                   <p>Crea tus litigios de manera fácil y digitaliza la información. Siempre disponible.</p>
                 </div>
-                <!--<div class="item">
-                  <img :src="require('../../assets/images/login/2.png')" class="img-fluid mb-4" alt="logo">
-                  <h4 class="mb-1 text-white">Manage your orders</h4>
-                  <p>It is a long established fact that a reader will be distracted by the readable content.</p>
-                </div>
-                <div class="item">
-                  <img :src="require('../../assets/images/login/3.png')" class="img-fluid mb-4" alt="logo">
-                  <h4 class="mb-1 text-white">Manage your orders</h4>
-                  <p>It is a long established fact that a reader will be distracted by the readable content.</p>
-                </div>-->
               </Slick>
             </div>
           </div>
@@ -62,3 +56,20 @@ export default {
   }
 }
 </script>
+<style scoped>
+.logo-gocho{
+  width: 30%;
+  height: 30%!important;
+}
+.logo-top {
+  position: absolute;
+  top: 10px;
+  left: 14%;
+  transform: translateX(-50%);
+}
+
+.larger-logo {
+  width: 100%;
+  margin: auto;
+}
+</style>
