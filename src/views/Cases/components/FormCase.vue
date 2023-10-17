@@ -68,7 +68,7 @@
                       </b-form-group>
                     </b-col>
                   </b-row>
-                  <b-row>
+                  <b-row v-if="caseFechaSolicitud === null">
                     <b-col xs="12">
                       <b-form-group
                         label="Fecha de solicitud*"
