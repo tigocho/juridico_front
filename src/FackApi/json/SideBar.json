@@ -431,5 +431,102 @@
         "roles": [1, 12, 14]
       }
     ]
+  },
+  {
+    "title": "Tutelas",
+    "name": "sidebar.tutelas",
+    "is_heading": false,
+    "is_active": false,
+    "link": "",
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "ri-file-list-fill",
+    "roles": [1, 2, 5, 11, 12, 13, 14],
+    "children": [
+      {
+        "title": "Tutelas por asignar",
+        "name": "sidebar.tutelasPorAsignar",
+        "is_active": false,
+        "link": {
+          "name" : "tutelas.toassing"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 12]
+      },
+      {
+        "title": "Crear Tutela",
+        "name": "sidebar.crearTutela",
+        "is_active": false,
+        "link": {
+          "name" : "tutelas.add"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-book-mark-line",
+        "roles": [1, 2, 12]
+      },
+      {
+        "title": "Crear Tutela Cliente",
+        "name": "sidebar.crearCaso",
+        "is_active": false,
+        "link": {
+          "name" : "tutelas.add-cliente"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-book-mark-line",
+        "roles": [11]
+      },
+      {
+        "title": "Mis Tutelas",
+        "name": "sidebar.misTutelas",
+        "is_active": false,
+        "link": {
+          "name" : "tutelas.mis-tutelas"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-folder-add-line",
+        "roles": [1, 2, 10, 11, 12, 13, 14]
+      },
+      {
+        "title": "Mis Asignaciones",
+        "name": "sidebar.misAsignaciones",
+        "is_active": false,
+        "link": {
+          "name" : "cases.assigned"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [2, 12]
+      },
+      {
+        "title": "Todas las Tutelas",
+        "name": "sidebar.todasTutelas",
+        "is_active": false,
+        "link": {
+          "name" : "tutelas.all"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 12, 13, 14]
+      },
+      {
+        "title": "Crear Tutela Moderador",
+        "name": "sidebar.crearTutelaModerador",
+        "is_active": false,
+        "link": {
+          "name" : "tutelas.crear-tutela-moderador"
+        },
+        "class_name": "",
+        "is_icon_class": true,
+        "icon": "ri-inbox-archive-fill",
+        "roles": [1, 12, 14]
+      }
+    ]
   }
 ]

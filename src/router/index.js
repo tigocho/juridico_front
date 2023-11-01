@@ -116,6 +116,15 @@ import AssignedCases from '../views/Cases/AssignedCases'
 import AllCases from '../views/Cases/AllCases'
 import GraphsAndReports from '../views/Cases/GraphsAndReports'
 import AgregarCasoModerador from '../views/Cases/AddCaseModerador'
+/* Tutelas Views */
+import TutelaParaAsignar from '../views/Tutelas/TutelaParaAsignar'
+import AgregarTutela from '../views/Tutelas/AgregarTutela'
+import AgregarTutelaCliente from '../views/Tutelas/AgregarTutelaCliente'
+import MisTutelas from '../views/Tutelas/MisTutelas'
+import MostrarTutela from '../views/Tutelas/MostrarTutela'
+import TutelasAsignadas from '../views/Tutelas/TutelasAsignadas'
+import TodasTutelas from '../views/Tutelas/TodasTutelas'
+import AgregarTutelaModerador from '../views/Tutelas/AgregarTutelaModerador'
 import Auth from '@/services/auth'
 
 Vue.use(VueRouter)
@@ -748,6 +757,57 @@ const casesChildRoute = (prop, mode = false) => [
 
 ]
 
+const tutelasChildRoute = (prop, mode = false) => [
+  {
+    path: 'tutela-to-assing',
+    name: prop + '.toassing',
+    meta: { dark: mode, auth: true, name: 'Tutelas Por Assignar' },
+    component: TutelaParaAsignar
+  },
+  {
+    path: 'create-tutela',
+    name: prop + '.add',
+    meta: { dark: mode, auth: true, name: 'Crear Tutela' },
+    component: AgregarTutela
+  },
+  {
+    path: 'create-tutela-cliente',
+    name: prop + '.addCliente',
+    meta: { dark: mode, auth: true, name: 'Crear Tutela' },
+    component: AgregarTutelaCliente
+  },
+  {
+    path: 'mis-tutelas',
+    name: prop + '.mis-tutelas',
+    meta: { dark: mode, auth: true, name: 'Mis Tutelas' },
+    component: MisTutelas
+  },
+  {
+    path: 'tutelas-mostrar/:tutela_id/',
+    name: prop + '.mostrar',
+    meta: { dark: mode, auth: true, name: 'Ver Tutela' },
+    component: MostrarTutela
+  },
+  {
+    path: 'my-assigned-tutela',
+    name: prop + '.my-assigned',
+    meta: { dark: mode, auth: true, name: 'Tutelas Asignadas' },
+    component: TutelasAsignadas
+  },
+  {
+    path: 'all-tutelas',
+    name: prop + '.all',
+    meta: { dark: mode, auth: true, name: 'Todas las Tutelas' },
+    component: TodasTutelas
+  },
+  {
+    path: 'crear-tutela-moderador',
+    name: prop + '.crear-tutela-moderador',
+    meta: { dark: mode, auth: true, name: 'Crear Caso Moderador' },
+    component: AgregarTutelaModerador
+  }
+]
+
 const routes = [
   {
     path: '/',
@@ -880,6 +940,13 @@ const routes = [
     component: Layout1,
     meta: { auth: true },
     children: casesChildRoute('cases')
+  },
+  {
+    path: '/tutelas',
+    name: 'tutelas',
+    component: Layout1,
+    meta: { auth: true },
+    children: tutelasChildRoute('tutelas')
   }
 ]
 

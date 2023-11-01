@@ -50,6 +50,13 @@
     "agregarPoliza": "Agregar Poliza",
     "polizasArchivadas": "Polizas Archivadas",
 
+    "tutelas": "Tutelas",
+    "tutelasPorAsignar": "Tutelas por asignar",
+    "crearTutela": "Crear Tutela",
+    "misTutelas": "Mis Tutelas",
+    "crearTutelaModerador": "Crear Tutela Moderador",
+    "todasTutelas": "Todas las Tutelas",
+
     "doctor": "Usuarios",
     "doctorProfile": "Médico De Perfil",
     "doctorEdit": "Editar Médico",
