@@ -569,15 +569,15 @@ export default {
 }
 </script>
 <style>
-  .b-form-datepicker {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: stretch;
-    -ms-flex-align: stretch;
-    align-items: stretch;
-    height: auto;
-    padding: 0;
-    background-image: none;
+  .fecha-archivo-caso.b-form-datepicker {
+    display: -webkit-box!important;
+    display: -ms-flexbox!important;
+    display: flex!important;
+    -webkit-box-align: stretch!important;
+    -ms-flex-align: stretch!important;
+    align-items: stretch!important;
+    height: auto!important;
+    padding: 0!important;
+    background-image: none!important;
   }
 </style>
