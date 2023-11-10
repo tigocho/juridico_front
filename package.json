@@ -18,6 +18,7 @@
     "@fullcalendar/interaction": "^4.4.2",
     "@fullcalendar/timegrid": "^4.4.2",
     "@fullcalendar/vue": "^4.4.2",
+    "@vue/cli-service": "^4.5.12",
     "animate.css": "^3.7.2",
     "apexcharts": "^3.26.0",
     "auth0-js": "^9.15.0",
@@ -66,7 +67,6 @@
     "vue-slider-component": "3.0.32",
     "vue-step-wizard": "^0.1.17",
     "vue-sweetalert2": "^4.3.1",
-    "@vue/cli-service": "^4.5.12",
     "vue2-editor": "^2.10.3",
     "vuedraggable": "^2.24.3",
     "vuefire": "^2.2.5",
@@ -104,7 +104,8 @@
     "vue-clipboard2": "^0.3.1",
     "vue-loader": "^15.9.6",
     "vue-template-compiler": "^2.6.12",
-    "webpack": "^4.4.0"
+    "webpack": "^4.4.0",
+    "workbox-webpack-plugin": "^7.0.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
