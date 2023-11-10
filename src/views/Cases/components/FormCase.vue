@@ -568,3 +568,16 @@ export default {
   }
 }
 </script>
+<style>
+  .b-form-datepicker {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    height: auto;
+    padding: 0;
+    background-image: none;
+  }
+</style>
