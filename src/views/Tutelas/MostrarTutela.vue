@@ -16,7 +16,7 @@
       </div>
       <div v-else>
         <!-- MODAL DE EDITAR CASO -->
-        <div>
+        <!-- <div>
           <b-modal
             id="modal-editar-caso"
             size="lg"
@@ -38,26 +38,26 @@
               :archivosSeguimiento="archivosSeguimiento"
             />
           </b-modal>
-        </div>
+        </div> -->
         <!-- FIN DE MODAL-->
         <!-- MODAL DE ASIGNAR CASO -->
         <div>
-          <b-modal
+          <!-- <b-modal
             id="modal-asignar-caso"
             size="lg"
             title="Asignar Caso"
             hide-footer
-          >
+          > -->
             <!-- INICIO DE COMPONENTE ASIGNAR CASO-->
-            <asignar-tutela
+            <!-- <asignar-tutela
               :casoInfo="caso"
               :archivos="archivos"
               :descargarArchivoCaso="descargarArchivoCaso"
               :recargarCaso="getCase"
               @cerrar="cerrarModalAsignarCaso"
-            ></asignar-tutela>
+            ></asignar-tutela> -->
             <!-- FIN DE COMPONENTE ASIGNAR CASO-->
-          </b-modal>
+          <!-- </b-modal> -->
         </div>
         <!-- FIN DE MODAL-->
         <b-row>
@@ -75,15 +75,36 @@
                     <tab-nav-items
                       class="col-auto p-0"
                       :active="false"
-                      href="#seguimiento"
-                      title="Seguimiento"
+                      href="#etapas"
+                      title="Etapas"
                     />
                     <tab-nav-items
                       class="col-auto p-0"
                       disabled
                       :active="false"
-                      href="#historial"
-                      title="Historial"
+                      href="#fallo"
+                      title="Fallo"
+                    />
+                    <tab-nav-items
+                      class="col-auto p-0"
+                      disabled
+                      :active="false"
+                      href="#precontestacion"
+                      title="Precontestaciones"
+                    />
+                    <tab-nav-items
+                      class="col-auto p-0"
+                      disabled
+                      :active="false"
+                      href="#precontestacion"
+                      title="Precontestaciones"
+                    />
+                    <tab-nav-items
+                      class="col-auto p-0"
+                      disabled
+                      :active="false"
+                      href="#devoluciones"
+                      title="Devoluciones"
                     />
                     <tab-nav-items
                       class="col-auto p-0"
@@ -131,10 +152,10 @@
                       <b-button
                         variant="success"
                         style="margin-right: 5px"
-                        :class="estadoBotonDescargarCaso"
+                        :class="estadoBotonDescargarTutela"
                         @click="descargarCaso"
                       >
-                        <i class="ri-download-line"></i>{{ textoBotonDescargarCaso }}
+                        <i class="ri-download-line"></i>{{ textoBotonDescargarTutela }}
                       </b-button>
                       <b-button
                         variant="primary"
@@ -590,40 +611,33 @@ import { xray } from '../../config/pluginInit'
 import axios from 'axios'
 import Vue from 'vue'
 import fileDownload from 'js-file-download'
-import FormularioTutela from '../Tutelas/components/FormularioTutela.vue'
 import FormularioEtapaProcesal from '../Tutelas/components/FormularioEtapaProcesal.vue'
 import moment from 'moment'
 import EncabezadoTutela from './components/EncabezadoTutela.vue'
-import AsignarTutela from './components/AsignarTutela.vue'
 const FileDownload = require('js-file-download')
 moment.locale('es')
 export default {
   name: 'MostrarTutela',
   components: {
-    FormularioTutela,
     FormularioEtapaProcesal,
-    EncabezadoTutela,
-    AsignarTutela
+    EncabezadoTutela
   },
   data () {
     return {
       estadoBoton: '',
-      textoBoton: 'Editar Caso',
-      caso: {},
-      archivos: [],
-      archivosSeguimiento: [],
-      cantidadArchivos: 0,
+      textoBoton: 'Editar tutela',
+      tutela: {},
       asignarProfiles: [1, 12],
-      perfilesPermitidosVerHorasInvertidas: [1, 2],
+      perfilesPermitidos: [1, 2],
       user_profile: null,
       progress_total: 4,
       max: 100,
       loading: true,
-      addSeguimiento: false,
-      seguimientosCaso: [],
+      agregarEtapa: false,
+      etapasTutela: [],
       profesionalesOptions: [],
-      textoBotonDescargarCaso: 'Descargar',
-      estadoBotonDescargarCaso: ''
+      textoBotonDescargarTutela: 'Descargar',
+      estadoBotonDescargarTutela: ''
     }
   },
   computed: {
@@ -779,19 +793,19 @@ export default {
     },
     descargarCaso () {
       this.botonDescargarCaso = 'Descargando caso...'
-      this.estadoBotonDescargarCaso = 'disabled'
+      this.estadoBotonDescargarTutela = 'disabled'
       axios({
         url: '/casos/descargar-caso/' + this.caso.caso_id,
         method: 'GET',
         responseType: 'blob'
       }).then((response) => {
         this.botonDescargarCaso = 'Descargar'
-        this.estadoBotonDescargarCaso = ''
+        this.estadoBotonDescargarTutela = ''
         FileDownload(response.data, 'caso-' + this.formatearRadicado() + '.pdf')
       })
         .catch((err) => {
           this.botonDescargarCaso = 'Descargar'
-          this.estadoBotonDescargarCaso = ''
+          this.estadoBotonDescargarTutela = ''
           Vue.swal('Ups, ocurrió un error ' + err)
         })
     }

@@ -1,33 +1,29 @@
 <template>
   <iq-card>
-    <FormCase
-      :case_id="cases.case_id"
-      :case_title="cases.case_title"
-      :case_description="cases.case_title"
-      :onEdit="false"
-      :reloadFunciont="null"
-    />
+    <formulario-tutela>
+    </formulario-tutela>
   </iq-card>
 </template>
 <script>
 import { xray } from '../../config/pluginInit'
-import FormCase from '../Cases/components/FormCase.vue'
+import FormularioTutela from './components/FormularioTutela.vue'
 export default {
   name: 'AgregarTutela',
   components: {
-    FormCase
+    FormularioTutela
   },
   data () {
     return {
-      cases: {
-        case_id: null,
-        case_title: '',
-        case_description: ''
-      }
+      cases: {}
     }
   },
   mounted () {
     xray.index()
+  },
+  methods: {
+    cerrarModalCrearCliente () {
+      this.$refs.modal.hide()
+    }
   }
 }
 </script>
