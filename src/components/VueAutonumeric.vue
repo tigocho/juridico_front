@@ -232,9 +232,6 @@ export default {
         options = AutoNumeric.getPredefinedOptions()[optionElement]
         if (options === void 0 || options === null) {
           // If the given `optionElement` does not exist, we switch back to the default options
-          console.warn(
-            `The given pre-defined options [${optionElement}] is not recognized by AutoNumeric.\nSwitching back to the default options.`
-          )
           options = defaultOptions // Default value
         }
       } else {
