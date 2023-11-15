@@ -783,7 +783,7 @@ const tutelasChildRoute = (prop, mode = false) => [
     component: MisTutelas
   },
   {
-    path: 'tutelas-mostrar/:tutela_id/',
+    path: 'mostrar/:tutela_id/',
     name: prop + '.mostrar',
     meta: { dark: mode, auth: true, name: 'Ver Tutela' },
     component: MostrarTutela
