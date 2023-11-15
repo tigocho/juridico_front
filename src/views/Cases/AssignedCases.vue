@@ -244,7 +244,7 @@
                   </b-dropdown-item>
                   <b-dropdown-item
                     v-if="data.item.caso_estado_id !== estadoIdCerrado && data.item.caso_estado_id != 4"
-                    @click="cambiarEstado(data.item, 4)"
+                    @click="cerrarCaso(data.item)"
                   >
                     Cerrar
                   </b-dropdown-item>
@@ -470,7 +470,71 @@ export default {
             }
           })
         })
+    },
+    cerrarCaso (caso) {
+      Swal.mixin({
+        confirmButtonText: 'Siguiente &rarr;',
+        cancelButtonText: 'Cancelar',
+        showCancelButton: true,
+        progressSteps: ['1', '2'],
+        customClass: {
+          popup: 'cerrar-caso-modal'
+        }
+      }).queue([
+        {
+          title: 'Cierre del caso',
+          input: 'text',
+          text: 'Describa el cierre del caso',
+          inputPlaceholder: 'Ingrese texto...',
+          inputValidator: (value) => {
+            if (!value) {
+              return '¡Debe ingresar un texto válido!'
+            }
+          }
+        },
+        {
+          title: 'Timpo invertido',
+          input: 'number',
+          text: 'Escriba las horas invertidas (solo números)',
+          inputPlaceholder: 'Ingrese número... ej: 15',
+          inputAttributes: {
+            style: 'display: block !important;'
+          },
+          inputValidator: (value) => {
+            if (!value || isNaN(value)) {
+              return '¡Debe ingresar un número válido!'
+            }
+          }
+        }
+      ]).then((result) => {
+        if (result.value) {
+          const datos = result.value
+          const descripcionCierreCaso = datos[0]
+          const horasInvertidasAbogado = datos[1]
+          axios
+            .post('/casos/cerrar-caso/' + caso.caso_id, { 'descripcion_cierre_caso': descripcionCierreCaso, 'horas_invertidas_abogado': horasInvertidasAbogado })
+            .then((res) => {
+              if (res.status === 200) {
+                this.casoVisto(caso.caso_id)
+                this.getCasosAssignados()
+              }
+              Vue.swal(res.data.message)
+            })
+            .catch((err) => {
+              Vue.swal(
+                'Ups sucedió un error tratando de consulta la información. ' +
+                  err
+              )
+            })
+          Swal.close()
+        }
+      })
     }
   }
 }
 </script>
+<style>
+.cerrar-caso-modal .swal2-input {
+  display: inline !important;
+}
+</style>
