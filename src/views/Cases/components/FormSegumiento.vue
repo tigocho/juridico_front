@@ -8,7 +8,7 @@
               <b-row
                 class="justify-content-center text-center align-items-center"
               >
-                <b-col lg="8">
+                <b-col lg="10">
                   <b-row>
                     <b-col :cols="getColsSize(user_profile)">
                       <b-form-group label="Titulo:" label-for="seg_title">
@@ -42,6 +42,17 @@
                             <span>Debe de seleccionar un tipo de Seguimiento</span>
                           </div>
                         </ValidationProvider>
+                      </b-form-group>
+                    </b-col>
+                    <b-col v-if="tiposSegumientoId === tipoSeguimientoCierreId">
+                      <b-form-group label="Horas invertidas:*" label-for="seg_horas_invertidas">
+                        <b-form-input
+                          v-model="horas_invertidas"
+                          id="seg_horas_invertidas"
+                          type="number"
+                          size="sm"
+                          :required="true"
+                        ></b-form-input>
                       </b-form-group>
                     </b-col>
                   </b-row>
@@ -152,7 +163,9 @@ export default {
       ],
       seleccionarTipoSeguimiento: [1, 2, 12],
       user_profile: null,
-      errores: null
+      errores: null,
+      tipoSeguimientoCierreId: 3,
+      horas_invertidas: null
     }
   },
   computed: {
@@ -196,6 +209,7 @@ export default {
       data.append('case_id', this.case_id)
       data.append('user_id', this.userLogged.usr_id)
       data.append('seguimiento_tipo', this.tiposSegumientoId)
+      data.append('caso_horas_invertidas_profesional', this.horas_invertidas)
       let index = 0
       for (let casefile of this.caseFiles) {
         if (casefile.file != null) {
