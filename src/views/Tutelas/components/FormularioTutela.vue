@@ -733,7 +733,7 @@ export default {
     guardarTutela () {
       this.textoBoton = 'Guardando...'
       axios.post('/tutelas/guardar-tutela-completa', { tutela: this.tutela, etapaProcesal: this.etapaProcesal }).then((res) => {
-        if (res.status === 200) {
+        if (res.status >= 200) {
           Vue.swal('Todo salió bien', res.data.message, 'success')
           this.$router.push({ path: `/tutelas/mostrar/${res.data.tutela_id}` })
         } else {
