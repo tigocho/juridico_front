@@ -2,22 +2,21 @@
   <b-container fluid>
     <!-- MODAL DE EDITAR CASO -->
     <div>
-      <b-modal id="modal-editar-caso" size="lg" title="Editar Caso" hide-footer>
+      <b-modal id="modal-editar-tutela" size="lg" title="Editar Caso" hide-footer>
         <FormularioTutela
-          :case_id="caso.caso_id"
-          :case_clinica_id="caso.caso_clinica_id"
-          :case_title="caso.caso_titulo"
-          :case_description="caso.caso_descripcion"
-          :case_actividad_id="caso.act_id"
-          :case_subactividad_id="caso.caso_subact_id"
-          :case_fecha_solicitud="caso.caso_fecha_solicitud"
+          :case_id="tutela.tut_id"
+          :case_clinica_id="tutela.tut_clinica_id"
+          :case_description="tutela.tut_descripcion"
+          :case_actividad_id="tutela.tut_servicio_id"
+          :case_subactividad_id="tutela.tut_servicio_id"
+          :case_fecha_solicitud="tutela.tut_servicio_id"
           :onEdit="true"
-          :reloadFunciont="this.getCases"
+          :reloadFunciont="this.obtenerTutelas"
         />
       </b-modal>
     </div>
     <!-- FIN DE MODAL-->
-    <!-- DATOS DE CASOS TOTALES, ABIERTOS Y CERRADOS  -->
+    <!-- DATOS DE TUTELAS TOTALES, ABIERTOS Y CERRADOS  -->
     <b-row>
       <b-col lg="12">
         <template>
@@ -25,12 +24,12 @@
         </template>
       </b-col>
     </b-row>
-    <!-- FIN DATOS DE CASOS TOTALES, ABIERTOS Y CERRADOS  -->
+    <!-- FIN DATOS DE TUTELAS TOTALES, ABIERTOS Y CERRADOS  -->
     <b-row>
       <b-col lg="12">
         <iq-card>
           <template v-slot:headerTitle>
-            <h4 class="card-title">Todos Los Casos</h4>
+            <h4 class="card-title">Todas las tutelas</h4>
           </template>
           <template v-slot:body>
             <b-row>
@@ -102,7 +101,7 @@
                   <v-select
                     v-model="filtros.abogado_id"
                     :options="abogadosOptions"
-                    @input="getCases()"
+                    @input="obtenerTutelas()"
                     :reduce="(label) => label.code"
                     label="label"
                     id="abogados_select"
@@ -123,8 +122,8 @@
                 >
                   <v-select
                     v-model="filtros.estado_id"
-                    :options="estadosOptions"
-                    @input="getCases()"
+                    :options="estadosTutelaOptions"
+                    @input="obtenerTutelas()"
                     :reduce="(label) => label.code"
                     label="label"
                     id="estado_select"
@@ -146,7 +145,7 @@
                   <v-select
                     v-model="filtros.clinica_id"
                     :options="clinicasOptions"
-                    @input="getCases()"
+                    @input="obtenerTutelas()"
                     :reduce="(label) => label.code"
                     label="label"
                     id="clinica_select"
@@ -159,7 +158,7 @@
 
             <!-- Main table element -->
             <b-table
-              :items="casos"
+              :items="tutelas"
               :fields="fields"
               :current-page="currentPage"
               :per-page="perPage"
@@ -172,61 +171,58 @@
               show-empty
               small
               @filtered="onFiltered"
-              :tbody-tr-class="rowClass(casos)"
+              :tbody-tr-class="rowClass(tutelas)"
             >
-              <template #cell(radicado)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.radicado }} <img :src="newCase" width="25px" class="img-fluid" alt="logo"></b>
-                <span v-else>{{ data.item.radicado }}</span>
+              <template #cell(tut_radicado)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.tut_radicado }} <img :src="newCase" width="25px" class="img-fluid" alt="logo"></b>
+                <span v-else>{{ data.item.tut_radicado }}</span>
               </template>
-              <template #cell(caso_titulo)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.caso_titulo }}</b>
-                <span v-else>{{ data.item.caso_titulo }}</span>
+              <template #cell(tipo_gestion)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.tipo_gestion.tig_nombre }}</b>
+                <span v-else>{{ data.item.tipo_gestion.tig_nombre }}</span>
               </template>
               <template #cell(estado)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.estado }}</b>
-                <span v-else>{{ data.item.estado }}</span>
+                <b v-if="data.item.lei_leido !== true">{{ data.item.estado.est_nombre }}</b>
+                <span v-else>{{ data.item.estado.est_nombre }}</span>
               </template>
-              <template #cell(caso_fecha_apertura)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.caso_fecha_apertura }}</b>
-                <span v-else>{{ data.item.caso_fecha_apertura }}</span>
+              <template #cell(clinica)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.clinica.cli_name }}</b>
+                <span v-else>{{ data.item.clinica.cli_name }}</span>
               </template>
-              <template #cell(fecha_solucion)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.fecha_solucion }}</b>
-                <span v-else>{{ data.item.fecha_solucion }}</span>
+              <template #cell(tut_fecha_radicacion)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.tut_fecha_radicacion }}</b>
+                <span v-else>{{ data.item.tut_fecha_radicacion }}</span>
               </template>
-              <template #cell(solicitante)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.solicitante }}</b>
-                <span v-else>{{ data.item.solicitante }}</span>
+              <template #cell(tut_termino_contestar)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.tut_termino_contestar }}</b>
+                <span v-else>{{ data.item.tut_termino_contestar }}</span>
               </template>
-              <template #cell(abogado)="data">
-                <b v-if="data.item.lei_leido !== true">{{ data.item.abogado }}</b>
-                <span v-else>{{ data.item.abogado }}</span>
+              <template #cell(usuario_solicitante)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.usuario_solicitante.usr_name_first }} {{ data.item.usuario_solicitante.usr_lastname_first }}</b>
+                <span v-else>{{ data.item.usuario_solicitante.usr_name_first }} {{ data.item.usuario_solicitante.usr_lastname_first }}</span>
+              </template>
+              <template #cell(accionante)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.accionante.usr_name_first }} {{ data.item.accionante.usr_lastname_first }}</b>
+                <span v-else>{{ data.item.accionante.usr_name_first }} {{ data.item.accionante.usr_lastname_first }}</span>
+              </template>
+              <template #cell(profesional)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.profesional.pro_name_first }} {{ data.item.profesional.pro_lastname_first }}</b>
+                <span v-else>{{ data.item.profesional.pro_name_first }} {{ data.item.profesional.pro_lastname_first }}</span>
               </template>
               <template #cell(actions)="row">
                 <b-dropdown variant="primary" text="Acciones">
-                  <b-dropdown-item @click="verCaso(row.item.caso_id)">
+                  <b-dropdown-item @click="verTutela(row.item.tut_id)">
                     Ver
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="row.item.caso_estado_id !== estadoIdCerrado"
-                   @click="editarCaso(row.item)">
-                    Editar
-                  </b-dropdown-item>
-                  <b-dropdown-item
-                    v-if="row.item.caso_estado_id != 2 && perfilesAdministradores.includes(user_profile)"
-                    @click="cambiarEstado(data.item, 2)"
-                  >
-                    En Proceso
-                  </b-dropdown-item>
-                  <b-dropdown-item
-                    v-if="row.item.caso_estado_id !== estadoIdCerrado && perfilesAdministradores.includes(user_profile)"
-                    @click="anularCaso(row.item.caso_id)"
+                    v-if="row.item.tut_estado_tutela !== estadoIdCerrado && perfilesAdministradores.includes(user_profile)"
+                    @click="anularTutela(row.item.tut_id)"
                   >
                     Anular
                   </b-dropdown-item>
                   <b-dropdown-item
-                    v-if="row.item.caso_estado_id !== estadoIdCerrado && user_profile == 1"
-                    @click="eliminarCaso(row.item.caso_id)"
+                    v-if="row.item.tut_estado_tutela !== estadoIdCerrado && user_profile == 1"
+                    @click="eliminarTutela(row.item.tut_id)"
                   >
                     Eliminar
                   </b-dropdown-item>
@@ -246,16 +242,18 @@
                 <b-card>
                   <b-row class="mb-12">
                     <b-col sm="12" class="text-sm-left"
-                      ><strong>Descripción: </strong>{{ data.item.caso_descripcion }}</b-col
+                      ><strong>Descripción: </strong>{{ data.item.tut_descripcion }}</b-col
                     >
                   </b-row>
                   <b-row>
-                    <!-- <b-col>{{ data.item.caso_descripcion }}</b-col> -->
-                    <b-col sm="2" class="text-sm-left"
-                      ><strong>Servicio: </strong>{{ data.item.servicio }}</b-col
+                    <b-col sm="3" class="text-sm-left"
+                      ><strong>Medio solicitud: </strong>{{ data.item.medio_solicitud.med_sol_nombre }}</b-col
                     >
                     <b-col sm="3" class="text-sm-left"
-                      ><strong>Subactividad: </strong>{{ data.item.subactividad }}</b-col
+                      ><strong>Tipo gestión: </strong>{{ data.item.tipo_gestion.tig_nombre }}</b-col
+                    >
+                    <b-col sm="3" class="text-sm-left"
+                      ><strong>Término contestar: </strong>{{ data.item.tut_termino_contestar }} horas</b-col
                     >
                   </b-row>
                 </b-card>
@@ -288,6 +286,8 @@ import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { xray } from '../../config/pluginInit'
 import FormularioTutela from '../Tutelas/components/FormularioTutela.vue'
 import ResumenTutelas from './components/ResumenTutelas.vue'
+import moment from 'moment'
+moment.locale('es')
 export default {
   name: 'TodasTutelas',
   components: {
@@ -297,8 +297,8 @@ export default {
   data () {
     return {
       newCase: require('@/assets/images/page-img/new-case-blue.png'),
-      casos: [],
-      caso: {},
+      tutelas: [],
+      tutela: {},
       filtros: {
         abogado_id: '',
         clinica_id: '',
@@ -306,29 +306,26 @@ export default {
       },
       abogadosOptions: [],
       clinicasOptions: [],
-      estadosOptions: [],
+      estadosTutelaOptions: [],
       perfilesAdministradores: [1, 12],
       estadoIdCerrado: 4,
-      textoBoton: 'Guardar Caso',
+      textoBoton: 'Guardar Tutela',
       estado: 'd-none',
       bRowLast: {},
       fields: [
         { label: 'Ver Más', key: 'show_details', class: 'text-left' },
-        { label: 'Radicado', key: 'radicado' },
-        { label: 'Título', key: 'caso_titulo', class: 'text-left' },
+        { label: 'Radicado', key: 'tut_radicado' },
         { label: 'Estado', key: 'estado', class: 'text-left' },
+        { label: 'Clínica', key: 'clinica', class: 'text-left' },
         {
-          label: 'Fecha de Apertura',
-          key: 'caso_fecha_apertura',
+          label: 'Fecha radicación',
+          key: 'tut_fecha_radicacion',
           class: 'text-left'
         },
-        {
-          label: 'Fecha estimada Solución',
-          key: 'fecha_solucion',
-          class: 'text-left'
-        },
-        { label: 'Solicitante', key: 'solicitante', class: 'text-left' },
-        { label: 'Abogado Asignado', key: 'abogado', class: 'text-left' },
+        { label: 'Término (horas)', key: 'tut_termino_contestar', class: 'text-left' },
+        { label: 'Solicitante', key: 'usuario_solicitante', class: 'text-left' },
+        { label: 'Accionante', key: 'accionante', class: 'text-left' },
+        { label: 'Abogado Asignado', key: 'profesional', class: 'text-left' },
         { label: 'Acciones', key: 'actions', class: 'text-center' }
       ],
       totalRows: 1,
@@ -363,7 +360,7 @@ export default {
   },
   mounted () {
     xray.index()
-    this.getCases()
+    this.obtenerTutelas()
     this.getProfesionals()
     this.getUserClinicas()
     this.getEstados()
@@ -374,31 +371,31 @@ export default {
       this.totalRows = filteredItems.length
       this.currentPage = 1
     },
-    verCaso (casoId) {
-      this.casoVisto(casoId)
-      this.$router.push({ path: `/cases/cases-show/${casoId}` })
+    verTutela (tutelaId) {
+      // this.casoVisto(tutelaId)
+      this.$router.push({ path: `/tutelas/mostrar/${tutelaId}` })
     },
-    editarCaso (caso) {
-      this.casoVisto(caso.caso_id)
-      this.caso = caso
-      this.$bvModal.show('modal-editar-caso')
+    editarTutela (tutela) {
+      // this.casoVisto(caso.caso_id)
+      this.tutela = tutela
+      this.$bvModal.show('modal-editar-tutela')
     },
-    eliminarCaso (casoId) {
-      this.casoVisto(casoId)
+    eliminarTutela (tutelaId) {
+      // this.casoVisto(tutelaId)
       Swal.fire({
         icon: 'warning',
         title: '¿Estás seguro?',
-        text: '¿Deseas eliminar este Caso?',
+        text: '¿Deseas eliminar esta tutela?',
         showCancelButton: true,
         confirmButtonText: 'Eliminar'
       }).then((result) => {
         if (result.isConfirmed) {
           axios
-            .get('/casos/delete/' + casoId)
+            .delete('/tutelas/delete/' + tutelaId)
             .then((res) => {
               if (res.status === 200) {
                 Vue.swal(res.data.message)
-                this.getCases()
+                this.obtenerTutelas()
               } else {
                 Vue.swal(res.data.message)
               }
@@ -412,12 +409,12 @@ export default {
         }
       })
     },
-    getCases () {
-      this.$bvModal.hide('modal-editar-caso')
-      axios.post('/casos-lista', this.filtros).then((response) => {
+    obtenerTutelas () {
+      this.$bvModal.hide('modal-editar-tutela')
+      axios.get('/tutelas/all', this.filtros).then((response) => {
         if (response.status === 200) {
-          this.casos = response.data.casos
-          this.totalRows = this.casos.length
+          this.tutelas = response.data.tutelas
+          this.totalRows = this.tutelas.length
           this.user_profile = this.userLogged.user_profile
         }
       })
@@ -437,8 +434,8 @@ export default {
       })
     },
     getEstados () {
-      axios.get('/estados/fetch').then((response) => {
-        this.estadosOptions = response.data.estados
+      axios.get('/estados-tutela/fetch').then((response) => {
+        this.estadosTutelaOptions = response.data.estadosTutela
       })
     },
     getProfesionals () {
@@ -446,21 +443,21 @@ export default {
         this.abogadosOptions = response.data.professionals
       })
     },
-    anularCaso (casoId) {
+    anularTutela (tutelaId) {
       Swal.fire({
         icon: 'warning',
         title: '¿Estás seguro?',
-        text: '¿Deseas anular este Caso?',
+        text: '¿Deseas anular esta tutela?',
         showCancelButton: true,
         confirmButtonText: 'Aceptar'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.casoVisto(casoId)
+          // this.casoVisto(tutelaId)
           axios
-            .get('/casos-estado/' + casoId + '/5')
+            .post('/tutelas/anular/' + tutelaId)
             .then((res) => {
               if (res.status === 200) {
-                this.getCases()
+                this.obtenerTutelas()
               }
 
               Vue.swal(res.data.message)
@@ -475,13 +472,13 @@ export default {
       })
     },
     rowClass (item) {
-      if (item.caso_estado_id === 3) return 'table-devolucion'
+      if (item.tut_estado_tutela_id === 1) return 'table-devolucion'
     },
-    casoVisto (casoId) {
-      axios.post('/casos/leido/' + casoId)
+    tutelaVista (tutelaId) {
+      axios.post('/tutelas/leido/' + tutelaId)
         .then((res) => {
-          this.casos.map(function (dato) {
-            if (dato.caso_id === casoId) {
+          this.tutelas.map(function (dato) {
+            if (dato.tut_id === tutelaId) {
               dato.lei_leido = true
             }
           })
