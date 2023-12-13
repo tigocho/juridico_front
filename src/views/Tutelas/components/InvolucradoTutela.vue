@@ -41,7 +41,6 @@ export default {
       }
     },
     detectarFoto (genero) {
-      console.log(genero)
       if (genero === 1) {
         return require('../../../assets/images/user/11.png')
       } else {

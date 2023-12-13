@@ -117,7 +117,8 @@
                           <b-form-group
                             class="col-md-6"
                             label="Fecha de radicación*"
-                            label-for="tutela_fecha_radicacion">
+                            label-for="tutela_fecha_radicacion"
+                          >
                             <ValidationProvider
                               name="Fecha Radicación"
                               rules="required"
