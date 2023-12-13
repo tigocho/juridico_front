@@ -1,0 +1,444 @@
+<template>
+  <b-container fluid>
+    <!-- DATOS DE TUTELAS TOTALES, ABIERTOS Y CERRADOS  -->
+    <b-row>
+      <b-col lg="12">
+        <template>
+          <ResumenTutelas></ResumenTutelas>
+        </template>
+      </b-col>
+    </b-row>
+    <!-- FIN DATOS DE TUTELAS TOTALES, ABIERTOS Y CERRADOS  -->
+    <b-row>
+      <b-col lg="12">
+        <iq-card>
+          <template v-slot:headerTitle>
+            <h4 class="card-title">Mis tutelas</h4>
+          </template>
+          <template v-slot:body>
+            <b-row>
+              <b-col sm="3" md="3" class="my-1">
+                <b-form-group
+                  label="Por página"
+                  label-for="per-page-select"
+                  label-cols-sm="5"
+                  label-cols-md="4"
+                  label-cols-lg="5"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <b-form-select
+                    id="per-page-select"
+                    v-model="perPage"
+                    :options="pageOptions"
+                    size="sm"
+                    class="w-80"
+                  ></b-form-select>
+                </b-form-group>
+              </b-col>
+
+              <b-col
+                sm="6"
+                md="6"
+                lg="6"
+                style="margin-left: auto"
+                class="my-2"
+              >
+                <b-form-group
+                  label="Buscar"
+                  label-for="filter-input"
+                  label-cols-sm="3"
+                  label-align-sm="right"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <b-input-group size="sm">
+                    <b-form-input
+                      id="filter-input"
+                      v-model="filter"
+                      type="search"
+                      placeholder="Escribe para buscar"
+                    ></b-form-input>
+
+                    <b-input-group-append>
+                      <b-button :disabled="!filter" @click="filter = ''"
+                        >Limpiar</b-button
+                      >
+                    </b-input-group-append>
+                  </b-input-group>
+                </b-form-group>
+              </b-col>
+            </b-row>
+
+            <b-row>
+              <b-col sm="3" md="3" class="my-1">
+                <b-form-group
+                  label="Estado"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="3"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="filtros.estado_id"
+                    :options="estadosTutelaOptions"
+                    @input="obtenerTutelas()"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="estado_select"
+                  >
+                    <span slot="no-options">No hay Estados.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+              <b-col sm="4" md="4" class="my-1">
+                <b-form-group
+                  label="Clinicas"
+                  label-cols-sm="2"
+                  label-cols-md="2"
+                  label-cols-lg="3"
+                  label-align-sm="left"
+                  label-size="sm"
+                  class="mb-0"
+                >
+                  <v-select
+                    v-model="filtros.clinica_id"
+                    :options="clinicasOptions"
+                    @input="obtenerTutelas()"
+                    :reduce="(label) => label.code"
+                    label="label"
+                    id="clinica_select"
+                  >
+                    <span slot="no-options">No hay Clinicas.</span>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-row>
+
+            <!-- Main table element -->
+            <b-table
+              :items="tutelas"
+              :fields="fields"
+              :current-page="currentPage"
+              :per-page="perPage"
+              :filter="filter"
+              :filter-included-fields="filterOn"
+              :sort-by.sync="sortBy"
+              :sort-desc.sync="sortDesc"
+              :sort-direction="sortDirection"
+              stacked="md"
+              show-empty
+              small
+              @filtered="onFiltered"
+              :tbody-tr-class="rowClass(tutelas)"
+            >
+              <template #cell(tut_radicado)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.tut_radicado }} <img :src="newCase" width="25px" class="img-fluid" alt="logo"></b>
+                <span v-else>{{ data.item.tut_radicado }}</span>
+              </template>
+              <template #cell(tipo_gestion)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.tipo_gestion.tig_nombre }}</b>
+                <span v-else>{{ data.item.tipo_gestion.tig_nombre }}</span>
+              </template>
+              <template #cell(estado)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.estado.est_nombre }}</b>
+                <span v-else>{{ data.item.estado.est_nombre }}</span>
+              </template>
+              <template #cell(clinica)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.clinica.cli_name }}</b>
+                <span v-else>{{ data.item.clinica.cli_name }}</span>
+              </template>
+              <template #cell(tut_fecha_radicacion)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.tut_fecha_radicacion }}</b>
+                <span v-else>{{ data.item.tut_fecha_radicacion }}</span>
+              </template>
+              <template #cell(tut_termino_contestar)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.tut_termino_contestar }}</b>
+                <span v-else>{{ data.item.tut_termino_contestar }}</span>
+              </template>
+              <template #cell(usuario_solicitante)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.usuario_solicitante.usr_name_first }} {{ data.item.usuario_solicitante.usr_lastname_first }}</b>
+                <span v-else>{{ data.item.usuario_solicitante.usr_name_first }} {{ data.item.usuario_solicitante.usr_lastname_first }}</span>
+              </template>
+              <template #cell(accionante)="data">
+                <b v-if="data.item.lei_leido !== true">{{ data.item.accionante.usr_name_first }} {{ data.item.accionante.usr_lastname_first }}</b>
+                <span v-else>{{ data.item.accionante.usr_name_first }} {{ data.item.accionante.usr_lastname_first }}</span>
+              </template>
+              <template #cell(actions)="row">
+                <b-dropdown variant="primary" text="Acciones">
+                  <b-dropdown-item @click="verTutela(row.item.tut_id)">
+                    Ver
+                  </b-dropdown-item>
+                  <b-dropdown-item
+                    v-if="row.item.tut_estado_tutela !== estadoIdCerrado && perfilesAdministradores.includes(user_profile)"
+                    @click="anularTutela(row.item.tut_id)"
+                  >
+                    Anular
+                  </b-dropdown-item>
+                  <b-dropdown-item
+                    v-if="row.item.tut_estado_tutela !== estadoIdCerrado && user_profile == 1"
+                    @click="eliminarTutela(row.item.tut_id)"
+                  >
+                    Eliminar
+                  </b-dropdown-item>
+                </b-dropdown>
+              </template>
+              <template #cell(show_details)="row">
+                <b-button
+                  variant="primary"
+                  size="sm"
+                  @click="row.toggleDetails"
+                  class="mr-2"
+                >
+                  {{ row.detailsShowing ? '-' : '+' }}
+                </b-button>
+              </template>
+              <template #row-details="data">
+                <b-card>
+                  <b-row class="mb-12">
+                    <b-col sm="12" class="text-sm-left"
+                      ><strong>Descripción: </strong>{{ data.item.tut_descripcion }}</b-col
+                    >
+                  </b-row>
+                  <b-row>
+                    <b-col sm="3" class="text-sm-left"
+                      ><strong>Medio solicitud: </strong>{{ data.item.medio_solicitud.med_sol_nombre }}</b-col
+                    >
+                    <b-col sm="3" class="text-sm-left"
+                      ><strong>Tipo gestión: </strong>{{ data.item.tipo_gestion.tig_nombre }}</b-col
+                    >
+                    <b-col sm="3" class="text-sm-left"
+                      ><strong>Término contestar: </strong>{{ data.item.tut_termino_contestar }} horas</b-col
+                    >
+                  </b-row>
+                </b-card>
+              </template>
+            </b-table>
+            <b-row>
+              <b-col sm="4" md="3" class="my-1 text-righ">
+                <b-pagination
+                  v-model="currentPage"
+                  :total-rows="totalRows"
+                  :per-page="perPage"
+                  align="fill"
+                  size="sm"
+                  class="my-0"
+                ></b-pagination>
+              </b-col>
+            </b-row>
+          </template>
+        </iq-card>
+      </b-col>
+    </b-row>
+  </b-container>
+</template>
+
+<script>
+import axios from 'axios'
+import Vue from 'vue'
+import auth from '@/logic/auth'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import { xray } from '../../config/pluginInit'
+import ResumenTutelas from './components/ResumenTutelas.vue'
+import moment from 'moment'
+moment.locale('es')
+export default {
+  name: 'TodasTutelas',
+  components: {
+    ResumenTutelas
+  },
+  data () {
+    return {
+      newCase: require('@/assets/images/page-img/new-case-blue.png'),
+      tutelas: [],
+      tutela: {},
+      filtros: {
+        abogado_id: '',
+        clinica_id: '',
+        estados_id: ''
+      },
+      abogadosOptions: [],
+      clinicasOptions: [],
+      estadosTutelaOptions: [],
+      perfilesAdministradores: [1, 12],
+      estadoIdCerrado: 4,
+      textoBoton: 'Guardar Tutela',
+      estado: 'd-none',
+      bRowLast: {},
+      fields: [
+        { label: 'Ver Más', key: 'show_details', class: 'text-left' },
+        { label: 'Radicado', key: 'tut_radicado' },
+        { label: 'Estado', key: 'estado', class: 'text-left' },
+        { label: 'Clínica', key: 'clinica', class: 'text-left' },
+        {
+          label: 'Fecha radicación',
+          key: 'tut_fecha_radicacion',
+          class: 'text-left'
+        },
+        { label: 'Término (horas)', key: 'tut_termino_contestar', class: 'text-left' },
+        { label: 'Solicitante', key: 'usuario_solicitante', class: 'text-left' },
+        { label: 'Accionante', key: 'accionante', class: 'text-left' },
+        { label: 'Acciones', key: 'actions', class: 'text-center' }
+      ],
+      totalRows: 1,
+      currentPage: 1,
+      perPage: 5,
+      pageOptions: [5, 10, 15, { value: 100, text: 'Muchas' }],
+      sortBy: '',
+      sortDesc: false,
+      sortDirection: 'asc',
+      filter: null,
+      filterOn: [],
+      user_profile: null,
+      files: []
+    }
+  },
+  computed: {
+    sortOptions () {
+      // Create an options list from our fields
+      return this.fields
+        .filter((f) => f.sortable)
+        .map((f) => {
+          return { text: f.label, value: f.key }
+        })
+    },
+    userLogged () {
+      if (auth.getUserLogged() !== undefined) {
+        return JSON.parse(auth.getUserLogged())
+      } else {
+        return null
+      }
+    }
+  },
+  mounted () {
+    xray.index()
+    this.obtenerTutelas()
+    this.getProfesionals()
+    this.getUserClinicas()
+    this.getEstados()
+  },
+  methods: {
+    onFiltered (filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length
+      this.currentPage = 1
+    },
+    verTutela (tutelaId) {
+      // this.casoVisto(tutelaId)
+      this.$router.push({ path: `/tutelas/mostrar/${tutelaId}` })
+    },
+    editarTutela (tutela) {
+      // this.casoVisto(caso.caso_id)
+      this.tutela = tutela
+      this.$bvModal.show('modal-editar-tutela')
+    },
+    eliminarTutela (tutelaId) {
+      // this.casoVisto(tutelaId)
+      Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text: '¿Deseas eliminar esta tutela?',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .delete('/tutelas/delete/' + tutelaId)
+            .then((res) => {
+              if (res.status === 200) {
+                Vue.swal(res.data.message)
+                this.obtenerTutelas()
+              } else {
+                Vue.swal(res.data.message)
+              }
+            })
+            .catch((err) => {
+              Vue.swal(
+                'Ups sucedió un error tratando de consulta la información. ' +
+                  err
+              )
+            })
+        }
+      })
+    },
+    obtenerTutelas () {
+      this.$bvModal.hide('modal-editar-tutela')
+      axios.get('/tutelas/obtener-mis-asignaciones', this.filtros).then((response) => {
+        if (response.status === 200) {
+          this.tutelas = response.data.tutelas
+          this.totalRows = this.tutelas.length
+          this.user_profile = this.userLogged.user_profile
+        }
+      })
+    },
+    getUserClinicas () {
+      axios.get('/clinicas/' + this.userLogged.usr_id).then((res) => {
+        if (res.status === 200) {
+          this.clinicasOptions = res.data.clinicas
+        } else {
+          Vue.swal(res.data.message)
+        }
+      })
+    },
+    getServicios () {
+      axios.get('/servicios/fetch').then((response) => {
+        this.serviciosOptions = response.data.servicios
+      })
+    },
+    getEstados () {
+      axios.get('/estados-tutela/fetch').then((response) => {
+        this.estadosTutelaOptions = response.data.estadosTutela
+      })
+    },
+    getProfesionals () {
+      axios.get('/professionals/fetch').then((response) => {
+        this.abogadosOptions = response.data.professionals
+      })
+    },
+    anularTutela (tutelaId) {
+      Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text: '¿Deseas anular esta tutela?',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // this.casoVisto(tutelaId)
+          axios
+            .post('/tutelas/anular/' + tutelaId)
+            .then((res) => {
+              if (res.status === 200) {
+                this.obtenerTutelas()
+              }
+
+              Vue.swal(res.data.message)
+            })
+            .catch((err) => {
+              Vue.swal(
+                'Ups sucedió un error tratando de consulta la información. ' +
+                  err
+              )
+            })
+        }
+      })
+    },
+    rowClass (item) {
+      if (item.tut_estado_tutela_id === 1) return 'table-devolucion'
+    },
+    tutelaVista (tutelaId) {
+      axios.post('/tutelas/leido/' + tutelaId)
+        .then((res) => {
+          this.tutelas.map(function (dato) {
+            if (dato.tut_id === tutelaId) {
+              dato.lei_leido = true
+            }
+          })
+        })
+    }
+  }
+}
+</script>

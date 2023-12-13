@@ -489,14 +489,14 @@
         "class_name": "",
         "is_icon_class": true,
         "icon": "ri-folder-add-line",
-        "roles": [1, 2, 10, 11, 12, 13, 14]
+        "roles": [11]
       },
       {
         "title": "Mis Asignaciones",
         "name": "sidebar.misAsignaciones",
         "is_active": false,
         "link": {
-          "name" : "cases.assigned"
+          "name" : "tutelas.mis-asignaciones"
         },
         "class_name": "",
         "is_icon_class": true,
