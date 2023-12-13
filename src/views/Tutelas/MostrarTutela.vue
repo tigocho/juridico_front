@@ -14,6 +14,17 @@
       </b-progress>
     </div>
     <div v-else>
+      <!-- MODAL DE EDITAR CASO -->
+      <div>
+        <b-modal id="modal-editar-tutela" size="lg" title="Editar Tutela" hide-footer>
+          <EditarTutela
+            :tutela="tutela"
+            :onEdit="true"
+            @reloadFunciont="obtenerTutela"
+          />
+        </b-modal>
+      </div>
+      <!-- FIN DE MODAL-->
       <b-row>
         <b-col lg="12">
           <iq-card body-class="p-0" style="margin-bottom: 5px;">
@@ -30,7 +41,9 @@
             </template>
           </iq-card>
         </b-col>
-        <encabezado-tutela :tutela="tutela" />
+        <encabezado-tutela :tutela="tutela"
+          @emitirEditarTutela="editarTutela"
+        />
       </b-row>
       <div class="iq-edit-list-data">
         <tab-content id="pills-tabContent-2">
@@ -74,13 +87,15 @@ import moment from 'moment'
 import DescripcionTutela from './components/DescripcionTutela'
 import EtapasTutela from './components/EtapasTutela'
 import EncabezadoTutela from './components/EncabezadoTutela'
+import EditarTutela from './components/EditarTutela'
 moment.locale('es')
 export default {
   name: 'MostrarTutela',
   components: {
     DescripcionTutela,
     EtapasTutela,
-    EncabezadoTutela
+    EncabezadoTutela,
+    EditarTutela
   },
   data () {
     return {
@@ -118,6 +133,7 @@ export default {
   },
   methods: {
     obtenerTutela () {
+      this.$bvModal.hide('modal-editar-tutela')
       this.user_profile = this.userLogged.user_profile
       axios
         .get('tutelas/mostrar/' + this.$route.params.tutela_id)
@@ -140,7 +156,10 @@ export default {
         if (vm.progress_total > 99) clearInterval(timer)
       }, 100)
     },
-    editarTutela () {
+    editarTutela (datos) {
+      const fechaSolicitud = datos.tut_fecha_solicitud
+      moment(fechaSolicitud).format('YYYY-MM-DD HH:mm:ss')
+      datos.tut_fecha_solicitud = fechaSolicitud
       this.$bvModal.show('modal-editar-tutela')
     },
     obtenerEtapasProcesales () {
