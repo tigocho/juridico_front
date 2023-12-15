@@ -34,8 +34,6 @@
                   <tab-nav-items class="col-auto p-0" :active="true"  href="#informacion-general" title="Información general" />
                   <tab-nav-items class="col-auto p-0" :active="false" href="#etapas" title="Etapas Procesales" />
                   <tab-nav-items class="col-auto p-0" :active="false" href="#fallo" title="Fallo" />
-                  <tab-nav-items class="col-auto p-0" :active="false" href="#pre-contestaciones" title="Precontestaciones"/>
-                  <tab-nav-items class="col-auto p-0" :active="false" href="#devoluciones" title="Devoluciones" />
                 </tab-nav>
               </div>
             </template>
@@ -58,16 +56,6 @@
             ></etapas-tutela>
           </tab-content-item>
           <tab-content-item :active="false" id="fallo">
-            <etapas-tutela
-              :tutela="tutela"
-            ></etapas-tutela>
-          </tab-content-item>
-          <tab-content-item :active="false" id="pre-contestaciones">
-            <etapas-tutela
-              :tutela="tutela"
-            ></etapas-tutela>
-          </tab-content-item>
-          <tab-content-item :active="false" id="devoluciones">
             <etapas-tutela
               :tutela="tutela"
             ></etapas-tutela>
